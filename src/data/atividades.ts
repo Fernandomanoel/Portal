@@ -154,30 +154,27 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "CC",
     cor: "#16a34a",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Atividade Prática: Análise de Crédito, Gestão de Risco e Régua de Cobrança",
         descricao: "Análise de crédito, gestão de risco e a régua de cobrança usada para recuperar valores em atraso.",
-        tipo: "link",
-        url: "/atividades/credito-cobranca/credito-cobranca-analise-risco.html",
+        caminho: "Crédito e Cobrança/credito-cobranca-analise-risco",
       },
       {
         titulo: "Atividade Prática: Crédito e Cobrança II — Credit Scoring, Garantias e Títulos Executivos",
         descricao: "Credit scoring, tipos de garantia e títulos executivos usados na cobrança.",
-        tipo: "link",
-        url: "/atividades/credito-cobranca/credito-cobranca-scoring-garantias-titulos.html",
+        caminho: "Crédito e Cobrança/credito-cobranca-scoring-garantias-titulos",
       },
       {
         titulo: "Atividade Prática: Crédito e Cobrança III — Open Finance, Prevenção a Fraudes e Recebíveis",
         descricao: "Open Finance, prevenção a fraudes e gestão de recebíveis.",
-        tipo: "link",
-        url: "/atividades/credito-cobranca/credito-cobranca-open-finance-fraudes-recebiveis.html",
+        caminho: "Crédito e Cobrança/credito-cobranca-open-finance-fraudes-recebiveis",
       },
       {
         titulo: "Atividade Prática: Gestão Financeira, Fluxo de Caixa e Controladoria",
         descricao: "Gestão financeira, controle de fluxo de caixa e rotinas de controladoria.",
-        tipo: "link",
-        url: "/atividades/credito-cobranca/credito-cobranca-gestao-financeira-fluxo-caixa.html",
+        caminho: "Crédito e Cobrança/credito-cobranca-gestao-financeira-fluxo-caixa",
       },
     ],
   },
