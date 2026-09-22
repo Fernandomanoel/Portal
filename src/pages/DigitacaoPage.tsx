@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
+import { PainelRanking } from "@/components/digitacao/PainelRanking";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { EXERCICIOS } from "@/data/digitacao";
@@ -157,6 +158,11 @@ export function DigitacaoPage() {
           </span>
         </p>
       )}
+
+      <PainelRanking
+        jogoId={`digitacao-livre-${exercicio.id}`}
+        resultadoPendente={fase === "concluido" ? { ppm: metricas.ppm, precisao: metricas.precisao } : null}
+      />
     </>
   );
 }

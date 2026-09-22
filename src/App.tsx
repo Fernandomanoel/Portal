@@ -16,6 +16,11 @@ import { IngresAtividadesPage } from "@/pages/IngresAtividadesPage";
 import { IngresHubPage } from "@/pages/IngresHubPage";
 import { IngresProvasPage } from "@/pages/IngresProvasPage";
 import { DigitacaoPage } from "@/pages/DigitacaoPage";
+import { DigitacaoHubPage } from "@/pages/digitacao/DigitacaoHubPage";
+import { CavaleirosZodiacoPage } from "@/pages/digitacao/cavaleirosZodiaco/CavaleirosZodiacoPage";
+import { LetrasInglesPage } from "@/pages/digitacao/letrasIngles/LetrasInglesPage";
+import { SonicPage } from "@/pages/digitacao/sonic/SonicPage";
+import { TextosClassicosPage } from "@/pages/digitacao/textosClassicos/TextosClassicosPage";
 import { ProvasPage } from "@/pages/ProvasPage";
 import { QuizPage } from "@/pages/QuizPage";
 
@@ -57,7 +62,12 @@ const roteador = criarRoteador([
       },
       { path: "ingles/atividades/:slug", element: <IngresAtividadePage /> },
 
-      { path: "digitacao", element: <DigitacaoPage /> },
+      { path: "digitacao", element: <DigitacaoHubPage /> },
+      { path: "digitacao/livre", element: <DigitacaoPage /> },
+      { path: "digitacao/textos-classicos", element: <TextosClassicosPage /> },
+      { path: "digitacao/cavaleiros-zodiaco", element: <CavaleirosZodiacoPage /> },
+      { path: "digitacao/letras-ingles", element: <LetrasInglesPage /> },
+      { path: "digitacao/sonic", element: <SonicPage /> },
 
       { path: "provas", element: <ProvasPage /> },
       { path: "provas/quiz/:categoria/:prova", element: <QuizPage /> },
