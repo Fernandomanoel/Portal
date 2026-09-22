@@ -222,36 +222,32 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "RH",
     cor: "#ec4899",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Atividade Prática: Assistente de Recursos Humanos",
         descricao: "Divisões do subsistema de RH, cargos e salários, classificação de cargos e divulgação de vaga.",
-        tipo: "link",
-        url: "/atividades/recursos-humanos/recursos-humanos-assistente-rh.html",
+        caminho: "Recursos Humanos/recursos-humanos-assistente-rh",
       },
       {
         titulo: "Atividade Prática: Gestão de Talentos e Comunicação",
         descricao: "Métodos de avaliação de desempenho, treinamento e desenvolvimento, comunicação interna e feedback.",
-        tipo: "link",
-        url: "/atividades/recursos-humanos/recursos-humanos-gestao-talentos-comunicacao.html",
+        caminho: "Recursos Humanos/recursos-humanos-gestao-talentos-comunicacao",
       },
       {
         titulo: "Atividade Prática: Relações Trabalhistas e Resolução de Conflitos",
         descricao: "Rescisão por quebra de confiança, assédio moral, gestão de jornada e abandono de emprego.",
-        tipo: "link",
-        url: "/atividades/recursos-humanos/recursos-humanos-relacoes-trabalhistas-conflitos.html",
+        caminho: "Recursos Humanos/recursos-humanos-relacoes-trabalhistas-conflitos",
       },
       {
         titulo: "Atividade Prática: Relações Trabalhistas e Conflitos II",
         descricao: "Atos faltosos (Art. 482 da CLT), acordos coletivos, teletrabalho e direito à desconexão.",
-        tipo: "link",
-        url: "/atividades/recursos-humanos/recursos-humanos-relacoes-trabalhistas-conflitos-2.html",
+        caminho: "Recursos Humanos/recursos-humanos-relacoes-trabalhistas-conflitos-2",
       },
       {
         titulo: "Atividade Prática: Gestão de Contratos, Férias e Benefícios",
         descricao: "Pacote de benefícios, regras de férias e abono pecuniário, e contrato de experiência.",
-        tipo: "link",
-        url: "/atividades/recursos-humanos/recursos-humanos-contratos-ferias-beneficios.html",
+        caminho: "Recursos Humanos/recursos-humanos-contratos-ferias-beneficios",
       },
     ],
   },
