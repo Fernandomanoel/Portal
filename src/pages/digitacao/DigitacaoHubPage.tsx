@@ -6,16 +6,17 @@ import { rotas } from "@/lib/rotas";
 import estilos from "./DigitacaoHubPage.module.css";
 
 /**
- * Hub de Digitação. Diferente de Atividades/Provas, cada jogo aqui mantém a
- * própria forma — não existe um molde único imposto entre eles. O acento de
- * cor de cada linha é a cor que já identifica aquele jogo por dentro (o
- * dourado do Zodíaco, o roxo das letras, o laranja do Sonic), não uma cor
- * nova — é assim que a lista comunica "estes são mundos diferentes" sem
- * inventar uma paleta à parte.
+ * Hub de Digitação, no mesmo vocabulário de card com capa que o resto do
+ * portal usa para curso (ver CursoCard) — grade, capa, sigla, metadados.
+ * Diferente de Atividades/Provas, cada jogo aqui mantém a própria forma por
+ * dentro; a capa usa a cor que já identifica aquele jogo (o dourado do
+ * Zodíaco, o roxo das letras, o laranja do Sonic) em vez de uma foto, já que
+ * não existe capa fotográfica para um jogo de digitação.
  */
 const JOGOS: {
   para: string;
   icone: NomeIcone;
+  sigla: string;
   titulo: string;
   texto: string;
   etiqueta: string;
@@ -24,6 +25,7 @@ const JOGOS: {
   {
     para: rotas.digitacaoLivre(),
     icone: "digitacao",
+    sigla: "TL",
     titulo: "Treino livre",
     texto: "Digite qualquer texto cadastrado e veja PPM, precisão e erros.",
     etiqueta: "Livre",
@@ -32,6 +34,7 @@ const JOGOS: {
   {
     para: rotas.digitacaoTextosClassicos(),
     icone: "livro",
+    sigla: "TC",
     titulo: "Textos Clássicos",
     texto: "Níveis de texto livre, com teclado virtual e reações a cada tecla.",
     etiqueta: "5 níveis",
@@ -40,6 +43,7 @@ const JOGOS: {
   {
     para: rotas.digitacaoCavaleirosZodiaco(),
     icone: "escudo",
+    sigla: "BZ",
     titulo: "Batalha das 12 Casas",
     texto: "Digite em português, inglês e japonês para vencer os Cavaleiros de Ouro.",
     etiqueta: "12 casas",
@@ -48,6 +52,7 @@ const JOGOS: {
   {
     para: rotas.digitacaoLetrasIngles(),
     icone: "musica",
+    sigla: "IM",
     titulo: "Inglês em Letras de Música",
     texto: "Digite a letra em inglês enquanto ela toca.",
     etiqueta: "8 ensaios",
@@ -56,6 +61,7 @@ const JOGOS: {
   {
     para: rotas.digitacaoSonic(),
     icone: "raio",
+    sigla: "SD",
     titulo: "Sonic Digital Pro",
     texto: "16 fases, do posicionamento das mãos até frases longas.",
     etiqueta: "16 fases",
@@ -71,40 +77,42 @@ export function DigitacaoHubPage() {
         texto="Cada jogo tem seu próprio jeito de treinar — escolha um para começar."
       />
 
-      <ul className={estilos.lista}>
+      <ul className={estilos.grade}>
         {JOGOS.map((jogo, indice) => (
           <li
             key={jogo.para}
+            className={estilos.item}
             style={{ ["--acento" as string]: jogo.acento, ["--atraso" as string]: `${indice * 55}ms` }}
           >
-            <Link to={jogo.para} className={estilos.item}>
-              <span className={estilos.icone}>
-                <Icone nome={jogo.icone} tamanho={24} />
-              </span>
-              <span className={estilos.texto}>
-                <span className={estilos.linhaTitulo}>
-                  <strong className={estilos.titulo}>{jogo.titulo}</strong>
-                  <span className={estilos.etiqueta}>{jogo.etiqueta}</span>
-                </span>
-                <span className={estilos.descricao}>{jogo.texto}</span>
-              </span>
-              <span className={estilos.seta}>
-                <Icone nome="seta-direita" tamanho={18} />
-              </span>
-            </Link>
+            <article className={estilos.card}>
+              <div className={estilos.capa}>
+                <span className={estilos.sigla}>{jogo.sigla}</span>
+                <Icone nome={jogo.icone} tamanho={40} />
+              </div>
+              <div className={estilos.corpo}>
+                <h3 className={estilos.titulo}>
+                  <Link to={jogo.para}>{jogo.titulo}</Link>
+                </h3>
+                <p className={estilos.descricao}>{jogo.texto}</p>
+                <p className={estilos.rodape}>
+                  <Icone nome="check" tamanho={13} />
+                  {jogo.etiqueta}
+                </p>
+              </div>
+            </article>
           </li>
         ))}
       </ul>
 
       <Link to={rotas.digitacaoRanking()} className={estilos.cartaoRanking}>
         <span className={estilos.iconeRanking}>
-          <Icone nome="trofeu" tamanho={22} />
+          <Icone nome="trofeu" tamanho={26} />
         </span>
-        <span className={estilos.texto}>
-          <strong className={estilos.titulo}>Ranking geral</strong>
-          <span className={estilos.descricao}>O recorde de todos os jogos, num só lugar.</span>
+        <span className={estilos.textoRanking}>
+          <strong className={estilos.tituloRanking}>Ranking geral</strong>
+          <span className={estilos.descricaoRanking}>O recorde de todos os jogos, num só lugar.</span>
         </span>
-        <span className={estilos.seta}>
+        <span className={estilos.setaRanking}>
           <Icone nome="seta-direita" tamanho={18} />
         </span>
       </Link>
