@@ -112,30 +112,27 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "DP",
     cor: "#0d9488",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Atividade Prática: Assistente de Departamento Pessoal (DP)",
         descricao: "Rotinas básicas de um assistente de DP: admissão, documentação e cálculos do dia a dia.",
-        tipo: "link",
-        url: "/atividades/departamento-pessoal/departamento-pessoal-basico.html",
+        caminho: "Departamento Pessoal/departamento-pessoal-basico",
       },
       {
         titulo: "Atividade Prática: Departamento Pessoal II — Férias, Adicionais e Rescisão Contratual",
         descricao: "Cálculo de férias, adicionais (noturno, insalubridade) e rescisão contratual.",
-        tipo: "link",
-        url: "/atividades/departamento-pessoal/departamento-pessoal-ferias-adicionais-rescisao.html",
+        caminho: "Departamento Pessoal/departamento-pessoal-ferias-adicionais-rescisao",
       },
       {
         titulo: "Atividade Prática: Departamento Pessoal III — Jornada Noturna, Horas Extras, Licenças e CAT",
         descricao: "Jornada noturna, horas extras, licenças e Comunicação de Acidente de Trabalho (CAT).",
-        tipo: "link",
-        url: "/atividades/departamento-pessoal/departamento-pessoal-jornada-horas-extras-licencas.html",
+        caminho: "Departamento Pessoal/departamento-pessoal-jornada-horas-extras-licencas",
       },
       {
         titulo: "Atividade Prática: Departamento Pessoal IV — Novos Formatos de Interação",
         descricao: "Novos cenários e formatos de interação para praticar rotinas de departamento pessoal.",
-        tipo: "link",
-        url: "/atividades/departamento-pessoal/departamento-pessoal-novos-formatos-interacao.html",
+        caminho: "Departamento Pessoal/departamento-pessoal-novos-formatos-interacao",
       },
     ],
   },
@@ -299,37 +296,33 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "AG",
     cor: "#0891b2",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Atividade Prática: Gestão Empresarial e Estratégica",
         descricao:
           "Análise SWOT (matriz FOFA), Ciclo PDCA, cálculo de Retorno sobre Investimento (ROI) e liderança na resolução de conflitos de equipe.",
-        tipo: "link",
-        url: "/atividades/assistente-gestao/assistente-gestao-empresarial-estrategica.html",
+        caminho: "Assistente de Gestão/assistente-gestao-empresarial-estrategica",
       },
       {
         titulo: "Atividade Prática: Técnicas e Gestão de Vendas",
         descricao: "Perfil do profissional de vendas moderno, procedimento de atendimento consultivo e cálculo de metas e comissões.",
-        tipo: "link",
-        url: "/atividades/assistente-gestao/assistente-gestao-tecnicas-vendas.html",
+        caminho: "Assistente de Gestão/assistente-gestao-tecnicas-vendas",
       },
       {
         titulo: "Atividade Prática: Desafios Logísticos e Operações Situacionais",
         descricao: "Cenários de Analista de Supply Chain: crises de abastecimento, custos de frete e decisões operacionais em tempo real.",
-        tipo: "link",
-        url: "/atividades/assistente-gestao/assistente-gestao-desafios-logisticos.html",
+        caminho: "Assistente de Gestão/assistente-gestao-desafios-logisticos",
       },
       {
         titulo: "Atividade Prática: Gestão Logística e Operações II",
         descricao: "Modais de transporte, indicador OTIF, cálculo de cubagem e estratégia de Cross-Docking na Cadeia de Suprimentos.",
-        tipo: "link",
-        url: "/atividades/assistente-gestao/assistente-gestao-logistica-operacoes-2.html",
+        caminho: "Assistente de Gestão/assistente-gestao-logistica-operacoes-2",
       },
       {
         titulo: "Atividade Prática: Gestão de Logística e Supply Chain",
         descricao: "Logística Inbound/Outbound, gestão de estoques, cálculo de reposição e logística reversa.",
-        tipo: "link",
-        url: "/atividades/assistente-gestao/assistente-gestao-logistica-supply-chain.html",
+        caminho: "Assistente de Gestão/assistente-gestao-logistica-supply-chain",
       },
     ],
   },
