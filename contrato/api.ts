@@ -115,6 +115,18 @@ export interface QuestaoMultiplaEscolha {
 export interface QuestaoDescritiva {
   numero: number;
   enunciado: string;
+  /** Guia a correção — o que a resposta precisa cobrir. Nunca sai numa rota pública. */
+  criterioCorrecao?: string;
+  /**
+   * Respostas que o instrutor já validou como corretas; usadas como
+   * referência few-shot na correção assistida. Nunca sai numa rota pública.
+   */
+  exemplosCorretos?: string[];
+  /**
+   * Padrões/respostas que reprovam na hora, sem precisar de correção
+   * assistida. Nunca sai numa rota pública.
+   */
+  respostasInvalidas?: string[];
 }
 
 export type ProvaDetalhe = ProvaResumo &
@@ -223,6 +235,25 @@ export interface SubmissaoDetalhe extends SubmissaoResumo {
   /** Presente só em múltipla escolha, para o instrutor conferir. */
   gabarito?: { numero: number; correta: number }[];
   comentario?: string;
+  /**
+   * Preenchimento inicial da tela de correção, nunca a nota final. Presente
+   * só em submissões `AGUARDANDO_CORRECAO` cuja correção assistida já rodou.
+   * A nota só vale depois que o instrutor chama `lancarNota` — aceitando ou
+   * ajustando o que está aqui.
+   */
+  sugestaoCorrecao?: SugestaoCorrecao;
+}
+
+/** De onde veio uma sugestão de correção — nunca autoritativa por si só. */
+export type OrigemSugestao = "REGRA_EXATA" | "IA_LOCAL";
+
+export interface SugestaoCorrecao {
+  nota: number;
+  comentario: string;
+  origem: OrigemSugestao;
+  /** Nome/versão do arquivo de modelo usado, presente quando `origem` é `IA_LOCAL`. */
+  modelo?: string;
+  geradaEm: DataHora;
 }
 
 export interface ListarSubmissoesParams extends ParametrosPagina {
