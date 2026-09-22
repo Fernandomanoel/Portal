@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { EstadoVazio } from "@/components/EstadoVazio";
+import { ListaAtividadesAutocorrigidas } from "@/components/ListaAtividadesAutocorrigidas";
 import { ListaMateriais } from "@/components/ListaMateriais";
 import { acharCurso } from "@/data/atividades";
 import { rotas } from "@/lib/rotas";
@@ -31,7 +32,12 @@ export function AtividadePage() {
         texto={curso.descricao}
         voltarPara={rotas.atividades(curso.categoria)}
       />
-      <ListaMateriais materiais={curso.materiais} />
+      {curso.atividades && curso.atividades.length > 0 && (
+        <ListaAtividadesAutocorrigidas curso={curso.slug} atividades={curso.atividades} />
+      )}
+      {(curso.materiais.length > 0 || !curso.atividades?.length) && (
+        <ListaMateriais materiais={curso.materiais} />
+      )}
     </>
   );
 }

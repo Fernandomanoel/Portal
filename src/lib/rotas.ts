@@ -5,6 +5,8 @@ export const rotas = {
   atividades: (categoria?: CategoriaAtividade) =>
     categoria ? `/atividades?categoria=${categoria}` : "/atividades",
   curso: (slug: string) => `/atividades/${slug}`,
+  atividadeAutocorrigida: (curso: string, caminho: string) =>
+    `/atividades/${curso}/atividade/${encodeURIComponent(caminho)}`,
   ingles: () => "/ingles",
   inglesAtividades: () => "/ingles/atividades",
   inglesAtividade: (slug: string) => `/ingles/atividades/${slug}`,

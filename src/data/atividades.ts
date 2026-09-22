@@ -19,34 +19,31 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "AD",
     cor: "#1e3a8a",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Simulação Prática de Rotinas Administrativas",
         descricao:
           "6 módulos: gestão documental (GED) e nomenclatura de arquivos, comunicação corporativa, reembolso de viagens (RDV), cotação de fornecedores, organização de eventos e criação de um POP.",
-        tipo: "link",
-        url: "/atividades/administracao/administracao-assistente-simulacao-integrada.html",
+        caminho: "Administração/administracao-assistente-simulacao-integrada",
       },
       {
         titulo: "Simulação de Operações Administrativas e Suporte de Gestão",
         descricao:
           "6 módulos: ata de reunião a partir de notas soltas, auditoria de ponto e escala, controle patrimonial, análise de minuta contratual e vencimentos de licenças, KPIs com plano 5W2H e triagem de ligações.",
-        tipo: "link",
-        url: "/atividades/administracao/administracao-rotinas-avancadas.html",
+        caminho: "Administração/administracao-rotinas-avancadas",
       },
       {
         titulo: "Simulação de Rotinas de Escritório e Suporte Operacional",
         descricao:
           "6 módulos: contas a pagar e receber, itinerário de viagem corporativa, controle de estoque de almoxarifado, priorização com Matriz GUT, e-mail de pós-venda e relatório gerencial.",
-        tipo: "link",
-        url: "/atividades/administracao/administracao-rotinas-suporte-operacional.html",
+        caminho: "Administração/administracao-rotinas-suporte-operacional",
       },
       {
         titulo: "Simulação de Eficiência Operacional e Gestão de Rotinas",
         descricao:
           "6 módulos: avaliação de SLA de fornecedores, onboarding de novo colaborador, quadro Kanban, auditoria de caixa pequeno, ergonomia/segurança do escritório e etiqueta digital.",
-        tipo: "link",
-        url: "/atividades/administracao/administracao-eficiencia-operacional.html",
+        caminho: "Administração/administracao-eficiencia-operacional",
       },
     ],
   },

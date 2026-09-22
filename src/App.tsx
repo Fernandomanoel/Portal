@@ -9,6 +9,7 @@ import { Layout } from "@/components/layout/Layout";
 import { ProvedorProvaEmAndamento } from "@/hooks/ProvaEmAndamento";
 import { ProvedorTelaImersiva } from "@/hooks/TelaImersiva";
 import { ProvedorTema } from "@/hooks/TemaContexto";
+import { AtividadeAutocorrigidaPage } from "@/pages/AtividadeAutocorrigidaPage";
 import { AtividadePage } from "@/pages/AtividadePage";
 import { AtividadesPage } from "@/pages/AtividadesPage";
 import { HomePage } from "@/pages/HomePage";
@@ -54,6 +55,7 @@ const roteador = criarRoteador([
 
       { path: "atividades", element: <AtividadesPage /> },
       { path: "atividades/:curso", element: <AtividadePage /> },
+      { path: "atividades/:curso/atividade/:atividade", element: <AtividadeAutocorrigidaPage /> },
 
       {
         path: "ingles",

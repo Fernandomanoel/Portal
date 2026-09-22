@@ -16,6 +16,13 @@ export interface Material {
   url?: string;
 }
 
+export interface AtividadeResumo {
+  titulo: string;
+  descricao: string;
+  /** Caminho do módulo em `src/data/atividadesAutocorrigidas/`, sem a extensão `.atividade.ts`. */
+  caminho: string;
+}
+
 export interface Curso {
   slug: string;
   titulo: string;
@@ -25,6 +32,8 @@ export interface Curso {
   sigla?: string;
   cor: string;
   materiais: Material[];
+  /** Simulações autocorrigidas, renderizadas dentro do próprio portal — ver AtividadeAutocorrigida. */
+  atividades?: AtividadeResumo[];
   /** Só quando a capa não segue o padrão `img/<slug>.jpg`. */
   imagem?: string;
 }

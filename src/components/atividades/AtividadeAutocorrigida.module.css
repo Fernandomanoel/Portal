@@ -1,0 +1,241 @@
+.pagina {
+  max-width: 760px;
+}
+
+.introducao {
+  color: var(--ink-soft);
+  margin-bottom: var(--space-6);
+}
+
+.resumo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--brand-deepest);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-2);
+  font-size: var(--text-sm);
+}
+
+.resumoCerto {
+  color: #bbf7d0;
+  font-weight: 600;
+}
+
+.resumoRevisar {
+  color: #fecaca;
+  font-weight: 600;
+}
+
+.resumoVazio {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.itemCabecalho {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.itemNumero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.itemTitulo {
+  font-size: var(--text-md);
+}
+
+.cenario {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+}
+
+.instrucao {
+  font-weight: 600;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-3);
+}
+
+.tabelaEnvoltorio {
+  overflow-x: auto;
+  margin-bottom: var(--space-4);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.tabela th {
+  background: var(--brand-deepest);
+  color: #fff;
+  padding: var(--space-3);
+  text-align: left;
+  font-weight: 600;
+}
+
+.tabela td {
+  border: 1px solid var(--line);
+  padding: var(--space-2) var(--space-3);
+}
+
+.campos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.rotulo {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.controle {
+  width: 100%;
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+  transition: border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+
+textarea.controle {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.controle:focus-visible {
+  border-color: var(--brand);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.controleCerto {
+  border-color: var(--success);
+}
+
+.controleErrado {
+  border-color: var(--danger);
+}
+
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.opcao {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+}
+
+.opcao:hover {
+  border-color: var(--line-strong);
+  background: var(--surface-soft);
+}
+
+.opcao input {
+  margin: 3px 0 0;
+  accent-color: var(--brand-deep);
+}
+
+.somenteLeitura {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  background: var(--surface-soft);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+}
+
+.feedbackCerto,
+.feedbackErrado {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.feedbackCerto {
+  color: var(--success);
+  background: var(--success-tint);
+}
+
+.feedbackErrado {
+  color: var(--danger);
+  background: var(--danger-tint);
+}
+
+.acoes {
+  margin-top: var(--space-6);
+}
+
+.corrigir {
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-sm);
+  border: 0;
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+  font-weight: 600;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.corrigir:hover {
+  background: var(--brand-deepest);
+}
