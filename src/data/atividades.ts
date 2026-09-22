@@ -55,59 +55,52 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "MK",
     cor: "#ff6b35",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Atividade Auto-Corretiva de Marketing e Propaganda",
         descricao:
           "Diferença entre Marketing e Propaganda, criação de headline, mapeamento de persona, funil de vendas e resposta a um caso de atendimento.",
-        tipo: "link",
-        url: "/atividades/marketing/marketing-propaganda.html",
+        caminho: "Marketing/marketing-propaganda",
       },
       {
         titulo: "Atividade Auto-Corretiva de Marketing, Branding e Mídia",
         descricao:
           "Segunda versão da atividade de marketing e propaganda, com questões e casos práticos de branding e mídia.",
-        tipo: "link",
-        url: "/atividades/marketing/marketing-branding-midia.html",
+        caminho: "Marketing/marketing-branding-midia",
       },
       {
         titulo: "Atividade Prática: Estratégia de Marketing, Copywriting e Mídia",
         descricao:
           "Estratégia de marketing, escrita persuasiva (copywriting) e planejamento de mídia em exercícios práticos corrigidos automaticamente.",
-        tipo: "link",
-        url: "/atividades/marketing/marketing-estrategia-copywriting.html",
+        caminho: "Marketing/marketing-estrategia-copywriting",
       },
       {
         titulo: "Atividade Prática: Criação de Campanha e Plano de Divulgação",
         descricao:
           "Criação de uma campanha completa e de um plano de divulgação para uma empresa, do conceito à execução.",
-        tipo: "link",
-        url: "/atividades/marketing/marketing-campanha-empresa.html",
+        caminho: "Marketing/marketing-campanha-empresa",
       },
       {
         titulo: "Desafio de Growth Marketing, Unit Economics & CRO",
         descricao:
           "Desafio avançado sobre crescimento (growth), métricas de unit economics e otimização de conversão (CRO).",
-        tipo: "link",
-        url: "/atividades/marketing/marketing-growth-avancado.html",
+        caminho: "Marketing/marketing-growth-avancado",
       },
       {
         titulo: "Simulação Prática de Marketing, Publicidade e Modelagem de Mídia",
         descricao: "Simulação prática de marketing, publicidade e modelagem de investimento em mídia.",
-        tipo: "link",
-        url: "/atividades/marketing/marketing-campanhas-modelagem-midia.html",
+        caminho: "Marketing/marketing-campanhas-modelagem-midia",
       },
       {
         titulo: "Simulação de Growth Marketing, Estratégia de Mídia e Lançamentos",
         descricao: "Simulação de estratégias de growth marketing, planejamento de mídia e lançamento de produtos.",
-        tipo: "link",
-        url: "/atividades/marketing/marketing-growth-midia-lancamentos.html",
+        caminho: "Marketing/marketing-growth-midia-lancamentos",
       },
       {
         titulo: "Simulação Prática de Branding, Publicidade e Ativação de Marca",
         descricao: "Simulação prática de construção de marca (branding), publicidade e ações de ativação de marca.",
-        tipo: "link",
-        url: "/atividades/marketing/marketing-branding-publicidade-avancada.html",
+        caminho: "Marketing/marketing-branding-publicidade-avancada",
       },
     ],
   },
