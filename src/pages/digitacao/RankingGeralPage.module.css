@@ -1,0 +1,30 @@
+.secoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tituloSecao {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.bloco {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tituloJogo {
+  font-size: var(--text-base);
+  color: var(--ink-soft);
+  font-weight: 600;
+}

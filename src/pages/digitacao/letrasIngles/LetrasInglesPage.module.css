@@ -1,0 +1,480 @@
+/* Portado de Portal-Atividades/atividades/paginas/ingles-letras-digitacao.html. */
+
+.pagina {
+  --roxo: #7c3aed;
+  --roxo-escuro: #4c1d95;
+  --roxo-claro: #c4b5fd;
+  --rosa: #ec4899;
+  --amarelo: #fbbf24;
+  --verde: #22c55e;
+  --verde-claro: #dcfce7;
+  --vermelho: #ef4444;
+  --texto: #e5e7eb;
+
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at 50% -10%, #3b1f6b 0%, #1a1030 45%, #0d0818 100%);
+  color: var(--texto);
+  overflow: hidden;
+  min-height: 100dvh;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--roxo-escuro) 0%, var(--roxo) 55%, var(--rosa) 100%);
+  padding: clamp(18px, 3vw, 30px);
+  text-align: center;
+  color: #fff;
+}
+.header h1 {
+  font-size: clamp(1.4rem, 4.4vw, 2.3rem);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+.header p {
+  margin-top: 6px;
+  opacity: 0.92;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+}
+.badge {
+  display: inline-block;
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.85em;
+}
+
+.tela {
+  padding: clamp(16px, 3vw, 30px);
+}
+
+.ensaiosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.ensaioCard {
+  background: #201636;
+  border: 2px solid rgba(196, 181, 253, 0.25);
+  border-top: 5px solid var(--cor-a, var(--roxo));
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s;
+  text-align: left;
+  position: relative;
+}
+.ensaioCard:hover {
+  transform: translateY(-3px);
+  background: #2a1c48;
+}
+.num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cor-a, var(--roxo)), var(--cor-b, var(--rosa)));
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.ensaioCard h3 {
+  font-size: 1.05em;
+  margin-bottom: 4px;
+}
+.temaNome {
+  font-size: 0.78em;
+  font-weight: 700;
+  color: var(--cor-acento, var(--roxo-claro));
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.info {
+  font-size: 0.82em;
+  color: var(--roxo-claro);
+}
+.concluido {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--verde);
+  color: #06280f;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85em;
+  font-weight: 800;
+}
+
+.jogoTopo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: linear-gradient(120deg, var(--tema-a), var(--tema-b));
+}
+.voltarBtn {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.88em;
+}
+.voltarBtn:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+.tituloEnsaio {
+  font-size: 1.1em;
+  font-weight: 700;
+  text-align: center;
+  flex: 1;
+  min-width: 200px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.temaTag {
+  display: block;
+  font-size: 0.7em;
+  font-weight: 600;
+  opacity: 0.9;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.musicaControles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.somBtn {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1em;
+}
+.somBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.musicaControles input[type="range"] {
+  width: 80px;
+  accent-color: #fff;
+}
+.dicaSom {
+  font-size: 0.72em;
+  color: #fff;
+  opacity: 0.85;
+  min-width: 110px;
+}
+.seletorFaixa {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 0.8em;
+  max-width: 160px;
+}
+.seletorFaixa:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.seletorFaixa option {
+  color: #111;
+}
+
+.jogoLayout {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  gap: 18px;
+  align-items: start;
+}
+.jogoEsquerda {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.jogoDireita {
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 780px) {
+  .jogoLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hudReacao {
+  background: #0a0710;
+  border: 3px solid #3f3550;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+.hudRostoCaixa {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 3px solid #56607a;
+  box-shadow: inset 0 0 0 2px #000, inset 0 3px 6px rgba(0, 0, 0, 0.7), 0 0 0 2px #14101f;
+  transition: box-shadow 0.12s;
+}
+.hudRostoCaixa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(1.05) contrast(1.05);
+}
+.hudRostoCaixa img.vazio {
+  opacity: 0;
+}
+.flashCorreto {
+  box-shadow: inset 0 0 0 2px #000, inset 0 3px 6px rgba(0, 0, 0, 0.7), 0 0 0 4px var(--verde), 0 0 22px 4px rgba(34, 197, 94, 0.65);
+}
+.flashErro {
+  box-shadow: inset 0 0 0 2px #000, inset 0 3px 6px rgba(0, 0, 0, 0.7), 0 0 0 4px var(--vermelho), 0 0 22px 4px rgba(239, 68, 68, 0.65);
+}
+.flashRecompensa {
+  box-shadow: inset 0 0 0 2px #000, inset 0 3px 6px rgba(0, 0, 0, 0.7), 0 0 0 4px #fbbf24, 0 0 30px 8px rgba(251, 191, 36, 0.8);
+}
+.tremer {
+  animation: hudTremer 0.3s;
+}
+@keyframes hudTremer {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-3px, 2px); }
+  50% { transform: translate(3px, -2px); }
+  75% { transform: translate(-2px, -2px); }
+}
+.hudRostoLegenda {
+  text-align: center;
+  margin-top: 10px;
+}
+.hudRostoTitulo {
+  font-family: "Courier New", monospace;
+  font-size: 0.75em;
+  letter-spacing: 2px;
+  color: #7dd3fc;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.hudRostoStatus {
+  font-size: 1.05em;
+  font-weight: 700;
+  color: var(--texto);
+  min-height: 1.3em;
+}
+.hudRostoStatus.correto {
+  color: var(--verde);
+}
+.hudRostoStatus.erro {
+  color: var(--vermelho);
+}
+.hudRostoStatus.recompensa {
+  color: #fbbf24;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.stat {
+  background: #201636;
+  border: 1px solid rgba(196, 181, 253, 0.2);
+  border-radius: 12px;
+  padding: 12px 8px;
+  text-align: center;
+}
+.valor {
+  font-size: 1.25em;
+  font-weight: 800;
+  color: var(--tema-acento);
+}
+.nome {
+  font-size: 0.72em;
+  color: var(--roxo-claro);
+  margin-top: 2px;
+}
+
+.progressoLinha {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.progressoPreenchido {
+  height: 100%;
+  background: linear-gradient(90deg, var(--tema-a), var(--tema-acento));
+  transition: width 0.25s, background 0.3s;
+}
+
+.versoBox {
+  background: #0f0a1c;
+  border: 2px solid var(--tema-a);
+  border-radius: var(--radius-lg);
+  padding: clamp(18px, 4vw, 32px);
+  text-align: center;
+  margin-bottom: 18px;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 8px 24px -8px var(--tema-a);
+}
+.versoTexto {
+  font-size: clamp(1.1rem, 3vw, 1.55rem);
+  letter-spacing: 0.3px;
+  font-family: "Courier New", monospace;
+  line-height: 1.7;
+}
+.ok {
+  color: var(--verde);
+}
+.erroCh {
+  color: var(--vermelho);
+  text-decoration: underline wavy;
+}
+.atualCh {
+  border-bottom: 3px solid var(--amarelo);
+  animation: piscarLetra 1s infinite;
+}
+@keyframes piscarLetra {
+  50% { border-color: transparent; }
+}
+
+.campo {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1.1rem;
+  font-family: "Courier New", monospace;
+  border-radius: 12px;
+  border: 2px solid rgba(196, 181, 253, 0.35);
+  background: #0f0a1c;
+  color: var(--texto);
+  outline: none;
+}
+.campo:focus {
+  border-color: var(--tema-acento);
+}
+.campo.errando {
+  border-color: var(--vermelho);
+}
+
+.mensagem {
+  text-align: center;
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 0.92em;
+}
+.mensagem.sucesso {
+  background: var(--verde-claro);
+  color: #14532d;
+}
+
+@media (max-width: 560px) {
+  .hudRostoCaixa {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}
+
+.resultadoBox {
+  text-align: center;
+  padding: 10px 0 20px;
+}
+.resultadoMedalha {
+  font-size: 4rem;
+}
+.resultadoTitulo {
+  font-size: 1.6em;
+  font-weight: 800;
+  margin: 8px 0;
+  color: var(--amarelo);
+}
+.resultadoElogio {
+  color: var(--roxo-claro);
+  margin-bottom: 20px;
+}
+.resultadoStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 480px;
+  margin: 0 auto 24px;
+}
+.resultadoStats .valor {
+  font-size: 1.6em;
+}
+
+.botoesFinal {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 12px 22px;
+  border-radius: 12px;
+  border: none;
+  font-size: 0.95em;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btnPrimario {
+  background: linear-gradient(135deg, var(--roxo), var(--rosa));
+  color: #fff;
+}
+.btnSecundario {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--texto);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+.btn:hover {
+  filter: brightness(1.1);
+}
+
+.footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 0.78em;
+  color: var(--roxo-claro);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.botaoVoltar {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9em;
+  border-bottom: 2px solid transparent;
+}
+.botaoVoltar:hover {
+  border-bottom-color: var(--rosa);
+}
