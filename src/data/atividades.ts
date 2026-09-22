@@ -4,9 +4,10 @@ import type { Curso } from "@/types/curso";
  * Catálogo de atividades.
  *
  * Para adicionar um curso, acrescente um objeto aqui — nenhuma tela nova é
- * necessária, a rota /atividades/<slug> passa a existir sozinha. Os materiais
- * de cada curso abaixo chegam depois; por ora ficam com `materiais: []`, o que
- * a tela já trata como "sem materiais ainda" sem exigir nenhuma mudança.
+ * necessária, a rota /atividades/<slug> passa a existir sozinha. Os arquivos
+ * dos materiais (pdf/doc) ficam em `public/atividades/<slug>/`; formulários
+ * prontos viram material do tipo `link`, sejam eles internos (uma página
+ * autocontida em `public/atividades/<slug>/`) ou externos (Google Forms).
  */
 export const ATIVIDADES: Curso[] = [
   {
@@ -16,7 +17,32 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "AD",
     cor: "#2563eb",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Avaliação Geral e Estratégica",
+        descricao: "Formulário interativo com questões sobre fundamentos de administração.",
+        tipo: "link",
+        url: "/atividades/administracao/avaliacao-geral-estrategica.html",
+      },
+      {
+        titulo: "Prova de Administração",
+        descricao: "Formulário interativo de avaliação prática.",
+        tipo: "link",
+        url: "/atividades/administracao/prova-administracao.html",
+      },
+      {
+        titulo: "Avaliação I",
+        descricao: "Formulário externo (Google Forms).",
+        tipo: "link",
+        url: "https://docs.google.com/forms/d/e/1FAIpQLSdepwuWAiATj7oJBxtIyvGpBTudVR_1feUF5A5eRdrO8Liyng/viewform",
+      },
+      {
+        titulo: "Avaliação II",
+        descricao: "Formulário externo (Google Forms).",
+        tipo: "link",
+        url: "https://docs.google.com/forms/d/e/1FAIpQLSfBe3D8EMVT1su_bxa7hDZ3x2g7vrO4SyZ8yND9gmkrgIKnFw/viewform",
+      },
+    ],
   },
   {
     slug: "marketing",
@@ -25,7 +51,23 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "MK",
     cor: "#db2777",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Avaliação Prática - Marketing Digital I",
+        tipo: "pdf",
+        arquivo: "/atividades/marketing/avaliacao-pratica-marketing-digital-i.pdf",
+      },
+      {
+        titulo: "Avaliação Prática - Marketing Digital II",
+        tipo: "pdf",
+        arquivo: "/atividades/marketing/avaliacao-pratica-marketing-digital-ii.pdf",
+      },
+      {
+        titulo: "Avaliação Prática - Marketing Digital II (resumida)",
+        tipo: "pdf",
+        arquivo: "/atividades/marketing/avaliacao-pratica-marketing-digital-ii-curta.pdf",
+      },
+    ],
   },
   {
     slug: "departamento-pessoal",
@@ -34,7 +76,24 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "DP",
     cor: "#0f766e",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Avaliação Prática - Assistente de Departamento Pessoal",
+        tipo: "pdf",
+        arquivo: "/atividades/departamento-pessoal/avaliacao-pratica.pdf",
+      },
+      {
+        titulo: "Avaliação Prática (resumida)",
+        tipo: "pdf",
+        arquivo: "/atividades/departamento-pessoal/avaliacao-pratica-curta.pdf",
+      },
+      {
+        titulo: "Prova de Assistente de Departamento Pessoal",
+        descricao: "Formulário interativo de avaliação prática.",
+        tipo: "link",
+        url: "/atividades/departamento-pessoal/prova-assistente-dp.html",
+      },
+    ],
   },
   {
     slug: "credito-cobranca",
@@ -43,7 +102,20 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "CC",
     cor: "#b45309",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Prova de Crédito e Cobrança",
+        descricao: "Formulário interativo de avaliação prática.",
+        tipo: "link",
+        url: "/atividades/credito-cobranca/prova-credito-e-cobranca.html",
+      },
+      {
+        titulo: "Avaliação",
+        descricao: "Formulário externo (Google Forms).",
+        tipo: "link",
+        url: "https://docs.google.com/forms/d/e/1FAIpQLScXQfgSz8c2zO_O5VeHvOy3HVQ9l5PANsagCdOM5bXMSb7t2Q/viewform",
+      },
+    ],
   },
   {
     slug: "gestao-pessoas",
@@ -52,7 +124,19 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "GP",
     cor: "#7c3aed",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Avaliação - Gestão de Pessoas",
+        tipo: "doc",
+        arquivo: "/atividades/gestao-pessoas/avaliacao.docx",
+      },
+      {
+        titulo: "Prova de Gestão de Pessoas",
+        descricao: "Formulário interativo de avaliação prática.",
+        tipo: "link",
+        url: "/atividades/gestao-pessoas/prova-gestao-de-pessoas.html",
+      },
+    ],
   },
   {
     slug: "recursos-humanos",
@@ -61,7 +145,14 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "RH",
     cor: "#1d4ed8",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Prova de Recursos Humanos",
+        descricao: "Formulário interativo de avaliação prática.",
+        tipo: "link",
+        url: "/atividades/recursos-humanos/prova-recursos-humanos.html",
+      },
+    ],
   },
   {
     slug: "seguranca-trabalho",
@@ -70,7 +161,20 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "ST",
     cor: "#ca8a04",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Prova de Segurança no Trabalho",
+        descricao: "Formulário interativo de avaliação prática.",
+        tipo: "link",
+        url: "/atividades/seguranca-trabalho/prova-seguranca-no-trabalho.html",
+      },
+      {
+        titulo: "Avaliação",
+        descricao: "Formulário externo (Google Forms).",
+        tipo: "link",
+        url: "https://forms.gle/ACJ1wXtDZua8JjBWA",
+      },
+    ],
   },
   {
     slug: "assistente-gestao",
@@ -79,7 +183,35 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "AG",
     cor: "#0891b2",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Avaliação - Assistente ADM I",
+        tipo: "pdf",
+        arquivo: "/atividades/assistente-gestao/avaliacao-assistente-adm-i.pdf",
+      },
+      {
+        titulo: "Avaliação - Assistente ADM II",
+        tipo: "pdf",
+        arquivo: "/atividades/assistente-gestao/avaliacao-assistente-adm-ii.pdf",
+      },
+      {
+        titulo: "Avaliação - Assistente ADM II (Word)",
+        tipo: "doc",
+        arquivo: "/atividades/assistente-gestao/avaliacao-assistente-adm-ii.docx",
+      },
+      {
+        titulo: "Avaliação I",
+        descricao: "Formulário externo (Google Forms).",
+        tipo: "link",
+        url: "https://docs.google.com/forms/d/e/1FAIpQLSdepwuWAiATj7oJBxtIyvGpBTudVR_1feUF5A5eRdrO8Liyng/viewform",
+      },
+      {
+        titulo: "Avaliação II",
+        descricao: "Formulário externo (Google Forms).",
+        tipo: "link",
+        url: "https://docs.google.com/forms/d/e/1FAIpQLSfBe3D8EMVT1su_bxa7hDZ3x2g7vrO4SyZ8yND9gmkrgIKnFw/viewform",
+      },
+    ],
   },
   {
     slug: "secretariado",
@@ -88,7 +220,20 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "SC",
     cor: "#be123c",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Prova de Secretariado",
+        descricao: "Formulário interativo de avaliação prática.",
+        tipo: "link",
+        url: "/atividades/secretariado/prova-secretariado.html",
+      },
+      {
+        titulo: "Avaliação",
+        descricao: "Formulário externo (Google Forms).",
+        tipo: "link",
+        url: "https://forms.gle/EvQuFJNxru8kwxZk8",
+      },
+    ],
   },
   {
     slug: "vendas",
@@ -97,7 +242,19 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "VD",
     cor: "#15803d",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Avaliação - Vendas",
+        tipo: "pdf",
+        arquivo: "/atividades/vendas/avaliacao-vendas.pdf",
+      },
+      {
+        titulo: "Avaliação",
+        descricao: "Formulário externo (Google Forms).",
+        tipo: "link",
+        url: "https://docs.google.com/forms/d/e/1FAIpQLScSjkqOfHUT5xHxc0ecaf4Tau5Q4Ig3kLmXdT8hKRHvlcfXIA/viewform",
+      },
+    ],
   },
 ];
 
