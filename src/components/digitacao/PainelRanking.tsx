@@ -14,26 +14,34 @@ interface PainelRankingProps {
   resultadoPendente?: { ppm: number; precisao: number } | null;
   /** Chamado depois que o apelido é enviado, para o jogo poder liberar o resultado pendente. */
   aoRegistrar?: () => void;
+  /**
+   * true: mostra só o campo de apelido (usado dentro do próprio jogo, ao
+   * terminar uma rodada) — sem a lista, sem título, sem caixa.
+   * false (padrão): mostra a lista completa — usado na área geral de
+   * ranking (`/digitacao/ranking`), fora do jogo.
+   */
+  somenteFormulario?: boolean;
 }
 
 /**
- * Placar tipo arcade: mostra o top 10 do jogo e, quando há um resultado
- * pendente (rodada recém-terminada), pede o apelido para gravar o recorde.
- *
- * Provisório em localStorage (ver src/lib/rankingDigitacao.ts) — a interface
- * já é a que vai ficar quando o backend existir.
+ * Registro e exibição de recorde, em dois modos: só o formulário de apelido
+ * (dentro do jogo, ao terminar uma rodada) ou a lista completa (na área
+ * geral de ranking). Provisório em localStorage (ver
+ * src/lib/rankingDigitacao.ts) — a interface já é a que vai ficar quando o
+ * backend existir.
  */
 export function PainelRanking({
   jogoId,
   resultadoPendente,
   aoRegistrar,
+  somenteFormulario = false,
 }: PainelRankingProps) {
   const [ranking, definirRanking] = useState<RegistroRanking[]>([]);
   const [apelido, definirApelido] = useState("");
 
   useEffect(() => {
-    definirRanking(obterRanking(jogoId));
-  }, [jogoId]);
+    if (!somenteFormulario) definirRanking(obterRanking(jogoId));
+  }, [jogoId, somenteFormulario]);
 
   useEffect(() => {
     if (resultadoPendente) definirApelido(ultimoApelidoUsado());
@@ -51,33 +59,39 @@ export function PainelRanking({
     aoRegistrar?.();
   }
 
+  const formulario = resultadoPendente && (
+    <form className={estilos.formulario} onSubmit={enviar}>
+      <label className={estilos.rotulo} htmlFor={`apelido-${jogoId}`}>
+        Seu resultado: {resultadoPendente.ppm} ppm · {resultadoPendente.precisao}% de
+        precisão. Qual apelido entra no placar?
+      </label>
+      <div className={estilos.linhaEnvio}>
+        <input
+          id={`apelido-${jogoId}`}
+          className={estilos.campo}
+          value={apelido}
+          onChange={(evento) => definirApelido(evento.target.value)}
+          placeholder="Seu apelido"
+          maxLength={24}
+          autoFocus
+        />
+        <button type="submit" className={estilos.botao}>
+          Registrar no ranking
+        </button>
+      </div>
+    </form>
+  );
+
+  if (somenteFormulario) {
+    if (!resultadoPendente) return null;
+    return <div className={estilos.somenteFormulario}>{formulario}</div>;
+  }
+
   return (
     <div className={estilos.painel}>
       <h3 className={estilos.titulo}>Recorde da turma</h3>
 
-      {resultadoPendente && (
-        <form className={estilos.formulario} onSubmit={enviar}>
-          <label className={estilos.rotulo} htmlFor={`apelido-${jogoId}`}>
-            Seu resultado: {resultadoPendente.ppm} ppm ·{" "}
-            {resultadoPendente.precisao}% de precisão. Qual apelido entra no
-            placar?
-          </label>
-          <div className={estilos.linhaEnvio}>
-            <input
-              id={`apelido-${jogoId}`}
-              className={estilos.campo}
-              value={apelido}
-              onChange={(evento) => definirApelido(evento.target.value)}
-              placeholder="Seu apelido"
-              maxLength={24}
-              autoFocus
-            />
-            <button type="submit" className={estilos.botao}>
-              Registrar
-            </button>
-          </div>
-        </form>
-      )}
+      {formulario}
 
       {ranking.length === 0 ? (
         <p className={estilos.vazio}>Ninguém registrou um recorde ainda.</p>

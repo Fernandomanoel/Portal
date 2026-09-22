@@ -53,3 +53,15 @@
   color: var(--ink-soft);
   font-size: var(--text-sm);
 }
+
+.linkRanking {
+  display: inline-block;
+  margin-top: var(--space-5);
+  color: var(--brand-deep);
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.linkRanking:hover {
+  text-decoration: underline;
+}

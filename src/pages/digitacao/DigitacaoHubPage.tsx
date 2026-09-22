@@ -61,6 +61,10 @@ export function DigitacaoHubPage() {
           </li>
         ))}
       </ul>
+
+      <Link to={rotas.digitacaoRanking()} className={estilos.linkRanking}>
+        Ver ranking geral de todos os jogos →
+      </Link>
     </>
   );
 }

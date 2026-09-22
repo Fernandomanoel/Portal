@@ -15,6 +15,7 @@ export const rotas = {
   digitacaoCavaleirosZodiaco: () => "/digitacao/cavaleiros-zodiaco",
   digitacaoLetrasIngles: () => "/digitacao/letras-ingles",
   digitacaoSonic: () => "/digitacao/sonic",
+  digitacaoRanking: () => "/digitacao/ranking",
   provas: () => "/provas",
   quiz: (categoria: string, prova: string) =>
     `/provas/quiz/${encodeURIComponent(categoria)}/${encodeURIComponent(prova)}`,

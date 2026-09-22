@@ -20,6 +20,17 @@
   border-bottom: 1px dashed var(--line-strong);
 }
 
+/* Modo compacto: só o campo de apelido, sem caixa nem lista — usado dentro
+   do próprio jogo ao terminar uma rodada. */
+.somenteFormulario {
+  margin-top: var(--space-4);
+}
+.somenteFormulario .formulario {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
 .rotulo {
   display: block;
   margin-bottom: var(--space-2);

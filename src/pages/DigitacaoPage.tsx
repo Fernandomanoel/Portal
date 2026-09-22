@@ -162,6 +162,7 @@ export function DigitacaoPage() {
       <PainelRanking
         jogoId={`digitacao-livre-${exercicio.id}`}
         resultadoPendente={fase === "concluido" ? { ppm: metricas.ppm, precisao: metricas.precisao } : null}
+        somenteFormulario
       />
     </>
   );

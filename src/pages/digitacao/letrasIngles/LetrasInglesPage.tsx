@@ -493,7 +493,11 @@ export function LetrasInglesPage() {
               <div className={estilos.stat}><div className={estilos.valor}>{estado.melhorCombo}</div><div className={estilos.nome}>Melhor combo</div></div>
             </div>
 
-            <PainelRanking jogoId={`digitacao-letras-ingles-${estado.ensaioAtual}`} resultadoPendente={{ ppm, precisao }} />
+            <PainelRanking
+              jogoId={`digitacao-letras-ingles-${estado.ensaioAtual}`}
+              resultadoPendente={{ ppm, precisao }}
+              somenteFormulario
+            />
 
             <div className={estilos.botoesFinal}>
               <button type="button" className={`${estilos.btn} ${estilos.btnSecundario}`} onClick={() => iniciarEnsaio(estado.ensaioAtual)}>🔁 Repetir este ensaio</button>

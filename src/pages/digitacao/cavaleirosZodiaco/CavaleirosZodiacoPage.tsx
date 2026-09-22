@@ -859,6 +859,7 @@ export function CavaleirosZodiacoPage() {
               <PainelRanking
                 jogoId="digitacao-cavaleiros-zodiaco"
                 resultadoPendente={{ ppm: estado.melhorPPM, precisao: precisaoFinal }}
+                somenteFormulario
               />
               <div className={estilos.botoes}>
                 <button type="button" onClick={() => { zerarJogo(); iniciarCasa(0); }}>↻ Enfrentar tudo de novo</button>

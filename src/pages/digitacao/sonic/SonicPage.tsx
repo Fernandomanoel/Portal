@@ -461,7 +461,11 @@ export function SonicPage() {
                   <div className={estilos.estat}><div className={estilos.valor}>{modal.totalCaracteres}</div><div className={estilos.nome}>Teclas digitadas</div></div>
                 </div>
                 <p><strong>Dica do Sonic:</strong> treinar 10 a 15 minutos por dia deixa a digitação muito mais rápida em poucas semanas!</p>
-                <PainelRanking jogoId="digitacao-sonic" resultadoPendente={{ ppm: modal.ppm, precisao: modal.precisao }} />
+                <PainelRanking
+                  jogoId="digitacao-sonic"
+                  resultadoPendente={{ ppm: modal.ppm, precisao: modal.precisao }}
+                  somenteFormulario
+                />
                 <div className={estilos.botoes}>
                   <button type="button" onClick={reiniciarJogo}>Jogar de novo 🔄</button>
                 </div>

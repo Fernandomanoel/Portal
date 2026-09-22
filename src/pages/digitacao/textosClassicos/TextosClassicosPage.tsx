@@ -520,6 +520,7 @@ export function TextosClassicosPage() {
       <PainelRanking
         jogoId="digitacao-textos-classicos"
         resultadoPendente={estado.terminado ? { ppm, precisao: precisao ?? 100 } : null}
+        somenteFormulario
       />
 
       {modalTextosAberto && (

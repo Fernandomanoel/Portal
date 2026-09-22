@@ -18,6 +18,7 @@ import { IngresHubPage } from "@/pages/IngresHubPage";
 import { IngresProvasPage } from "@/pages/IngresProvasPage";
 import { DigitacaoPage } from "@/pages/DigitacaoPage";
 import { DigitacaoHubPage } from "@/pages/digitacao/DigitacaoHubPage";
+import { RankingGeralPage } from "@/pages/digitacao/RankingGeralPage";
 import { CavaleirosZodiacoPage } from "@/pages/digitacao/cavaleirosZodiaco/CavaleirosZodiacoPage";
 import { LetrasInglesPage } from "@/pages/digitacao/letrasIngles/LetrasInglesPage";
 import { SonicPage } from "@/pages/digitacao/sonic/SonicPage";
@@ -66,6 +67,7 @@ const roteador = criarRoteador([
       { path: "ingles/atividades/:slug", element: <IngresAtividadePage /> },
 
       { path: "digitacao", element: <DigitacaoHubPage /> },
+      { path: "digitacao/ranking", element: <RankingGeralPage /> },
       { path: "digitacao/livre", element: <DigitacaoPage /> },
       { path: "digitacao/textos-classicos", element: <TextosClassicosPage /> },
       { path: "digitacao/cavaleiros-zodiaco", element: <CavaleirosZodiacoPage /> },
