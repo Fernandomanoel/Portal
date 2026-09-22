@@ -176,31 +176,28 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "GP",
     cor: "#8b5cf6",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Atividade Prática: Gestão de Pessoas I — Recrutamento, Seleção e Onboarding",
         descricao:
           "Descrição de cargo, recrutamento interno x externo, etapas do processo seletivo, documentação admissional e onboarding.",
-        tipo: "link",
-        url: "/atividades/gestao-pessoas/gestao-pessoas-recrutamento-selecao-onboarding.html",
+        caminho: "Gestão de Pessoas/gestao-pessoas-recrutamento-selecao-onboarding",
       },
       {
         titulo: "Atividade Prática: Gestão de Pessoas II — Seleção STAR, Métricas e PDI",
         descricao: "Método de seleção STAR, métricas de RH e Plano de Desenvolvimento Individual (PDI).",
-        tipo: "link",
-        url: "/atividades/gestao-pessoas/gestao-pessoas-selecao-star-metricas-pdi.html",
+        caminho: "Gestão de Pessoas/gestao-pessoas-selecao-star-metricas-pdi",
       },
       {
         titulo: "Atividade Prática: Gestão de Pessoas III — Segurança Psicológica, People Analytics e DEI",
         descricao: "Segurança psicológica no trabalho, People Analytics e Diversidade, Equidade e Inclusão (DEI).",
-        tipo: "link",
-        url: "/atividades/gestao-pessoas/gestao-pessoas-seguranca-psicologica-people-analytics.html",
+        caminho: "Gestão de Pessoas/gestao-pessoas-seguranca-psicologica-people-analytics",
       },
       {
         titulo: "Atividade Prática: Gestão de Pessoas IV — Carreira em Y, Modelo CHA e Offboarding",
         descricao: "Plano de carreira em Y, modelo CHA (Conhecimento, Habilidade e Atitude) e processo de offboarding.",
-        tipo: "link",
-        url: "/atividades/gestao-pessoas/gestao-pessoas-carreira-y-cha-offboarding.html",
+        caminho: "Gestão de Pessoas/gestao-pessoas-carreira-y-cha-offboarding",
       },
     ],
   },
