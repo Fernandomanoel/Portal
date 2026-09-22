@@ -246,43 +246,38 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "ST",
     cor: "#eab308",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Segurança do Trabalho: Análise de Acidente em Altura",
         descricao:
           "Relato de irregularidades, normas regulamentadoras aplicáveis, responsabilidades e protocolo de emergência pós-acidente.",
-        tipo: "link",
-        url: "/atividades/seguranca-do-trabalho/seguranca-trabalho-acidente-em-altura.html",
+        caminho: "Segurança do Trabalho/seguranca-trabalho-acidente-em-altura",
       },
       {
         titulo: "Práticas em Segurança do Trabalho",
         descricao: "EPI x EPC, higiene ocupacional, primeiros socorros, combate a incêndio, CAT, SESMT x CIPA e mapeamento de riscos.",
-        tipo: "link",
-        url: "/atividades/seguranca-do-trabalho/seguranca-trabalho-laboratorios-praticos.html",
+        caminho: "Segurança do Trabalho/seguranca-trabalho-laboratorios-praticos",
       },
       {
         titulo: "Atividade Prática: Gestão de Riscos e Segurança do Trabalho",
         descricao: "Hierarquia de controle, equipamentos e sinalização, matriz de riscos e protocolo de primeiros socorros.",
-        tipo: "link",
-        url: "/atividades/seguranca-do-trabalho/seguranca-trabalho-gestao-riscos.html",
+        caminho: "Segurança do Trabalho/seguranca-trabalho-gestao-riscos",
       },
       {
         titulo: "Atividade Prática: Gestão de Riscos e Segurança Ocupacional",
         descricao: "Classificação de agentes ambientais, hierarquia de controles e EPIs, e Programa de Gerenciamento de Riscos (PGR).",
-        tipo: "link",
-        url: "/atividades/seguranca-do-trabalho/seguranca-trabalho-higiene-ocupacional-pgr.html",
+        caminho: "Segurança do Trabalho/seguranca-trabalho-higiene-ocupacional-pgr",
       },
       {
         titulo: "Atividade Prática: NRs de Alto Risco na Segurança do Trabalho",
         descricao: "Combate a incêndio (NR-23), trabalho em altura (NR-35), ergonomia (NR-17) e espaço confinado (NR-33).",
-        tipo: "link",
-        url: "/atividades/seguranca-do-trabalho/seguranca-trabalho-nrs-alto-risco.html",
+        caminho: "Segurança do Trabalho/seguranca-trabalho-nrs-alto-risco",
       },
       {
         titulo: "Atividade Prática: Elaboração e Interpretação do Mapa de Riscos",
         descricao: "Conceito e elaboração do mapa de riscos (NR-5), padronização de cores e regras de representação.",
-        tipo: "link",
-        url: "/atividades/seguranca-do-trabalho/seguranca-trabalho-mapa-de-riscos.html",
+        caminho: "Segurança do Trabalho/seguranca-trabalho-mapa-de-riscos",
       },
     ],
   },
