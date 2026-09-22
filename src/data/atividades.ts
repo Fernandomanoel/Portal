@@ -368,38 +368,34 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "V",
     cor: "#f97316",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Atividade Prática: Técnicas e Gestão de Vendas",
         descricao: "Perfil do profissional de vendas moderno, procedimento de atendimento consultivo e cálculo de metas e comissões.",
-        tipo: "link",
-        url: "/atividades/vendas/vendas-tecnicas-gestao-vendas.html",
+        caminho: "Vendas/vendas-tecnicas-gestao-vendas",
       },
       {
         titulo: "Atividade Prática: Técnicas de Vendas e Negociação Comercial",
         descricao: "Prospecção B2B (Spin Selling), técnicas de fechamento avançado, objeções complexas e cálculo de margens de desconto.",
-        tipo: "link",
-        url: "/atividades/vendas/vendas-tecnicas-negociacao-comercial.html",
+        caminho: "Vendas/vendas-tecnicas-negociacao-comercial",
       },
       {
         titulo: "Atividade Prática: Vendas — Gestão de Funil, CRM e Retenção",
         descricao: "Etapas do funil de vendas, estratégias Inbound/Outbound, Up-selling/Cross-selling, uso de CRM e cálculo de ticket médio.",
-        tipo: "link",
-        url: "/atividades/vendas/vendas-funil-crm-retencao.html",
+        caminho: "Vendas/vendas-funil-crm-retencao",
       },
       {
         titulo: "Atividade Prática: Técnicas de Vendas na Linha de Frente",
         descricao:
           "Qualificação de leads pelo método BANT, técnicas persuasivas de fechamento, ligações frias (cold call) e cálculo de comissionamento.",
-        tipo: "link",
-        url: "/atividades/vendas/vendas-tecnicas-linha-de-frente.html",
+        caminho: "Vendas/vendas-tecnicas-linha-de-frente",
       },
       {
         titulo: "Atividade Prática: Vendas — Social Selling, Inside Sales e Qualificação Avançada",
         descricao:
           "Qualificação de leads entre Marketing e Vendas, prospecção via redes sociais, cadência de follow-up e cálculo de Win Rate.",
-        tipo: "link",
-        url: "/atividades/vendas/vendas-social-selling-inside-sales.html",
+        caminho: "Vendas/vendas-social-selling-inside-sales",
       },
     ],
   },
