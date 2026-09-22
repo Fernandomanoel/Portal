@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
+import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import {
   ENSAIOS,
   FACES_CORRETO,
@@ -94,6 +96,8 @@ function calcularPPM(inicio: number | null, acertos: number, agoraMs: number): n
 }
 
 export function LetrasInglesPage() {
+  useEntrarEmTelaImersiva();
+
   const [tela, definirTela] = useState<Tela>("mapa");
   const [estado, definirEstado] = useState<EstadoJogo>(ESTADO_INICIAL);
   const [concluidos, definirConcluidos] = useState<Set<number>>(new Set());
@@ -500,6 +504,9 @@ export function LetrasInglesPage() {
       )}
 
       <footer className={estilos.footer}>
+        <Link to="/digitacao" className={estilos.botaoVoltar}>
+          ← Voltar para Digitação
+        </Link>
         <p><strong>Portal Educacional Interativo</strong> · Inglês — treino de digitação com letras de música</p>
       </footer>
     </div>

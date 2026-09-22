@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
+import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import {
   CASAS,
   CENARIOS,
@@ -132,6 +134,8 @@ function testarAudio(src: string): Promise<boolean> {
 }
 
 export function CavaleirosZodiacoPage() {
+  useEntrarEmTelaImersiva();
+
   const [tela, definirTela] = useState<Tela>("inicio");
   const [estado, definirEstado] = useState<EstadoJogo>(ESTADO_INICIAL);
   const [letrasSalvas, definirLetrasSalvas] = useState<LetrasSalvas>({});
@@ -864,6 +868,9 @@ export function CavaleirosZodiacoPage() {
         )}
 
         <footer className={estilos.footer}>
+          <Link to="/digitacao" className={estilos.botaoVoltar}>
+            ← Voltar para Digitação
+          </Link>
           <p><strong>Portal Educacional Interativo</strong> · Treino de digitação — velocidade e precisão</p>
         </footer>
       </div>

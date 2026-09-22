@@ -7,6 +7,7 @@ import {
 
 import { Layout } from "@/components/layout/Layout";
 import { ProvedorProvaEmAndamento } from "@/hooks/ProvaEmAndamento";
+import { ProvedorTelaImersiva } from "@/hooks/TelaImersiva";
 import { ProvedorTema } from "@/hooks/TemaContexto";
 import { AtividadePage } from "@/pages/AtividadePage";
 import { AtividadesPage } from "@/pages/AtividadesPage";
@@ -30,7 +31,9 @@ function Raiz() {
   return (
     <ProvedorTema>
       <ProvedorProvaEmAndamento>
-        <Layout />
+        <ProvedorTelaImersiva>
+          <Layout />
+        </ProvedorTelaImersiva>
       </ProvedorProvaEmAndamento>
     </ProvedorTema>
   );

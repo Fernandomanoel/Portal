@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
+import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import {
   ACENTOS,
   COM_SHIFT,
@@ -117,6 +118,8 @@ function calcularAlvos(bruto: string | undefined): AlvoTecla[] {
 }
 
 export function TextosClassicosPage() {
+  useEntrarEmTelaImersiva();
+
   const [nivelIndice, definirNivelIndice] = useState(0);
   const [textoIndice, definirTextoIndice] = useState(0);
   const textoAtual: TextoDigitacao = NIVEIS[nivelIndice].textos[textoIndice];
@@ -589,6 +592,12 @@ export function TextosClassicosPage() {
           </div>
         </div>
       )}
+
+      <footer className={estilos.rodapePagina}>
+        <Link to="/digitacao" className={estilos.botaoVoltar}>
+          ← Voltar para Digitação
+        </Link>
+      </footer>
     </div>
   );
 }

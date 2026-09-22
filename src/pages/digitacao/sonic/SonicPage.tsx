@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
+import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import { CONFIG, FASES, podeAcessar, sortear, type ModoSonic } from "./dados";
 import estilos from "./SonicPage.module.css";
 
@@ -70,6 +72,8 @@ function calcularPPM(inicio: number | null, acertos: number, agoraMs: number): n
 }
 
 export function SonicPage() {
+  useEntrarEmTelaImersiva();
+
   const [estado, definirEstado] = useState<EstadoJogo>(ESTADO_INICIAL);
   const [modoSonic, definirModoSonicState] = useState<ModoSonic>("normal");
   const [imagensQuebradas, definirImagensQuebradas] = useState<Record<string, boolean>>({});
@@ -415,7 +419,12 @@ export function SonicPage() {
       </div>
 
       <footer className={estilos.footer}>
-        <strong>Sonic Digital Pro</strong> — treino de digitação · {FASES.length} fases · {totalCaracteresFases} palavras e frases no total
+        <Link to="/digitacao" className={estilos.botaoVoltar}>
+          ← Voltar para Digitação
+        </Link>
+        <p>
+          <strong>Sonic Digital Pro</strong> — treino de digitação · {FASES.length} fases · {totalCaracteresFases} palavras e frases no total
+        </p>
       </footer>
 
       {modal && (

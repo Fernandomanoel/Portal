@@ -14,10 +14,8 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: radial-gradient(circle at 50% -10%, #3b1f6b 0%, #1a1030 45%, #0d0818 100%);
   color: var(--texto);
-  border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid rgba(196, 181, 253, 0.15);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  min-height: 100dvh;
 }
 
 .header {
@@ -465,4 +463,18 @@
   font-size: 0.78em;
   color: var(--roxo-claro);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.botaoVoltar {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9em;
+  border-bottom: 2px solid transparent;
+}
+.botaoVoltar:hover {
+  border-bottom-color: var(--rosa);
 }

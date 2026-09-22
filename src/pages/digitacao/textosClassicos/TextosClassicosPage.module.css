@@ -23,7 +23,7 @@
     linear-gradient(90deg, var(--linha-papel) 1px, transparent 1px);
   background-size: 26px 26px;
   padding: clamp(14px, 3vh, 32px) clamp(12px, 3vw, 40px) 40px;
-  border-radius: var(--radius-lg);
+  min-height: 100dvh;
 }
 
 .migalha {
@@ -712,6 +712,26 @@
   color: var(--cor-nivel);
   font-weight: 700;
 }
+.rodapePagina {
+  margin-top: clamp(20px, 3vh, 34px);
+  text-align: center;
+}
+.botaoVoltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cinza);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.86rem;
+  padding: 6px 4px;
+  border-bottom: 2px solid transparent;
+}
+.botaoVoltar:hover {
+  color: var(--tinta);
+  border-bottom-color: var(--destaque);
+}
+
 .cartaPrevia {
   font-family: "Space Mono", monospace;
   font-size: 0.68rem;

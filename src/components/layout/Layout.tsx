@@ -3,10 +3,13 @@ import { Outlet } from "react-router-dom";
 import { Footer } from "./Footer";
 import { Navbar } from "./Navbar";
 import { useProvaEmAndamento } from "@/hooks/ProvaEmAndamento";
+import { useTelaImersiva } from "@/hooks/TelaImersiva";
 import estilos from "./Layout.module.css";
 
 export function Layout() {
   const { travada } = useProvaEmAndamento();
+  const { imersiva } = useTelaImersiva();
+  const escondido = travada || imersiva;
 
   return (
     <div className={estilos.pagina}>
@@ -14,13 +17,16 @@ export function Layout() {
         Ir para o conteúdo
       </a>
 
-      {!travada && <Navbar />}
+      {!escondido && <Navbar />}
 
-      <main id="conteudo" className={estilos.conteudo}>
+      <main
+        id="conteudo"
+        className={imersiva ? `${estilos.conteudo} ${estilos.conteudoImersivo}` : estilos.conteudo}
+      >
         <Outlet />
       </main>
 
-      {!travada && <Footer />}
+      {!escondido && <Footer />}
     </div>
   );
 }
