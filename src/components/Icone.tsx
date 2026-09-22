@@ -21,7 +21,12 @@ export type NomeIcone =
   | "check"
   | "x"
   | "digitacao"
-  | "recomecar";
+  | "recomecar"
+  | "livro"
+  | "escudo"
+  | "musica"
+  | "raio"
+  | "trofeu";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -124,6 +129,28 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     <>
       <path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1" />
       <path d="M3.5 4.5V10H9" />
+    </>
+  ),
+  livro: (
+    <>
+      <path d="M4 5.3c2.4-1 5-1 8 .5v13.2c-3-1.5-5.6-1.5-8-.5Z" />
+      <path d="M20 5.3c-2.4-1-5-1-8 .5v13.2c3-1.5 5.6-1.5 8-.5Z" />
+    </>
+  ),
+  escudo: <path d="M12 3.3 5.5 5.8v5.6c0 4.4 2.9 7.5 6.5 8.3 3.6-.8 6.5-3.9 6.5-8.3V5.8Z" />,
+  musica: (
+    <>
+      <circle cx="7.5" cy="17.5" r="2.5" />
+      <circle cx="16.5" cy="15.5" r="2.5" />
+      <path d="M10 17.5V6l9-1.8v11.3" />
+    </>
+  ),
+  raio: <path d="M13 3 5.5 13.2h5l-1.5 7.8 8-11.5h-5.2Z" />,
+  trofeu: (
+    <>
+      <path d="M8 4.5h8V8a4 4 0 0 1-8 0Z" />
+      <path d="M6 5.8H4.7A2.2 2.2 0 0 0 3.9 10l2 1.6M18 5.8h1.3a2.2 2.2 0 0 1 .8 4.2l-2 1.6" />
+      <path d="M10 19.5h4M12 15.5v4" />
     </>
   ),
 };
