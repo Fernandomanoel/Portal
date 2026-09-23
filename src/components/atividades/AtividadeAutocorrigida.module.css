@@ -4,6 +4,10 @@
 
 .introducao {
   color: var(--ink-soft);
+  line-height: 1.6;
+  text-align: justify;
+  text-align-last: left;
+  hyphens: auto;
   margin-bottom: var(--space-6);
 }
 
@@ -50,14 +54,14 @@
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  padding: var(--space-5);
+  padding: var(--space-5) var(--space-5) var(--space-6);
 }
 
 .itemCabecalho {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
 }
 
 .itemNumero {
@@ -81,21 +85,27 @@
 .cenario {
   background: var(--surface-soft);
   border: 1px solid var(--line);
+  border-left: 3px solid var(--brand);
   border-radius: var(--radius);
   padding: var(--space-4);
   font-size: var(--text-sm);
+  line-height: 1.65;
+  text-align: justify;
+  text-align-last: left;
+  hyphens: auto;
   margin-bottom: var(--space-4);
 }
 
 .instrucao {
   font-weight: 600;
   font-size: var(--text-sm);
-  margin-bottom: var(--space-3);
+  line-height: 1.5;
+  margin-bottom: var(--space-5);
 }
 
 .tabelaEnvoltorio {
   overflow-x: auto;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
 }
 
 .tabela {
@@ -132,6 +142,7 @@
 .rotulo {
   font-size: var(--text-sm);
   font-weight: 600;
+  line-height: 1.5;
   color: var(--ink-soft);
 }
 
@@ -191,6 +202,11 @@ textarea.controle {
 .opcao input {
   margin: 3px 0 0;
   accent-color: var(--brand-deep);
+  flex-shrink: 0;
+}
+
+.opcao span {
+  line-height: 1.55;
 }
 
 .somenteLeitura {
