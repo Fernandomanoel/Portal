@@ -52,6 +52,13 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
             {item.cenario && <p className={estilos.cenario}>{item.cenario}</p>}
             {item.instrucao && <p className={estilos.instrucao}>{item.instrucao}</p>}
 
+            {item.imagem && (
+              <figure className={estilos.imagem}>
+                <img src={item.imagem.url} alt={item.imagem.alt} loading="lazy" />
+                {item.imagem.legenda && <figcaption className={estilos.imagemLegenda}>{item.imagem.legenda}</figcaption>}
+              </figure>
+            )}
+
             {item.tabelaReferencia && (
               <div className={estilos.tabelaEnvoltorio}>
                 <table className={estilos.tabela}>
@@ -89,6 +96,16 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
           </li>
         ))}
       </ol>
+
+      {atividade.fonte && (
+        <p className={estilos.fonte}>
+          {atividade.fonte.texto}{" "}
+          <a href={atividade.fonte.url} target="_blank" rel="noopener noreferrer">
+            Ver fonte oficial
+          </a>
+          .
+        </p>
+      )}
 
       <div className={estilos.acoes}>
         <button type="button" className={estilos.corrigir} onClick={corrigir}>

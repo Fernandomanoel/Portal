@@ -34,6 +34,21 @@ export interface TabelaReferencia {
   linhas: string[][];
 }
 
+/**
+ * Imagem de apoio de um item — molde único para qualquer atividade futura
+ * que precise de captura de tela/foto real (ex.: tutorial de software).
+ * `url` pode ser um link externo (capturas oficiais de documentação do
+ * fabricante) ou um `import` de `src/assets/` quando o arquivo for
+ * hospedado no próprio projeto — nesse caso `url` recebe o valor do
+ * import. Adicionar imagem a uma atividade é só preencher este objeto no
+ * dado; o componente de renderização já sabe exibi-la.
+ */
+export interface ImagemReferencia {
+  url: string;
+  alt: string;
+  legenda?: string;
+}
+
 export interface ItemAtividade {
   id: string;
   titulo: string;
@@ -41,10 +56,13 @@ export interface ItemAtividade {
   instrucao?: string;
   campos: Campo[];
   tabelaReferencia?: TabelaReferencia;
+  imagem?: ImagemReferencia;
 }
 
 export interface AtividadeAutocorrigida {
   titulo: string;
   introducao: string;
   itens: ItemAtividade[];
+  /** Nota de atribuição exibida uma vez, quando algum item usa imagem de terceiros. */
+  fonte?: { texto: string; url: string };
 }

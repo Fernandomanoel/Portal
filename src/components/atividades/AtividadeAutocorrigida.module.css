@@ -103,6 +103,34 @@
   margin-bottom: var(--space-5);
 }
 
+.imagem {
+  margin: 0 0 var(--space-4);
+}
+
+.imagem img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.imagemLegenda {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+.fonte {
+  margin: var(--space-6) 0 0;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+.fonte a {
+  color: var(--brand-deep);
+  font-weight: 600;
+}
+
 .tabelaEnvoltorio {
   overflow-x: auto;
   margin-bottom: var(--space-5);

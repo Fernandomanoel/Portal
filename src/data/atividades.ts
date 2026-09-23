@@ -391,6 +391,23 @@ export const ATIVIDADES: Curso[] = [
       },
     ],
   },
+  {
+    slug: "windows-11",
+    titulo: "Windows 11",
+    descricao: "Rotinas do Explorador de Arquivos do Windows 11 em simulações práticas, com correção automática das respostas.",
+    categoria: "informatica",
+    sigla: "W11",
+    cor: "#0078d4",
+    materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Windows 11 — Copiar, Recortar e Colar Arquivos",
+        descricao:
+          "Criar pastas e arquivos, copiar, recortar, renomear, excluir/restaurar da Lixeira e desfazer ações no Explorador de Arquivos.",
+        caminho: "Windows 11/windows11-copiar-recortar-colar",
+      },
+    ],
+  },
 ];
 
 export function acharCurso(slug: string): Curso | undefined {
