@@ -55,7 +55,7 @@
   <text x="262" y="223" font-size="9.5" text-anchor="middle" fill="#1f2937">atividade-concluida.txt</text></g>
   <rect x="430" y="153" width="34" height="30" rx="6" fill="#cbd5e1"/>
   <rect x="430" y="150" width="34" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="447.0" y="170" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">F2</text>
+  <text x="447" y="170" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">F2</text>
   <rect x="430" y="196" width="176" height="80" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
   <text x="442" y="216" font-size="11.5" font-weight="700" fill="#0b4a9e">Renomear</text>
   <text x="442" y="234" font-size="11" fill="#1f2937">Selecione o arquivo,</text>

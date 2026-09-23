@@ -36,13 +36,13 @@
   <rect x="210" y="178" width="396" height="50" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
   <text x="226" y="198" font-size="11.5" fill="#1f2937">Tamanho</text>
   <text x="226" y="214" font-size="10" fill="#6b7280">Tamanho do ponteiro do mouse</text>
-  <rect x="430" y="201.0" width="150" height="4" rx="2" fill="#e5e7eb"/>
-  <rect x="430" y="201.0" width="82.5" height="4" rx="2" fill="#0067c0"/>
-  <circle cx="512.5" cy="203.0" r="7" fill="#fff" stroke="#0067c0" stroke-width="3"/>
+  <rect x="430" y="201" width="150" height="4" rx="2" fill="#e5e7eb"/>
+  <rect x="430" y="201" width="82.5" height="4" rx="2" fill="#0067c0"/>
+  <circle cx="512.5" cy="203" r="7" fill="#fff" stroke="#0067c0" stroke-width="3"/>
   <rect x="210" y="234" width="396" height="50" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
   <text x="226" y="254" font-size="11.5" fill="#1f2937">Cursor de texto</text>
   <text x="226" y="270" font-size="10" fill="#6b7280">Indicador do cursor de texto e espessura</text>
-  <text x="592" y="263.0" font-size="12" fill="#6b7280" text-anchor="end">›</text>
+  <text x="592" y="263" font-size="12" fill="#6b7280" text-anchor="end">›</text>
   <rect x="226" y="116" width="50" height="40" rx="6" fill="#ffffff" stroke="#d1d5db"/>
   <g transform="translate(245 118)"><path d="M0 0 L0 22 L6 17 L10 26 L14 24 L10 15 L17 15 Z" fill="#ffffff" stroke="#111827" stroke-width="1.2"/></g>
   <rect x="286" y="116" width="50" height="40" rx="6" fill="#ffffff" stroke="#d1d5db"/>

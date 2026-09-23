@@ -56,7 +56,7 @@
   <text x="126" y="208" font-size="10.5" fill="#1f2937">Tamanho total após a diminuição em MB:</text>
   <text x="506" y="208" font-size="10.5" fill="#1f2937">241664</text>
   <rect x="357" y="243" width="82" height="30" rx="7" fill="none" stroke="#60a5fa" stroke-width="2"/><rect x="360" y="246" width="76" height="24" rx="5" fill="#0067c0"/>
-  <text x="398.0" y="262" font-size="10.5" fill="#ffffff" text-anchor="middle">Diminuir</text>
+  <text x="398" y="262" font-size="10.5" fill="#ffffff" text-anchor="middle">Diminuir</text>
   <rect x="444" y="246" width="76" height="24" rx="5" fill="#ffffff" stroke="#d1d5db"/>
-  <text x="482.0" y="262" font-size="10.5" fill="#1f2937" text-anchor="middle">Cancelar</text>
+  <text x="482" y="262" font-size="10.5" fill="#1f2937" text-anchor="middle">Cancelar</text>
 </svg>

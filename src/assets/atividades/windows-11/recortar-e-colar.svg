@@ -26,7 +26,7 @@
     <text x="38" y="112" fill="#6b7280">⊕ Novo</text>
     <text x="106" y="112" fill="#6b7280">Recortar</text>
     <text x="194.4" y="112" fill="#6b7280">Copiar</text>
-    <rect x="259.2" y="96" width="55.0" height="24" rx="5" fill="#dbeafe" stroke="#60a5fa"/>
+    <rect x="259.2" y="96" width="55" height="24" rx="5" fill="#dbeafe" stroke="#60a5fa"/>
     <text x="267.2" y="112" font-weight="700" fill="#0b4a9e">Colar</text>
     <text x="332.2" y="112" fill="#6b7280">Renomear</text>
     <text x="420.6" y="112" fill="#6b7280">Excluir</text>
@@ -47,7 +47,7 @@
     <text x="42" y="316">Lixeira</text>
   </g>
   <line x1="176" y1="126" x2="176" y2="384" stroke="#e5e7eb"/>
-  <g><rect x="194.0" y="140" width="112" height="92" rx="8" fill="#e5f1fb" stroke="#60a5fa"/>
+  <g><rect x="194" y="140" width="112" height="92" rx="8" fill="#e5f1fb" stroke="#60a5fa"/>
   <path d="M233 154 h24 l10 10 v40 h-34 z" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
   <path d="M257 154 v10 h10" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
   <g stroke="#94a3b8" stroke-width="1.5"><line x1="239" y1="176" x2="261" y2="176"/><line x1="239" y1="184" x2="261" y2="184"/><line x1="239" y1="192" x2="255" y2="192"/></g>

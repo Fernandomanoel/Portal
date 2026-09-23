@@ -14,11 +14,11 @@
   <text x="512" y="33" font-size="12" fill="#4b5563">×</text>
   <line x1="120" y1="68" x2="520" y2="68" stroke="#d1d5db"/>
   <text x="129" y="63" font-size="10.5" fill="#1f2937">Geral</text>
-  <text x="178.0" y="63" font-size="10.5" fill="#1f2937">Compartilhamento</text>
+  <text x="178" y="63" font-size="10.5" fill="#1f2937">Compartilhamento</text>
   <rect x="292.6" y="48" width="73.4" height="21" fill="#ffffff" stroke="#d1d5db"/>
   <rect x="293.6" y="67" width="71.4" height="3" fill="#ffffff"/>
   <text x="299.6" y="63" font-size="10.5" font-weight="700" fill="#0b4a9e">Segurança</text>
-  <text x="375.0" y="63" font-size="10.5" fill="#1f2937">Personalizar</text>
+  <text x="375" y="63" font-size="10.5" fill="#1f2937">Personalizar</text>
   <text x="126" y="80" font-size="10.5" fill="#1f2937">Nomes de grupo ou de usuário:</text>
   <rect x="126" y="88" width="388" height="70" fill="#ffffff" stroke="#d1d5db"/>
   <rect x="130" y="110" width="380" height="20" fill="#dbeafe"/>
@@ -26,7 +26,7 @@
   <text x="140" y="124" font-size="10.5" fill="#1f2937" font-weight="700">Usuário (PC\Usuário)</text>
   <text x="140" y="144" font-size="10.5" fill="#1f2937">Administradores (PC\Administradores)</text>
   <rect x="430" y="164" width="84" height="24" rx="5" fill="#ffffff" stroke="#d1d5db"/>
-  <text x="472.0" y="180" font-size="10.5" fill="#1f2937" text-anchor="middle">Editar...</text>
+  <text x="472" y="180" font-size="10.5" fill="#1f2937" text-anchor="middle">Editar...</text>
   <text x="126" y="206" font-size="10.5" fill="#1f2937" font-weight="700">Permissões para Usuário</text>
   <text x="400" y="206" font-size="10.5" fill="#1f2937">Permitir</text>
   <text x="462" y="206" font-size="10.5" fill="#1f2937">Negar</text>
@@ -45,9 +45,9 @@
   <path d="M414 320 l4 4 l7 -8" fill="none" stroke="#6b7280" stroke-width="1.8"/>
   <rect x="130" y="216" width="380" height="20" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
   <rect x="372" y="350" width="70" height="24" rx="5" fill="#0067c0"/>
-  <text x="407.0" y="366" font-size="10.5" fill="#ffffff" text-anchor="middle">OK</text>
+  <text x="407" y="366" font-size="10.5" fill="#ffffff" text-anchor="middle">OK</text>
   <rect x="448" y="350" width="70" height="24" rx="5" fill="#ffffff" stroke="#d1d5db"/>
-  <text x="483.0" y="366" font-size="10.5" fill="#1f2937" text-anchor="middle">Cancelar</text>
+  <text x="483" y="366" font-size="10.5" fill="#1f2937" text-anchor="middle">Cancelar</text>
   <rect x="8" y="200" width="96" height="80" rx="8" fill="#0b4a9e"/>
   <text x="20" y="220" font-size="11.5" font-weight="700" fill="#ffffff">Só observe</text>
   <text x="20" y="238" font-size="11" fill="#dbeafe">não altere</text>

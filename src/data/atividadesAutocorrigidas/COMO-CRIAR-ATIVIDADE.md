@@ -87,6 +87,10 @@ pergunta em `campos` — atividade só com exercícios práticos não mostra o b
 ## Imagens
 
 - Guarde em `src/assets/atividades/<curso>/` e importe no arquivo da atividade.
-- Use ilustrações próprias (como os SVGs de `src/assets/atividades/windows-11/`)
-  ou capturas de tela feitas por você. Não use prints de filmes, séries ou memes.
+- **Padrão: print de tela** feito por você (Windows + Shift + S) — é o mais
+  rápido. Recorte só a parte da tela que importa para o passo.
+- **Casos especiais: ilustração pelo kit** (`npm run ilustracoes`), quando
+  precisar destacar um ponto ou quando a tela for difícil/arriscada de
+  capturar. Veja `scripts/ilustracoes/README.md`.
+- Não use prints de filmes, séries ou memes, nem imagens de sites de terceiros.
 - Sem emoji no texto: ícones do portal vêm de `src/components/Icone.tsx`.

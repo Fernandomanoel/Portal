@@ -8,7 +8,7 @@
     </linearGradient>
   </defs>
   <rect width="640" height="400" fill="#dfe8f5"/>
-  <text x="320" y="56" font-size="16" font-weight="700" fill="#1f2937" text-anchor="middle">Errou? Desfaça a última ação</text>
+  <text x="320" y="56" font-size="16" fill="#1f2937" font-weight="700" text-anchor="middle">Errou? Desfaça a última ação</text>
   <g filter="url(#sombra)"><rect x="60" y="92" width="170" height="150" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
   <g><rect x="84.6" y="104" width="120.8" height="92" rx="8" fill="#e5f1fb" stroke="#60a5fa"/>
   <path d="M128 118 h24 l10 10 v40 h-34 z" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
@@ -26,11 +26,11 @@
   <path d="M246 167 H 394" stroke="#0067c0" stroke-width="2.5"/><path d="M394 167 l-10 -6 v12 z" fill="#0067c0"/>
   <rect x="262" y="131" width="50" height="30" rx="6" fill="#cbd5e1"/>
   <rect x="262" y="128" width="50" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="287.0" y="148" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Ctrl</text>
-  <text x="320" y="148" font-size="14" font-weight="700" fill="#1f2937" text-anchor="middle">+</text>
+  <text x="287" y="148" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Ctrl</text>
+  <text x="320" y="148" font-size="14" fill="#1f2937" font-weight="700" text-anchor="middle">+</text>
   <rect x="332" y="131" width="44" height="30" rx="6" fill="#cbd5e1"/>
   <rect x="332" y="128" width="44" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="354.0" y="148" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Z</text>
+  <text x="354" y="148" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Z</text>
   <rect x="120" y="280" width="400" height="48" rx="8" fill="#0b4a9e"/>
   <text x="132" y="300" font-size="11.5" font-weight="700" fill="#ffffff">Ctrl + Z funciona para</text>
   <text x="132" y="318" font-size="11" fill="#dbeafe">renomear, excluir, copiar e recortar no Explorador de Arquivos.</text>

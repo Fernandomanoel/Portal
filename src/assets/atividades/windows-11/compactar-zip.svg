@@ -46,7 +46,7 @@
     <text x="42" y="316">Lixeira</text>
   </g>
   <line x1="176" y1="126" x2="176" y2="384" stroke="#e5e7eb"/>
-  <g><rect x="194.0" y="140" width="112" height="92" rx="8" fill="#e5f1fb" stroke="#60a5fa"/>
+  <g><rect x="194" y="140" width="112" height="92" rx="8" fill="#e5f1fb" stroke="#60a5fa"/>
   <path d="M220 160 h22 l6 6 h32 v40 h-60 z" fill="#f6c343"/>
   <path d="M220 172 h60 v34 h-60 z" fill="#fbd35f"/>
   
