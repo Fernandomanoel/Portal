@@ -1,8 +1,12 @@
+import imagemNovaPasta from "@/assets/atividades/windows-11/area-de-trabalho-nova-pasta.svg";
+import imagemAtalhos from "@/assets/atividades/windows-11/atalhos-do-teclado.svg";
+import imagemCopiar from "@/assets/atividades/windows-11/copiar-arquivo.svg";
+import imagemDesfazer from "@/assets/atividades/windows-11/desfazer-ctrl-z.svg";
+import imagemLixeira from "@/assets/atividades/windows-11/lixeira-restaurar.svg";
+import imagemNovoDocumento from "@/assets/atividades/windows-11/novo-documento-de-texto.svg";
+import imagemRecortar from "@/assets/atividades/windows-11/recortar-e-colar.svg";
+import imagemRenomear from "@/assets/atividades/windows-11/renomear-arquivo.svg";
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-
-const IMAGEM_PASTAS = "https://support.microsoft.com/pt-br/windows/media/file-explorer-known-folders-png.png";
-const IMAGEM_ACESSO_RAPIDO = "https://support.microsoft.com/pt-br/windows/media/quick-access-option-in-file-explorer.png";
-const IMAGEM_MENU_CONTEXTO = "https://support.microsoft.com/pt-br/windows/media/file-explorer-context-menu-png.png";
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Windows 11 — Copiar, Recortar e Colar Arquivos",
@@ -20,9 +24,9 @@ const atividade: AtividadeAutocorrigida = {
         "Abra a pasta AULA WINDOWS e crie outra pasta chamada ARQUIVOS.",
       ],
       imagem: {
-        url: IMAGEM_PASTAS,
-        alt: "Captura real do Explorador de Arquivos do Windows 11 mostrando pastas",
-        legenda: "A interface pode variar um pouco conforme a versão e a configuração do Windows 11.",
+        url: imagemNovaPasta,
+        alt: "Área de trabalho do Windows 11 com o menu do botão direito aberto em Novo, Pasta e a pasta AULA WINDOWS sendo nomeada",
+        legenda: "Botão direito na área de trabalho → Novo → Pasta.",
       },
       objetivo: "Preparar o espaço de trabalho da atividade.",
     },
@@ -37,9 +41,9 @@ const atividade: AtividadeAutocorrigida = {
         "Abra o arquivo e escreva: \"Atividade de Windows 11\". Salve e feche.",
       ],
       imagem: {
-        url: IMAGEM_ACESSO_RAPIDO,
-        alt: "Captura real do Acesso Rápido do Explorador de Arquivos",
-        legenda: "Exemplo real do Acesso Rápido e do menu de contexto no Windows 11.",
+        url: imagemNovoDocumento,
+        alt: "Pasta AULA WINDOWS aberta no Explorador com o menu Novo, Documento de Texto e o arquivo teste.txt sendo nomeado",
+        legenda: "Botão direito em uma área vazia da pasta → Novo → Documento de Texto.",
       },
       objetivo: "Criar um arquivo simples dentro da pasta.",
     },
@@ -53,9 +57,9 @@ const atividade: AtividadeAutocorrigida = {
         "Pressione Ctrl + V ou use Colar.",
       ],
       imagem: {
-        url: IMAGEM_MENU_CONTEXTO,
-        alt: "Menu de contexto real do Windows 11 com copiar e recortar",
-        legenda: "No menu de contexto aparecem os comandos de recortar, copiar, renomear, compartilhar e excluir.",
+        url: imagemCopiar,
+        alt: "Arquivo teste.txt selecionado com o menu do botão direito e a opção Copiar em destaque",
+        legenda: "Copiar (Ctrl + C) no menu do botão direito ou na barra de comandos.",
       },
       objetivo: "Manter o original e criar uma cópia — depois de copiar, o arquivo original continua no local antigo.",
     },
@@ -70,8 +74,8 @@ const atividade: AtividadeAutocorrigida = {
         "Pressione Ctrl + V para colar.",
       ],
       imagem: {
-        url: IMAGEM_ACESSO_RAPIDO,
-        alt: "Explorador de Arquivos real do Windows 11",
+        url: imagemRecortar,
+        alt: "Pasta ARQUIVOS com o arquivo teste.txt colado e a opção Colar em destaque",
         legenda: "Recortar, navegar até o novo local e Colar: o arquivo muda de lugar.",
       },
       objetivo: "Perceber a diferença: recortar + colar move o arquivo para outro local.",
@@ -85,6 +89,11 @@ const atividade: AtividadeAutocorrigida = {
         "Digite o novo nome: atividade-concluida.txt.",
         "Pressione Enter para confirmar.",
       ],
+      imagem: {
+        url: imagemRenomear,
+        alt: "Arquivo selecionado com a caixa de nome em edição e a tecla F2 em destaque",
+        legenda: "F2 abre o nome do arquivo para edição.",
+      },
       objetivo: "Renomear arquivos rapidamente pelo teclado.",
     },
     {
@@ -96,6 +105,11 @@ const atividade: AtividadeAutocorrigida = {
         "Clique com o botão direito no arquivo e escolha Restaurar.",
         "Volte à pasta ARQUIVOS e confira que o arquivo voltou.",
       ],
+      imagem: {
+        url: imagemLixeira,
+        alt: "Janela da Lixeira com o arquivo selecionado e a opção Restaurar em destaque",
+        legenda: "Na Lixeira: botão direito no arquivo → Restaurar.",
+      },
       objetivo: "Entender que Delete envia o arquivo para a Lixeira, de onde ele pode ser recuperado.",
     },
     {
@@ -106,6 +120,11 @@ const atividade: AtividadeAutocorrigida = {
         "Pressione Ctrl + Z e veja o nome anterior voltar.",
         "Recorte o arquivo para a pasta AULA WINDOWS e pressione Ctrl + Z para desfazer a mudança.",
       ],
+      imagem: {
+        url: imagemDesfazer,
+        alt: "Arquivo com nome errado voltando ao nome anterior após pressionar Ctrl + Z",
+        legenda: "Ctrl + Z desfaz a última ação no Explorador de Arquivos.",
+      },
       objetivo: "Usar Ctrl + Z para corrigir um engano no Explorador de Arquivos.",
     },
     {
@@ -117,6 +136,11 @@ const atividade: AtividadeAutocorrigida = {
         "Use Ctrl + V para colar.",
         "Use F2 para renomear e Ctrl + Z para desfazer.",
       ],
+      imagem: {
+        url: imagemAtalhos,
+        alt: "Quadro com os atalhos Ctrl + C, Ctrl + X, Ctrl + V, F2, Delete e Ctrl + Z e o que cada um faz",
+        legenda: "Resumo dos atalhos praticados nesta atividade.",
+      },
       objetivo:
         "Ctrl + C copia (cria uma cópia), Ctrl + X recorta (prepara para mover), Ctrl + V cola no novo local, F2 renomeia e Ctrl + Z desfaz.",
     },
@@ -132,30 +156,9 @@ const atividade: AtividadeAutocorrigida = {
         "Recortei o arquivo usando Ctrl + X.",
         "Colei o arquivo usando Ctrl + V.",
       ],
-    },
-    {
-      id: "pergunta-rapida",
-      titulo: "Pergunta rápida",
-      instrucao: "Qual opção mantém o arquivo original no local de origem?",
-      campos: [
-        {
-          id: "win11-pergunta",
-          regra: {
-            tipo: "multipla_escolha",
-            correta: 1,
-            opcoes: ["Ctrl + X", "Ctrl + C", "Ctrl + V"],
-          },
-          mensagemCerta: "Correto! Ctrl + C copia o arquivo, mantendo o original no local de origem.",
-          mensagemErrada: "Ainda não. Pense na diferença entre copiar (duplicar) e recortar (mover).",
-        },
-      ],
+      objetivo: "Lembre: copiar mantém o original no lugar; recortar tira o arquivo do local de origem.",
     },
   ],
-  fonte: {
-    texto:
-      "As capturas de tela desta atividade são do Microsoft Support e mostram elementos reais do Explorador de Arquivos do Windows 11. Elas são carregadas do site da Microsoft, por isso precisam de conexão com a internet para aparecer.",
-    url: "https://support.microsoft.com/pt-br/windows/experience/fileexplorer/file-explorer-in-windows",
-  },
 };
 
 export default atividade;

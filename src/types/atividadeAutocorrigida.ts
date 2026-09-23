@@ -63,6 +63,10 @@ export interface ItemAtividade {
   instrucao?: string;
   /** Tarefa em passos numerados, na ordem em que o aluno executa. */
   passos?: string[];
+  /** Tarefa opcional a mais, para quem terminar antes ("Desafio extra"). */
+  desafio?: string;
+  /** Cuidado que o aluno precisa ter nesse item ("Atenção"). */
+  aviso?: string;
   /** O que o aluno aprende com o item — exibido em destaque no fim do item. */
   objetivo?: string;
   campos?: Campo[];
@@ -73,6 +77,8 @@ export interface ItemAtividade {
 export interface AtividadeAutocorrigida {
   titulo: string;
   introducao: string;
+  /** Regras lidas antes de começar (ex.: segurança ao mexer no disco), exibidas em destaque no topo. */
+  regras?: { titulo: string; itens: string[] };
   itens: ItemAtividade[];
   /** Nota de atribuição exibida uma vez, quando algum item usa imagem de terceiros. */
   fonte?: { texto: string; url: string };

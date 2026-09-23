@@ -72,10 +72,13 @@ Em `src/data/atividades.ts`, dentro do curso, acrescente ao array `atividades`:
 | --- | --- |
 | `passos` | Lista numerada da tarefa ("Tarefa"), na ordem de execução. |
 | `objetivo` | Caixa "Objetivo:" no fim do exercício. |
+| `desafio` | Caixa "Desafio extra:" com uma tarefa a mais, para quem terminar antes. |
+| `aviso` | Caixa amarela "Atenção:" com um cuidado que o aluno precisa ter. |
 | `imagem` | Imagem de demonstração. `url` recebe um `import` de `src/assets/` ou um link externo. |
 | `cenario` / `instrucao` | Texto de contexto e enunciado. |
 | `tabelaReferencia` | Tabela de dados para exercícios de cálculo. |
 | `campos` | Perguntas corrigidas automaticamente (`selecao`, `multipla_escolha`, `numero`, `texto`, `padrao`). |
+| `regras` (na atividade) | Caixa amarela no topo com regras lidas antes de começar (ex.: segurança ao mexer no disco). |
 | `fonte` (na atividade) | Nota de crédito quando as imagens vêm de terceiros. |
 
 O botão "Corrigir atividade" só aparece quando a atividade tem pelo menos uma
@@ -84,6 +87,6 @@ pergunta em `campos` — atividade só com exercícios práticos não mostra o b
 ## Imagens
 
 - Guarde em `src/assets/atividades/<curso>/` e importe no arquivo da atividade.
-- Use capturas próprias, ilustrações próprias ou imagens com fonte oficial
-  creditada em `fonte`. Não use prints de filmes, séries ou memes.
+- Use ilustrações próprias (como os SVGs de `src/assets/atividades/windows-11/`)
+  ou capturas de tela feitas por você. Não use prints de filmes, séries ou memes.
 - Sem emoji no texto: ícones do portal vêm de `src/components/Icone.tsx`.

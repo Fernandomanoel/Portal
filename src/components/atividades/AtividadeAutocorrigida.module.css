@@ -155,7 +155,56 @@
   margin-bottom: var(--space-4);
 }
 
+.desafio {
+  border: 1px dashed var(--brand);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  margin-bottom: var(--space-4);
+}
+
+.desafio strong {
+  color: var(--brand-deep);
+}
+
+.aviso,
+.regras {
+  background: var(--warning-tint);
+  border: 1px solid var(--warning);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  margin-bottom: var(--space-4);
+}
+
+.aviso strong,
+.regrasTitulo {
+  color: var(--warning);
+}
+
+.regras {
+  margin-bottom: var(--space-6);
+}
+
+.regrasTitulo {
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+
+.regras ul {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
 .objetivo:last-child,
+.desafio:last-child,
+.aviso:last-child,
 .imagem:last-child {
   margin-bottom: 0;
 }

@@ -34,6 +34,17 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
     <div className={estilos.pagina}>
       <p className={estilos.introducao}>{atividade.introducao}</p>
 
+      {atividade.regras && (
+        <div className={estilos.regras}>
+          <p className={estilos.regrasTitulo}>{atividade.regras.titulo}</p>
+          <ul>
+            {atividade.regras.itens.map((regra) => (
+              <li key={regra}>{regra}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {resumo && (
         <div className={estilos.resumo}>
           <span className={estilos.resumoCerto}>
@@ -96,6 +107,18 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
                   </tbody>
                 </table>
               </div>
+            )}
+
+            {item.desafio && (
+              <p className={estilos.desafio}>
+                <strong>Desafio extra:</strong> {item.desafio}
+              </p>
+            )}
+
+            {item.aviso && (
+              <p className={estilos.aviso}>
+                <strong>Atenção:</strong> {item.aviso}
+              </p>
             )}
 
             {item.objetivo && (
