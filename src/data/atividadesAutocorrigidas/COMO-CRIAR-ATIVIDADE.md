@@ -91,6 +91,10 @@ pergunta em `campos` — atividade só com exercícios práticos não mostra o b
   rápido. Recorte só a parte da tela que importa para o passo.
 - **Casos especiais: ilustração pelo kit** (`npm run ilustracoes`), quando
   precisar destacar um ponto ou quando a tela for difícil/arriscada de
-  capturar. Veja `scripts/ilustracoes/README.md`.
+  capturar. Veja `scripts/ilustracoes/README.md`. Para um app criativo
+  (Photoshop, CorelDraw, Illustrator...), o kit já tem peças genéricas —
+  `janelaCriativa`, `caixaFerramentas`, `painelCriativo` — usadas em
+  `scripts/ilustracoes/telas/photoshop.mjs`; copie esse arquivo em vez de
+  partir do zero.
 - Não use prints de filmes, séries ou memes, nem imagens de sites de terceiros.
 - Sem emoji no texto: ícones do portal vêm de `src/components/Icone.tsx`.

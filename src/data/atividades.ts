@@ -437,6 +437,23 @@ export const ATIVIDADES: Curso[] = [
       },
     ],
   },
+  {
+    slug: "photoshop",
+    titulo: "Adobe Photoshop",
+    descricao: "Do primeiro clique a composições avançadas — curso completo em graus.",
+    categoria: "design",
+    sigla: "PS",
+    cor: "#001e36",
+    materiais: [],
+    atividades: [
+      {
+        titulo: "Adobe Photoshop — Grau 1: Conhecendo a Ferramenta",
+        descricao:
+          "Reconhecer a tela do Photoshop, inserir uma imagem, recortar e remover o fundo de uma foto por dois caminhos diferentes.",
+        caminho: "Photoshop/photoshop-grau1-conhecendo-a-ferramenta",
+      },
+    ],
+  },
 ];
 
 export function acharCurso(slug: string): Curso | undefined {

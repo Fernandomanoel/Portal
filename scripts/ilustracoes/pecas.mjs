@@ -1,4 +1,5 @@
-// Peças para montar ilustrações de telas do Windows 11 em SVG (640 × 400).
+// Peças para montar ilustrações de atividades em SVG (640 × 400) — usadas por
+// Windows 11 e por qualquer curso novo (ex.: Photoshop, CorelDraw).
 // Cada função devolve um trecho de SVG; uma tela é `svg([...trechos])`.
 // Coordenadas em pixels do viewBox; a janela padrão ocupa x 20–620, y 16–384.
 
@@ -241,6 +242,105 @@ export function janelaApp(titulo, corIcone, { fundo = '#ffffff', menus = null, m
     partes.push('  <line x1="20" y1="80" x2="620" y2="80" stroke="#e5e7eb"/>');
   }
   return partes.join('\n');
+}
+
+const ESCURO_PAINEL = '#2b2b2b';
+const ESCURO_CANVAS = '#3a3a3a';
+const CLARO_SOBRE_ESCURO = '#e5e7eb';
+
+/**
+ * Janela de um app criativo (Photoshop, CorelDraw, Illustrator...): barra de
+ * título clara (a janela roda na área de trabalho do Windows, igual às
+ * outras) + barra de menus escura + faixa de opções contextual reservada
+ * mesmo vazia, para o layout de `caixaFerramentas`/`painelCriativo` bater
+ * sempre nas mesmas coordenadas. `menus`: lista de rótulos. `opcoes`: lista
+ * de rótulos da faixa contextual, ou `null` para deixá-la vazia.
+ */
+export function janelaCriativa(titulo, corIcone, { menus = [], opcoes = null } = {}) {
+  const partes = [
+    `  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="${ESCURO_CANVAS}" stroke="#111827"/></g>`,
+    '  <path d="M20 26 a10 10 0 0 1 10 -10 h580 a10 10 0 0 1 10 10 v24 h-600 z" fill="#eef1f5"/>',
+    barraTitulo(titulo, corIcone),
+    `  <rect x="20" y="40" width="600" height="20" fill="${ESCURO_PAINEL}"/>`,
+    `  <rect x="20" y="60" width="600" height="22" fill="#333333"/>`,
+  ];
+  let x = 34;
+  partes.push('  <g font-size="10.5">');
+  for (const nome of menus) {
+    partes.push(`    <text x="${x}" y="54" fill="${CLARO_SOBRE_ESCURO}">${esc(nome)}</text>`);
+    x += 14 + nome.length * 6.4;
+  }
+  partes.push('  </g>');
+  if (opcoes) {
+    let ox = 30;
+    partes.push('  <g font-size="10" fill="#cbd5e1">');
+    for (const rotulo of opcoes) {
+      partes.push(`    <text x="${ox}" y="75">${esc(rotulo)}</text>`);
+      ox += 18 + rotulo.length * 6;
+    }
+    partes.push('  </g>');
+  }
+  return partes.join('\n');
+}
+
+/** Coluna de ferramentas à esquerda de `janelaCriativa`. `ferramentas`: rótulos curtos (1-2 letras). */
+export function caixaFerramentas(ferramentas, { destaque = null } = {}) {
+  const partes = [`  <rect x="20" y="82" width="26" height="302" fill="${ESCURO_PAINEL}"/>`];
+  let y = 100;
+  for (const nome of ferramentas) {
+    const ativa = nome === destaque;
+    if (ativa) partes.push(`  <rect x="21" y="${y - 13}" width="24" height="20" rx="3" fill="#0ea5e9"/>`);
+    partes.push(`  <text x="33" y="${y}" font-size="10.5" text-anchor="middle" fill="${ativa ? '#ffffff' : '#cbd5e1'}">${esc(nome)}</text>`);
+    y += 22;
+  }
+  return partes.join('\n');
+}
+
+/**
+ * Painel lateral direito de `janelaCriativa` (Camadas, Objetos, Cor...).
+ * `linhas`: { rotulo, ativa?, visivel? }.
+ */
+export function painelCriativo(titulo, linhas, { x = 514 } = {}) {
+  const partes = [
+    `  <rect x="${x}" y="82" width="106" height="302" fill="${ESCURO_PAINEL}"/>`,
+    `  <text x="${x + 10}" y="98" font-size="10.5" fill="${CLARO_SOBRE_ESCURO}" font-weight="700">${esc(titulo)}</text>`,
+    `  <line x1="${x}" y1="106" x2="${x + 106}" y2="106" stroke="#3f3f3f"/>`,
+  ];
+  let y = 124;
+  for (const linha of linhas) {
+    if (linha.ativa) partes.push(`  <rect x="${x + 4}" y="${y - 14}" width="98" height="22" fill="#3b3b3b"/>`);
+    partes.push(`  <rect x="${x + 8}" y="${y - 11}" width="16" height="16" fill="#4b5563"/>`);
+    partes.push(`  <circle cx="${x + 94}" cy="${y - 3}" r="3" fill="${linha.visivel === false ? 'none' : '#94a3b8'}" stroke="#94a3b8"/>`);
+    partes.push(`  <text x="${x + 30}" y="${y}" font-size="9.5" fill="${CLARO_SOBRE_ESCURO}">${esc(linha.rotulo)}</text>`);
+    y += 26;
+  }
+  return partes.join('\n');
+}
+
+/** Área quadriculada cinza/branco — símbolo universal de transparência (fundo removido). */
+export function quadriculado(x, y, largura, altura, tamanho = 12) {
+  const id = `quad-${x}-${y}`;
+  return `  <defs><pattern id="${id}" width="${tamanho * 2}" height="${tamanho * 2}" patternUnits="userSpaceOnUse">
+    <rect width="${tamanho * 2}" height="${tamanho * 2}" fill="#f3f4f6"/>
+    <rect width="${tamanho}" height="${tamanho}" fill="#d1d5db"/>
+    <rect x="${tamanho}" y="${tamanho}" width="${tamanho}" height="${tamanho}" fill="#d1d5db"/>
+  </pattern></defs>
+  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" fill="url(#${id})"/>`;
+}
+
+/** Placeholder neutro de "uma foto qualquer" (sol + montanhas) — nunca uma foto real de terceiros. */
+export function fotoPlaceholder(x, y, w, h, { comFundo = true } = {}) {
+  const partes = [];
+  if (comFundo) partes.push(`  <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#93c5fd"/>`);
+  partes.push(`  <circle cx="${x + w * 0.24}" cy="${y + h * 0.28}" r="${Math.min(w, h) * 0.11}" fill="#fde68a"/>`);
+  partes.push(`  <path d="M${x} ${y + h} l${w * 0.32} -${h * 0.42} l${w * 0.22} ${h * 0.24} l${w * 0.18} -${h * 0.2} l${w * 0.28} ${h * 0.38} z" fill="#4ade80"/>`);
+  return partes.join('\n');
+}
+
+/** Selo numerado (para diagramas "as N áreas da tela"). */
+export function selo(x, y, n, cor = AZUL_ESCURO) {
+  return `  <circle cx="${x}" cy="${y}" r="10" fill="${cor}"/>
+  <text x="${x}" y="${y + 4}" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">${n}</text>`;
 }
 
 const NAV_CONFIGURACOES = ['Sistema', 'Bluetooth e dispositivos', 'Rede e Internet', 'Personalização', 'Aplicativos',
