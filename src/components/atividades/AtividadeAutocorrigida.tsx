@@ -54,9 +54,24 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
         </div>
       )}
 
+      {atividade.itens.length > 3 && (
+        <nav className={estilos.indice} aria-label="Índice da atividade">
+          <p className={estilos.indiceTitulo}>Nesta atividade</p>
+          <ol className={estilos.indiceLista}>
+            {atividade.itens.map((item, indice) => (
+              <li key={item.id}>
+                <a href={`#item-${item.id}`}>
+                  <span className={estilos.indiceNumero}>{indice + 1}.</span> {item.titulo}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
       <ol className={estilos.lista}>
         {atividade.itens.map((item, indice) => (
-          <li key={item.id} className={estilos.item}>
+          <li key={item.id} id={`item-${item.id}`} className={estilos.item}>
             <div className={estilos.itemCabecalho}>
               <span className={estilos.itemNumero}>{indice + 1}.</span>
               <h3 className={estilos.itemTitulo}>{item.titulo}</h3>
