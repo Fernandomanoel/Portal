@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="#f3f4f6" stroke="#cbd5e1"/></g>
+  <path d="M20 26 a10 10 0 0 1 10 -10 h580 a10 10 0 0 1 10 10 v24 h-600 z" fill="#eef1f5"/>
+  <text x="54" y="38" font-size="11.5" fill="#1f2937">Sem título - Paint</text>
+  <rect x="34" y="27" width="13" height="13" rx="3" fill="#ef4444"/>
+  <g fill="#4b5563" font-size="12"><text x="556" y="38">—</text><rect x="578" y="30" width="9" height="9" fill="none" stroke="#4b5563"/><text x="600" y="39">×</text></g>
+  <g font-size="11.5">
+    <rect x="26" y="54" width="65" height="22" rx="4" fill="#dbeafe"/>
+    <text x="34" y="69" fill="#1f2937">Arquivo</text>
+    <text x="105" y="69" fill="#1f2937">Editar</text>
+    <text x="169" y="69" fill="#1f2937">Exibir</text>
+  </g>
+  <line x1="20" y1="80" x2="620" y2="80" stroke="#e5e7eb"/>
+  <rect x="210" y="96" width="390" height="250" fill="#ffffff" stroke="#d1d5db"/>
+  <rect x="224" y="110" width="362" height="220" fill="#e5edf8"/>
+  <rect x="236" y="122" width="338" height="196" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="236" y="122" width="338" height="16" rx="4" fill="#eef1f5"/>
+  <path d="M270 170 h14 l4 4 h22 v28 h-40 z" fill="#f6c343"/>
+  <text x="290" y="222" font-size="9.5" fill="#1f2937" text-anchor="middle">Textos</text>
+  <path d="M370 170 h14 l4 4 h22 v28 h-40 z" fill="#f6c343"/>
+  <text x="390" y="222" font-size="9.5" fill="#1f2937" text-anchor="middle">Imagens</text>
+  <path d="M470 170 h14 l4 4 h22 v28 h-40 z" fill="#f6c343"/>
+  <text x="490" y="222" font-size="9.5" fill="#1f2937" text-anchor="middle">Print</text>
+  <text x="405" y="300" font-size="10" fill="#6b7280" text-anchor="middle">print colado com Ctrl + V</text>
+  <g filter="url(#sombra)"><rect x="28" y="78" width="164" height="116" rx="8" fill="#f9f9f9" stroke="#d4d4d8"/></g>
+  <g font-size="11.5" fill="#1f2937">
+    <text x="44" y="101" fill="#1f2937">Novo</text>
+    <text x="178" y="101" fill="#6b7280" text-anchor="end" font-size="10.5">Ctrl + N</text>
+    <text x="44" y="127" fill="#1f2937">Abrir</text>
+    <text x="178" y="127" fill="#6b7280" text-anchor="end" font-size="10.5">Ctrl + O</text>
+    <text x="44" y="153" fill="#1f2937">Salvar</text>
+    <text x="178" y="153" fill="#6b7280" text-anchor="end" font-size="10.5">Ctrl + S</text>
+    <rect x="34" y="163" width="152" height="24" rx="5" fill="#dbeafe" stroke="#60a5fa"/>
+    <text x="44" y="179" fill="#0b4a9e" font-weight="700">Salvar como</text>
+    <text x="178" y="179" fill="#6b7280" text-anchor="end" font-size="10.5">›</text>
+  </g>
+  <g filter="url(#sombra)"><rect x="196" y="176" width="150" height="116" rx="8" fill="#f9f9f9" stroke="#d4d4d8"/></g>
+  <g font-size="11.5" fill="#1f2937">
+    <text x="212" y="199" fill="#1f2937">Imagem PNG</text>
+    <text x="212" y="225" fill="#1f2937">Imagem JPEG</text>
+    <rect x="202" y="235" width="138" height="24" rx="5" fill="#dbeafe" stroke="#60a5fa"/>
+    <text x="212" y="251" fill="#0b4a9e" font-weight="700">Imagem BMP</text>
+    <text x="212" y="277" fill="#1f2937">Imagem GIF</text>
+  </g>
+  <rect x="28" y="293" width="64" height="30" rx="6" fill="#cbd5e1"/>
+  <rect x="28" y="290" width="64" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="60" y="310" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">PrtSc</text>
+  <text x="104" y="310" font-size="10.5" fill="#1f2937">copia a tela</text>
+  <rect x="28" y="337" width="46" height="30" rx="6" fill="#cbd5e1"/>
+  <rect x="28" y="334" width="46" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="51" y="354" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">Ctrl</text>
+  <text x="82" y="354" font-size="13" fill="#1f2937" font-weight="700">+</text>
+  <rect x="94" y="337" width="34" height="30" rx="6" fill="#cbd5e1"/>
+  <rect x="94" y="334" width="34" height="30" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="111" y="354" font-size="12" font-weight="700" fill="#1f2937" text-anchor="middle">V</text>
+  <text x="138" y="354" font-size="10.5" fill="#1f2937">cola</text>
+</svg>

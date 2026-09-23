@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M20 26 a10 10 0 0 1 10 -10 h580 a10 10 0 0 1 10 10 v24 h-600 z" fill="#eef1f5"/>
+  <text x="54" y="38" font-size="11.5" fill="#1f2937">Gerenciamento de Disco</text>
+  <rect x="34" y="27" width="13" height="13" rx="3" fill="#0ea5e9"/>
+  <g fill="#4b5563" font-size="12"><text x="556" y="38">—</text><rect x="578" y="30" width="9" height="9" fill="none" stroke="#4b5563"/><text x="600" y="39">×</text></g>
+  <g font-size="11.5">
+    <text x="34" y="69" fill="#1f2937">Arquivo</text>
+    <text x="105" y="69" fill="#1f2937">Ação</text>
+    <text x="155" y="69" fill="#1f2937">Exibir</text>
+    <text x="219" y="69" fill="#1f2937">Ajuda</text>
+  </g>
+  <line x1="20" y1="80" x2="620" y2="80" stroke="#e5e7eb"/>
+  <rect x="30" y="300" width="580" height="62" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="30" y="300" width="92" height="62" fill="#eef1f5" stroke="#cbd5e1"/>
+  <text x="38" y="316" font-size="10.5" fill="#1f2937" font-weight="700">Disco 0</text>
+  <text x="38" y="331" font-size="9.5" fill="#6b7280">Básico</text>
+  <text x="38" y="343" font-size="9.5" fill="#6b7280">238 GB</text>
+  <text x="38" y="355" font-size="9.5" fill="#6b7280">Online</text>
+  <rect x="124" y="302" width="46.400000000000006" height="8" fill="#1d4ed8"/>
+  <text x="130" y="326" font-size="9.5" fill="#1f2937" font-weight="700"></text>
+  <text x="130" y="339" font-size="9" fill="#6b7280">100 MB</text>
+  <text x="130" y="350" font-size="9" fill="#6b7280">EFI</text>
+  <rect x="172.4" y="302" width="298.08" height="8" fill="#1d4ed8"/>
+  <text x="178.4" y="326" font-size="9.5" fill="#1f2937" font-weight="700">(C:)</text>
+  <text x="178.4" y="339" font-size="9" fill="#6b7280">236 GB NTFS</text>
+  <rect x="472.48" y="302" width="65.76" height="8" fill="#111827"/>
+  <rect x="472.48" y="310" width="65.76" height="50" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="478.48" y="326" font-size="9.5" fill="#1f2937" font-weight="700"></text>
+  <text x="478.48" y="339" font-size="9" fill="#6b7280">1,00 GB</text>
+  <text x="478.48" y="350" font-size="9" fill="#6b7280">Não alocado</text>
+  <rect x="540.24" y="302" width="65.76" height="8" fill="#1d4ed8"/>
+  <text x="546.24" y="326" font-size="9.5" fill="#1f2937" font-weight="700"></text>
+  <text x="546.24" y="339" font-size="9" fill="#6b7280">750 MB</text>
+  <text x="546.24" y="350" font-size="9" fill="#6b7280">Recuperação</text>
+  <g filter="url(#sombra)"><rect x="110" y="90" width="420" height="196" rx="8" fill="#f9fafb" stroke="#cbd5e1"/></g>
+  <text x="124" y="110" font-size="11.5" fill="#1f2937">Diminuir C:</text>
+  <text x="512" y="111" font-size="12" fill="#4b5563">×</text>
+  <text x="126" y="128" font-size="10.5" fill="#1f2937">Tamanho total antes da diminuição em MB:</text>
+  <text x="506" y="128" font-size="10.5" fill="#1f2937">242688</text>
+  <text x="126" y="152" font-size="10.5" fill="#1f2937">Espaço disponível para diminuição em MB:</text>
+  <text x="506" y="152" font-size="10.5" fill="#1f2937">98304</text>
+  <rect x="120" y="162" width="400" height="26" rx="4" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="126" y="180" font-size="10.5" fill="#0b4a9e" font-weight="700">Digite o espaço a ser diminuído em MB:</text>
+  <rect x="446" y="166" width="68" height="18" fill="#ffffff" stroke="#0067c0"/>
+  <text x="452" y="179" font-size="10.5" fill="#1f2937" font-weight="700">1024</text>
+  <text x="126" y="208" font-size="10.5" fill="#1f2937">Tamanho total após a diminuição em MB:</text>
+  <text x="506" y="208" font-size="10.5" fill="#1f2937">241664</text>
+  <rect x="357" y="243" width="82" height="30" rx="7" fill="none" stroke="#60a5fa" stroke-width="2"/><rect x="360" y="246" width="76" height="24" rx="5" fill="#0067c0"/>
+  <text x="398" y="262" font-size="10.5" fill="#ffffff" text-anchor="middle">Diminuir</text>
+  <rect x="444" y="246" width="76" height="24" rx="5" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="482" y="262" font-size="10.5" fill="#1f2937" text-anchor="middle">Cancelar</text>
+</svg>

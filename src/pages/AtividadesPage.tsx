@@ -99,6 +99,7 @@ export function AtividadesPage() {
               sigla={curso.sigla}
               imagem={curso.imagem}
               quantidadeMateriais={curso.materiais.length}
+              quantidadeAtividades={curso.atividades?.length}
             />
           ))}
         </div>

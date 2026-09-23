@@ -10,6 +10,7 @@ interface Props {
   sigla?: string;
   imagem?: string;
   quantidadeMateriais: number;
+  quantidadeAtividades?: number;
 }
 
 export function CursoCard({
@@ -20,6 +21,7 @@ export function CursoCard({
   sigla,
   imagem,
   quantidadeMateriais,
+  quantidadeAtividades = 0,
 }: Props) {
   return (
     <article className={estilos.card}>
@@ -37,9 +39,14 @@ export function CursoCard({
         </h3>
         <p className={estilos.descricao}>{descricao}</p>
         <p className={`${estilos.rodape} tabular`}>
-          {quantidadeMateriais === 1
-            ? "1 material"
-            : `${quantidadeMateriais} materiais`}
+          {[
+            quantidadeAtividades > 0 &&
+              (quantidadeAtividades === 1 ? "1 atividade" : `${quantidadeAtividades} atividades`),
+            (quantidadeMateriais > 0 || quantidadeAtividades === 0) &&
+              (quantidadeMateriais === 1 ? "1 material" : `${quantidadeMateriais} materiais`),
+          ]
+            .filter(Boolean)
+            .join(" · ")}
         </p>
       </div>
     </article>

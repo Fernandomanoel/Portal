@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)">
+    <rect x="20" y="16" width="600" height="368" rx="10" fill="#f3f4f6" stroke="#cbd5e1"/>
+  </g>
+  <text x="36" y="38" font-size="11.5" fill="#1f2937">Configurações</text>
+  <g fill="#4b5563" font-size="12"><text x="556" y="38">—</text><rect x="578" y="30" width="9" height="9" fill="none" stroke="#4b5563"/><text x="600" y="39">×</text></g>
+
+  <!-- navegação -->
+  <g font-size="11" fill="#1f2937">
+    <text x="46" y="80">Sistema</text>
+    <text x="46" y="104">Bluetooth e dispositivos</text>
+    <text x="46" y="128">Rede e Internet</text>
+    <text x="46" y="152">Personalização</text>
+    <rect x="34" y="160" width="164" height="24" rx="5" fill="#e5edf8"/>
+    <rect x="34" y="165" width="3" height="14" rx="1.5" fill="#0067c0"/>
+    <text x="46" y="176" font-weight="700">Aplicativos</text>
+    <text x="46" y="200">Contas</text>
+    <text x="46" y="224">Hora e idioma</text>
+    <text x="46" y="248">Privacidade e segurança</text>
+  </g>
+
+  <text x="210" y="74" font-size="18" font-weight="700" fill="#1f2937">Aplicativos <tspan fill="#6b7280" font-weight="400">›</tspan> Aplicativos instalados</text>
+  <rect x="210" y="88" width="250" height="26" rx="5" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="222" y="105" font-size="10.5" fill="#9ca3af">Pesquisar aplicativos</text>
+  <text x="604" y="105" font-size="10.5" fill="#6b7280" text-anchor="end">Classificar por: Nome</text>
+
+  <!-- lista -->
+  <g font-size="12" fill="#1f2937">
+    <rect x="210" y="124" width="396" height="44" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+    <rect x="222" y="134" width="24" height="24" rx="5" fill="#475569"/>
+    <text x="258" y="146">Calculadora</text><text x="258" y="160" font-size="10" fill="#6b7280">Microsoft Corporation</text>
+    <text x="560" y="150" font-size="10.5" fill="#6b7280" text-anchor="end">32 KB</text><text x="588" y="150" fill="#6b7280">···</text>
+
+    <rect x="210" y="174" width="396" height="44" rx="8" fill="#ffffff" stroke="#60a5fa" stroke-width="1.5"/>
+    <rect x="222" y="184" width="24" height="24" rx="5" fill="#f59e0b"/>
+    <text x="258" y="196">Jogo de Paciência</text><text x="258" y="210" font-size="10" fill="#6b7280">Aplicativo que você não usa</text>
+    <text x="560" y="200" font-size="10.5" fill="#6b7280" text-anchor="end">8,2 MB</text>
+    <rect x="580" y="186" width="20" height="20" rx="4" fill="#dbeafe"/><text x="584" y="200" fill="#0b4a9e" font-weight="700">···</text>
+
+    <rect x="210" y="224" width="396" height="44" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+    <rect x="222" y="234" width="24" height="24" rx="5" fill="#ef4444"/>
+    <text x="258" y="246">Paint</text><text x="258" y="260" font-size="10" fill="#6b7280">Microsoft Corporation</text>
+    <text x="560" y="250" font-size="10.5" fill="#6b7280" text-anchor="end">2,1 MB</text><text x="588" y="250" fill="#6b7280">···</text>
+
+    <rect x="210" y="274" width="396" height="44" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+    <rect x="222" y="284" width="24" height="24" rx="5" fill="#10b981"/>
+    <text x="258" y="296">Fotos</text><text x="258" y="310" font-size="10" fill="#6b7280">Microsoft Corporation</text>
+    <text x="560" y="300" font-size="10.5" fill="#6b7280" text-anchor="end">18 MB</text><text x="588" y="300" fill="#6b7280">···</text>
+  </g>
+
+  <!-- menu "···" -->
+  <g filter="url(#sombra)">
+    <rect x="470" y="210" width="130" height="78" rx="8" fill="#f9f9f9" stroke="#d4d4d8"/>
+  </g>
+  <g font-size="11.5" fill="#1f2937">
+    <text x="484" y="232">Opções avançadas</text>
+    <text x="484" y="254" fill="#9ca3af">Modificar</text>
+    <rect x="476" y="260" width="118" height="22" rx="5" fill="#dbeafe" stroke="#60a5fa"/>
+    <text x="484" y="275" font-weight="700" fill="#0b4a9e">Desinstalar</text>
+  </g>
+
+  <!-- chamada Microsoft Store -->
+  <rect x="34" y="276" width="156" height="92" rx="8" fill="#0b4a9e"/>
+  <text x="46" y="296" font-size="11.5" font-weight="700" fill="#ffffff">Para instalar:</text>
+  <text x="46" y="314" font-size="10.5" fill="#dbeafe">abra a Microsoft Store,</text>
+  <text x="46" y="330" font-size="10.5" fill="#dbeafe">pesquise um aplicativo</text>
+  <text x="46" y="346" font-size="10.5" fill="#dbeafe">gratuito e clique em</text>
+  <text x="46" y="362" font-size="10.5" font-weight="700" fill="#ffffff">Obter / Instalar</text>
+</svg>

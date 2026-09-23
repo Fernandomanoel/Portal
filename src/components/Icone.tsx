@@ -26,7 +26,9 @@ export type NomeIcone =
   | "escudo"
   | "musica"
   | "raio"
-  | "trofeu";
+  | "trofeu"
+  | "alvo"
+  | "alerta";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -151,6 +153,19 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
       <path d="M8 4.5h8V8a4 4 0 0 1-8 0Z" />
       <path d="M6 5.8H4.7A2.2 2.2 0 0 0 3.9 10l2 1.6M18 5.8h1.3a2.2 2.2 0 0 1 .8 4.2l-2 1.6" />
       <path d="M10 19.5h4M12 15.5v4" />
+    </>
+  ),
+  alvo: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="0.8" />
+    </>
+  ),
+  alerta: (
+    <>
+      <path d="M10.3 4.2 2.9 17.5A1.9 1.9 0 0 0 4.6 20.3h14.8a1.9 1.9 0 0 0 1.7-2.8L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z" />
+      <path d="M12 9.5v4.2M12 16.8h.01" />
     </>
   ),
 };

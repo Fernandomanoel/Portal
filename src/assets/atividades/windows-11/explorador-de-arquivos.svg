@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+
+  <!-- janela -->
+  <g filter="url(#sombra)">
+    <rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  </g>
+
+  <!-- barra de título / abas -->
+  <path d="M20 26 a10 10 0 0 1 10 -10 h580 a10 10 0 0 1 10 10 v24 h-600 z" fill="#eef1f5"/>
+  <rect x="32" y="22" width="150" height="28" rx="6" fill="#ffffff"/>
+  <rect x="42" y="30" width="14" height="11" rx="2" fill="#f6c343"/>
+  <text x="62" y="40" font-size="11.5" fill="#1f2937">Documentos</text>
+  <text x="170" y="40" font-size="11" fill="#6b7280">×</text>
+  <text x="196" y="40" font-size="14" fill="#6b7280">+</text>
+  <g fill="#4b5563" font-size="12">
+    <text x="556" y="38">—</text><rect x="578" y="30" width="9" height="9" fill="none" stroke="#4b5563"/><text x="600" y="39">×</text>
+  </g>
+
+  <!-- endereço e busca -->
+  <g font-size="11">
+    <text x="36" y="72" fill="#9ca3af">←</text><text x="54" y="72" fill="#9ca3af">→</text><text x="72" y="72" fill="#4b5563">↑</text>
+    <rect x="92" y="58" width="366" height="22" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="102" y="73" fill="#374151">Este Computador   ›   Documentos</text>
+    <rect x="468" y="58" width="140" height="22" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="478" y="73" fill="#9ca3af">Pesquisar</text>
+  </g>
+
+  <!-- barra de comandos -->
+  <line x1="20" y1="90" x2="620" y2="90" stroke="#e5e7eb"/>
+  <g font-size="11.5" fill="#1f2937">
+    <rect x="30" y="96" width="62" height="24" rx="5" fill="#dbeafe" stroke="#60a5fa"/>
+    <text x="40" y="112" font-weight="700" fill="#0b4a9e">⊕ Novo</text>
+    <text x="110" y="112" fill="#6b7280">Recortar</text>
+    <text x="176" y="112" fill="#6b7280">Copiar</text>
+    <text x="234" y="112" fill="#6b7280">Colar</text>
+    <text x="284" y="112" fill="#6b7280">Renomear</text>
+    <text x="358" y="112" fill="#6b7280">Excluir</text>
+    <text x="420" y="112" fill="#6b7280">Classificar</text>
+    <text x="500" y="112" fill="#6b7280">Exibir</text>
+  </g>
+  <line x1="20" y1="126" x2="620" y2="126" stroke="#e5e7eb"/>
+
+  <!-- painel de navegação -->
+  <g font-size="11.5" fill="#1f2937">
+    <text x="42" y="150">Início</text>
+    <text x="42" y="172">Galeria</text>
+    <line x1="32" y1="182" x2="164" y2="182" stroke="#eef0f3"/>
+    <text x="42" y="200">Área de Trabalho</text>
+    <text x="42" y="222">Downloads</text>
+    <rect x="30" y="230" width="136" height="22" rx="5" fill="#e5edf8"/>
+    <rect x="30" y="234" width="3" height="14" rx="1.5" fill="#0067c0"/>
+    <text x="42" y="245" font-weight="700">Documentos</text>
+    <text x="42" y="268">Imagens</text>
+    <text x="42" y="290">Músicas</text>
+    <line x1="32" y1="300" x2="164" y2="300" stroke="#eef0f3"/>
+    <text x="42" y="318">Este Computador</text>
+  </g>
+  <line x1="176" y1="126" x2="176" y2="384" stroke="#e5e7eb"/>
+
+  <!-- conteúdo -->
+  <g font-size="11" text-anchor="middle" fill="#1f2937">
+    <rect x="190" y="146" width="120" height="96" rx="8" fill="#e5f1fb" stroke="#60a5fa"/>
+    <path d="M220 170 h22 l6 6 h32 v40 h-60 z" fill="#f6c343"/>
+    <path d="M220 182 h60 v34 h-60 z" fill="#fbd35f"/>
+    <text x="250" y="232" font-weight="700" font-size="10.5">Atividades Windows</text>
+
+    <rect x="318" y="146" width="104" height="96" rx="8" fill="#ffffff"/>
+    <path d="M354 164 h24 l10 10 v40 h-34 z" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+    <path d="M378 164 v10 h10" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+    <g stroke="#94a3b8" stroke-width="1.5"><line x1="360" y1="186" x2="382" y2="186"/><line x1="360" y1="194" x2="382" y2="194"/><line x1="360" y1="202" x2="376" y2="202"/></g>
+    <text x="370" y="232">anotações.txt</text>
+  </g>
+
+  <!-- chamadas -->
+  <g font-size="11.5">
+    <rect x="428" y="150" width="182" height="64" rx="8" fill="#0b4a9e"/>
+    <text x="440" y="170" fill="#ffffff" font-weight="700">Abrir o Explorador</text>
+    <text x="440" y="188" fill="#dbeafe" font-size="11">Atalho: Windows + E</text>
+    <text x="440" y="204" fill="#dbeafe" font-size="11">ou o ícone de pasta</text>
+    <rect x="428" y="226" width="182" height="64" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="440" y="246" fill="#0b4a9e" font-weight="700">Criar pasta ou arquivo</text>
+    <text x="440" y="264" fill="#1f2937" font-size="11">Novo → Pasta</text>
+    <text x="440" y="280" fill="#1f2937" font-size="11">Novo → Documento de Texto</text>
+  </g>
+  <text x="196" y="370" font-size="10.5" fill="#6b7280">2 itens</text>
+</svg>

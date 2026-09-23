@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M20 26 a10 10 0 0 1 10 -10 h580 a10 10 0 0 1 10 10 v24 h-600 z" fill="#eef1f5"/>
+  <rect x="32" y="22" width="170" height="28" rx="6" fill="#ffffff"/>
+  <rect x="42" y="30" width="14" height="11" rx="2" fill="#f6c343"/>
+  <text x="62" y="40" font-size="11.5" fill="#1f2937">Este Computador</text>
+  <g fill="#4b5563" font-size="12"><text x="556" y="38">—</text><rect x="578" y="30" width="9" height="9" fill="none" stroke="#4b5563"/><text x="600" y="39">×</text></g>
+  <g font-size="11">
+    <text x="36" y="72" fill="#9ca3af">←</text><text x="54" y="72" fill="#9ca3af">→</text><text x="72" y="72" fill="#4b5563">↑</text>
+    <rect x="92" y="58" width="366" height="22" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="102" y="73" fill="#374151">Este Computador</text>
+    <rect x="468" y="58" width="140" height="22" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="478" y="73" fill="#9ca3af">Pesquisar</text>
+  </g>
+  <line x1="20" y1="90" x2="620" y2="90" stroke="#e5e7eb"/>
+  <g font-size="11.5">
+    <text x="38" y="112" fill="#6b7280">⊕ Novo</text>
+    <text x="106" y="112" fill="#6b7280">Recortar</text>
+    <text x="194.4" y="112" fill="#6b7280">Copiar</text>
+    <text x="267.2" y="112" fill="#6b7280">Colar</text>
+    <text x="332.2" y="112" fill="#6b7280">Renomear</text>
+    <text x="420.6" y="112" fill="#6b7280">Excluir</text>
+  </g>
+  <line x1="20" y1="126" x2="620" y2="126" stroke="#e5e7eb"/>
+  <g font-size="11.5" fill="#1f2937">
+    <text x="42" y="150">Início</text>
+    <text x="42" y="172">Galeria</text>
+    <line x1="32" y1="182" x2="164" y2="182" stroke="#eef0f3"/>
+    <text x="42" y="200">Área de Trabalho</text>
+    <text x="42" y="222">Downloads</text>
+    <text x="42" y="244">Documentos</text>
+    <text x="42" y="266">Imagens</text>
+    <line x1="32" y1="276" x2="164" y2="276" stroke="#eef0f3"/>
+    <rect x="30" y="279" width="136" height="22" rx="5" fill="#e5edf8"/>
+    <rect x="30" y="283" width="3" height="14" rx="1.5" fill="#0067c0"/>
+    <text x="42" y="294" font-weight="700">Este Computador</text>
+    <text x="42" y="316">Lixeira</text>
+  </g>
+  <line x1="176" y1="126" x2="176" y2="384" stroke="#e5e7eb"/>
+  <text x="196" y="150" font-size="11.5" fill="#1f2937" font-weight="700">Dispositivos e unidades</text>
+  <rect x="200" y="174" width="34" height="24" rx="3" fill="#e5e7eb" stroke="#94a3b8"/>
+  <rect x="204" y="190" width="10" height="3" fill="#16a34a"/>
+  <text x="244" y="182" font-size="11" fill="#1f2937">Disco Local (C:)</text>
+  <rect x="244" y="188" width="130" height="9" fill="#e5e7eb"/>
+  <rect x="244" y="188" width="31.2" height="9" fill="#26a0da"/>
+  <text x="244" y="210" font-size="9.5" fill="#6b7280">180 GB livres de 236 GB</text>
+  <rect x="402" y="162" width="196" height="58" rx="6" fill="#e5f1fb" stroke="#60a5fa"/>
+  <rect x="410" y="174" width="34" height="24" rx="3" fill="#e5e7eb" stroke="#94a3b8"/>
+  <rect x="414" y="190" width="10" height="3" fill="#16a34a"/>
+  <text x="454" y="182" font-size="11" fill="#1f2937" font-weight="700">TESTE (Z:)</text>
+  <rect x="454" y="188" width="130" height="9" fill="#e5e7eb"/>
+  <rect x="454" y="188" width="3.9" height="9" fill="#26a0da"/>
+  <text x="454" y="210" font-size="9.5" fill="#6b7280">0,98 GB livres de 1,00 GB</text>
+  <rect x="196" y="260" width="410" height="64" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="208" y="280" font-size="11.5" font-weight="700" fill="#0b4a9e">Nova unidade funcionando</text>
+  <text x="208" y="298" font-size="11" fill="#1f2937">Crie uma pasta e um arquivo em TESTE (Z:) e veja o espaço</text>
+  <text x="208" y="314" font-size="11" fill="#1f2937">total em Propriedades: igual ou menor que 1 GB.</text>
+</svg>

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="120" y="16" width="400" height="368" rx="8" fill="#f9fafb" stroke="#cbd5e1"/></g>
+  <text x="134" y="36" font-size="11.5" fill="#1f2937">Som</text>
+  <text x="502" y="37" font-size="12" fill="#4b5563">×</text>
+  <line x1="130" y1="72" x2="510" y2="72" stroke="#d1d5db"/>
+  <text x="139" y="67" font-size="10.5" fill="#1f2937">Reprodução</text>
+  <text x="221" y="67" font-size="10.5" fill="#1f2937">Gravação</text>
+  <rect x="282.8" y="52" width="40.4" height="21" fill="#ffffff" stroke="#d1d5db"/>
+  <rect x="283.8" y="71" width="38.4" height="3" fill="#ffffff"/>
+  <text x="289.8" y="67" font-size="10.5" font-weight="700" fill="#0b4a9e">Sons</text>
+  <text x="332.2" y="67" font-size="10.5" fill="#1f2937">Comunicações</text>
+  <text x="136" y="84" font-size="10.5" fill="#1f2937">Esquema de som:</text>
+  <rect x="136" y="92" width="220" height="22" rx="4" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="144" y="107" font-size="10.5" fill="#1f2937">Esquema da Ana (modificado)</text>
+  <rect x="363" y="88" width="102" height="30" rx="7" fill="none" stroke="#60a5fa" stroke-width="2"/><rect x="366" y="91" width="96" height="24" rx="5" fill="#0067c0"/>
+  <text x="414" y="107" font-size="10.5" fill="#ffffff" text-anchor="middle">Salvar como...</text>
+  <rect x="466" y="91" width="44" height="24" rx="5" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="488" y="107" font-size="10.5" fill="#1f2937" text-anchor="middle">Excluir</text>
+  <text x="136" y="138" font-size="10.5" fill="#1f2937">Eventos de programa:</text>
+  <rect x="136" y="146" width="368" height="130" fill="#ffffff" stroke="#d1d5db"/>
+  <circle cx="156" cy="162" r="5" fill="none" stroke="#6b7280"/>
+  <text x="170" y="166" font-size="10.5" fill="#1f2937">Iniciar o Windows</text>
+  <circle cx="156" cy="184" r="5" fill="none" stroke="#6b7280"/>
+  <text x="170" y="188" font-size="10.5" fill="#1f2937">Lembrete de calendário</text>
+  <rect x="140" y="196" width="360" height="20" fill="#dbeafe"/>
+  <circle cx="156" cy="206" r="5" fill="none" stroke="#6b7280"/>
+  <text x="170" y="210" font-size="10.5" fill="#1f2937" font-weight="700">Notificação</text>
+  <rect x="140" y="218" width="360" height="20" fill="#eef4fd"/>
+  <circle cx="156" cy="228" r="5" fill="none" stroke="#6b7280"/>
+  <text x="170" y="232" font-size="10.5" fill="#1f2937">Parada crítica</text>
+  <circle cx="156" cy="250" r="5" fill="none" stroke="#6b7280"/>
+  <text x="170" y="254" font-size="10.5" fill="#1f2937">Sair do Windows</text>
+  <text x="136" y="300" font-size="10.5" fill="#1f2937">Sons:</text>
+  <rect x="136" y="308" width="220" height="22" rx="4" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="144" y="323" font-size="10.5" fill="#1f2937">Windows Ding.wav</text>
+  <rect x="363" y="304" width="72" height="30" rx="7" fill="none" stroke="#60a5fa" stroke-width="2"/><rect x="366" y="307" width="66" height="24" rx="5" fill="#0067c0"/>
+  <text x="399" y="323" font-size="10.5" fill="#ffffff" text-anchor="middle">Testar</text>
+  <rect x="360" y="348" width="66" height="24" rx="5" fill="#0067c0"/>
+  <text x="393" y="364" font-size="10.5" fill="#ffffff" text-anchor="middle">OK</text>
+  <rect x="434" y="348" width="70" height="24" rx="5" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="469" y="364" font-size="10.5" fill="#1f2937" text-anchor="middle">Cancelar</text>
+  <rect x="8" y="150" width="104" height="80" rx="8" fill="#0b4a9e"/>
+  <text x="20" y="170" font-size="11.5" font-weight="700" fill="#ffffff">Troque</text>
+  <text x="20" y="188" font-size="11" fill="#dbeafe">Notificação</text>
+  <text x="20" y="204" font-size="11" fill="#dbeafe">e Parada</text>
+  <text x="20" y="220" font-size="11" fill="#dbeafe">crítica</text>
+</svg>
