@@ -325,34 +325,31 @@ export const ATIVIDADES: Curso[] = [
     categoria: "administrativa",
     sigla: "S",
     cor: "#9333ea",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Atividade Prática: Rotinas de Secretariado e Assessoria Administrativa",
         descricao:
           "Rotinas administrativas, redação oficial, gestão de agenda, etiqueta corporativa e controle de fundo fixo (pequeno caixa).",
-        tipo: "link",
-        url: "/atividades/secretariado/secretariado-rotinas-assessoria-administrativa.html",
+        caminho: "Secretariado/secretariado-rotinas-assessoria-administrativa",
       },
       {
         titulo: "Atividade Prática: Secretariado Executivo — Viagens, Eventos e Arquivo",
         descricao:
           "Planejamento de viagens, relatório de despesas, organização de eventos (RSVP), métodos de arquivamento e conflitos de agenda.",
-        tipo: "link",
-        url: "/atividades/secretariado/secretariado-executivo-viagens-eventos-arquivo.html",
+        caminho: "Secretariado/secretariado-executivo-viagens-eventos-arquivo",
       },
       {
         titulo: "Atividade Prática: Secretariado Executivo — Gestão da Informação e 5S",
         descricao:
           "Metodologia 5S, rotinas de protocolo, orçamento de suprimentos, triagem telefônica avançada e LGPD na proteção de dados.",
-        tipo: "link",
-        url: "/atividades/secretariado/secretariado-executivo-gestao-informacao-5s.html",
+        caminho: "Secretariado/secretariado-executivo-gestao-informacao-5s",
       },
       {
         titulo: "Atividade Prática: Secretariado — Gestão de Tempo, Comunicação e Ferramentas",
         descricao:
           "Matriz de Eisenhower, organização de reuniões virtuais (netiqueta), orçamentos, comunicação assertiva por e-mail e controles em nuvem.",
-        tipo: "link",
-        url: "/atividades/secretariado/secretariado-gestao-tempo-comunicacao-ferramentas.html",
+        caminho: "Secretariado/secretariado-gestao-tempo-comunicacao-ferramentas",
       },
     ],
   },
