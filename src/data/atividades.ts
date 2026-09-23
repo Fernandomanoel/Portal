@@ -444,7 +444,15 @@ export const ATIVIDADES: Curso[] = [
     categoria: "design",
     sigla: "PS",
     cor: "#001e36",
-    materiais: [],
+    materiais: [
+      {
+        titulo: "Foto de apoio — esfera lisa",
+        descricao:
+          "Fundo neutro e sem texturas complicadas — boa para praticar recorte e remoção de fundo (Graus 1 e 3) se você não tiver uma foto sua à mão.",
+        tipo: "link",
+        url: "/atividades/photoshop/material-esfera.jpg",
+      },
+    ],
     atividades: [
       {
         titulo: "Adobe Photoshop — Grau 1: Conhecendo a Ferramenta",
