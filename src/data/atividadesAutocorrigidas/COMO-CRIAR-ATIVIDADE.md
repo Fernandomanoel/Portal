@@ -75,6 +75,7 @@ Em `src/data/atividades.ts`, dentro do curso, acrescente ao array `atividades`:
 | `desafio` | Caixa "Desafio extra:" com uma tarefa a mais, para quem terminar antes. |
 | `aviso` | Caixa amarela "Atenção:" com um cuidado que o aluno precisa ter. |
 | `imagem` | Imagem de demonstração. `url` recebe um `import` de `src/assets/` ou um link externo. |
+| `codigo` | Comando de terminal ou trecho de código, em fonte monoespaçada. `terminal: true` prefixa cada linha com `$` (ex.: cursos de programação como Cordova). |
 | `cenario` / `instrucao` | Texto de contexto e enunciado. |
 | `tabelaReferencia` | Tabela de dados para exercícios de cálculo. |
 | `campos` | Perguntas corrigidas automaticamente (`selecao`, `multipla_escolha`, `numero`, `texto`, `padrao`). |

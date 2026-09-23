@@ -503,6 +503,23 @@ export const ATIVIDADES: Curso[] = [
       },
     ],
   },
+  {
+    slug: "cordova",
+    titulo: "Apps Mobile com Ionic e Cordova",
+    descricao: "Construa um aplicativo de celular de verdade, do primeiro componente ao emulador Android.",
+    categoria: "programacao",
+    sigla: "ION",
+    cor: "#3880ff",
+    materiais: [],
+    atividades: [
+      {
+        titulo: "Ionic e Cordova — Primeiros Passos",
+        descricao:
+          "O que são Ionic e Cordova, criando o projeto pelo terminal, primeiro componente (cabeçalho e cartão), cores do tema e o Console como ferramenta de investigação de erros.",
+        caminho: "Cordova/cordova-primeiros-passos",
+      },
+    ],
+  },
 ];
 
 export function acharCurso(slug: string): Curso | undefined {

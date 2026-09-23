@@ -76,6 +76,12 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
               </>
             )}
 
+            {item.codigo && (
+              <pre className={item.codigo.terminal ? `${estilos.codigo} ${estilos.codigoTerminal}` : estilos.codigo}>
+                <code>{item.codigo.terminal ? comoTerminal(item.codigo.conteudo) : item.codigo.conteudo}</code>
+              </pre>
+            )}
+
             {item.imagem && (
               <figure className={estilos.imagem}>
                 <img src={item.imagem.url} alt={item.imagem.alt} loading="lazy" />
@@ -181,6 +187,13 @@ function Nota({ tipo, rotulo, children }: { tipo: keyof typeof ICONE_NOTA; rotul
       </div>
     </div>
   );
+}
+
+function comoTerminal(conteudo: string) {
+  return conteudo
+    .split("\n")
+    .map((linha) => (linha.trim() ? `$ ${linha}` : linha))
+    .join("\n");
 }
 
 function resumirResultados(resultados: Resultados) {

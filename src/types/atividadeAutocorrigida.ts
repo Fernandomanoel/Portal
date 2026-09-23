@@ -50,6 +50,17 @@ export interface ImagemReferencia {
 }
 
 /**
+ * Trecho de código ou comando de terminal, exibido em fonte monoespaçada —
+ * para tutoriais de programação (ex.: Cordova/Ionic), diferente do passo a
+ * passo de UI que os outros cursos usam. Com `terminal: true`, cada linha
+ * não vazia ganha o prefixo "$", como no console.
+ */
+export interface BlocoCodigo {
+  conteudo: string;
+  terminal?: boolean;
+}
+
+/**
  * Um item serve dois formatos com o mesmo molde:
  * - exercício prático (o aluno faz no próprio computador): `passos` +
  *   `objetivo` + `imagem`, sem `campos` — não há o que corrigir;
@@ -63,6 +74,8 @@ export interface ItemAtividade {
   instrucao?: string;
   /** Tarefa em passos numerados, na ordem em que o aluno executa. */
   passos?: string[];
+  /** Comando de terminal ou trecho de código citado no item. */
+  codigo?: BlocoCodigo;
   /** Tarefa opcional a mais, para quem terminar antes ("Desafio extra"). */
   desafio?: string;
   /** Cuidado que o aluno precisa ter nesse item ("Atenção"). */
