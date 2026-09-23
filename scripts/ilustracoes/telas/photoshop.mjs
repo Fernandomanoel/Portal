@@ -3,7 +3,8 @@
 // ícones variam por versão). Cada chave vira <chave>.svg. Para uma tela nova,
 // copie a mais parecida e rode `npm run ilustracoes -- <chave>`.
 import {
-  caixaFerramentas, chamada, fotoPlaceholder, painelCriativo, janelaCriativa, quadriculado, selo, svg, texto,
+  auraRadial, caixaFerramentas, chamada, fotoPlaceholder, gradeTercos, histograma, painelCriativo, janelaCriativa,
+  quadriculado, selo, svg, texto,
 } from '../pecas.mjs';
 
 export const destino = 'photoshop';
@@ -87,3 +88,76 @@ telas['remover-fundo-antes-depois'] = svg([
   fotoPlaceholder(366, 72, 228, 268, { comFundo: false }),
   texto(320, 214, '→', { tamanho: 26, cor: '#0ea5e9', centro: true }),
 ], '#eef2f7');
+
+// ---------------- Grau 2 — Seleções e camadas ----------------
+
+telas['mascara-de-camada'] = svg([
+  janelaCriativa('Sem título-1.psd', '#31a8ff', { menus: MENUS }),
+  caixaFerramentas(FERRAMENTAS, { destaque: 'B' }),
+  fotoPlaceholder(56, 92, 448, 282),
+  painelCriativo('Camadas', [
+    { rotulo: 'Foto 2 (máscara)', ativa: true, mascara: true, mascaraMetade: true },
+    { rotulo: 'Foto 1 (fundo)' },
+  ], {}),
+  chamada(150, 300, 260, 'O segundo quadrado é a máscara', ['clique nele para pintar — preto', 'esconde, branco revela'], { escura: false }),
+], '#1f2937');
+
+// ---------------- Grau 3 — Cor e retoque ----------------
+
+telas['histograma-niveis'] = svg([
+  texto(320, 34, 'Níveis', { tamanho: 14, cor: '#1f2937', negrito: true, centro: true }),
+  histograma(60, 56, 520, 220),
+  texto(60 + 520 * 0.08, 300, 'Ponto preto', { tamanho: 10.5, cor: '#111827', centro: true }),
+  texto(320, 300, 'Gama', { tamanho: 10.5, cor: '#6b7280', centro: true }),
+  texto(60 + 520 * 0.9, 300, 'Ponto branco', { tamanho: 10.5, cor: '#9ca3af', centro: true }),
+], '#eef2f7');
+
+// ---------------- Grau 4 — Texto, formas e composição ----------------
+
+telas['estilos-de-camada'] = svg([
+  janelaCriativa('Sem título-1.psd', '#31a8ff', { menus: MENUS }),
+  caixaFerramentas(FERRAMENTAS, { destaque: 'V' }),
+  fotoPlaceholder(56, 92, 448, 282),
+  `  <text x="280" y="250" font-size="46" font-weight="700" text-anchor="middle" fill="#111827" opacity="0.55">TÍTULO</text>
+  <text x="278" y="248" font-size="46" font-weight="700" text-anchor="middle" fill="#ffffff" stroke="#111827" stroke-width="1.5">TÍTULO</text>`,
+  painelCriativo('Camadas', [{ rotulo: 'TÍTULO (fx)', ativa: true }, ...CAMADAS_PADRAO], {}),
+  chamada(330, 30, 250, 'Sombra + Contorno (Estilo de Camada)', ['garante legibilidade sobre a foto'], { escura: false }),
+], '#1f2937');
+
+telas['regra-dos-tercos'] = svg([
+  janelaCriativa('Sem título-1.psd', '#31a8ff', { menus: MENUS }),
+  caixaFerramentas(FERRAMENTAS),
+  fotoPlaceholder(56, 92, 448, 282),
+  gradeTercos(56, 92, 448, 282),
+  painelCriativo('Camadas', CAMADAS_PADRAO, {}),
+  chamada(150, 300, 260, 'Os 4 pontos amarelos', ['são os locais de maior equilíbrio', 'visual — bons para título ou rosto'], { escura: false }),
+], '#1f2937');
+
+// ---------------- Grau 5 — Efeitos e filtros ----------------
+
+telas['dupla-exposicao'] = svg([
+  texto(110, 34, 'Silhueta', { tamanho: 12.5, cor: '#1f2937', negrito: true, centro: true }),
+  texto(320, 34, 'Paisagem', { tamanho: 12.5, cor: '#1f2937', negrito: true, centro: true }),
+  texto(530, 34, 'Resultado (Tela)', { tamanho: 12.5, cor: '#1f2937', negrito: true, centro: true }),
+  '  <g filter="url(#sombra)"><rect x="30" y="50" width="160" height="280" rx="8" fill="#111827"/></g>',
+  '  <path d="M60 330 L110 180 L140 250 L170 130 L190 330 Z" fill="#374151" transform="translate(0 -20)"/>',
+  '  <g filter="url(#sombra)"><rect x="240" y="50" width="160" height="280" rx="8" fill="#ffffff" stroke="#cbd5e1"/></g>',
+  fotoPlaceholder(248, 58, 144, 264),
+  '  <g filter="url(#sombra)"><rect x="450" y="50" width="160" height="280" rx="8" fill="#0f172a"/></g>',
+  `  <g opacity="0.8"><path d="M480 330 L530 180 L560 250 L590 130 L610 330 Z" fill="#1e3a5f"/></g>`,
+  texto(215, 200, '+', { tamanho: 24, cor: '#6b7280', centro: true }),
+  texto(425, 200, '=', { tamanho: 24, cor: '#6b7280', centro: true }),
+], '#eef2f7');
+
+// ---------------- Grau 8 — Auras e efeitos de invocação (bônus) ----------------
+
+telas['aura-e-luz-de-contorno'] = svg([
+  '  <rect width="640" height="400" fill="#0f172a"/>',
+  auraRadial(320, 220, 170, '#a855f7'),
+  auraRadial(320, 220, 90, '#f59e0b'),
+  '  <path d="M260 340 Q320 120 380 340 Z" fill="#111827"/>',
+  '  <path d="M262 336 Q320 130 378 336" fill="none" stroke="#fde68a" stroke-width="3" opacity="0.85"/>',
+  chamada(40, 40, 220, 'Aura', ['gradiente radial atrás,', 'desfocado nas bordas'], { escura: false }),
+  chamada(400, 40, 220, 'Luz de contorno', ['traço claro só no lado', 'voltado para a luz'], { escura: false }),
+], '#0f172a');
+

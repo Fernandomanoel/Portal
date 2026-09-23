@@ -440,7 +440,7 @@ export const ATIVIDADES: Curso[] = [
   {
     slug: "photoshop",
     titulo: "Adobe Photoshop",
-    descricao: "Do primeiro clique a composições avançadas — curso completo em graus.",
+    descricao: "Do primeiro clique a composições avançadas — curso completo em 8 graus.",
     categoria: "design",
     sigla: "PS",
     cor: "#001e36",
@@ -451,6 +451,47 @@ export const ATIVIDADES: Curso[] = [
         descricao:
           "Reconhecer a tela do Photoshop, inserir uma imagem, recortar e remover o fundo de uma foto por dois caminhos diferentes.",
         caminho: "Photoshop/photoshop-grau1-conhecendo-a-ferramenta",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 2: Seleções e Camadas Avançadas",
+        descricao:
+          "Seleção por cor, Laço Poligonal/Magnético, máscaras de camada e modos de mesclagem, com prática de montagem por máscara.",
+        caminho: "Photoshop/photoshop-grau2-selecoes-e-camadas",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 3: Ajustes de Cor e Retoque",
+        descricao:
+          "Níveis, Curvas, Balanço de Cor e as ferramentas de retoque (Carimbo, Pincel de Recuperação, Correção Pontual) em camadas de ajuste não destrutivas.",
+        caminho: "Photoshop/photoshop-grau3-cor-e-retoque",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 4: Texto, Formas e Composição",
+        descricao:
+          "Ferramenta Texto, estilos de camada, formas vetoriais, Regra dos Terços e a montagem de um post pronto para redes sociais.",
+        caminho: "Photoshop/photoshop-grau4-texto-formas-e-composicao",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 5: Efeitos e Filtros Criativos",
+        descricao: "Objetos Inteligentes, Filtros Inteligentes e a montagem de um efeito de dupla exposição.",
+        caminho: "Photoshop/photoshop-grau5-efeitos-e-filtros",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 6: Composição Avançada",
+        descricao:
+          "Perspectiva, refinamento de seleção, harmonização de cor e luz entre elementos de fontes diferentes — a técnica por trás de qualquer montagem que engana o olho.",
+        caminho: "Photoshop/photoshop-grau6-composicao-avancada",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 7: Projeto Final Integrador",
+        descricao:
+          "Um briefing de verdade, do planejamento à entrega organizada: peça principal, adaptação para Stories e exportação para diferentes usos.",
+        caminho: "Photoshop/photoshop-grau7-projeto-final",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 8 (Bônus): Auras e Efeitos de Invocação",
+        descricao:
+          "Luz de contorno, auras coloridas e texto de efeito — o estilo por trás dos memes de personagem com elemento fantástico atrás dele.",
+        caminho: "Photoshop/photoshop-grau8-auras-e-invocacao",
       },
     ],
   },

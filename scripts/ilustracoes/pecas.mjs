@@ -310,11 +310,53 @@ export function painelCriativo(titulo, linhas, { x = 514 } = {}) {
   for (const linha of linhas) {
     if (linha.ativa) partes.push(`  <rect x="${x + 4}" y="${y - 14}" width="98" height="22" fill="#3b3b3b"/>`);
     partes.push(`  <rect x="${x + 8}" y="${y - 11}" width="16" height="16" fill="#4b5563"/>`);
+    if (linha.mascara) {
+      partes.push(`  <rect x="${x + 26}" y="${y - 11}" width="16" height="16" fill="#ffffff" stroke="#9ca3af"/>`);
+      if (linha.mascaraMetade) partes.push(`  <rect x="${x + 34}" y="${y - 11}" width="8" height="16" fill="#111827"/>`);
+    }
     partes.push(`  <circle cx="${x + 94}" cy="${y - 3}" r="3" fill="${linha.visivel === false ? 'none' : '#94a3b8'}" stroke="#94a3b8"/>`);
-    partes.push(`  <text x="${x + 30}" y="${y}" font-size="9.5" fill="${CLARO_SOBRE_ESCURO}">${esc(linha.rotulo)}</text>`);
+    partes.push(`  <text x="${x + (linha.mascara ? 48 : 30)}" y="${y}" font-size="9.5" fill="${CLARO_SOBRE_ESCURO}">${esc(linha.rotulo)}</text>`);
     y += 26;
   }
   return partes.join('\n');
+}
+
+/** Histograma simples (Níveis) com os controles de ponto preto/gama/ponto branco. */
+export function histograma(x, y, largura, altura, { pretoFrac = 0.08, brancoFrac = 0.9 } = {}) {
+  const barras = 40;
+  const partes = [`  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" fill="#ffffff" stroke="#cbd5e1"/>`];
+  for (let i = 0; i < barras; i++) {
+    const t = i / (barras - 1);
+    const h = altura * 0.85 * Math.exp(-((t - 0.55) ** 2) / 0.05) + altura * 0.06;
+    partes.push(`  <rect x="${x + (largura / barras) * i}" y="${y + altura - h}" width="${largura / barras - 1}" height="${h}" fill="#9ca3af"/>`);
+  }
+  const px = x + largura * pretoFrac;
+  const bx = x + largura * brancoFrac;
+  const gx = (px + bx) / 2;
+  partes.push(`  <g stroke-width="2"><line x1="${px}" y1="${y}" x2="${px}" y2="${y + altura}" stroke="#111827"/>
+    <line x1="${gx}" y1="${y}" x2="${gx}" y2="${y + altura}" stroke="#6b7280"/>
+    <line x1="${bx}" y1="${y}" x2="${bx}" y2="${y + altura}" stroke="#e5e7eb"/></g>`);
+  return partes.join('\n');
+}
+
+/** Sobrepõe a grade da Regra dos Terços em uma área (2 linhas verticais + 2 horizontais). */
+export function gradeTercos(x, y, largura, altura) {
+  const x1 = x + largura / 3;
+  const x2 = x + (largura * 2) / 3;
+  const y1 = y + altura / 3;
+  const y2 = y + (altura * 2) / 3;
+  return `  <g stroke="#ffffff" stroke-width="1.5" opacity="0.85">
+    <line x1="${x1}" y1="${y}" x2="${x1}" y2="${y + altura}"/><line x1="${x2}" y1="${y}" x2="${x2}" y2="${y + altura}"/>
+    <line x1="${x}" y1="${y1}" x2="${x + largura}" y2="${y1}"/><line x1="${x}" y1="${y2}" x2="${x + largura}" y2="${y2}"/>
+  </g>
+  <g fill="#facc15"><circle cx="${x1}" cy="${y1}" r="4"/><circle cx="${x2}" cy="${y1}" r="4"/><circle cx="${x1}" cy="${y2}" r="4"/><circle cx="${x2}" cy="${y2}" r="4"/></g>`;
+}
+
+/** Brilho radial colorido (aura) — gradiente do centro colorido até transparente. */
+export function auraRadial(cx, cy, raio, cor) {
+  const id = `aura-${Math.round(cx)}-${Math.round(cy)}`;
+  return `  <defs><radialGradient id="${id}"><stop offset="0" stop-color="${cor}" stop-opacity="0.85"/><stop offset="1" stop-color="${cor}" stop-opacity="0"/></radialGradient></defs>
+  <circle cx="${cx}" cy="${cy}" r="${raio}" fill="url(#${id})"/>`;
 }
 
 /** Área quadriculada cinza/branco — símbolo universal de transparência (fundo removido). */
