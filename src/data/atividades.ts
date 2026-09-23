@@ -400,16 +400,40 @@ export const ATIVIDADES: Curso[] = [
     materiais: [],
     atividades: [
       {
-        titulo: "Atividade Prática: Windows 11 — Explorando o Sistema",
+        titulo: "Atividade Prática: Windows 11 — Pastas, Arquivos e Print da Tela",
         descricao:
-          "Personalizar a área de trabalho, usar o Explorador de Arquivos, a barra de tarefas e o Menu Iniciar, ajustar as Configurações e gerenciar aplicativos.",
-        caminho: "Windows 11/windows11-explorando-o-sistema",
+          "Criar pastas e subpastas, escrever e salvar um arquivo de texto, organizar os arquivos e salvar um print da tela em .bmp pelo Paint.",
+        caminho: "Windows 11/windows11-pastas-arquivos-print",
       },
       {
         titulo: "Atividade Prática: Windows 11 — Copiar, Recortar e Colar Arquivos",
         descricao:
           "Criar pastas e arquivos, copiar, recortar, renomear, excluir/restaurar da Lixeira e desfazer ações no Explorador de Arquivos.",
         caminho: "Windows 11/windows11-copiar-recortar-colar",
+      },
+      {
+        titulo: "Atividade Prática: Windows 11 — Explorando o Sistema",
+        descricao:
+          "Personalizar a área de trabalho, usar o Explorador de Arquivos, a barra de tarefas e o Menu Iniciar, ajustar as Configurações e gerenciar aplicativos.",
+        caminho: "Windows 11/windows11-explorando-o-sistema",
+      },
+      {
+        titulo: "Atividade Prática: Windows 11 — Personalização Avançada",
+        descricao:
+          "Ponteiro do mouse, cores de destaque, plano de fundo em apresentação de slides, temas, sons do sistema e comportamento da barra de tarefas.",
+        caminho: "Windows 11/windows11-personalizacao-avancada",
+      },
+      {
+        titulo: "Atividade Prática: Windows 11 — Projeto, Compactação e Proteção de Pastas",
+        descricao:
+          "Estrutura de pastas de um projeto, renomeação em lote, arquivos ZIP, compactação NTFS, pastas ocultas e permissões.",
+        caminho: "Windows 11/windows11-projeto-compactacao-protecao",
+      },
+      {
+        titulo: "Atividade Prática: Windows 11 — Partição de Disco e Memória",
+        descricao:
+          "Criar, usar e apagar uma partição de até 1 GB no Gerenciamento de Disco e entender a diferença entre RAM e memória virtual.",
+        caminho: "Windows 11/windows11-particao-disco-memoria",
       },
     ],
   },
