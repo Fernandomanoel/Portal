@@ -518,6 +518,36 @@ export const ATIVIDADES: Curso[] = [
           "O que são Ionic e Cordova, criando o projeto pelo terminal, primeiro componente (cabeçalho e cartão), cores do tema e o Console como ferramenta de investigação de erros.",
         caminho: "Cordova/cordova-primeiros-passos",
       },
+      {
+        titulo: "Ionic — Prática de Componentes",
+        descricao:
+          "14 componentes visuais do Ionic (input, botões, lista, badge, chip, toggle, busca, FAB, avatar, grid, progress bar, spinner, footer), um a um, até montar a tela completa do app.",
+        caminho: "Cordova/cordova-componentes-visuais",
+      },
+      {
+        titulo: "Ionic — Prática de JavaScript",
+        descricao:
+          "Eventos, arrays e listas dinâmicas: adicionar, excluir, marcar como concluída, buscar em tempo real, ordenar e o modo escuro ganhando lógica de verdade.",
+        caminho: "Cordova/cordova-javascript-e-listas",
+      },
+      {
+        titulo: "Ionic — LocalStorage e Emulador",
+        descricao:
+          "Fazendo o app lembrar das missões com localStorage e rodando pela primeira vez dentro de um celular Android simulado no Android Studio.",
+        caminho: "Cordova/cordova-localstorage-e-emulador",
+      },
+      {
+        titulo: "Ionic — Projeto Final",
+        descricao:
+          "Desafios práticos (fáceis, médios e difíceis), um código de referência completo e o fechamento do projeto \"Minhas Missões\".",
+        caminho: "Cordova/cordova-projeto-final",
+      },
+      {
+        titulo: "Ionic — Projeto Livre: Rede Social",
+        descricao:
+          "Projeto final aberto: uma mini rede social (ConectaTurma) com perfil, posts, curtidas, comentários, seguir colegas e busca — com gabarito comentado completo.",
+        caminho: "Cordova/cordova-projeto-livre-rede-social",
+      },
     ],
   },
 ];
