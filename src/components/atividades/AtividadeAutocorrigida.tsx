@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Icone } from "@/components/Icone";
-import { corrigirItem, type ResultadoItem } from "@/lib/atividadeAutocorrigida";
+import { corrigirItem, itemTemCorrecao, type ResultadoItem } from "@/lib/atividadeAutocorrigida";
 import type { AtividadeAutocorrigida, Campo } from "@/types/atividadeAutocorrigida";
 import estilos from "./AtividadeAutocorrigida.module.css";
 
@@ -22,12 +22,13 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
   function corrigir() {
     const proximos: Resultados = {};
     for (const item of atividade.itens) {
-      proximos[item.id] = corrigirItem(item, respostas);
+      if (itemTemCorrecao(item)) proximos[item.id] = corrigirItem(item, respostas);
     }
     definirResultados(proximos);
   }
 
   const resumo = resultados && resumirResultados(resultados);
+  const temCorrecao = atividade.itens.some(itemTemCorrecao);
 
   return (
     <div className={estilos.pagina}>
@@ -35,7 +36,9 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
 
       {resumo && (
         <div className={estilos.resumo}>
-          <span className={estilos.resumoCerto}>{resumo.certas} certa{resumo.certas === 1 ? "" : "s"}</span>
+          <span className={estilos.resumoCerto}>
+            {resumo.certas} certa{resumo.certas === 1 ? "" : "s"}
+          </span>
           <span className={estilos.resumoRevisar}>{resumo.revisar} para revisar</span>
           <span className={estilos.resumoVazio}>{resumo.vazias} em branco</span>
         </div>
@@ -52,10 +55,23 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
             {item.cenario && <p className={estilos.cenario}>{item.cenario}</p>}
             {item.instrucao && <p className={estilos.instrucao}>{item.instrucao}</p>}
 
+            {item.passos && item.passos.length > 0 && (
+              <>
+                <h4 className={estilos.passosTitulo}>Tarefa</h4>
+                <ol className={estilos.passos}>
+                  {item.passos.map((passo) => (
+                    <li key={passo}>{passo}</li>
+                  ))}
+                </ol>
+              </>
+            )}
+
             {item.imagem && (
               <figure className={estilos.imagem}>
                 <img src={item.imagem.url} alt={item.imagem.alt} loading="lazy" />
-                {item.imagem.legenda && <figcaption className={estilos.imagemLegenda}>{item.imagem.legenda}</figcaption>}
+                {item.imagem.legenda && (
+                  <figcaption className={estilos.imagemLegenda}>{item.imagem.legenda}</figcaption>
+                )}
               </figure>
             )}
 
@@ -82,17 +98,25 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
               </div>
             )}
 
-            <div className={estilos.campos}>
-              {item.campos.map((campo) => (
-                <CampoEntrada
-                  key={campo.id}
-                  campo={campo}
-                  valor={respostas[campo.id] ?? ""}
-                  resultado={resultados?.[item.id]?.campos[campo.id]}
-                  aoMudar={(valor) => atualizar(campo.id, valor)}
-                />
-              ))}
-            </div>
+            {item.objetivo && (
+              <p className={estilos.objetivo}>
+                <strong>Objetivo:</strong> {item.objetivo}
+              </p>
+            )}
+
+            {item.campos && item.campos.length > 0 && (
+              <div className={estilos.campos}>
+                {item.campos.map((campo) => (
+                  <CampoEntrada
+                    key={campo.id}
+                    campo={campo}
+                    valor={respostas[campo.id] ?? ""}
+                    resultado={resultados?.[item.id]?.campos[campo.id]}
+                    aoMudar={(valor) => atualizar(campo.id, valor)}
+                  />
+                ))}
+              </div>
+            )}
           </li>
         ))}
       </ol>
@@ -107,11 +131,13 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
         </p>
       )}
 
-      <div className={estilos.acoes}>
-        <button type="button" className={estilos.corrigir} onClick={corrigir}>
-          Corrigir atividade
-        </button>
-      </div>
+      {temCorrecao && (
+        <div className={estilos.acoes}>
+          <button type="button" className={estilos.corrigir} onClick={corrigir}>
+            Corrigir atividade
+          </button>
+        </div>
+      )}
     </div>
   );
 }

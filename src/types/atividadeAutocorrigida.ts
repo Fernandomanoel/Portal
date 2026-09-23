@@ -49,12 +49,23 @@ export interface ImagemReferencia {
   legenda?: string;
 }
 
+/**
+ * Um item serve dois formatos com o mesmo molde:
+ * - exercício prático (o aluno faz no próprio computador): `passos` +
+ *   `objetivo` + `imagem`, sem `campos` — não há o que corrigir;
+ * - questão corrigida: `cenario`/`instrucao` + `campos` com `regra`.
+ * Os dois podem conviver na mesma atividade.
+ */
 export interface ItemAtividade {
   id: string;
   titulo: string;
   cenario?: string;
   instrucao?: string;
-  campos: Campo[];
+  /** Tarefa em passos numerados, na ordem em que o aluno executa. */
+  passos?: string[];
+  /** O que o aluno aprende com o item — exibido em destaque no fim do item. */
+  objetivo?: string;
+  campos?: Campo[];
   tabelaReferencia?: TabelaReferencia;
   imagem?: ImagemReferencia;
 }

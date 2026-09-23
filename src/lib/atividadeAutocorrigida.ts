@@ -117,10 +117,14 @@ export interface ResultadoItem {
   campos: Record<string, ResultadoCampo>;
 }
 
+export function itemTemCorrecao(item: ItemAtividade): boolean {
+  return (item.campos ?? []).some((campo) => campo.regra);
+}
+
 /** Um item só é "certo" se todos os seus campos graduáveis estiverem certos. */
 export function corrigirItem(item: ItemAtividade, respostas: Record<string, string>): ResultadoItem {
   const campos: Record<string, ResultadoCampo> = {};
-  const graduaveis = item.campos.filter((campo) => campo.regra);
+  const graduaveis = (item.campos ?? []).filter((campo) => campo.regra);
 
   for (const campo of graduaveis) {
     campos[campo.id] = corrigirCampo(campo, respostas[campo.id] ?? "", respostas);

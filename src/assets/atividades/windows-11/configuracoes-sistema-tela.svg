@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)">
+    <rect x="20" y="16" width="600" height="368" rx="10" fill="#f3f4f6" stroke="#cbd5e1"/>
+  </g>
+  <text x="36" y="38" font-size="11.5" fill="#1f2937">Configurações</text>
+  <g fill="#4b5563" font-size="12"><text x="556" y="38">—</text><rect x="578" y="30" width="9" height="9" fill="none" stroke="#4b5563"/><text x="600" y="39">×</text></g>
+
+  <!-- navegação -->
+  <circle cx="54" cy="70" r="16" fill="#cbd5e1"/>
+  <text x="78" y="67" font-size="12" font-weight="700" fill="#1f2937">Usuário</text>
+  <text x="78" y="81" font-size="10" fill="#6b7280">Conta local</text>
+  <rect x="34" y="96" width="164" height="24" rx="5" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="44" y="112" font-size="10.5" fill="#9ca3af">Pesquisar</text>
+  <g font-size="11" fill="#1f2937">
+    <rect x="34" y="128" width="164" height="24" rx="5" fill="#e5edf8"/>
+    <rect x="34" y="133" width="3" height="14" rx="1.5" fill="#0067c0"/>
+    <text x="46" y="144" font-weight="700">Sistema</text>
+    <text x="46" y="170">Bluetooth e dispositivos</text>
+    <text x="46" y="194">Rede e Internet</text>
+    <text x="46" y="218">Personalização</text>
+    <text x="46" y="242">Aplicativos</text>
+    <text x="46" y="266">Contas</text>
+    <rect x="34" y="276" width="164" height="24" rx="5" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="46" y="292">Hora e idioma</text>
+    <text x="46" y="316">Acessibilidade</text>
+    <rect x="34" y="324" width="164" height="24" rx="5" fill="#ffffff" stroke="#bfdbfe"/>
+    <text x="46" y="340">Privacidade e segurança</text>
+    <text x="46" y="364">Windows Update</text>
+  </g>
+
+  <!-- conteúdo: Sistema > Tela -->
+  <text x="210" y="74" font-size="20" font-weight="700" fill="#1f2937">Sistema <tspan fill="#6b7280" font-weight="400">›</tspan> Tela</text>
+
+  <rect x="210" y="92" width="396" height="66" rx="8" fill="#ffffff" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="226" y="114" font-size="12.5" font-weight="700" fill="#1f2937">Brilho</text>
+  <text x="226" y="131" font-size="10.5" fill="#6b7280">Ajustar o brilho da tela interna</text>
+  <rect x="226" y="140" width="300" height="4" rx="2" fill="#e5e7eb"/>
+  <rect x="226" y="140" width="190" height="4" rx="2" fill="#0067c0"/>
+  <circle cx="416" cy="142" r="8" fill="#ffffff" stroke="#0067c0" stroke-width="3"/>
+  <text x="590" y="146" font-size="11" fill="#1f2937" text-anchor="end">65</text>
+
+  <rect x="210" y="166" width="396" height="44" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="226" y="192" font-size="12" fill="#1f2937">Luz noturna</text>
+  <text x="556" y="192" font-size="11" fill="#6b7280" text-anchor="end">Desativado</text>
+  <rect x="566" y="180" width="30" height="16" rx="8" fill="#ffffff" stroke="#6b7280"/>
+  <circle cx="575" cy="188" r="4" fill="#6b7280"/>
+
+  <rect x="210" y="218" width="396" height="44" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="226" y="244" font-size="12" fill="#1f2937">Escala</text>
+  <rect x="460" y="229" width="136" height="22" rx="5" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="470" y="244" font-size="10.5" fill="#1f2937">100% (Recomendado)</text>
+
+  <rect x="210" y="270" width="396" height="44" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="226" y="296" font-size="12" fill="#1f2937">Resolução da tela</text>
+  <rect x="460" y="281" width="136" height="22" rx="5" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="470" y="296" font-size="10.5" fill="#1f2937">1920 × 1080</text>
+
+  <!-- chamada -->
+  <rect x="210" y="326" width="396" height="44" rx="8" fill="#0b4a9e"/>
+  <text x="224" y="345" font-size="11.5" font-weight="700" fill="#ffffff">Abrir as Configurações: tecla Windows + I</text>
+  <text x="224" y="361" font-size="10.5" fill="#dbeafe">Hora e idioma e Privacidade e segurança ficam no menu à esquerda</text>
+</svg>

@@ -4,11 +4,10 @@ import type { Curso } from "@/types/curso";
  * Catálogo de atividades.
  *
  * Para adicionar um curso, acrescente um objeto aqui — nenhuma tela nova é
- * necessária, a rota /atividades/<slug> passa a existir sozinha. As 10
- * trilhas de Administrativa e Gestão abaixo vêm de `js/data/atividades.js`
- * no repositório antigo (Portal-Atividades) — cada material é uma simulação
- * prática autocorrigida, uma página HTML autocontida copiada para
- * `public/atividades/<slug>/`.
+ * necessária, a rota /atividades/<slug> passa a existir sozinha. Cada item
+ * de `atividades` aponta para um arquivo em
+ * `src/data/atividadesAutocorrigidas/` — ver o molde em
+ * `src/data/atividadesAutocorrigidas/COMO-CRIAR-ATIVIDADE.md`.
  */
 export const ATIVIDADES: Curso[] = [
   {
@@ -394,12 +393,18 @@ export const ATIVIDADES: Curso[] = [
   {
     slug: "windows-11",
     titulo: "Windows 11",
-    descricao: "Rotinas do Explorador de Arquivos do Windows 11 em simulações práticas, com correção automática das respostas.",
+    descricao: "Uso do Windows 11 em atividades práticas: área de trabalho, Explorador de Arquivos, Configurações e aplicativos.",
     categoria: "informatica",
     sigla: "W11",
     cor: "#0078d4",
     materiais: [],
     atividades: [
+      {
+        titulo: "Atividade Prática: Windows 11 — Explorando o Sistema",
+        descricao:
+          "Personalizar a área de trabalho, usar o Explorador de Arquivos, a barra de tarefas e o Menu Iniciar, ajustar as Configurações e gerenciar aplicativos.",
+        caminho: "Windows 11/windows11-explorando-o-sistema",
+      },
       {
         titulo: "Atividade Prática: Windows 11 — Copiar, Recortar e Colar Arquivos",
         descricao:
