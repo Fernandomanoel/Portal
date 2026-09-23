@@ -59,23 +59,17 @@
 
 .itemCabecalho {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  align-items: baseline;
+  gap: var(--space-2);
   margin-bottom: var(--space-5);
 }
 
 .itemNumero {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
   flex-shrink: 0;
-  border-radius: 50%;
-  background: var(--brand-deep);
-  color: var(--ink-on-brand);
+  color: var(--brand-deep);
+  font-size: var(--text-md);
   font-weight: 700;
-  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
 }
 
 .itemTitulo {
@@ -85,7 +79,6 @@
 .cenario {
   background: var(--surface-soft);
   border: 1px solid var(--line);
-  border-left: 3px solid var(--brand);
   border-radius: var(--radius);
   padding: var(--space-4);
   font-size: var(--text-sm);
@@ -122,89 +115,88 @@
 
 .passos li {
   counter-increment: passo;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
+  display: grid;
+  grid-template-columns: 1.75em 1fr;
+  column-gap: var(--space-2);
   font-size: var(--text-sm);
   line-height: 1.55;
 }
 
 .passos li::before {
-  content: counter(passo);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--brand-deep);
-  color: var(--ink-on-brand);
-  font-size: 0.75rem;
+  content: counter(passo) ".";
+  text-align: right;
+  color: var(--brand-deep);
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-.objetivo {
-  background: var(--surface-soft);
+.nota {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--line);
-  border-left: 3px solid var(--brand-deep);
   border-radius: var(--radius);
-  padding: var(--space-3) var(--space-4);
+  background: var(--surface-soft);
   font-size: var(--text-sm);
   line-height: 1.55;
   margin-bottom: var(--space-4);
 }
 
-.desafio {
-  border: 1px dashed var(--brand);
-  border-radius: var(--radius);
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-sm);
-  line-height: 1.55;
-  margin-bottom: var(--space-4);
+.nota:last-child {
+  margin-bottom: 0;
 }
 
-.desafio strong {
+.notaIcone {
+  flex-shrink: 0;
+  margin-top: 1px;
   color: var(--brand-deep);
 }
 
-.aviso,
-.regras {
-  background: var(--warning-tint);
-  border: 1px solid var(--warning);
-  border-left-width: 3px;
-  border-radius: var(--radius);
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-sm);
-  line-height: 1.55;
-  margin-bottom: var(--space-4);
+.notaCorpo p {
+  margin: 0;
 }
 
-.aviso strong,
-.regrasTitulo {
+.notaRotulo {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.nota_desafio {
+  background: var(--surface);
+  border: 1px dashed var(--brand);
+}
+
+.nota_aviso,
+.nota_regras {
+  background: var(--warning-tint);
+  border-color: var(--warning);
+}
+
+.nota_aviso .notaIcone,
+.nota_regras .notaIcone,
+.nota_aviso .notaRotulo,
+.nota_regras .notaRotulo {
   color: var(--warning);
 }
 
-.regras {
+.nota_regras {
   margin-bottom: var(--space-6);
 }
 
-.regrasTitulo {
-  font-weight: 700;
-  margin-bottom: var(--space-2);
-}
-
-.regras ul {
-  margin: 0;
-  padding-left: var(--space-5);
+.regrasLista {
+  margin: var(--space-1) 0 0;
+  padding-left: 1.1em;
+  list-style: disc;
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
 }
 
-.objetivo:last-child,
-.desafio:last-child,
-.aviso:last-child,
+.regrasLista li::marker {
+  color: var(--warning);
+}
+
 .imagem:last-child {
   margin-bottom: 0;
 }

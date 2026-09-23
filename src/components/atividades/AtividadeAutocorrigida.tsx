@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
-import { Icone } from "@/components/Icone";
+import { Icone, type NomeIcone } from "@/components/Icone";
 import { corrigirItem, itemTemCorrecao, type ResultadoItem } from "@/lib/atividadeAutocorrigida";
 import type { AtividadeAutocorrigida, Campo } from "@/types/atividadeAutocorrigida";
 import estilos from "./AtividadeAutocorrigida.module.css";
@@ -35,14 +35,13 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
       <p className={estilos.introducao}>{atividade.introducao}</p>
 
       {atividade.regras && (
-        <div className={estilos.regras}>
-          <p className={estilos.regrasTitulo}>{atividade.regras.titulo}</p>
-          <ul>
+        <Nota tipo="regras" rotulo={atividade.regras.titulo}>
+          <ul className={estilos.regrasLista}>
             {atividade.regras.itens.map((regra) => (
               <li key={regra}>{regra}</li>
             ))}
           </ul>
-        </div>
+        </Nota>
       )}
 
       {resumo && (
@@ -59,7 +58,7 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
         {atividade.itens.map((item, indice) => (
           <li key={item.id} className={estilos.item}>
             <div className={estilos.itemCabecalho}>
-              <span className={estilos.itemNumero}>{indice + 1}</span>
+              <span className={estilos.itemNumero}>{indice + 1}.</span>
               <h3 className={estilos.itemTitulo}>{item.titulo}</h3>
             </div>
 
@@ -110,21 +109,21 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
             )}
 
             {item.desafio && (
-              <p className={estilos.desafio}>
-                <strong>Desafio extra:</strong> {item.desafio}
-              </p>
+              <Nota tipo="desafio" rotulo="Desafio extra">
+                {item.desafio}
+              </Nota>
             )}
 
             {item.aviso && (
-              <p className={estilos.aviso}>
-                <strong>Atenção:</strong> {item.aviso}
-              </p>
+              <Nota tipo="aviso" rotulo="Atenção">
+                {item.aviso}
+              </Nota>
             )}
 
             {item.objetivo && (
-              <p className={estilos.objetivo}>
-                <strong>Objetivo:</strong> {item.objetivo}
-              </p>
+              <Nota tipo="objetivo" rotulo="Objetivo">
+                {item.objetivo}
+              </Nota>
             )}
 
             {item.campos && item.campos.length > 0 && (
@@ -161,6 +160,25 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+const ICONE_NOTA: Record<"objetivo" | "desafio" | "aviso" | "regras", NomeIcone> = {
+  objetivo: "alvo",
+  desafio: "trofeu",
+  aviso: "alerta",
+  regras: "escudo",
+};
+
+function Nota({ tipo, rotulo, children }: { tipo: keyof typeof ICONE_NOTA; rotulo: string; children: ReactNode }) {
+  return (
+    <div className={`${estilos.nota} ${estilos[`nota_${tipo}`]}`}>
+      <Icone nome={ICONE_NOTA[tipo]} tamanho={18} className={estilos.notaIcone} />
+      <div className={estilos.notaCorpo}>
+        <p className={estilos.notaRotulo}>{rotulo}</p>
+        {typeof children === "string" ? <p>{children}</p> : children}
+      </div>
     </div>
   );
 }
