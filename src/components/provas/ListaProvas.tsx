@@ -11,6 +11,10 @@ interface Props {
 }
 
 export function ListaProvas({ arquivos, categoria }: Props) {
+  if (arquivos.length === 0) {
+    return <p className={estilos.vazio}>Em breve.</p>;
+  }
+
   return (
     <ul className={estilos.lista}>
       {arquivos.map((arquivo) => (

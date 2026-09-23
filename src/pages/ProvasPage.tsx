@@ -15,10 +15,8 @@ export function ProvasPage() {
     () =>
       PROVAS_CATEGORIAS.map((categoria) => ({
         nome: categoria.nome,
-        cursos: categoria.cursos
-          .map((curso) => ({ curso, arquivos: PROVAS_MANIFEST[curso] ?? [] }))
-          .filter((entrada) => entrada.arquivos.length > 0),
-      })).filter((grupo) => grupo.cursos.length > 0),
+        cursos: categoria.cursos.map((curso) => ({ curso, arquivos: PROVAS_MANIFEST[curso] ?? [] })),
+      })),
     [],
   );
 
