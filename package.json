@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "ilustracoes": "node scripts/ilustracoes/gerar.mjs",
-    "build:servidor": "rolldown servidor/local.ts --platform node --format esm --inlineDynamicImports --file dist-servidor/servidor.mjs",
+    "build:servidor": "rolldown servidor/local.ts --platform node --format esm --no-codeSplitting --file dist-servidor/servidor.mjs",
     "servidor": "node dist-servidor/servidor.mjs",
     "professor:senha": "node scripts/senha-professor.mjs"
   },
