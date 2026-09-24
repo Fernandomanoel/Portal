@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#f5f3ff"/>
+  <path d="M130 170 l50 -44 l50 44 v58 h-100 z" fill="#fde68a" stroke="#1f2937" stroke-width="3"/><rect x="166" y="190" width="28" height="38" fill="#92400e"/>
+  <rect x="290" y="112" width="60" height="116" rx="12" fill="#1f2937"/><rect x="298" y="124" width="44" height="84" rx="4" fill="#93c5fd"/><circle cx="320" cy="218" r="4" fill="#ffffff"/>
+  <path d="M440 158 v-18 a30 30 0 0 1 60 0 v18" fill="none" stroke="#1f2937" stroke-width="8"/><rect x="424" y="158" width="92" height="70" rx="12" fill="#fbbf24" stroke="#1f2937" stroke-width="3"/><circle cx="470" cy="190" r="8" fill="#1f2937"/>
+  <text x="180" y="270" font-size="20" fill="#1f2937" font-weight="700" text-anchor="middle">endereço</text>
+  <text x="320" y="270" font-size="20" fill="#1f2937" font-weight="700" text-anchor="middle">telefone</text>
+  <text x="470" y="270" font-size="20" fill="#1f2937" font-weight="700" text-anchor="middle">senha</text>
+  <circle cx="222" cy="120" r="22" fill="#dc2626" stroke="#ffffff" stroke-width="4"/>
+  <path d="M213.2 111.2 L230.8 128.8 M230.8 111.2 L213.2 128.8" stroke="#ffffff" stroke-width="4.4" stroke-linecap="round"/>
+  <circle cx="356" cy="108" r="22" fill="#dc2626" stroke="#ffffff" stroke-width="4"/>
+  <path d="M347.2 99.2 L364.8 116.8 M364.8 99.2 L347.2 116.8" stroke="#ffffff" stroke-width="4.4" stroke-linecap="round"/>
+  <circle cx="512" cy="112" r="22" fill="#dc2626" stroke="#ffffff" stroke-width="4"/>
+  <path d="M503.2 103.2 L520.8 120.8 M520.8 103.2 L503.2 120.8" stroke="#ffffff" stroke-width="4.4" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#2b579a"/>
+  <rect x="272" y="118" width="96" height="96" rx="21" fill="#ffffff"/>
+  <text x="320" y="187" font-size="56" font-weight="700" fill="#2b579a" text-anchor="middle">W</text>
+    <text x="320" y="262" font-size="30" fill="#ffffff" font-weight="700" text-anchor="middle">Word</text>
+  <g fill="#ffffff"><circle cx="302" cy="298" r="5"/><circle cx="320" cy="298" r="5" opacity="0.7"/><circle cx="338" cy="298" r="5" opacity="0.4"/></g>
+</svg>

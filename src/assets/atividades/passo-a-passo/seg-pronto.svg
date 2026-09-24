@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <path d="M320 70 L220 108 V190 C220 262 262 312 320 330 C378 312 420 262 420 190 V108 Z" fill="#fde68a" stroke="#a0680f" stroke-width="6" stroke-linejoin="round"/>
+  <circle cx="320" cy="200" r="46" fill="#16a34a" stroke="#ffffff" stroke-width="4"/>
+  <path d="M299.3 200.92 l13.799999999999999 13.799999999999999 l27.599999999999998 -28.52" fill="none" stroke="#ffffff" stroke-width="9.200000000000001" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

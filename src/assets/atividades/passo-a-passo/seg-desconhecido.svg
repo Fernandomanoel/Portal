@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <g filter="url(#sombra)"><rect x="196" y="6" width="248" height="390" rx="30" fill="#111827"/></g>
+  <rect x="208" y="24" width="224" height="356" rx="18" fill="#ffffff"/>
+  <path d="M208 42 a18 18 0 0 1 18 -18 h188 a18 18 0 0 1 18 18 v36 h-224 z" fill="#f3f4f6"/>
+  <circle cx="238" cy="52" r="15" fill="#9ca3af"/>
+  <text x="238" y="58" font-size="16" fill="#ffffff" font-weight="700" text-anchor="middle">?</text>
+  <text x="262" y="50" font-size="13.5" fill="#1f2937" font-weight="700">Número desconhecido</text>
+  <text x="262" y="68" font-size="11" fill="#6b7280">+55 11 90000-0000</text>
+  <rect x="218" y="92" width="124.8" height="33" rx="12" fill="#e5e7eb"/>
+  <text x="230" y="116" font-size="13.5" fill="#1f2937">Oi! Tudo bem?</text>
+  <rect x="218" y="338" width="166" height="30" rx="15" fill="#f3f4f6" stroke="#d4d4d8"/>
+  <text x="232" y="358" font-size="12" fill="#9ca3af">Mensagem</text>
+  <circle cx="406" cy="353" r="15" fill="#16a34a"/><path d="M399 353 h13 m-5 -5 l5 5 -5 5" stroke="#ffffff" stroke-width="2.4" fill="none"/>
+  <rect x="470" y="40" width="137.8" height="34" rx="17" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="538.9" y="63" font-size="16" font-weight="700" fill="#7c2d12" text-anchor="middle">não conheço</text>
+</svg>

@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 
 import { Icone } from "@/components/Icone";
@@ -33,9 +34,13 @@ export function GuiadoVitrinePage() {
             <BotaoOuvir texto={`Passo a Passo. ${APRESENTACAO}`} />
           </div>
         </div>
-        <div className={estilos.destaqueVisual} aria-hidden="true">
-          <Icone nome="mouse" tamanho={120} />
-        </div>
+        <ul className={estilos.mosaico} aria-hidden="true">
+          {ASSUNTOS.map((assunto) => (
+            <li key={assunto.id} className={estilos.bloco} style={{ "--acento": assunto.acento } as CSSProperties}>
+              <Icone nome={assunto.icone} tamanho={34} />
+            </li>
+          ))}
+        </ul>
       </section>
 
       {JOGOS_CONCEITO.length > 0 && (

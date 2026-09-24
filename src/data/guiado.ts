@@ -20,6 +20,24 @@ export const ASSUNTOS: { id: AssuntoGuiado; nome: string; icone: NomeIcone; acen
 
 export const TUTORIAIS: TutorialResumo[] = [
   {
+    titulo: "Criar pastas e um arquivo",
+    descricao: "Criar a pasta AULA WINDOWS, a pasta ARQUIVOS e o arquivo teste.",
+    caminho: "PassoAPasso/windows-criar-pastas-e-arquivo",
+    assunto: "windows",
+  },
+  {
+    titulo: "Copiar, recortar e colar",
+    descricao: "Fazer uma cópia do arquivo teste e depois mudar o arquivo de lugar.",
+    caminho: "PassoAPasso/windows-copiar-recortar-colar",
+    assunto: "windows",
+  },
+  {
+    titulo: "Mudar o nome e desfazer",
+    descricao: "Mudar o nome de um arquivo com F2 e voltar o nome antigo com Ctrl e Z.",
+    caminho: "PassoAPasso/windows-mudar-nome-e-desfazer",
+    assunto: "windows",
+  },
+  {
     titulo: "Usar a Lixeira",
     descricao: "Criar uma pasta, mandar para a Lixeira e trazer de volta.",
     caminho: "PassoAPasso/windows-usar-a-lixeira",

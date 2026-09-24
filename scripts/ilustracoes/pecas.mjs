@@ -585,3 +585,351 @@ export function unidade(x, y, nome, livre, fracao, { destaque = false } = {}) {
   partes.push(texto(x + 44, y + 40, livre, { tamanho: 9.5, cor: CINZA }));
   return partes.join('\n');
 }
+
+// ---------------- Passo a Passo (crianças e público com dificuldade de leitura) ----------------
+// Convenção: o anel laranja (`alvo`/`alvoRet`) marca SEMPRE o lugar onde a pessoa
+// clica, em todas as telas. O texto dentro da imagem é o mínimo: a instrução já
+// está escrita, em letra grande, e narrada ao lado da imagem.
+
+const LARANJA = '#ea580c';
+
+/** Anel "clique aqui" em volta de um ponto. */
+export function alvo(cx, cy, r = 24) {
+  return `  <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${LARANJA}" stroke-width="5"/>`;
+}
+
+/** Moldura "clique aqui" em volta de um retângulo (item de menu, célula, caixa). */
+export function alvoRet(x, y, largura, altura, rx = 8) {
+  return `  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" rx="${rx}" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" rx="${rx}" fill="none" stroke="${LARANJA}" stroke-width="5"/>`;
+}
+
+/** Rótulo curto em letra grande (nome de uma parte da tela). */
+export function etiqueta(x, y, conteudo, { centro = false } = {}) {
+  const largura = conteudo.length * 9.8 + 30;
+  const x0 = centro ? x - largura / 2 : x;
+  return `  <rect x="${x0}" y="${y}" width="${largura}" height="34" rx="17" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="${x0 + largura / 2}" y="${y + 23}" font-size="16" font-weight="700" fill="#7c2d12" text-anchor="middle">${esc(conteudo)}</text>`;
+}
+
+/** Selo verde de "deu certo". */
+export function certo(cx, cy, r = 30) {
+  return `  <circle cx="${cx}" cy="${cy}" r="${r}" fill="#16a34a" stroke="#ffffff" stroke-width="4"/>
+  <path d="M${cx - r * 0.45} ${cy + r * 0.02} l${r * 0.3} ${r * 0.3} l${r * 0.6} ${-r * 0.62}" fill="none" stroke="#ffffff" stroke-width="${r * 0.2}" stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+
+/** Selo vermelho de "não faça". */
+export function proibido(cx, cy, r = 30) {
+  const d = r * 0.4;
+  return `  <circle cx="${cx}" cy="${cy}" r="${r}" fill="#dc2626" stroke="#ffffff" stroke-width="4"/>
+  <path d="M${cx - d} ${cy - d} L${cx + d} ${cy + d} M${cx + d} ${cy - d} L${cx - d} ${cy + d}" stroke="#ffffff" stroke-width="${r * 0.2}" stroke-linecap="round"/>`;
+}
+
+/** Tecla grande, para o passo "aperte a tecla ...". */
+export function teclaGrande(cx, cy, nome, largura = 200) {
+  const x = cx - largura / 2;
+  const y = cy - 40;
+  return `  <rect x="${x}" y="${y + 8}" width="${largura}" height="80" rx="14" fill="#94a3b8"/>
+  <rect x="${x}" y="${y}" width="${largura}" height="80" rx="14" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+  <text x="${cx}" y="${y + 51}" font-size="30" font-weight="700" fill="#1f2937" text-anchor="middle">${esc(nome)}</text>`;
+}
+
+/** Mouse pequeno com o botão que a pessoa deve usar pintado de laranja (60 × 90). */
+export function mouseBotao(x, y, lado) {
+  const esquerdo = lado === 'esquerdo' ? LARANJA : '#ffffff';
+  const direito = lado === 'direito' ? LARANJA : '#ffffff';
+  return `  <g transform="translate(${x} ${y})" stroke="#1f2937" stroke-width="3" stroke-linejoin="round">
+    <path d="M30 0 V36 H0 V30 A30 30 0 0 1 30 0 Z" fill="${esquerdo}"/>
+    <path d="M30 0 V36 H60 V30 A30 30 0 0 0 30 0 Z" fill="${direito}"/>
+    <path d="M0 36 V60 A30 30 0 0 0 60 60 V36 Z" fill="#ffffff"/>
+    <rect x="25" y="10" width="10" height="18" rx="5" fill="#ffffff"/>
+  </g>`;
+}
+
+/** Pasta na área de trabalho azul (nome em branco); `fantasma` = só o contorno do lugar vazio. */
+export function pastaTela(cx, y, rotulo, { selecionada = false, editando = false, fantasma = false } = {}) {
+  if (fantasma) {
+    return `  <rect x="${cx - 42}" y="${y + 8}" width="84" height="92" rx="8" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="6 5" opacity="0.85"/>`;
+  }
+  const fundo = selecionada
+    ? `<rect x="${cx - 46}" y="${y + 6}" width="92" height="96" rx="8" fill="#ffffff" fill-opacity="0.25" stroke="#ffffff" stroke-opacity="0.8"/>`
+    : '';
+  const nome = editando
+    ? `<rect x="${cx - 54}" y="${y + 72}" width="108" height="22" fill="#ffffff" stroke="#0067c0" stroke-width="1.5"/>
+  <text x="${cx}" y="${y + 88}" font-size="13" text-anchor="middle" fill="#1f2937">${esc(rotulo)}</text>`
+    : `<text x="${cx}" y="${y + 88}" font-size="13" text-anchor="middle" fill="#ffffff" font-weight="600">${esc(rotulo)}</text>`;
+  return `  <g>${fundo}
+  <path d="M${cx - 30} ${y + 20} h22 l6 6 h32 v40 h-60 z" fill="#f6c343"/>
+  <path d="M${cx - 30} ${y + 32} h60 v34 h-60 z" fill="#fbd35f"/>
+  ${nome}</g>`;
+}
+
+/** Quadrado colorido com a letra do programa (W, X, P...). `app`: { nome, cor, letra }. */
+export function iconeApp(x, y, tamanho, app) {
+  return `  <rect x="${x}" y="${y}" width="${tamanho}" height="${tamanho}" rx="${tamanho * 0.22}" fill="${app.cor}"/>
+  <text x="${x + tamanho / 2}" y="${y + tamanho * 0.72}" font-size="${tamanho * 0.58}" font-weight="700" fill="#ffffff" text-anchor="middle">${esc(app.letra)}</text>`;
+}
+
+/** Menu Iniciar aberto sobre a área de trabalho, com a busca digitada e o resultado. */
+export function menuIniciar({ busca = '', resultado = null, fixados = [] } = {}) {
+  const partes = [
+    '  <g filter="url(#sombra)"><rect x="160" y="40" width="320" height="316" rx="10" fill="#f3f4f6" stroke="#d4d4d8"/></g>',
+    `  <rect x="176" y="56" width="288" height="32" rx="16" fill="#ffffff" stroke="${busca ? '#0067c0' : '#d4d4d8'}" stroke-width="${busca ? 2 : 1}"/>`,
+    '  <circle cx="195" cy="71" r="6" fill="none" stroke="#6b7280" stroke-width="1.6"/><path d="M199.5 75.5 l4 4" stroke="#6b7280" stroke-width="1.6"/>',
+    busca
+      ? `${texto(212, 77, busca, { tamanho: 15 })}\n  <rect x="${214 + busca.length * 8.6}" y="63" width="1.6" height="17" fill="#1f2937"/>`
+      : texto(212, 76, 'Pesquisar', { tamanho: 12, cor: '#9ca3af' }),
+  ];
+  if (resultado) {
+    partes.push(texto(180, 116, 'Melhor correspondência', { tamanho: 12, negrito: true }));
+    partes.push('  <rect x="176" y="126" width="288" height="60" rx="8" fill="#ffffff" stroke="#e5e7eb"/>');
+    partes.push(iconeApp(188, 136, 40, resultado));
+    partes.push(texto(240, 153, resultado.nome, { tamanho: 15, negrito: true }));
+    partes.push(texto(240, 172, 'Aplicativo', { tamanho: 11.5, cor: CINZA }));
+  } else {
+    partes.push(texto(180, 116, 'Fixado', { tamanho: 12, negrito: true }));
+    fixados.forEach((app, i) => {
+      const x = 186 + (i % 4) * 72;
+      const y = 130 + Math.floor(i / 4) * 78;
+      partes.push(iconeApp(x + 14, y, 36, app));
+      partes.push(texto(x + 32, y + 54, app.nome, { tamanho: 10.5, centro: true }));
+    });
+  }
+  return partes.join('\n');
+}
+
+/** Tela de abertura do programa, na cor dele. Use com `svg(trechos, app.cor)`. */
+export function carregandoApp(app) {
+  return `  <rect x="272" y="118" width="96" height="96" rx="21" fill="#ffffff"/>
+  <text x="320" y="187" font-size="56" font-weight="700" fill="${app.cor}" text-anchor="middle">${esc(app.letra)}</text>
+  ${texto(320, 262, app.nome, { tamanho: 30, negrito: true, cor: '#ffffff', centro: true })}
+  <g fill="#ffffff"><circle cx="302" cy="298" r="5"/><circle cx="320" cy="298" r="5" opacity="0.7"/><circle cx="338" cy="298" r="5" opacity="0.4"/></g>`;
+}
+
+/** Tela inicial do Word/Excel/PowerPoint com o cartão "em branco" (x 140–270, y 110–260). */
+export function inicioOffice(app, linhasNovo) {
+  const partes = [
+    '  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>',
+    `  <path d="M30 16 h88 v368 h-88 a10 10 0 0 1 -10 -10 v-348 a10 10 0 0 1 10 -10 z" fill="${app.cor}"/>`,
+    texto(69, 48, app.nome, { tamanho: 14, negrito: true, cor: '#ffffff', centro: true }),
+    '  <rect x="28" y="72" width="82" height="26" rx="5" fill="#ffffff" fill-opacity="0.22"/>',
+    texto(40, 90, 'Início', { tamanho: 12.5, cor: '#ffffff', negrito: true }),
+    texto(40, 122, 'Novo', { tamanho: 12.5, cor: '#ffffff' }),
+    texto(40, 152, 'Abrir', { tamanho: 12.5, cor: '#ffffff' }),
+    texto(140, 64, 'Boa tarde', { tamanho: 22, negrito: true }),
+    texto(140, 98, 'Novo', { tamanho: 14, negrito: true }),
+    '  <rect x="140" y="110" width="130" height="150" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>',
+  ];
+  linhasNovo.forEach((linha, i) => partes.push(texto(205, 282 + i * 17, linha, { tamanho: 13, centro: true })));
+  for (const x of [292, 444]) {
+    partes.push(`  <g opacity="0.45"><rect x="${x}" y="110" width="130" height="150" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+  <rect x="${x + 16}" y="128" width="98" height="14" rx="3" fill="${app.cor}"/>
+  <rect x="${x + 16}" y="152" width="80" height="6" rx="3" fill="#cbd5e1"/><rect x="${x + 16}" y="166" width="90" height="6" rx="3" fill="#cbd5e1"/>
+  ${texto(x + 65, 282, 'Modelo', { tamanho: 13, centro: true, cor: CINZA })}</g>`);
+  }
+  return partes.join('\n');
+}
+
+/** Janela do Word/Excel/PowerPoint: barra de título e abas na cor do programa, faixa de opções. Conteúdo começa em y 122. */
+export function janelaOffice(app, titulo) {
+  const partes = [
+    '  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>',
+    `  <path d="M20 26 a10 10 0 0 1 10 -10 h580 a10 10 0 0 1 10 10 v44 h-600 z" fill="${app.cor}"/>`,
+    texto(320, 37, titulo, { tamanho: 12, cor: '#ffffff', centro: true }),
+    '  <g fill="#ffffff" font-size="12"><text x="556" y="37">—</text><rect x="578" y="29" width="9" height="9" fill="none" stroke="#ffffff"/><text x="600" y="38">×</text></g>',
+  ];
+  let x = 34;
+  for (const aba of ['Arquivo', 'Página Inicial', 'Inserir', 'Desenhar', 'Layout', 'Exibir']) {
+    const largura = aba.length * 6.6 + 18;
+    if (aba === 'Página Inicial') {
+      partes.push(`  <path d="M${x - 8} 70 v-16 a4 4 0 0 1 4 -4 h${largura - 8} a4 4 0 0 1 4 4 v16 z" fill="#f3f4f6"/>`);
+      partes.push(`  <text x="${x}" y="65" font-size="11.5" font-weight="700" fill="${app.cor}">${aba}</text>`);
+    } else {
+      partes.push(`  <text x="${x}" y="65" font-size="11.5" fill="#ffffff">${aba}</text>`);
+    }
+    x += largura;
+  }
+  partes.push(`  <rect x="20" y="70" width="600" height="52" fill="#f3f4f6"/>
+  <rect x="34" y="80" width="112" height="22" rx="3" fill="#ffffff" stroke="#cbd5e1"/>${texto(42, 95, 'Calibri', { tamanho: 11 })}
+  <rect x="152" y="80" width="38" height="22" rx="3" fill="#ffffff" stroke="#cbd5e1"/>${texto(162, 95, '11', { tamanho: 11 })}
+  <g font-size="13" fill="#1f2937" text-anchor="middle"><text x="212" y="96" font-weight="700">N</text><text x="236" y="96" font-style="italic">I</text><text x="260" y="96" text-decoration="underline">S</text></g>
+  <g stroke="#6b7280" stroke-width="1.6">${[300, 326, 352, 378].map((ax, i) => `<path d="M${ax} 84 h16 M${ax + (i === 1 ? 3 : i === 2 ? 6 : 0)} 90 h${i === 3 ? 16 : 10} M${ax} 96 h16"/>`).join('')}</g>
+  <line x1="20" y1="122" x2="620" y2="122" stroke="#e5e7eb"/>`);
+  return partes.join('\n');
+}
+
+const FUNDO_CONTEUDO = '  <path d="M20 122 h600 v252 a10 10 0 0 1 -10 10 h-580 a10 10 0 0 1 -10 -10 z" fill="#e5e7eb"/>';
+
+/** Folha do Word (x 170–470) com linhas de texto em letra grande e, opcional, o risco que pisca. */
+export function paginaWord({ linhas = [], riscoEm = null } = {}) {
+  const partes = [FUNDO_CONTEUDO, '  <rect x="170" y="136" width="300" height="248" fill="#ffffff" stroke="#d4d4d8"/>'];
+  linhas.forEach((linha, i) => partes.push(texto(200, 180 + i * 28, linha, { tamanho: 18 })));
+  if (riscoEm) partes.push(`  <rect x="${riscoEm.x}" y="${riscoEm.y - 18}" width="2" height="22" fill="#1f2937"/>`);
+  return partes.join('\n');
+}
+
+/** Retângulo da célula do Excel (ex.: 'A1') na `gradeExcel`. */
+export function posicaoCelula(ref) {
+  const coluna = ref.charCodeAt(0) - 65;
+  const linha = Number(ref.slice(1));
+  return { x: 50 + coluna * 80, y: 168 + (linha - 1) * 21, largura: 80, altura: 21 };
+}
+
+/** Planilha do Excel: barra de fórmulas, letras das colunas, números das linhas e células. */
+export function gradeExcel({ valores = {}, selecionada = null, editando = false } = {}) {
+  const verde = '#217346';
+  const partes = [FUNDO_CONTEUDO.replace('#e5e7eb', '#ffffff'),
+    '  <rect x="26" y="126" width="62" height="18" rx="2" fill="#ffffff" stroke="#cbd5e1"/>',
+    texto(34, 139, selecionada ?? '', { tamanho: 11 }),
+    texto(100, 139, 'fx', { tamanho: 11, cor: CINZA }),
+    texto(124, 139, (selecionada && valores[selecionada]) || '', { tamanho: 11 }),
+    '  <rect x="20" y="146" width="600" height="22" fill="#f3f4f6"/>',
+    '  <path d="M20 168 h30 v206 a10 10 0 0 1 -10 10 h-20 z" fill="#f3f4f6"/>',
+    '  <rect x="20" y="168" width="30" height="210" fill="#f3f4f6"/>',
+  ];
+  const sel = selecionada ? posicaoCelula(selecionada) : null;
+  for (let c = 0; c < 7; c++) {
+    const letra = String.fromCharCode(65 + c);
+    const ativa = sel && selecionada[0] === letra;
+    if (ativa) partes.push(`  <rect x="${50 + c * 80}" y="146" width="80" height="22" fill="#d1fae5"/>`);
+    partes.push(texto(90 + c * 80, 161, letra, { tamanho: 11.5, centro: true, cor: ativa ? verde : CINZA, negrito: ativa }));
+  }
+  for (let l = 1; l <= 10; l++) {
+    const ativa = sel && Number(selecionada.slice(1)) === l;
+    if (ativa) partes.push(`  <rect x="20" y="${168 + (l - 1) * 21}" width="30" height="21" fill="#d1fae5"/>`);
+    partes.push(texto(35, 182 + (l - 1) * 21, String(l), { tamanho: 11, centro: true, cor: ativa ? verde : CINZA, negrito: ativa }));
+  }
+  partes.push('  <g stroke="#e5e7eb">');
+  for (let c = 0; c <= 7; c++) partes.push(`    <line x1="${50 + c * 80}" y1="146" x2="${50 + c * 80}" y2="378"/>`);
+  for (let l = 0; l <= 10; l++) partes.push(`    <line x1="20" y1="${168 + l * 21}" x2="610" y2="${168 + l * 21}"/>`);
+  partes.push('  </g>');
+  for (const [ref, valor] of Object.entries(valores)) {
+    const p = posicaoCelula(ref);
+    partes.push(`  <text x="${p.x + p.largura - 8}" y="${p.y + 16}" font-size="14" fill="#1f2937" text-anchor="end">${esc(valor)}</text>`);
+  }
+  if (sel) {
+    partes.push(`  <rect x="${sel.x}" y="${sel.y}" width="${sel.largura}" height="${sel.altura}" fill="none" stroke="${verde}" stroke-width="3"/>
+  <rect x="${sel.x + sel.largura - 4}" y="${sel.y + sel.altura - 4}" width="7" height="7" fill="${verde}" stroke="#ffffff"/>`);
+    if (editando) partes.push(`  <rect x="${sel.x + sel.largura - 6}" y="${sel.y + 3}" width="1.6" height="15" fill="#1f2937"/>`);
+  }
+  return partes.join('\n');
+}
+
+/** Slide do PowerPoint (x 140–600, y 134–374). `estado`: 'vazio' | 'editando' | 'pronto'. */
+export function slidePowerPoint(app, { titulo = null, estado = 'vazio' } = {}) {
+  const partes = [FUNDO_CONTEUDO,
+    '  <path d="M20 122 h92 v262 h-82 a10 10 0 0 1 -10 -10 z" fill="#f3f4f6"/>',
+    texto(26, 150, '1', { tamanho: 11, cor: CINZA }),
+    `  <rect x="36" y="136" width="66" height="38" rx="2" fill="#ffffff" stroke="${app.cor}" stroke-width="2"/>`,
+    '  <g filter="url(#sombra)"><rect x="140" y="134" width="460" height="240" fill="#ffffff"/></g>',
+  ];
+  if (estado !== 'pronto') {
+    const traco = estado === 'editando' ? 'stroke="#6b7280" stroke-width="1.5"' : 'stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5 4"';
+    partes.push(`  <rect x="180" y="182" width="380" height="68" ${traco} fill="none"/>`);
+  }
+  if (titulo) {
+    partes.push(texto(370, 226, titulo, { tamanho: 28, negrito: true, centro: true }));
+    if (estado === 'editando') partes.push(`  <rect x="${370 + titulo.length * 7.8}" y="202" width="2" height="30" fill="#1f2937"/>`);
+  } else if (estado === 'editando') {
+    partes.push('  <rect x="369" y="202" width="2" height="30" fill="#1f2937"/>');
+  } else {
+    partes.push(texto(370, 223, 'Clique para adicionar um título', { tamanho: 21, cor: '#6b7280', centro: true }));
+  }
+  partes.push('  <rect x="220" y="268" width="300" height="40" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>');
+  partes.push(texto(370, 293, 'Clique para adicionar um subtítulo', { tamanho: 13, cor: '#9ca3af', centro: true }));
+  return partes.join('\n');
+}
+
+/** Pessoa desenhada de forma simples (cabeça e corpo), em pé sobre `base`. */
+export function pessoa(cx, base, altura = 150, cor = '#60a5fa') {
+  const r = altura * 0.15;
+  const cabeca = base - altura + r;
+  const largura = altura * 0.5;
+  const topo = base - altura * 0.62;
+  return `  <circle cx="${cx}" cy="${cabeca}" r="${r}" fill="#fcd9b6" stroke="#1f2937" stroke-width="2.5"/>
+  <path d="M${cx - largura / 2} ${base} V${topo + largura / 2} A${largura / 2} ${largura / 2} 0 0 1 ${cx + largura / 2} ${topo + largura / 2} V${base} Z" fill="${cor}" stroke="#1f2937" stroke-width="2.5"/>`;
+}
+
+/** Robô desenhado de forma simples, para representar um programa de computador. */
+export function robo(cx, cy, escala = 1) {
+  return `  <g transform="translate(${cx} ${cy}) scale(${escala})" stroke="#4c1d95" stroke-width="4" stroke-linejoin="round">
+    <line x1="0" y1="-62" x2="0" y2="-44"/><circle cx="0" cy="-66" r="6" fill="#a78bfa"/>
+    <rect x="-46" y="-44" width="92" height="70" rx="16" fill="#ede9fe"/>
+    <circle cx="-18" cy="-12" r="8" fill="#4c1d95"/><circle cx="18" cy="-12" r="8" fill="#4c1d95"/>
+    <path d="M-16 10 h32" stroke-linecap="round"/>
+    <rect x="-34" y="32" width="68" height="44" rx="10" fill="#ddd6fe"/>
+  </g>`;
+}
+
+/**
+ * Janela de conversa com um programa de IA. `mensagens`: { de: 'pessoa' | 'ia', linhas, marca? }.
+ * `marca`: 'certo' | 'erro' desenha um selo ao lado do balão.
+ */
+export function janelaConversa(mensagens, { entrada = '', entradaProibida = false } = {}) {
+  const partes = [janelaApp('Assistente de IA', '#7c4dd6', { fundo: '#fafafa' })];
+  let y = 66;
+  for (const { de, linhas, marca } of mensagens) {
+    const largura = Math.max(...linhas.map((l) => l.length)) * 8 + 30;
+    const altura = linhas.length * 21 + 16;
+    const x = de === 'pessoa' ? 600 - largura : 84;
+    if (de === 'ia') partes.push(`  <circle cx="58" cy="${y + 18}" r="16" fill="#ede9fe" stroke="#7c4dd6" stroke-width="2"/>${texto(58, y + 23, 'IA', { tamanho: 12, negrito: true, cor: '#5b21b6', centro: true })}`);
+    partes.push(`  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" rx="14" fill="${de === 'pessoa' ? '#dbeafe' : '#ffffff'}" stroke="${de === 'pessoa' ? '#93c5fd' : '#d4d4d8'}"/>`);
+    linhas.forEach((linha, i) => partes.push(texto(x + 15, y + 27 + i * 21, linha, { tamanho: 15 })));
+    if (marca === 'certo') partes.push(certo(x + largura + 26, y + altura / 2, 18));
+    if (marca === 'erro') partes.push(proibido(x + largura + 26, y + altura / 2, 18));
+    y += altura + 18;
+  }
+  partes.push('  <rect x="40" y="326" width="520" height="40" rx="20" fill="#ffffff" stroke="#cbd5e1"/>');
+  partes.push(entrada ? texto(60, 351, entrada, { tamanho: 14 }) : texto(60, 351, 'Escreva uma pergunta', { tamanho: 14, cor: '#9ca3af' }));
+  partes.push('  <circle cx="584" cy="346" r="18" fill="#7c4dd6"/><path d="M576 346 h14 m-6 -6 l6 6 -6 6" stroke="#ffffff" stroke-width="2.5" fill="none"/>');
+  if (entradaProibida) partes.push(proibido(584, 346, 22));
+  return partes.join('\n');
+}
+
+/**
+ * Celular com uma conversa de mensagens. `baloes`: listas de linhas; uma linha
+ * `{ link: '...' }` sai azul e sublinhada. `marcaLink`: 'etiqueta' (mostra o que é um link)
+ * | 'proibido' (não clique). Nunca anel laranja: link estranho não é para clicar.
+ */
+export function celular(contato, detalhe, baloes, { marcaLink = null, respostaProibida = false, menuApagar = false } = {}) {
+  const partes = [
+    '  <g filter="url(#sombra)"><rect x="196" y="6" width="248" height="390" rx="30" fill="#111827"/></g>',
+    '  <rect x="208" y="24" width="224" height="356" rx="18" fill="#ffffff"/>',
+    '  <path d="M208 42 a18 18 0 0 1 18 -18 h188 a18 18 0 0 1 18 18 v36 h-224 z" fill="#f3f4f6"/>',
+    '  <circle cx="238" cy="52" r="15" fill="#9ca3af"/>',
+    texto(238, 58, '?', { tamanho: 16, negrito: true, cor: '#ffffff', centro: true }),
+    texto(262, 50, contato, { tamanho: 13.5, negrito: true }),
+    texto(262, 68, detalhe, { tamanho: 11, cor: CINZA }),
+  ];
+  let y = 92;
+  let caixaLink = null;
+  for (const linhas of baloes) {
+    const altura = linhas.length * 19 + 14;
+    const largura = Math.min(196, Math.max(...linhas.map((l) => (typeof l === 'string' ? l : l.link).length)) * 7.6 + 26);
+    partes.push(`  <rect x="218" y="${y}" width="${largura}" height="${altura}" rx="12" fill="#e5e7eb"/>`);
+    linhas.forEach((linha, i) => {
+      const ly = y + 24 + i * 19;
+      if (typeof linha === 'string') {
+        partes.push(texto(230, ly, linha, { tamanho: 13.5 }));
+      } else {
+        const w = linha.link.length * 7.4;
+        partes.push(texto(230, ly, linha.link, { tamanho: 13.5, cor: '#1d4ed8' }));
+        partes.push(`  <line x1="230" y1="${ly + 3}" x2="${230 + w}" y2="${ly + 3}" stroke="#1d4ed8" stroke-width="1.2"/>`);
+        caixaLink = { x: 224, y: ly - 17, largura: w + 14, altura: 26 };
+      }
+    });
+    y += altura + 10;
+  }
+  if (caixaLink && marcaLink === 'etiqueta') partes.push(etiqueta(caixaLink.x + 6, caixaLink.y + caixaLink.altura + 8, 'link'));
+  if (caixaLink && marcaLink === 'proibido') partes.push(proibido(caixaLink.x + caixaLink.largura + 22, caixaLink.y + 13, 20));
+  if (menuApagar) {
+    partes.push(menu(250, 150, [['Responder', '', false], ['Copiar', '', false], ['Apagar', '', true]], 150));
+    partes.push(alvoRet(256, 205, 138, 26, 6));
+  }
+  partes.push('  <rect x="218" y="338" width="166" height="30" rx="15" fill="#f3f4f6" stroke="#d4d4d8"/>');
+  partes.push(texto(232, 358, 'Mensagem', { tamanho: 12, cor: '#9ca3af' }));
+  partes.push('  <circle cx="406" cy="353" r="15" fill="#16a34a"/><path d="M399 353 h13 m-5 -5 l5 5 -5 5" stroke="#ffffff" stroke-width="2.4" fill="none"/>');
+  if (respostaProibida) partes.push(proibido(406, 353, 20));
+  return partes.join('\n');
+}

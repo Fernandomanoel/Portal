@@ -48,22 +48,42 @@ Acrescentar uma linha em `TUTORIAIS`, em `src/data/guiado.ts`, com o mesmo
 - Nome em inglês que a voz lê errado: escreva normal em `texto` e do jeito
   que se fala em `textoNarrado` (ex.: `"Aperte a tecla Béqui-spêice."`).
 
-## 4. Imagens (fornecidas pela equipe)
+## 4. Desenho de cada passo
 
-Cada passo aceita uma imagem, print ou GIF curto. Enquanto ela não existir, a
-tela mostra o ícone do assunto no lugar — nada quebra.
+Todo passo tem um desenho da tela (nunca só texto), no mesmo estilo das
+atividades de Windows 11. Os desenhos são gerados pelo kit de ilustração:
 
-1. Salvar o arquivo em `src/assets/guiado/<nome-do-tutorial>/passo-<n>.png`
-   (ou `.gif`, `.jpg`, `.webp`).
-2. Importar no `.atividade.ts` e ligar ao passo:
+1. Em `scripts/ilustracoes/telas/passo-a-passo.mjs`, copie a tela mais
+   parecida, troque o nome da chave, os textos e as posições.
+2. Rode `npm run ilustracoes -- <nome>` e abra o SVG gerado em
+   `src/assets/atividades/passo-a-passo/` no navegador. Ajuste e rode de novo.
+3. No `.atividade.ts`, ligue o desenho ao passo com `figura`:
 
 ```ts
-import passo1 from "@/assets/guiado/word-abrir-e-escrever-seu-nome/passo-1.png";
+import { figura } from "./figuras";
 
-{ texto: "Clique no botão Iniciar.", imagem: { url: passo1, alt: "Barra de tarefas com o botão Iniciar marcado" } },
+{ texto: "Clique no botão Iniciar.", imagem: figura("iniciar-botao", "Botão Iniciar marcado na barra de tarefas") },
 ```
 
-`alt` descreve o que a imagem mostra, para quem usa leitor de tela.
+`alt` descreve o que o desenho mostra, para quem usa leitor de tela. Nome de
+desenho errado quebra na hora (a atividade não abre), para ninguém publicar
+um passo sem imagem sem perceber.
 
-A capa do card na vitrine é o campo `capa` da linha em `TUTORIAIS` (mesmo
-jeito: importar a imagem e passar o valor).
+Regras dos desenhos desta seção — iguais em todas as telas:
+
+- **Anel laranja = clique aqui.** Só onde a pessoa clica. Nunca em volta de
+  algo que é só para olhar — e nunca em link estranho (Segurança).
+- **Rótulo amarelo = o nome desta parte** ("Barra de tarefas", "célula").
+- **Selo verde** = deu certo; **selo vermelho** = não faça.
+- **Mouse pequeno** com o botão pintado de laranja mostra qual botão usar.
+- Quase nenhum texto dentro do desenho: a instrução já está escrita, grande,
+  e narrada ao lado.
+
+Um print de tela real ou um GIF curto também serve: salve em
+`src/assets/atividades/passo-a-passo/` e importe direto
+(`import passo1 from "@/assets/atividades/passo-a-passo/passo-1.gif"`,
+`imagem: { url: passo1, alt: "..." }`).
+
+A capa do card na vitrine é o campo `capa` da linha em `TUTORIAIS`
+(importar a imagem e passar o valor); sem ela, o card mostra a cor e o
+ícone do assunto.

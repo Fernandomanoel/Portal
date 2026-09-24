@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <circle cx="250" cy="157.5" r="37.5" fill="#fcd9b6" stroke="#1f2937" stroke-width="2.5"/>
+  <path d="M187.5 370 V277.5 A62.5 62.5 0 0 1 312.5 277.5 V370 Z" fill="#34d399" stroke="#1f2937" stroke-width="2.5"/>
+  <circle cx="410" cy="234" r="24" fill="#fcd9b6" stroke="#1f2937" stroke-width="2.5"/>
+  <path d="M370 370 V310.8 A40 40 0 0 1 450 310.8 V370 Z" fill="#60a5fa" stroke="#1f2937" stroke-width="2.5"/>
+  <rect x="352" y="262" width="30" height="50" rx="6" fill="#1f2937"/><rect x="356" y="268" width="22" height="36" rx="3" fill="#93c5fd"/>
+</svg>

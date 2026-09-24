@@ -69,16 +69,32 @@
   outline-offset: 3px;
 }
 
-.destaqueVisual {
+.mosaico {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 76px);
+  gap: var(--space-3);
+}
+
+/* Blocos de canto arredondado, um por assunto, na cor do assunto — o mesmo
+   vocabulário das prateleiras logo abaixo. */
+.bloco {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: var(--guiado-cartao);
-  color: var(--brand-deep);
-  box-shadow: var(--shadow-2);
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--acento) 16%, var(--guiado-cartao));
+  color: color-mix(in srgb, var(--acento), white var(--guiado-clarear));
+  box-shadow: var(--shadow-1);
+}
+
+/* A coluna do meio desce um pouco: o mosaico fica em degrau, sem encostar. */
+.bloco:nth-child(3n + 2) {
+  transform: translateY(18px);
 }
 
 @media (max-width: 760px) {
@@ -88,7 +104,7 @@
     border-radius: 20px;
   }
 
-  .destaqueVisual {
+  .mosaico {
     display: none;
   }
 }
