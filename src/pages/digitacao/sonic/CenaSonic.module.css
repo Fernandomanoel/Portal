@@ -1,0 +1,387 @@
+.cena {
+  position: relative;
+  height: clamp(160px, 26vh, 280px);
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #3f9ef0 0%, #8cc9f7 55%, #d4efff 100%);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.35);
+  isolation: isolate;
+}
+
+.sol {
+  position: absolute;
+  top: 16px;
+  right: 12%;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7c2 0%, #ffe066 55%, rgba(255, 224, 102, 0) 72%);
+}
+
+.camada {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background-repeat: repeat-x;
+  will-change: background-position;
+}
+
+.nuvens {
+  top: 8px;
+  height: 140px;
+}
+
+.montanhas {
+  bottom: 70px;
+  height: 220px;
+  background-position-y: bottom;
+}
+
+.colinas {
+  bottom: 58px;
+  height: 200px;
+  background-position-y: bottom;
+}
+
+.chao {
+  bottom: 0;
+  height: 72px;
+  background-size: auto 120px;
+  background-position-y: top;
+}
+
+.linhasVelocidade {
+  position: absolute;
+  inset: 20% 0 30% 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 18px,
+    rgba(255, 255, 255, 0.55) 18px 20px,
+    transparent 20px 34px
+  );
+  mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  animation: linhas 260ms linear infinite;
+  pointer-events: none;
+}
+
+@keyframes linhas {
+  from {
+    transform: translateX(40px);
+  }
+  to {
+    transform: translateX(-40px);
+  }
+}
+
+/* ---------- Sonic ---------- */
+
+.sonic {
+  position: absolute;
+  left: 18%;
+  bottom: 58px;
+  width: clamp(84px, 12vw, 128px);
+  aspect-ratio: 1;
+  transform-origin: 50% 90%;
+  transition: left 1.2s cubic-bezier(0.5, 0, 0.9, 0.4);
+}
+
+.sprite,
+.bola {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.pose-correndo .sprite {
+  animation: corre 280ms ease-in-out infinite alternate;
+}
+
+@keyframes corre {
+  from {
+    transform: translateY(0) rotate(8deg);
+  }
+  to {
+    transform: translateY(-7px) rotate(12deg);
+  }
+}
+
+.pose-bola {
+  width: clamp(60px, 8.5vw, 90px);
+  bottom: 62px;
+}
+
+.pose-bola .bola {
+  animation: gira 220ms linear infinite;
+  filter: drop-shadow(-14px 0 0 rgba(59, 130, 246, 0.35)) drop-shadow(-28px 0 0 rgba(59, 130, 246, 0.18));
+}
+
+.cena[data-nivel="4"] .pose-bola .bola {
+  filter: drop-shadow(0 0 10px #ffe066) drop-shadow(-18px 0 0 rgba(250, 204, 21, 0.4));
+}
+
+@keyframes gira {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pose-tonto .sprite {
+  animation: tonto 900ms ease-in-out infinite;
+  filter: saturate(0.6);
+}
+
+@keyframes tonto {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+.tontura {
+  position: absolute;
+  top: -6%;
+  left: 50%;
+  width: 46%;
+  height: 16%;
+  transform: translateX(-50%);
+  border: 3px dashed #facc15;
+  border-radius: 50%;
+  animation: gira 1s linear infinite;
+}
+
+.poeira {
+  position: absolute;
+  left: -18%;
+  bottom: 2%;
+  width: 30%;
+  height: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 70%);
+  animation: poeira 360ms ease-out infinite;
+}
+
+@keyframes poeira {
+  from {
+    transform: translateX(0) scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-26px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.tropeco {
+  animation: tropeco 320ms ease-out;
+}
+
+@keyframes tropeco {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-10px) rotate(-10deg);
+    filter: drop-shadow(0 0 8px #ef4444);
+  }
+  45% {
+    transform: translateX(8px) rotate(6deg);
+  }
+  70% {
+    transform: translateX(-4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.saindo {
+  left: 115%;
+}
+
+/* ---------- Placa de chegada ---------- */
+
+.placa {
+  position: absolute;
+  right: 14%;
+  bottom: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: placaEntra 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.placaGiro {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #1d4ed8;
+  border: 4px solid #0b1f5c;
+  animation: placaGira 900ms ease-out 2;
+}
+
+.placaGiro img {
+  width: 34px;
+  height: 34px;
+}
+
+.placaPoste {
+  width: 6px;
+  height: 44px;
+  background: #6b7280;
+}
+
+@keyframes placaEntra {
+  from {
+    transform: translateX(260px);
+  }
+}
+
+@keyframes placaGira {
+  from {
+    transform: rotateY(0);
+  }
+  to {
+    transform: rotateY(720deg);
+  }
+}
+
+/* ---------- Anéis e placar ---------- */
+
+.anelVoando {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  pointer-events: none;
+  animation: anelSobe 700ms ease-out forwards;
+}
+
+@keyframes anelSobe {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-40px, -120px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.hud {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.contador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 8px;
+  border-radius: 12px;
+  background: rgba(8, 20, 48, 0.72);
+  color: #ffe066;
+  font-weight: 800;
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.contador img {
+  width: 28px;
+  height: 28px;
+}
+
+.pulsa {
+  animation: pulsa 240ms ease-out;
+}
+
+@keyframes pulsa {
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+.velocimetro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(8, 20, 48, 0.72);
+  color: #ffffff;
+}
+
+.rotulo {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.barras {
+  display: flex;
+  gap: 3px;
+}
+
+.barras i {
+  width: 18px;
+  height: 7px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.barras .barraAcesa {
+  background: #4ade80;
+}
+
+.velocimetro[data-nivel="3"] .barraAcesa {
+  background: #facc15;
+}
+
+.velocimetro[data-nivel="4"] .barraAcesa {
+  background: #fb923c;
+}
+
+.aviso {
+  position: absolute;
+  left: 50%;
+  bottom: 84px;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: rgba(8, 20, 48, 0.82);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .linhasVelocidade,
+  .pose-correndo .sprite,
+  .pose-bola .bola,
+  .pose-tonto .sprite,
+  .tontura,
+  .poeira,
+  .tropeco,
+  .placaGiro,
+  .placa {
+    animation: none;
+  }
+  .sonic {
+    transition: none;
+  }
+}

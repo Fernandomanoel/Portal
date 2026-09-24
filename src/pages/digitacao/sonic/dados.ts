@@ -1,5 +1,5 @@
 /**
- * Fases de "Sonic Digital Pro", portadas 1:1 de
+ * Fases de "Sonic Digital Pro", com as palavras e frases de
  * Portal-Atividades/atividades/paginas/kids-sonic-digitacao.html.
  * Para acrescentar palavras/frases: só colar mais itens na fase desejada.
  */
@@ -201,7 +201,7 @@ export const FASES: Fase[] = [
       "O Sonic coletou 1.000 anéis na Green Hill Zone!",
       "Treinar 15 minutos por dia = grande evolução.",
       "Meu e-mail é aluno@escola.com.br (turma 2026).",
-      "A prática leva à perfeição — e à velocidade!",
+      "A prática leva à perfeição - e à velocidade!",
       "Digitar rápido & sem erros: missão cumprida!",
     ],
   },
@@ -211,24 +211,27 @@ const BASE_ASSETS = `${import.meta.env.BASE_URL}digitacao/sonic`;
 
 export const CONFIG = {
   itensPorFase: 8,
-  errosParaSonicRealista: 5,
+  /** Erros seguidos até o Sonic ficar tonto e pedir calma. */
+  errosParaTonto: 4,
+  /** Janela usada para medir o ritmo (teclas certas por segundo). */
+  janelaRitmoMs: 3000,
+  /** Ritmo mínimo (teclas certas por segundo) de cada faixa de velocidade. */
   faixasVelocidade: [
     { min: 0, nivel: 0, rotulo: "Parado" },
-    { min: 8, nivel: 1, rotulo: "Andando" },
-    { min: 20, nivel: 2, rotulo: "Correndo" },
-    { min: 40, nivel: 3, rotulo: "Muito rápido!" },
-    { min: 70, nivel: 4, rotulo: "SUPER SONIC!" },
+    { min: 0.4, nivel: 1, rotulo: "Andando" },
+    { min: 1.3, nivel: 2, rotulo: "Correndo" },
+    { min: 2.3, nivel: 3, rotulo: "Muito rápido" },
+    { min: 3.3, nivel: 4, rotulo: "Super Sonic" },
   ],
-  imagens: {
-    normal: `${BASE_ASSETS}/sonic-idle.gif`,
-    realista: `${BASE_ASSETS}/sonic-realista.gif`,
-    feio: `${BASE_ASSETS}/sonic-feio.gif`,
-  },
-  emojiFallback: { normal: "🦔", realista: "🦔", feio: "😬" },
+  /** Precisão mínima para ganhar 3, 2 ou 1 anel de ouro na fase. */
+  aneisDeOuro: [
+    { precisao: 97, aneis: 3 },
+    { precisao: 90, aneis: 2 },
+    { precisao: 0, aneis: 1 },
+  ],
+  sprite: `${BASE_ASSETS}/sonic-idle.gif`,
   anel: `${BASE_ASSETS}/ring.png`,
 };
-
-export type ModoSonic = "normal" | "realista" | "feio";
 
 export function sortear<T>(lista: T[], quantidade: number): T[] {
   const copia = [...lista];
@@ -243,4 +246,8 @@ export function podeAcessar(conclusoes: Record<number, unknown>, indice: number)
   if (indice === 0) return true;
   if (conclusoes[indice]) return true;
   return !!conclusoes[indice - 1];
+}
+
+export function aneisDeOuro(precisao: number): number {
+  return CONFIG.aneisDeOuro.find((faixa) => precisao >= faixa.precisao)?.aneis ?? 1;
 }

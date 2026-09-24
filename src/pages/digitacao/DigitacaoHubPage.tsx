@@ -63,7 +63,7 @@ const JOGOS: {
     icone: "raio",
     sigla: "SD",
     titulo: "Sonic Digital Pro",
-    texto: "16 fases, do posicionamento das mãos até frases longas.",
+    texto: "16 fases com teclado na tela mostrando a tecla e o dedo certo. O Sonic corre conforme o seu ritmo.",
     etiqueta: "16 fases",
     acento: "#e07a00",
   },

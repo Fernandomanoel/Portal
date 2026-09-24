@@ -1,476 +1,495 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { Icone } from "@/components/Icone";
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
 import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
-import { CONFIG, FASES, podeAcessar, sortear, type ModoSonic } from "./dados";
+import { rotas } from "@/lib/rotas";
+import { CenaSonic, type PoseSonic } from "./CenaSonic";
+import { CONFIG, FASES, aneisDeOuro, podeAcessar, sortear } from "./dados";
+import { comoDigitar } from "./teclado";
+import { TecladoVirtual } from "./TecladoVirtual";
 import estilos from "./SonicPage.module.css";
 
-interface Conclusao {
+interface Resultado {
   precisao: number;
   ppm: number;
-  aneis: number;
+  aneisOuro: number;
 }
 
-interface EstadoJogo {
-  faseAtual: number;
-  itemAtual: number;
+interface Estado {
+  fase: number;
+  itens: string[];
+  item: number;
   digitado: string;
+  acertosFase: number;
+  errosFase: number;
+  inicioFase: number | null;
+  fimFase: number | null;
   aneis: number;
   combo: number;
   melhorCombo: number;
   errosSeguidos: number;
   acertosTotais: number;
   errosTotais: number;
-  acertosFase: number;
-  errosFase: number;
-  inicioItem: number | null;
-  inicioFase: number | null;
-  conclusoes: Record<number, Conclusao>;
-  itensDaFase: string[];
+  conclusoes: Record<number, Resultado>;
 }
 
-type Modal =
-  | { tipo: "bloqueada"; indiceTentado: number }
-  | { tipo: "final"; precisao: number; ppm: number; totalCaracteres: number; medalha: string; titulo: string; elogio: string; aneis: number; melhorCombo: number };
+const CHAVE_PROGRESSO = "digitacao-sonic-progresso-v1";
 
-function novoEstadoFase(indice: number): Pick<EstadoJogo, "faseAtual" | "itensDaFase" | "itemAtual" | "inicioFase" | "acertosFase" | "errosFase" | "digitado" | "inicioItem"> {
-  const fase = FASES[indice];
+// Progresso fica só neste navegador: é conveniência de quem joga (voltar de
+// onde parou), não registro oficial — o ranking é que guarda resultado.
+function lerProgresso(): Pick<Estado, "conclusoes" | "aneis"> {
+  try {
+    const bruto = localStorage.getItem(CHAVE_PROGRESSO);
+    if (bruto) {
+      const salvo = JSON.parse(bruto) as Partial<Pick<Estado, "conclusoes" | "aneis">>;
+      return { conclusoes: salvo.conclusoes ?? {}, aneis: salvo.aneis ?? 0 };
+    }
+  } catch {
+    // sem acesso ao armazenamento: começa do zero
+  }
+  return { conclusoes: {}, aneis: 0 };
+}
+
+function salvarProgresso(estado: Pick<Estado, "conclusoes" | "aneis">) {
+  try {
+    localStorage.setItem(CHAVE_PROGRESSO, JSON.stringify({ conclusoes: estado.conclusoes, aneis: estado.aneis }));
+  } catch {
+    // sem acesso ao armazenamento: o jogo continua, só não lembra depois
+  }
+}
+
+function prepararFase(fase: number): Pick<Estado, "fase" | "itens" | "item" | "digitado" | "acertosFase" | "errosFase" | "inicioFase" | "fimFase"> {
+  const { itens } = FASES[fase];
   return {
-    faseAtual: indice,
-    itensDaFase: sortear(fase.itens, Math.min(CONFIG.itensPorFase, fase.itens.length)),
-    itemAtual: 0,
-    inicioFase: null,
+    fase,
+    itens: sortear(itens, Math.min(CONFIG.itensPorFase, itens.length)),
+    item: 0,
+    digitado: "",
     acertosFase: 0,
     errosFase: 0,
-    digitado: "",
-    inicioItem: null,
+    inicioFase: null,
+    fimFase: null,
   };
 }
 
-const ESTADO_INICIAL: EstadoJogo = {
-  ...novoEstadoFase(0),
-  aneis: 0,
-  combo: 0,
-  melhorCombo: 0,
-  errosSeguidos: 0,
-  acertosTotais: 0,
-  errosTotais: 0,
-  conclusoes: {},
-};
+function estadoInicial(): Estado {
+  const progresso = lerProgresso();
+  const primeiraAberta = FASES.findIndex((_, i) => !progresso.conclusoes[i]);
+  return {
+    ...prepararFase(primeiraAberta === -1 ? FASES.length - 1 : primeiraAberta),
+    ...progresso,
+    combo: 0,
+    melhorCombo: 0,
+    errosSeguidos: 0,
+    acertosTotais: 0,
+    errosTotais: 0,
+  };
+}
 
-function calcularPrecisao(acertos: number, erros: number): number {
+function precisao(acertos: number, erros: number) {
   const total = acertos + erros;
   return total === 0 ? 100 : Math.round((acertos / total) * 100);
 }
 
-function calcularPPM(inicio: number | null, acertos: number, agoraMs: number): number {
-  if (!inicio) return 0;
-  const minutos = (agoraMs - inicio) / 60000;
-  if (minutos <= 0) return 0;
-  return Math.max(0, Math.min(Math.round(acertos / 5 / minutos), 999));
+/** Palavras por minuto (5 teclas = 1 palavra). Antes de 4 segundos o número não diz nada. */
+function ppm(acertos: number, inicio: number | null, fim: number) {
+  if (!inicio || fim - inicio < 4000) return null;
+  return Math.min(999, Math.round(acertos / 5 / ((fim - inicio) / 60000)));
 }
+
+type Final = { precisao: number; ppm: number; teclas: number; aneis: number; melhorCombo: number; titulo: string; elogio: string };
 
 export function SonicPage() {
   useEntrarEmTelaImersiva();
 
-  const [estado, definirEstado] = useState<EstadoJogo>(ESTADO_INICIAL);
-  const [modoSonic, definirModoSonicState] = useState<ModoSonic>("normal");
-  const [imagensQuebradas, definirImagensQuebradas] = useState<Record<string, boolean>>({});
-  const [aneisVoando, definirAneisVoando] = useState<{ id: number; left: number; bottom: number }[]>([]);
-  const [pulsaChave, definirPulsaChave] = useState(0);
-  const [mensagem, definirMensagem] = useState<{ tipo: "sucesso" | "erro" | "aviso"; texto: string } | null>(null);
-  const [modal, definirModal] = useState<Modal | null>(null);
-  const [sumindo, definirSumindo] = useState(false);
+  const [estado, definirEstado] = useState<Estado>(estadoInicial);
+  const [nivel, definirNivel] = useState(0);
+  const [tropeco, definirTropeco] = useState(0);
+  const [pulsoAneis, definirPulsoAneis] = useState(0);
+  const [aneisVoando, definirAneisVoando] = useState<{ id: number; x: number; y: number }[]>([]);
+  const [aviso, definirAviso] = useState<string | null>(null);
+  const [focado, definirFocado] = useState(false);
+  const [final, definirFinal] = useState<Final | null>(null);
+  const [saindo, definirSaindo] = useState(false);
   const [agora, definirAgora] = useState(() => Date.now());
 
   const campoRef = useRef<HTMLInputElement>(null);
-  const proximoAnelId = useRef(0);
+  const toquesRef = useRef<number[]>([]);
+  const anelIdRef = useRef(0);
+  const avisoRef = useRef<number | undefined>(undefined);
 
+  const dadosFase = FASES[estado.fase];
+  const alvo = estado.itens[estado.item] ?? "";
+  const concluida = estado.fimFase !== null;
+  const tonto = estado.errosSeguidos >= CONFIG.errosParaTonto;
+
+  // Ritmo = teclas certas nos últimos segundos. É ele que dá a velocidade do Sonic.
   useEffect(() => {
-    const id = window.setInterval(() => definirAgora(Date.now()), 900);
+    const id = window.setInterval(() => {
+      const instante = Date.now();
+      toquesRef.current = toquesRef.current.filter((t) => instante - t < CONFIG.janelaRitmoMs);
+      const porSegundo = toquesRef.current.length / (CONFIG.janelaRitmoMs / 1000);
+      let novo = 0;
+      for (const faixa of CONFIG.faixasVelocidade) if (porSegundo >= faixa.min) novo = faixa.nivel;
+      definirNivel(novo);
+      definirAgora(instante);
+    }, 250);
     return () => window.clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    campoRef.current?.focus();
-  }, [estado.faseAtual]);
-
-  const fase = FASES[estado.faseAtual];
-  const alvo = estado.itensDaFase[estado.itemAtual] || "";
-  const precisaoFase = calcularPrecisao(estado.acertosFase, estado.errosFase);
-  const ppmFase = useMemo(() => calcularPPM(estado.inicioFase, estado.acertosFase, agora), [estado.inicioFase, estado.acertosFase, agora]);
-
-  let faixaVelocidade = CONFIG.faixasVelocidade[0];
-  for (const f of CONFIG.faixasVelocidade) {
-    if (estado.combo >= f.min) faixaVelocidade = f;
-  }
-  const maximoVelocidade = CONFIG.faixasVelocidade[CONFIG.faixasVelocidade.length - 1].min;
-  const larguraBarraVelocidade = Math.min(100, (estado.combo / maximoVelocidade) * 100);
-
-  function definirModoSonic(modo: ModoSonic) {
-    definirModoSonicState((atual) => (atual === modo ? atual : modo));
-  }
+  const focar = useCallback(() => campoRef.current?.focus(), []);
 
   useEffect(() => {
-    if (estado.errosSeguidos >= CONFIG.errosParaSonicRealista) {
-      definirModoSonic("realista");
-    } else if (modoSonic === "realista" && estado.errosSeguidos === 0) {
-      definirModoSonic("normal");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [estado.errosSeguidos]);
+    focar();
+  }, [estado.fase, focar]);
 
-  function ganharAnel(quantidade = 1) {
-    definirEstado((e) => ({ ...e, aneis: e.aneis + quantidade }));
-    definirPulsaChave((n) => n + 1);
-    const id = proximoAnelId.current++;
-    const left = 35 + Math.random() * 30;
-    const bottom = 28 + Math.random() * 18;
-    definirAneisVoando((a) => [...a, { id, left, bottom }]);
-    window.setTimeout(() => definirAneisVoando((a) => a.filter((x) => x.id !== id)), 950);
+  function mostrarAviso(texto: string, duracao = 1600) {
+    window.clearTimeout(avisoRef.current);
+    definirAviso(texto);
+    avisoRef.current = window.setTimeout(() => definirAviso(null), duracao);
   }
 
-  function carregarFase(indice: number, reiniciarProgresso = true) {
-    definirEstado((e) => ({
-      ...e,
-      ...(reiniciarProgresso ? novoEstadoFase(indice) : { faseAtual: indice, digitado: "", inicioItem: null }),
-    }));
-    definirMensagem(null);
+  function soltarAnel() {
+    const id = anelIdRef.current++;
+    definirAneisVoando((lista) => [...lista.slice(-12), { id, x: 20 + Math.random() * 8, y: 30 + Math.random() * 14 }]);
+    window.setTimeout(() => definirAneisVoando((lista) => lista.filter((anel) => anel.id !== id)), 720);
+    definirPulsoAneis((n) => n + 1);
   }
 
-  function concluirFase(estadoAtual: EstadoJogo): EstadoJogo {
-    const precisao = calcularPrecisao(estadoAtual.acertosFase, estadoAtual.errosFase);
-    const ppm = calcularPPM(estadoAtual.inicioFase, estadoAtual.acertosFase, Date.now());
-    const conclusoes = { ...estadoAtual.conclusoes, [estadoAtual.faseAtual]: { precisao, ppm, aneis: estadoAtual.aneis } };
-
-    if (estadoAtual.faseAtual === FASES.length - 1) {
-      mostrarTelaFinal(estadoAtual, conclusoes, precisao, ppm);
-    } else {
-      definirMensagem({
-        tipo: "sucesso",
-        texto: `🏆 Fase ${estadoAtual.faseAtual + 1} concluída! Precisão ${precisao}% · ${ppm} palavras/min. Clique em "Próxima fase" para continuar.`,
-      });
-    }
-    return { ...estadoAtual, conclusoes };
-  }
-
-  function mostrarTelaFinal(estadoAtual: EstadoJogo, conclusoes: Record<number, Conclusao>, precisaoUltima: number, ppmUltima: number) {
-    void precisaoUltima;
-    void ppmUltima;
-    definirSumindo(true);
-    const totalTeclas = estadoAtual.acertosTotais + estadoAtual.errosTotais;
-    const precisao = calcularPrecisao(estadoAtual.acertosTotais, estadoAtual.errosTotais);
-    const ppms = Object.values(conclusoes).map((c) => c.ppm);
-    const ppm = ppms.length ? Math.max(...ppms) : 0;
-
-    let medalha = "⭐";
-    let titulo = "PARABÉNS!";
-    let elogio = "Você chegou até o fim! Repita as fases para melhorar ainda mais.";
-    if (precisao >= 97 && ppm >= 35) {
-      medalha = "🥇";
-      titulo = "LENDÁRIO!";
+  function terminarJogo(e: Estado) {
+    const resultados = Object.values(e.conclusoes);
+    const precisaoGeral = precisao(e.acertosTotais, e.errosTotais);
+    const melhorPpm = resultados.length ? Math.max(...resultados.map((r) => r.ppm)) : 0;
+    let titulo = "Você chegou até o fim!";
+    let elogio = "Repita as fases para ganhar mais anéis de ouro.";
+    if (precisaoGeral >= 97 && melhorPpm >= 35) {
+      titulo = "Lendário!";
       elogio = "Velocidade e precisão de campeão. O Sonic ficou para trás!";
-    } else if (precisao >= 92 && ppm >= 25) {
-      medalha = "🥈";
-      titulo = "EXCELENTE!";
-      elogio = "Você digita rápido e com muita precisão. Impressionante!";
-    } else if (precisao >= 85) {
-      medalha = "🥉";
-      titulo = "MUITO BEM!";
-      elogio = "Ótima precisão! Agora é só ganhar mais velocidade.";
+    } else if (precisaoGeral >= 92 && melhorPpm >= 25) {
+      titulo = "Excelente!";
+      elogio = "Você digita rápido e quase sem erros.";
+    } else if (precisaoGeral >= 85) {
+      titulo = "Muito bem!";
+      elogio = "Ótima precisão. Agora é só ganhar velocidade.";
     }
-
+    definirSaindo(true);
     window.setTimeout(() => {
-      definirModal({ tipo: "final", precisao, ppm, totalCaracteres: totalTeclas, medalha, titulo, elogio, aneis: estadoAtual.aneis, melhorCombo: estadoAtual.melhorCombo });
-    }, 1500);
+      definirFinal({
+        precisao: precisaoGeral,
+        ppm: melhorPpm,
+        teclas: e.acertosTotais + e.errosTotais,
+        aneis: e.aneis,
+        melhorCombo: e.melhorCombo,
+        titulo,
+        elogio,
+      });
+    }, 1300);
   }
 
-  function aoDigitar(valor: string) {
-    let { acertosTotais, errosTotais, acertosFase, errosFase, combo, errosSeguidos, melhorCombo, inicioItem, inicioFase } = estado;
-    if (!inicioItem) inicioItem = Date.now();
-    if (!inicioFase) inicioFase = Date.now();
+  /**
+   * O campo fica sempre vazio: cada letra que chega é conferida e some. Letra
+   * errada não entra no texto — a pessoa só tenta de novo, sem precisar apagar.
+   */
+  function receber(texto: string, instante: number) {
+    if (!texto || concluida || final) return;
+    let e = { ...estado, inicioFase: estado.inicioFase ?? instante };
+    let ganhou = 0;
+    let errou = false;
 
-    if (valor.length > estado.digitado.length) {
-      const posicao = valor.length - 1;
-      const acertou = valor[posicao] === alvo[posicao];
-      if (acertou) {
-        acertosTotais++;
-        acertosFase++;
-        combo++;
-        errosSeguidos = 0;
-        melhorCombo = Math.max(melhorCombo, combo);
-        ganharAnel(1);
+    for (const caractere of texto) {
+      const esperado = alvo[e.digitado.length];
+      if (esperado === undefined) break;
+      if (caractere === esperado) {
+        e = {
+          ...e,
+          digitado: e.digitado + caractere,
+          acertosFase: e.acertosFase + 1,
+          acertosTotais: e.acertosTotais + 1,
+          combo: e.combo + 1,
+          melhorCombo: Math.max(e.melhorCombo, e.combo + 1),
+          errosSeguidos: 0,
+          aneis: e.aneis + 1,
+        };
+        ganhou++;
+        toquesRef.current.push(instante);
       } else {
-        errosTotais++;
-        errosFase++;
-        combo = 0;
-        errosSeguidos++;
+        e = { ...e, errosFase: e.errosFase + 1, errosTotais: e.errosTotais + 1, combo: 0, errosSeguidos: e.errosSeguidos + 1 };
+        errou = true;
+        // Errar freia: metade do embalo vai embora.
+        toquesRef.current = toquesRef.current.slice(Math.ceil(toquesRef.current.length / 2));
+        break;
       }
     }
 
-    let novoEstado: EstadoJogo = {
-      ...estado,
-      digitado: valor,
-      acertosTotais,
-      errosTotais,
-      acertosFase,
-      errosFase,
-      combo,
-      errosSeguidos,
-      melhorCombo,
-      inicioItem,
-      inicioFase,
-    };
-
-    if (valor === alvo) {
-      ganharAnel(10);
-      const itemAtual = estado.itemAtual + 1;
-      if (itemAtual >= estado.itensDaFase.length) {
-        novoEstado = concluirFase(novoEstado);
+    if (e.digitado === alvo) {
+      e = { ...e, aneis: e.aneis + 10 };
+      if (e.item + 1 < e.itens.length) {
+        e = { ...e, item: e.item + 1, digitado: "" };
+        mostrarAviso("Boa! +10 anéis");
       } else {
-        novoEstado = { ...novoEstado, itemAtual, digitado: "", inicioItem: null };
-        definirMensagem({ tipo: "sucesso", texto: "✅ Boa! Próxima frase…" });
-        window.setTimeout(() => definirMensagem(null), 1200);
+        const resultado: Resultado = {
+          precisao: precisao(e.acertosFase, e.errosFase),
+          ppm: ppm(e.acertosFase, e.inicioFase, instante) ?? 0,
+          aneisOuro: aneisDeOuro(precisao(e.acertosFase, e.errosFase)),
+        };
+        const anterior = e.conclusoes[e.fase];
+        const melhor = anterior && anterior.aneisOuro > resultado.aneisOuro ? anterior : resultado;
+        e = { ...e, fimFase: instante, conclusoes: { ...e.conclusoes, [e.fase]: melhor } };
+        salvarProgresso(e);
+        if (e.fase === FASES.length - 1) terminarJogo(e);
       }
+    } else if (ganhou) {
+      salvarProgresso(e);
     }
 
-    definirEstado(novoEstado);
+    definirEstado(e);
+    if (ganhou) soltarAnel();
+    if (errou) definirTropeco((n) => n + 1);
   }
 
-  function tentarIrParaFase(indice: number) {
-    if (indice === estado.faseAtual) return;
+  function irParaFase(indice: number) {
     if (!podeAcessar(estado.conclusoes, indice)) {
-      definirModoSonic("feio");
-      definirModal({ tipo: "bloqueada", indiceTentado: indice });
+      mostrarAviso(`Termine a fase ${indice} primeiro.`, 2200);
+      focar();
       return;
     }
-    carregarFase(indice);
-  }
-
-  function fecharModalBloqueada() {
-    definirModal(null);
-    definirModoSonic("normal");
-    campoRef.current?.focus();
+    toquesRef.current = [];
+    definirSaindo(false);
+    definirEstado((e) => ({ ...e, ...prepararFase(indice), combo: 0, errosSeguidos: 0 }));
+    focar();
   }
 
   function proximaFase() {
-    const proxima = estado.faseAtual + 1;
-    if (proxima >= FASES.length) {
-      if (estado.conclusoes[estado.faseAtual]) mostrarTelaFinal(estado, estado.conclusoes, precisaoFase, ppmFase);
-      else definirMensagem({ tipo: "aviso", texto: "⏳ Termine todas as frases desta fase para ver o resultado final." });
+    if (!concluida) return;
+    if (estado.fase === FASES.length - 1) {
+      terminarJogo(estado);
       return;
     }
-    if (!estado.conclusoes[estado.faseAtual]) {
-      definirModoSonic("feio");
-      definirModal({ tipo: "bloqueada", indiceTentado: proxima });
-      return;
-    }
-    carregarFase(proxima);
+    irParaFase(estado.fase + 1);
   }
 
-  function repetirFase() {
-    definirEstado((e) => ({ ...e, combo: 0, errosSeguidos: 0 }));
-    definirModoSonic("normal");
-    carregarFase(estado.faseAtual);
+  function jogarDeNovo() {
+    definirFinal(null);
+    irParaFase(0);
   }
 
-  function reiniciarJogo() {
-    definirEstado(ESTADO_INICIAL);
-    definirModoSonic("normal");
-    definirSumindo(false);
-    definirModal(null);
-    definirMensagem(null);
-  }
+  const proximoCaractere = alvo[estado.digitado.length];
+  const proximo = useMemo(() => (proximoCaractere ? comoDigitar(proximoCaractere) : []), [proximoCaractere]);
 
-  const temErro = [...estado.digitado].some((c, i) => c !== alvo[i]);
-  const totalCaracteresFases = FASES.reduce((t, f) => t + f.itens.length, 0);
+  let pose: PoseSonic = "parado";
+  if (tonto) pose = "tonto";
+  else if (nivel >= 3) pose = "bola";
+  else if (nivel >= 1) pose = "correndo";
+
+  const rotuloVelocidade = CONFIG.faixasVelocidade[nivel].rotulo;
+  const ppmAtual = ppm(estado.acertosFase, estado.inicioFase, estado.fimFase ?? agora);
+  const precisaoAtual = precisao(estado.acertosFase, estado.errosFase);
+  const resultadoFase = estado.conclusoes[estado.fase];
   const feitas = Object.keys(estado.conclusoes).length;
-  const spriteSrc = imagensQuebradas[modoSonic] ? null : CONFIG.imagens[modoSonic];
 
   return (
     <div className={estilos.pagina}>
-      <header className={estilos.header}>
-        <h1>💨 Sonic Digital Pro</h1>
-        <p>Treino de digitação — quanto mais você acerta, mais anéis o Sonic ganha e mais rápido ele corre!</p>
+      <header className={estilos.topo}>
+        <Link to={rotas.digitacao()} className={estilos.voltar}>
+          <Icone nome="seta-esquerda" tamanho={18} />
+          Voltar
+        </Link>
+        <h1 className={estilos.titulo}>
+          <Icone nome="raio" tamanho={22} />
+          Sonic Digital Pro
+        </h1>
+        <nav className={estilos.mapa} aria-label={`Fases: ${feitas} de ${FASES.length} concluídas`}>
+          {FASES.map((f, i) => {
+            const aberta = podeAcessar(estado.conclusoes, i);
+            const classes = [
+              estilos.fase,
+              estado.conclusoes[i] ? estilos.faseFeita : "",
+              i === estado.fase ? estilos.faseAtual : "",
+              aberta ? "" : estilos.faseTrancada,
+            ].join(" ");
+            return (
+              <button
+                key={f.nome}
+                type="button"
+                className={classes}
+                title={`Fase ${i + 1}: ${f.nome}${aberta ? "" : " (trancada)"}`}
+                aria-current={i === estado.fase ? "step" : undefined}
+                onClick={() => irParaFase(i)}
+              >
+                {aberta ? i + 1 : <Icone nome="cadeado" tamanho={14} />}
+                {estado.conclusoes[i] && (
+                  <span className={estilos.faseAneis} aria-label={`${estado.conclusoes[i].aneisOuro} de 3 anéis de ouro`}>
+                    {[1, 2, 3].map((n) => (
+                      <i key={n} className={n <= estado.conclusoes[i].aneisOuro ? estilos.pontoOuro : ""} />
+                    ))}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
       </header>
 
-      <div className={estilos.progressoGeral}>
-        <span style={{ width: `${(feitas / FASES.length) * 100}%` }} />
-      </div>
 
-      <div className={estilos.palco}>
-        <div className={estilos.cena} data-velocidade={faixaVelocidade.nivel}>
-          <div className={estilos.nuvens} />
-          <div className={estilos.chao} />
+      <CenaSonic
+        nivel={saindo ? 4 : nivel}
+        rotuloVelocidade={rotuloVelocidade}
+        pose={saindo ? "bola" : pose}
+        tropeco={tropeco}
+        aneis={estado.aneis}
+        pulsoAneis={pulsoAneis}
+        aneisVoando={aneisVoando}
+        chegada={concluida}
+        saindo={saindo}
+        aviso={tonto && !concluida ? "Calma! Olhe a tecla acesa no teclado." : aviso}
+      />
 
-          <div className={estilos.velocimetro}>
-            <span className={estilos.rotulo}>{faixaVelocidade.rotulo}</span>
-            <div className={estilos.barraVelocidade}>
-              <span style={{ width: `${larguraBarraVelocidade}%` }} />
-            </div>
-          </div>
-
-          <div className={`${estilos.sonicBox} ${imagensQuebradas[modoSonic] ? estilos.usarFallback : ""} ${sumindo ? estilos.sumindo : ""}`}>
-            <span className={estilos.rastro} />
-            <span className={estilos.rastro} />
-            <span className={estilos.rastro} />
-            {spriteSrc && (
-              <img
-                className={estilos.sonicSprite}
-                src={spriteSrc}
-                alt="Sonic correndo"
-                onError={() => definirImagensQuebradas((i) => ({ ...i, [modoSonic]: true }))}
-              />
-            )}
-            <div className={estilos.sonicFallback}>
-              <span>{CONFIG.emojiFallback[modoSonic] || "🦔"}</span>
-              <small>{modoSonic === "realista" ? "Devagar!" : modoSonic === "feio" ? "Ops!" : "Sonic"}</small>
-            </div>
-          </div>
-
-          {aneisVoando.map((a) => (
-            <img key={a.id} className={estilos.anelVoando} src={CONFIG.anel} alt="" style={{ left: `${a.left}%`, bottom: `${a.bottom}%` }} />
-          ))}
-
-          <div key={pulsaChave} className={`${estilos.contadorAneis} ${estilos.pulsa}`}>
-            <img src={CONFIG.anel} alt="Anel" />
-            <span>{estado.aneis}</span>
-          </div>
-        </div>
-
-        <div className={estilos.painel}>
-          <div className={estilos.cabecalhoFase}>
+      <main className={estilos.painel} onClick={focar}>
+        <div className={estilos.cabecalhoFase}>
+          <div>
             <h2>
-              <span>Fase {estado.faseAtual + 1} — {fase.nome}</span>
-              <span className={estilos.etiquetaNivel}>{fase.nivel}</span>
+              Fase {estado.fase + 1}: {dadosFase.nome}
+              <span className={estilos.nivel}>{dadosFase.nivel}</span>
             </h2>
-            <p>{fase.dica}</p>
+            <p>{dadosFase.dica}</p>
           </div>
-
-          <div className={estilos.alvo}>
-            {alvo.split("").map((ch, i) => {
-              const classes = [estilos.ch];
-              if (ch === " ") classes.push(estilos.espaco);
-              if (i < estado.digitado.length) classes.push(estado.digitado[i] === ch ? estilos.ok : estilos.erroCh);
-              else if (i === estado.digitado.length) classes.push(estilos.atualCh);
-              return (
-                <span key={i} className={classes.join(" ")}>
-                  {ch}
-                </span>
-              );
-            })}
+        <div className={estilos.estatisticas}>
+          <div>
+            <strong>
+              {estado.item + 1}/{estado.itens.length}
+            </strong>
+            <span>Frase</span>
           </div>
-
-          <input
-            ref={campoRef}
-            className={temErro ? `${estilos.campo} ${estilos.errando}` : estilos.campo}
-            type="text"
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            placeholder="Digite aqui o texto acima…"
-            disabled={!!modal}
-            value={estado.digitado}
-            onChange={(e) => aoDigitar(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && estado.conclusoes[estado.faseAtual]) {
-                e.preventDefault();
-                proximaFase();
-              }
-              if (e.key === "Tab") e.preventDefault();
-            }}
-          />
-
-          <div className={estilos.estatisticas}>
-            <div className={estilos.estat}><div className={estilos.valor}>{Math.min(estado.itemAtual + 1, estado.itensDaFase.length)}/{estado.itensDaFase.length}</div><div className={estilos.nome}>Frase</div></div>
-            <div className={estilos.estat}><div className={estilos.valor}>{precisaoFase}%</div><div className={estilos.nome}>Precisão</div></div>
-            <div className={estilos.estat}><div className={estilos.valor}>{ppmFase}</div><div className={estilos.nome}>Palavras/min</div></div>
-            <div className={estilos.estat}><div className={estilos.valor}>{estado.combo}</div><div className={estilos.nome}>Sequência</div></div>
+          <div>
+            <strong>{precisaoAtual}%</strong>
+            <span>Precisão</span>
           </div>
-
-          {mensagem && <div className={`${estilos.mensagem} ${estilos.mostrar} ${estilos[mensagem.tipo]}`}>{mensagem.texto}</div>}
-
-          <div className={estilos.botoes}>
-            <button type="button" className={estilos.secundario} disabled={estado.faseAtual === 0} onClick={() => carregarFase(estado.faseAtual - 1)}>← Fase anterior</button>
-            <button type="button" className={estilos.secundario} onClick={repetirFase}>↻ Repetir fase</button>
-            <button type="button" onClick={proximaFase}>{estado.faseAtual === FASES.length - 1 ? "Ver resultado 🏁" : "Próxima fase →"}</button>
+          <div>
+            <strong>{ppmAtual ?? "—"}</strong>
+            <span>Palavras/min</span>
+          </div>
+          <div>
+            <strong>{estado.combo}</strong>
+            <span>Sequência</span>
           </div>
         </div>
-      </div>
-
-      <div className={estilos.mapa}>
-        <h3>🗺️ Mapa de fases <small>— {feitas} de {FASES.length} concluídas</small></h3>
-        <div className={estilos.listaFases}>
-          {FASES.map((f, i) => (
-            <button
-              key={f.nome}
-              type="button"
-              className={`${estilos.btnFase} ${estado.conclusoes[i] ? estilos.concluida : ""} ${i === estado.faseAtual ? estilos.atualFase : ""} ${!podeAcessar(estado.conclusoes, i) ? estilos.bloqueada : ""}`}
-              title={f.nome}
-              onClick={() => tentarIrParaFase(i)}
-            >
-              {i + 1}
-              <small>{estado.conclusoes[i] ? "✔" : "•"}</small>
-            </button>
-          ))}
         </div>
-      </div>
 
-      <footer className={estilos.footer}>
-        <Link to="/digitacao" className={estilos.botaoVoltar}>
-          ← Voltar para Digitação
-        </Link>
-        <p>
-          <strong>Sonic Digital Pro</strong> — treino de digitação · {FASES.length} fases · {totalCaracteresFases} palavras e frases no total
-        </p>
-      </footer>
+        {concluida && resultadoFase ? (
+          <section className={estilos.resultado} aria-live="polite">
+            <h3>Fase {estado.fase + 1} concluída!</h3>
+            <div className={estilos.aneisOuro} aria-label={`${aneisDeOuro(precisaoAtual)} de 3 anéis de ouro`}>
+              {[1, 2, 3].map((n) => (
+                <img key={n} src={CONFIG.anel} alt="" className={n <= aneisDeOuro(precisaoAtual) ? "" : estilos.anelApagado} />
+              ))}
+            </div>
+            <p>
+              Precisão <strong>{precisaoAtual}%</strong> · <strong>{ppmAtual ?? 0}</strong> palavras por minuto
+            </p>
+            <p className={estilos.dicaAneis}>3 anéis de ouro: 97% de precisão ou mais. 2 anéis: 90% ou mais.</p>
+            <div className={estilos.botoes}>
+              <button type="button" className={estilos.secundario} onClick={() => irParaFase(estado.fase)}>
+                <Icone nome="recomecar" tamanho={18} />
+                Repetir fase
+              </button>
+              <button type="button" className={estilos.primario} onClick={proximaFase}>
+                {estado.fase === FASES.length - 1 ? "Ver resultado final" : "Próxima fase"}
+                <Icone nome="seta-direita" tamanho={18} />
+              </button>
+            </div>
+            <p className={estilos.atalho}>ou aperte Enter</p>
+          </section>
+        ) : (
+          <>
+            <div className={estilos.alvo} aria-label={`Digite: ${alvo}`}>
+              {alvo.split("").map((ch, i) => {
+                const classes = [estilos.ch];
+                if (ch === " ") classes.push(estilos.espaco);
+                if (i < estado.digitado.length) classes.push(estilos.feito);
+                else if (i === estado.digitado.length) classes.push(estilos.atual, tropeco > 0 ? estilos.atualErro : "");
+                return (
+                  <span key={i === estado.digitado.length ? `atual-${tropeco}` : i} className={classes.join(" ")}>
+                    {ch === " " ? " " : ch}
+                  </span>
+                );
+              })}
+              {!focado && !final && <span className={estilos.cliqueAqui}>Clique aqui para digitar</span>}
+            </div>
 
-      {modal && (
-        <div className={`${estilos.modal} ${estilos.aberto}`}>
+            <TecladoVirtual proximo={proximo} errou={tropeco > 0} key={tropeco} />
+          </>
+        )}
+
+        <input
+          ref={campoRef}
+          className={estilos.campo}
+          aria-label="Campo de digitação"
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          onFocus={() => definirFocado(true)}
+          onBlur={() => definirFocado(false)}
+          onPaste={(evento) => evento.preventDefault()}
+          onChange={(evento) => {
+            const campo = evento.currentTarget;
+            // Acento no Linux/Mac chega em composição: espera a letra final.
+            if ((evento.nativeEvent as InputEvent).isComposing) return;
+            receber(campo.value, Date.now());
+            campo.value = "";
+          }}
+          onCompositionEnd={(evento) => {
+            receber(evento.currentTarget.value, Date.now());
+            evento.currentTarget.value = "";
+          }}
+          onKeyDown={(evento) => {
+            if (evento.key === "Enter" && concluida) {
+              evento.preventDefault();
+              proximaFase();
+            }
+            if (evento.key === "Tab") evento.preventDefault();
+          }}
+        />
+      </main>
+
+      {final && (
+        <div className={estilos.modal} role="dialog" aria-modal="true" aria-labelledby="titulo-final">
           <div className={estilos.modalCaixa}>
-            {modal.tipo === "bloqueada" ? (
-              <>
-                <div className={estilos.emojiGigante}>😬</div>
-                <h2>Opa! Essa fase ainda está trancada 🔒</h2>
-                <p>
-                  Você tentou pular para a <strong>fase {modal.indiceTentado + 1}</strong>, mas ainda não terminou a{" "}
-                  <strong>fase {modal.indiceTentado}</strong>.
-                </p>
-                <p>Termine as fases em ordem — assim o treino funciona de verdade e o Sonic continua bonito! 😅</p>
-                <div className={estilos.botoes}>
-                  <button type="button" onClick={fecharModalBloqueada}>Ok, vou terminar a anterior!</button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className={estilos.emojiGigante}>🏁</div>
-                <h2>{modal.titulo} Você completou todas as fases!</h2>
-                <div className={estilos.medalha}>{modal.medalha}</div>
-                <p>{modal.elogio}</p>
-                <p className={estilos.fraseFinal}>
-                  "O Sonic correu tão rápido que sumiu no horizonte — e levou seus {modal.aneis} anéis com ele!" 💨
-                </p>
-                <div className={estilos.placarFinal}>
-                  <div className={estilos.estat}><div className={estilos.valor}>{modal.aneis}</div><div className={estilos.nome}>Anéis</div></div>
-                  <div className={estilos.estat}><div className={estilos.valor}>{modal.precisao}%</div><div className={estilos.nome}>Precisão</div></div>
-                  <div className={estilos.estat}><div className={estilos.valor}>{modal.ppm}</div><div className={estilos.nome}>Melhor vel. (ppm)</div></div>
-                  <div className={estilos.estat}><div className={estilos.valor}>{modal.melhorCombo}</div><div className={estilos.nome}>Melhor sequência</div></div>
-                  <div className={estilos.estat}><div className={estilos.valor}>{FASES.length}</div><div className={estilos.nome}>Fases</div></div>
-                  <div className={estilos.estat}><div className={estilos.valor}>{modal.totalCaracteres}</div><div className={estilos.nome}>Teclas digitadas</div></div>
-                </div>
-                <p><strong>Dica do Sonic:</strong> treinar 10 a 15 minutos por dia deixa a digitação muito mais rápida em poucas semanas!</p>
-                <PainelRanking
-                  jogoId="digitacao-sonic"
-                  resultadoPendente={{ ppm: modal.ppm, precisao: modal.precisao }}
-                  somenteFormulario
-                />
-                <div className={estilos.botoes}>
-                  <button type="button" onClick={reiniciarJogo}>Jogar de novo 🔄</button>
-                </div>
-              </>
-            )}
+            <Icone nome="trofeu" tamanho={48} />
+            <h2 id="titulo-final">{final.titulo} Você completou as {FASES.length} fases.</h2>
+            <p>{final.elogio}</p>
+            <div className={estilos.placar}>
+              <div>
+                <strong>{final.aneis}</strong>
+                <span>Anéis</span>
+              </div>
+              <div>
+                <strong>{final.precisao}%</strong>
+                <span>Precisão</span>
+              </div>
+              <div>
+                <strong>{final.ppm}</strong>
+                <span>Melhor palavras/min</span>
+              </div>
+              <div>
+                <strong>{final.melhorCombo}</strong>
+                <span>Melhor sequência</span>
+              </div>
+              <div>
+                <strong>{final.teclas}</strong>
+                <span>Teclas digitadas</span>
+              </div>
+            </div>
+            <p className={estilos.dicaFinal}>Treinar de 10 a 15 minutos por dia deixa a digitação muito mais rápida em poucas semanas.</p>
+            <PainelRanking jogoId="digitacao-sonic" resultadoPendente={{ ppm: final.ppm, precisao: final.precisao }} somenteFormulario />
+            <div className={estilos.botoes}>
+              <button type="button" className={estilos.primario} onClick={jogarDeNovo}>
+                <Icone nome="recomecar" tamanho={18} />
+                Jogar de novo
+              </button>
+            </div>
           </div>
         </div>
       )}
