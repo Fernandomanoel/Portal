@@ -288,9 +288,14 @@
   color: var(--ink-soft);
 }
 
-.fonte a {
+.fonte a,
+.linkTexto {
   color: var(--brand-deep);
   font-weight: 600;
+}
+
+.linkTexto {
+  overflow-wrap: anywhere;
 }
 
 .tabelaEnvoltorio {

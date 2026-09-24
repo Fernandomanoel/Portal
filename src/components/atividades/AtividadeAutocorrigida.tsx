@@ -178,6 +178,29 @@ const ICONE_NOTA: Record<"objetivo" | "desafio" | "aviso" | "regras" | "dica", N
 
 const ROTULO_NOTA = { objetivo: "Objetivo", desafio: "Desafio extra", aviso: "Atenção", dica: "Dica" };
 
+// Só endereços com http(s) viram link: os "www.golpe..." dos exemplos de
+// Segurança precisam continuar não clicáveis, e localhost não existe fora
+// do computador do aluno.
+const URL_NO_TEXTO = /https?:\/\/[^\s<>"]+[^\s<>".,;:!?)]/g;
+
+function ComLinks({ texto }: { texto: string }) {
+  const partes: ReactNode[] = [];
+  let inicio = 0;
+  for (const achado of texto.matchAll(URL_NO_TEXTO)) {
+    const url = achado[0];
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)\b/.test(url)) continue;
+    partes.push(texto.slice(inicio, achado.index));
+    partes.push(
+      <a key={achado.index} href={url} target="_blank" rel="noreferrer" className={estilos.linkTexto}>
+        {url}
+      </a>,
+    );
+    inicio = achado.index + url.length;
+  }
+  partes.push(texto.slice(inicio));
+  return <>{partes}</>;
+}
+
 function Tabela({ colunas, linhas }: { colunas: string[]; linhas: string[][] }) {
   return (
     <div className={estilos.tabelaEnvoltorio}>
@@ -206,20 +229,24 @@ function Tabela({ colunas, linhas }: { colunas: string[]; linhas: string[][] }) 
 function Bloco({ bloco }: { bloco: BlocoConteudo }) {
   switch (bloco.tipo) {
     case "texto":
-      return <p className={estilos.texto}>{bloco.texto}</p>;
+      return <p className={estilos.texto}><ComLinks texto={bloco.texto} /></p>;
     case "subtitulo":
       return <h4 className={estilos.subtitulo}>{bloco.texto}</h4>;
     case "lista":
       return bloco.numerada ? (
         <ol className={estilos.passos}>
           {bloco.itens.map((item, indice) => (
-            <li key={indice}>{item}</li>
+            <li key={indice}>
+              <ComLinks texto={item} />
+            </li>
           ))}
         </ol>
       ) : (
         <ul className={estilos.listaSimples}>
           {bloco.itens.map((item, indice) => (
-            <li key={indice}>{item}</li>
+            <li key={indice}>
+              <ComLinks texto={item} />
+            </li>
           ))}
         </ul>
       );
@@ -239,15 +266,21 @@ function Bloco({ bloco }: { bloco: BlocoConteudo }) {
         <Nota tipo={bloco.variante} rotulo={bloco.rotulo ?? ROTULO_NOTA[bloco.variante]}>
           {bloco.itens ? (
             <>
-              {bloco.texto && <p>{bloco.texto}</p>}
+              {bloco.texto && (
+                <p>
+                  <ComLinks texto={bloco.texto} />
+                </p>
+              )}
               <ul className={estilos.regrasLista}>
                 {bloco.itens.map((item, indice) => (
-                  <li key={indice}>{item}</li>
+                  <li key={indice}>
+              <ComLinks texto={item} />
+            </li>
                 ))}
               </ul>
             </>
           ) : (
-            bloco.texto
+            <ComLinks texto={bloco.texto} />
           )}
         </Nota>
       );
