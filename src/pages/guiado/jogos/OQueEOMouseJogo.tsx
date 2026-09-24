@@ -4,7 +4,6 @@ import { CartaoGuiado } from "@/components/guiado/CartaoGuiado";
 import { MolduraGuiado, type AcaoGuiado } from "@/components/guiado/MolduraGuiado";
 import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import { rotas } from "@/lib/rotas";
-import { tocarSomRecompensa } from "@/lib/somRecompensa";
 import { MouseDesenho, type ParteMouse } from "./MouseDesenho";
 
 const ACENTO = "#3d5bd9";
@@ -53,7 +52,6 @@ export function OQueEOMouseJogo() {
   }, [tela]);
 
   function premiar() {
-    tocarSomRecompensa();
     definirRecompensa((atual) => atual + 1);
   }
 

@@ -86,7 +86,6 @@
   --guiado-ouvir-texto: #0f6b32;
   --guiado-recompensa: #fdf2e0;
   --guiado-recompensa-texto: #7a4e00;
-  --guiado-estrela: #d99a1e;
   /* Quanto a cor do assunto clareia quando vira ícone/texto sobre fundo escuro. */
   --guiado-clarear: 0%;
 }
@@ -140,7 +139,6 @@
     --guiado-ouvir-texto: #86dca4;
     --guiado-recompensa: #2e2413;
     --guiado-recompensa-texto: #f0c36e;
-    --guiado-estrela: #f0b94a;
     --guiado-clarear: 40%;
   }
 }
@@ -193,6 +191,5 @@
   --guiado-ouvir-texto: #86dca4;
   --guiado-recompensa: #2e2413;
   --guiado-recompensa-texto: #f0c36e;
-  --guiado-estrela: #f0b94a;
   --guiado-clarear: 40%;
 }

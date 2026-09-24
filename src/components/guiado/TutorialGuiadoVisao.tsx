@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { NomeIcone } from "@/components/Icone";
-import { tocarSomRecompensa } from "@/lib/somRecompensa";
 import type { AtividadeAutocorrigida, PassoGuiado } from "@/types/atividadeAutocorrigida";
 import { CartaoGuiado, VisualIcone, VisualImagem } from "./CartaoGuiado";
 import { MolduraGuiado, type AcaoGuiado } from "./MolduraGuiado";
@@ -40,7 +39,6 @@ export function TutorialGuiadoVisao({ atividade, icone, acento, sairPara }: Prop
   }, [tela]);
 
   function avancarPasso(indice: number) {
-    tocarSomRecompensa();
     definirRecompensa((atual) => atual + 1);
     definirTela(indice + 1 < total ? { tipo: "passo", indice: indice + 1 } : { tipo: "fim" });
   }
@@ -94,10 +92,10 @@ export function TutorialGuiadoVisao({ atividade, icone, acento, sairPara }: Prop
   } else {
     conteudo = (
       <CartaoGuiado
-        visual={<VisualIcone icone="estrela" destaque />}
+        visual={<VisualIcone icone="check" destaque />}
         titulo="Muito bem! Você terminou."
         tituloRef={tituloRef}
-        texto={`Você fez os ${total} passos e ganhou ${total} estrelas.`}
+        texto={`Você fez os ${total} passos.`}
       />
     );
     voltar = { rotulo: "Fazer de novo", icone: "recomecar", aoClicar: recomecar };

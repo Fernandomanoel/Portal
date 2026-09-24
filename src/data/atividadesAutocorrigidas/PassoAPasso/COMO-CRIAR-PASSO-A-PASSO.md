@@ -2,7 +2,8 @@
 
 A seção "Passo a Passo" (`/passo-a-passo`) é para crianças e para pessoas com
 dificuldade de leitura. Cada tela mostra **um passo só**, com imagem, botão
-"Ouvir" e recompensa ("Muito bem!") ao avançar. A tela é sempre a mesma —
+"Ouvir" e o texto "Muito bem!" ao avançar (sem som e sem estrela: repetidos
+a cada passo, cansam). A tela é sempre a mesma —
 quem escreve o tutorial só escreve o dado.
 
 ## 1. Criar o arquivo
@@ -87,3 +88,11 @@ Um print de tela real ou um GIF curto também serve: salve em
 A capa do card na vitrine é o campo `capa` da linha em `TUTORIAIS`
 (importar a imagem e passar o valor); sem ela, o card mostra a cor e o
 ícone do assunto.
+
+## 5. Passos repetidos
+
+Começos que se repetem em vários tutoriais ficam em `passosComuns.ts`
+(`PREPARAR_NOME_NO_WORD`, `PREPARAR_SLIDE`) e as quatro contas do Excel
+(+ − * /) saem todas de `contaNoExcel(...)`, para não ficarem diferentes umas
+das outras. Tutorial que depende de outro (ex.: abrir o documento salvo)
+diz no primeiro passo qual tutorial fazer antes.

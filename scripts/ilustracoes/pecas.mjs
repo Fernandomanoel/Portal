@@ -671,8 +671,11 @@ export function iconeApp(x, y, tamanho, app) {
   <text x="${x + tamanho / 2}" y="${y + tamanho * 0.72}" font-size="${tamanho * 0.58}" font-weight="700" fill="#ffffff" text-anchor="middle">${esc(app.letra)}</text>`;
 }
 
-/** Menu Iniciar aberto sobre a área de trabalho, com a busca digitada e o resultado. */
-export function menuIniciar({ busca = '', resultado = null, fixados = [] } = {}) {
+/** Botão de energia do Menu Iniciar (canto de baixo, à direita). */
+export const POS_ENERGIA = { cx: 452, cy: 338 };
+
+/** Menu Iniciar aberto sobre a área de trabalho: busca, resultado, fixados e botão de energia. */
+export function menuIniciar({ busca = '', resultado = null, tipoResultado = 'Aplicativo', fixados = [], menuEnergia = null } = {}) {
   const partes = [
     '  <g filter="url(#sombra)"><rect x="160" y="40" width="320" height="316" rx="10" fill="#f3f4f6" stroke="#d4d4d8"/></g>',
     `  <rect x="176" y="56" width="288" height="32" rx="16" fill="#ffffff" stroke="${busca ? '#0067c0' : '#d4d4d8'}" stroke-width="${busca ? 2 : 1}"/>`,
@@ -686,7 +689,7 @@ export function menuIniciar({ busca = '', resultado = null, fixados = [] } = {})
     partes.push('  <rect x="176" y="126" width="288" height="60" rx="8" fill="#ffffff" stroke="#e5e7eb"/>');
     partes.push(iconeApp(188, 136, 40, resultado));
     partes.push(texto(240, 153, resultado.nome, { tamanho: 15, negrito: true }));
-    partes.push(texto(240, 172, 'Aplicativo', { tamanho: 11.5, cor: CINZA }));
+    partes.push(texto(240, 172, tipoResultado, { tamanho: 11.5, cor: CINZA }));
   } else {
     partes.push(texto(180, 116, 'Fixado', { tamanho: 12, negrito: true }));
     fixados.forEach((app, i) => {
@@ -695,6 +698,15 @@ export function menuIniciar({ busca = '', resultado = null, fixados = [] } = {})
       partes.push(iconeApp(x + 14, y, 36, app));
       partes.push(texto(x + 32, y + 54, app.nome, { tamanho: 10.5, centro: true }));
     });
+  }
+  const { cx, cy } = POS_ENERGIA;
+  partes.push(`  <line x1="160" y1="316" x2="480" y2="316" stroke="#e4e4e7"/>
+  <circle cx="190" cy="338" r="12" fill="#cbd5e1"/>${texto(210, 343, 'Aluno', { tamanho: 12 })}
+  <path d="M${cx - 6} ${cy - 5} a8 8 0 1 0 12 0" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round"/>
+  <line x1="${cx}" y1="${cy - 10}" x2="${cx}" y2="${cy}" stroke="#374151" stroke-width="2" stroke-linecap="round"/>`);
+  if (menuEnergia) {
+    partes.push(menu(360, 222, [['Suspender', '', menuEnergia === 'Suspender'], ['Desligar', '', menuEnergia === 'Desligar'],
+      ['Reiniciar', '', menuEnergia === 'Reiniciar']], 140));
   }
   return partes.join('\n');
 }
@@ -731,8 +743,25 @@ export function inicioOffice(app, linhasNovo) {
   return partes.join('\n');
 }
 
-/** Janela do Word/Excel/PowerPoint: barra de título e abas na cor do programa, faixa de opções. Conteúdo começa em y 122. */
-export function janelaOffice(app, titulo) {
+export const ABAS_OFFICE = ['Arquivo', 'Página Inicial', 'Inserir', 'Layout', 'Revisão', 'Exibir'];
+const larguraAba = (aba) => aba.length * 6.6 + 18;
+
+/** Retângulo de uma aba da janela do Office (para a moldura "clique aqui"). */
+export function posicaoAba(nome, abas = ABAS_OFFICE) {
+  let x = 34;
+  for (const aba of abas) {
+    const largura = larguraAba(aba);
+    if (aba === nome) return { x: x - 8, y: 50, largura, altura: 20 };
+    x += largura;
+  }
+  throw new Error(`Aba "${nome}" não existe`);
+}
+
+/**
+ * Janela do Word/Excel/PowerPoint: barra de título e abas na cor do programa e
+ * faixa de opções (`faixa`; por padrão, a de fonte). Conteúdo começa em y 122.
+ */
+export function janelaOffice(app, titulo, { abas = ABAS_OFFICE, aba = 'Página Inicial', faixa = null } = {}) {
   const partes = [
     '  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>',
     `  <path d="M20 26 a10 10 0 0 1 10 -10 h580 a10 10 0 0 1 10 10 v44 h-600 z" fill="${app.cor}"/>`,
@@ -740,31 +769,110 @@ export function janelaOffice(app, titulo) {
     '  <g fill="#ffffff" font-size="12"><text x="556" y="37">—</text><rect x="578" y="29" width="9" height="9" fill="none" stroke="#ffffff"/><text x="600" y="38">×</text></g>',
   ];
   let x = 34;
-  for (const aba of ['Arquivo', 'Página Inicial', 'Inserir', 'Desenhar', 'Layout', 'Exibir']) {
-    const largura = aba.length * 6.6 + 18;
-    if (aba === 'Página Inicial') {
+  for (const nome of abas) {
+    const largura = larguraAba(nome);
+    if (nome === aba) {
       partes.push(`  <path d="M${x - 8} 70 v-16 a4 4 0 0 1 4 -4 h${largura - 8} a4 4 0 0 1 4 4 v16 z" fill="#f3f4f6"/>`);
-      partes.push(`  <text x="${x}" y="65" font-size="11.5" font-weight="700" fill="${app.cor}">${aba}</text>`);
+      partes.push(`  <text x="${x}" y="65" font-size="11.5" font-weight="700" fill="${app.cor}">${esc(nome)}</text>`);
     } else {
-      partes.push(`  <text x="${x}" y="65" font-size="11.5" fill="#ffffff">${aba}</text>`);
+      partes.push(`  <text x="${x}" y="65" font-size="11.5" fill="#ffffff">${esc(nome)}</text>`);
     }
     x += largura;
   }
-  partes.push(`  <rect x="20" y="70" width="600" height="52" fill="#f3f4f6"/>
-  <rect x="34" y="80" width="112" height="22" rx="3" fill="#ffffff" stroke="#cbd5e1"/>${texto(42, 95, 'Calibri', { tamanho: 11 })}
-  <rect x="152" y="80" width="38" height="22" rx="3" fill="#ffffff" stroke="#cbd5e1"/>${texto(162, 95, '11', { tamanho: 11 })}
-  <g font-size="13" fill="#1f2937" text-anchor="middle"><text x="212" y="96" font-weight="700">N</text><text x="236" y="96" font-style="italic">I</text><text x="260" y="96" text-decoration="underline">S</text></g>
-  <g stroke="#6b7280" stroke-width="1.6">${[300, 326, 352, 378].map((ax, i) => `<path d="M${ax} 84 h16 M${ax + (i === 1 ? 3 : i === 2 ? 6 : 0)} 90 h${i === 3 ? 16 : 10} M${ax} 96 h16"/>`).join('')}</g>
-  <line x1="20" y1="122" x2="620" y2="122" stroke="#e5e7eb"/>`);
+  partes.push('  <rect x="20" y="70" width="600" height="52" fill="#f3f4f6"/>');
+  partes.push(faixa ?? faixaFonte());
+  partes.push('  <line x1="20" y1="122" x2="620" y2="122" stroke="#e5e7eb"/>');
   return partes.join('\n');
+}
+
+/** Posição de cada botão da faixa de fonte (Página Inicial do Word/Excel). */
+export const FAIXA = {
+  fonte: { x: 34, y: 80, largura: 112, altura: 22 },
+  tamanho: { x: 152, y: 80, largura: 40, altura: 22 },
+  negrito: { x: 200, y: 80, largura: 24, altura: 22 },
+  italico: { x: 226, y: 80, largura: 24, altura: 22 },
+  sublinhado: { x: 252, y: 80, largura: 24, altura: 22 },
+  cor: { x: 282, y: 80, largura: 30, altura: 22 },
+  marcadores: { x: 318, y: 80, largura: 28, altura: 22 },
+  esquerda: { x: 356, y: 80, largura: 24, altura: 22 },
+  centro: { x: 382, y: 80, largura: 24, altura: 22 },
+  direita: { x: 408, y: 80, largura: 24, altura: 22 },
+  autoSoma: { x: 470, y: 78, largura: 110, altura: 26 },
+};
+
+/** Faixa "Página Inicial": fonte, tamanho, N I S, cor, marcadores, alinhamento e, no Excel, AutoSoma. */
+export function faixaFonte({ fonte = 'Calibri', tamanho = '11', ativos = [], corLetra = '#dc2626', autoSoma = false } = {}) {
+  const botao = (nome, conteudo) => {
+    const { x, y, largura, altura } = FAIXA[nome];
+    const ativo = ativos.includes(nome);
+    return `  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" rx="4" fill="${ativo ? '#dbeafe' : 'none'}" stroke="${ativo ? '#93c5fd' : 'none'}"/>\n${conteudo(x + largura / 2, y)}`;
+  };
+  const alinhar = (dx) => (cx, y) => `  <path d="M${cx - 8} ${y + 6} h16 M${cx - 8 + dx} ${y + 11} h${16 - Math.abs(dx) * 2} M${cx - 8} ${y + 16} h16" stroke="#374151" stroke-width="1.6"/>`;
+  const partes = [
+    `  <rect x="34" y="80" width="112" height="22" rx="3" fill="#ffffff" stroke="#cbd5e1"/>${texto(42, 95, fonte, { tamanho: 11 })}`,
+    `  <rect x="152" y="80" width="40" height="22" rx="3" fill="#ffffff" stroke="#cbd5e1"/>${texto(160, 95, tamanho, { tamanho: 11 })}`,
+    botao('negrito', (cx, y) => `  <text x="${cx}" y="${y + 16}" font-size="13" font-weight="700" fill="#1f2937" text-anchor="middle">N</text>`),
+    botao('italico', (cx, y) => `  <text x="${cx}" y="${y + 16}" font-size="13" font-style="italic" fill="#1f2937" text-anchor="middle">I</text>`),
+    botao('sublinhado', (cx, y) => `  <text x="${cx}" y="${y + 16}" font-size="13" text-decoration="underline" fill="#1f2937" text-anchor="middle">S</text>`),
+    botao('cor', (cx, y) => `  <text x="${cx}" y="${y + 14}" font-size="13" font-weight="700" fill="#1f2937" text-anchor="middle">A</text>
+  <rect x="${cx - 8}" y="${y + 17}" width="16" height="3" fill="${corLetra}"/>`),
+    botao('marcadores', (cx, y) => `  <g fill="#374151"><circle cx="${cx - 7}" cy="${y + 7}" r="1.8"/><circle cx="${cx - 7}" cy="${y + 15}" r="1.8"/></g>
+  <path d="M${cx - 2} ${y + 7} h10 M${cx - 2} ${y + 15} h10" stroke="#374151" stroke-width="1.6"/>`),
+    botao('esquerda', alinhar(0)),
+    botao('centro', alinhar(3)),
+    botao('direita', alinhar(6)),
+  ];
+  if (autoSoma) {
+    const { x, y, largura, altura } = FAIXA.autoSoma;
+    partes.push(`  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="${x + 12}" y="${y + 18}" font-size="15" font-weight="700" fill="#1f2937">Σ</text>${texto(x + 30, y + 17, 'AutoSoma', { tamanho: 12 })}`);
+  }
+  return partes.join('\n');
+}
+
+/** Faixa de botões grandes com rótulo (Inserir, Design, Transições...). `destaque`: rótulo marcado como ativo. */
+export function faixaBotoes(rotulos, { destaque = null, largura = 76, desenho = null } = {}) {
+  return rotulos.map((rotulo, i) => {
+    const x = 34 + i * (largura + 8);
+    const ativo = rotulo === destaque;
+    const figura = desenho ? desenho(i, x + largura / 2, 88) : `  <rect x="${x + largura / 2 - 9}" y="80" width="18" height="16" rx="3" fill="none" stroke="#374151" stroke-width="1.6"/>`;
+    return `  <rect x="${x}" y="76" width="${largura}" height="42" rx="5" fill="${ativo ? '#dbeafe' : '#ffffff'}" stroke="${ativo ? '#93c5fd' : '#e5e7eb'}"/>
+${figura}
+  ${texto(x + largura / 2, 112, rotulo, { tamanho: 10.5, centro: true })}`;
+  }).join('\n');
+}
+
+/** Retângulo do botão `i` de `faixaBotoes`. */
+export function posicaoBotaoFaixa(i, largura = 76) {
+  return { x: 34 + i * (largura + 8), y: 76, largura, altura: 42 };
 }
 
 const FUNDO_CONTEUDO = '  <path d="M20 122 h600 v252 a10 10 0 0 1 -10 10 h-580 a10 10 0 0 1 -10 -10 z" fill="#e5e7eb"/>';
 
-/** Folha do Word (x 170–470) com linhas de texto em letra grande e, opcional, o risco que pisca. */
+/**
+ * Folha do Word (x 170–470). `linhas`: texto simples ou { texto, negrito,
+ * italico, sublinhado, tamanho, cor, fonte, alinhar: 'centro'|'direita',
+ * marcador, selecionado }.
+ */
 export function paginaWord({ linhas = [], riscoEm = null } = {}) {
   const partes = [FUNDO_CONTEUDO, '  <rect x="170" y="136" width="300" height="248" fill="#ffffff" stroke="#d4d4d8"/>'];
-  linhas.forEach((linha, i) => partes.push(texto(200, 180 + i * 28, linha, { tamanho: 18 })));
+  let y = 180;
+  for (const linha of linhas) {
+    const d = typeof linha === 'string' ? { texto: linha } : linha;
+    const tamanho = d.tamanho ?? 18;
+    const largura = d.texto.length * tamanho * (d.negrito ? 0.6 : 0.55);
+    const x0 = d.alinhar === 'centro' ? 320 - largura / 2 : d.alinhar === 'direita' ? 444 - largura : d.marcador ? 222 : 196;
+    if (d.selecionado) partes.push(`  <rect x="${x0 - 3}" y="${y - tamanho * 0.9}" width="${largura + 6}" height="${tamanho * 1.2}" fill="#bfdbfe"/>`);
+    if (d.marcador) partes.push(`  <circle cx="206" cy="${y - tamanho * 0.32}" r="3.5" fill="#1f2937"/>`);
+    const estilo = [
+      d.negrito ? ' font-weight="700"' : '',
+      d.italico ? ' font-style="italic"' : '',
+      d.sublinhado ? ' text-decoration="underline"' : '',
+      d.fonte ? ` font-family="${d.fonte}"` : '',
+    ].join('');
+    partes.push(`  <text x="${x0}" y="${y}" font-size="${tamanho}" fill="${d.cor ?? TEXTO}"${estilo}>${esc(d.texto)}</text>`);
+    y += Math.max(28, tamanho * 1.45);
+  }
   if (riscoEm) partes.push(`  <rect x="${riscoEm.x}" y="${riscoEm.y - 18}" width="2" height="22" fill="#1f2937"/>`);
   return partes.join('\n');
 }
@@ -776,18 +884,26 @@ export function posicaoCelula(ref) {
   return { x: 50 + coluna * 80, y: 168 + (linha - 1) * 21, largura: 80, altura: 21 };
 }
 
-/** Planilha do Excel: barra de fórmulas, letras das colunas, números das linhas e células. */
-export function gradeExcel({ valores = {}, selecionada = null, editando = false } = {}) {
+/**
+ * Planilha do Excel. `valores`: o que aparece na célula; `formulas`: o que
+ * aparece na barra de fórmulas (e dentro da célula, quando `editando`).
+ * Número fica à direita e texto à esquerda, como no Excel.
+ */
+export function gradeExcel({ valores = {}, formulas = {}, selecionada = null, editando = false, negritos = [], fundos = {} } = {}) {
   const verde = '#217346';
+  const conteudoSel = selecionada ? formulas[selecionada] ?? valores[selecionada] ?? '' : '';
   const partes = [FUNDO_CONTEUDO.replace('#e5e7eb', '#ffffff'),
     '  <rect x="26" y="126" width="62" height="18" rx="2" fill="#ffffff" stroke="#cbd5e1"/>',
     texto(34, 139, selecionada ?? '', { tamanho: 11 }),
     texto(100, 139, 'fx', { tamanho: 11, cor: CINZA }),
-    texto(124, 139, (selecionada && valores[selecionada]) || '', { tamanho: 11 }),
+    texto(124, 139, conteudoSel, { tamanho: 12 }),
     '  <rect x="20" y="146" width="600" height="22" fill="#f3f4f6"/>',
-    '  <path d="M20 168 h30 v206 a10 10 0 0 1 -10 10 h-20 z" fill="#f3f4f6"/>',
     '  <rect x="20" y="168" width="30" height="210" fill="#f3f4f6"/>',
   ];
+  for (const [ref, cor] of Object.entries(fundos)) {
+    const c = posicaoCelula(ref);
+    partes.push(`  <rect x="${c.x}" y="${c.y}" width="${c.largura}" height="${c.altura}" fill="${cor}"/>`);
+  }
   const sel = selecionada ? posicaoCelula(selecionada) : null;
   for (let c = 0; c < 7; c++) {
     const letra = String.fromCharCode(65 + c);
@@ -804,41 +920,234 @@ export function gradeExcel({ valores = {}, selecionada = null, editando = false 
   for (let c = 0; c <= 7; c++) partes.push(`    <line x1="${50 + c * 80}" y1="146" x2="${50 + c * 80}" y2="378"/>`);
   for (let l = 0; l <= 10; l++) partes.push(`    <line x1="20" y1="${168 + l * 21}" x2="610" y2="${168 + l * 21}"/>`);
   partes.push('  </g>');
-  for (const [ref, valor] of Object.entries(valores)) {
+  const exibidos = { ...valores };
+  if (editando && selecionada) exibidos[selecionada] = conteudoSel;
+  // A célula em edição leva o cursor de texto como um tspan no fim do próprio
+  // texto: assim ele cai logo depois da última letra, sem estimar largura.
+  const caret = '<tspan fill="#1f2937" font-weight="400">|</tspan>';
+  for (const [ref, valor] of Object.entries(exibidos)) {
     const p = posicaoCelula(ref);
-    partes.push(`  <text x="${p.x + p.largura - 8}" y="${p.y + 16}" font-size="14" fill="#1f2937" text-anchor="end">${esc(valor)}</text>`);
+    const numero = valor !== '' && !Number.isNaN(Number(String(valor).replace(',', '.')));
+    const peso = negritos.includes(ref) ? ' font-weight="700"' : '';
+    const emEdicao = editando && ref === selecionada;
+    const fim = emEdicao ? caret : '';
+    if (emEdicao && !numero && String(valor).length * 7.4 > p.largura - 10) {
+      partes.push(`  <rect x="${p.x + 1}" y="${p.y + 1}" width="${Math.min(String(valor).length * 7.6 + 16, 610 - p.x)}" height="${p.altura - 2}" fill="#ffffff"/>`);
+    }
+    partes.push(numero
+      ? `  <text x="${p.x + p.largura - 8}" y="${p.y + 16}" font-size="14" fill="#1f2937" text-anchor="end"${peso}>${esc(valor)}${fim}</text>`
+      : `  <text x="${p.x + 6}" y="${p.y + 16}" font-size="14" fill="#1f2937"${peso}>${esc(valor)}${fim}</text>`);
   }
   if (sel) {
     partes.push(`  <rect x="${sel.x}" y="${sel.y}" width="${sel.largura}" height="${sel.altura}" fill="none" stroke="${verde}" stroke-width="3"/>
   <rect x="${sel.x + sel.largura - 4}" y="${sel.y + sel.altura - 4}" width="7" height="7" fill="${verde}" stroke="#ffffff"/>`);
-    if (editando) partes.push(`  <rect x="${sel.x + sel.largura - 6}" y="${sel.y + 3}" width="1.6" height="15" fill="#1f2937"/>`);
+    if (editando && conteudoSel === '') partes.push(`  <rect x="${sel.x + 7}" y="${sel.y + 3}" width="1.6" height="15" fill="#1f2937"/>`);
   }
   return partes.join('\n');
 }
 
-/** Slide do PowerPoint (x 140–600, y 134–374). `estado`: 'vazio' | 'editando' | 'pronto'. */
-export function slidePowerPoint(app, { titulo = null, estado = 'vazio' } = {}) {
-  const partes = [FUNDO_CONTEUDO,
-    '  <path d="M20 122 h92 v262 h-82 a10 10 0 0 1 -10 -10 z" fill="#f3f4f6"/>',
-    texto(26, 150, '1', { tamanho: 11, cor: CINZA }),
-    `  <rect x="36" y="136" width="66" height="38" rx="2" fill="#ffffff" stroke="${app.cor}" stroke-width="2"/>`,
-    '  <g filter="url(#sombra)"><rect x="140" y="134" width="460" height="240" fill="#ffffff"/></g>',
-  ];
-  if (estado !== 'pronto') {
-    const traco = estado === 'editando' ? 'stroke="#6b7280" stroke-width="1.5"' : 'stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5 4"';
-    partes.push(`  <rect x="180" y="182" width="380" height="68" ${traco} fill="none"/>`);
+/** Temas da aba Design do PowerPoint: fundo, cor de destaque e cor do texto. */
+export const TEMAS_PPT = [
+  { fundo: '#ffffff', cor: '#94a3b8', texto: '#1f2937' },
+  { fundo: '#1e3a8a', cor: '#fbbf24', texto: '#ffffff' },
+  { fundo: '#fef3c7', cor: '#d97706', texto: '#1f2937' },
+  { fundo: '#ecfdf5', cor: '#059669', texto: '#064e3b' },
+  { fundo: '#fdf2f8', cor: '#db2777', texto: '#1f2937' },
+  { fundo: '#111827', cor: '#22d3ee', texto: '#ffffff' },
+];
+
+/** Faixa "Página Inicial" do PowerPoint: botão Novo Slide (x 30–100) e a fonte. */
+export const POS_NOVO_SLIDE = { x: 30, y: 76, largura: 70, altura: 42 };
+export function faixaSlides({ destaque = false } = {}) {
+  const { x, y, largura, altura } = POS_NOVO_SLIDE;
+  return `  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" rx="5" fill="${destaque ? '#dbeafe' : '#ffffff'}" stroke="${destaque ? '#93c5fd' : '#e5e7eb'}"/>
+  <rect x="${x + 25}" y="${y + 6}" width="20" height="14" rx="2" fill="none" stroke="#374151" stroke-width="1.6"/><path d="M${x + 42} ${y + 16} h8 M${x + 46} ${y + 12} v8" stroke="#b7472a" stroke-width="2"/>
+  ${texto(x + largura / 2, y + 36, 'Novo Slide', { tamanho: 10.5, centro: true })}
+  ${texto(112, 94, 'Layout ⌄', { tamanho: 11 })}
+  <rect x="184" y="80" width="112" height="22" rx="3" fill="#ffffff" stroke="#cbd5e1"/>${texto(192, 95, 'Calibri', { tamanho: 11 })}
+  <text x="316" y="96" font-size="13" font-weight="700" fill="#1f2937">N</text><text x="338" y="96" font-size="13" font-style="italic" fill="#1f2937">I</text>`;
+}
+
+/** Faixa da aba Design: miniaturas dos temas (60 × 40), a partir de x 34. */
+export function faixaTemas(destaque = null) {
+  return TEMAS_PPT.map((tema, i) => {
+    const x = 34 + i * 68;
+    const borda = i === destaque ? 'stroke="#2563eb" stroke-width="2.5"' : 'stroke="#cbd5e1"';
+    return `  <rect x="${x}" y="77" width="60" height="40" rx="3" fill="${tema.fundo}" ${borda}/>
+  <rect x="${x}" y="77" width="6" height="40" fill="${tema.cor}"/>
+  <text x="${x + 33}" y="103" font-size="13" font-weight="700" fill="${tema.texto}" text-anchor="middle">Aa</text>`;
+  }).join('\n');
+}
+export const posicaoTema = (i) => ({ x: 34 + i * 68, y: 77, largura: 60, altura: 40 });
+
+/**
+ * Slide do PowerPoint (x 140–600, y 134–374) com a coluna de miniaturas.
+ * `layout`: 'titulo' (título + subtítulo) ou 'conteudo' (título + tópicos).
+ * `estado`: 'vazio' | 'editando' | 'pronto' (vale para o título).
+ */
+export function slidePowerPoint(app, {
+  titulo = null, subtitulo = null, estado = 'vazio', layout = 'titulo', topicos = null,
+  miniaturas = 1, atual = 1, tema = null, forma = null, editandoSubtitulo = false, editandoTopicos = false,
+} = {}) {
+  const fundo = tema?.fundo ?? '#ffffff';
+  const corTexto = tema?.texto ?? TEXTO;
+  const partes = [FUNDO_CONTEUDO, '  <path d="M20 122 h92 v262 h-82 a10 10 0 0 1 -10 -10 z" fill="#f3f4f6"/>'];
+  for (let i = 1; i <= miniaturas; i++) {
+    const y = 136 + (i - 1) * 50;
+    partes.push(texto(26, y + 14, String(i), { tamanho: 11, cor: CINZA }));
+    partes.push(`  <rect x="36" y="${y}" width="66" height="38" rx="2" fill="${fundo}" stroke="${i === atual ? '#475569' : '#cbd5e1'}" stroke-width="${i === atual ? 2.5 : 1}"/>`);
+    if (tema) partes.push(`  <rect x="36" y="${y}" width="4" height="38" fill="${tema.cor}"/>`);
   }
-  if (titulo) {
-    partes.push(texto(370, 226, titulo, { tamanho: 28, negrito: true, centro: true }));
-    if (estado === 'editando') partes.push(`  <rect x="${370 + titulo.length * 7.8}" y="202" width="2" height="30" fill="#1f2937"/>`);
-  } else if (estado === 'editando') {
-    partes.push('  <rect x="369" y="202" width="2" height="30" fill="#1f2937"/>');
+  partes.push(`  <g filter="url(#sombra)"><rect x="140" y="134" width="460" height="240" fill="${fundo}"/></g>`);
+  if (tema) partes.push(`  <rect x="140" y="134" width="14" height="240" fill="${tema.cor}"/>`);
+  const tracejado = 'stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5 4" fill="none"';
+  const continuo = 'stroke="#6b7280" stroke-width="1.5" fill="none"';
+  if (layout === 'titulo') {
+    if (estado !== 'pronto') partes.push(`  <rect x="180" y="182" width="380" height="68" ${estado === 'editando' ? continuo : tracejado}/>`);
+    if (titulo) {
+      partes.push(`  <text x="370" y="226" font-size="28" font-weight="700" fill="${corTexto}" text-anchor="middle">${esc(titulo)}</text>`);
+      if (estado === 'editando') partes.push(`  <rect x="${370 + titulo.length * 7.8}" y="202" width="2" height="30" fill="${corTexto}"/>`);
+    } else if (estado === 'editando') {
+      partes.push('  <rect x="369" y="202" width="2" height="30" fill="#1f2937"/>');
+    } else {
+      partes.push(texto(370, 223, 'Clique para adicionar um título', { tamanho: 21, cor: '#6b7280', centro: true }));
+    }
+    if (subtitulo !== null || editandoSubtitulo) {
+      if (editandoSubtitulo) partes.push(`  <rect x="220" y="268" width="300" height="40" ${continuo}/>`);
+      if (subtitulo) partes.push(`  <text x="370" y="294" font-size="16" fill="${corTexto}" text-anchor="middle">${esc(subtitulo)}</text>`);
+      if (editandoSubtitulo) partes.push(`  <rect x="${subtitulo ? 372 + subtitulo.length * 4.4 : 369}" y="278" width="2" height="20" fill="${corTexto}"/>`);
+    } else {
+      partes.push(`  <rect x="220" y="268" width="300" height="40" ${tracejado}/>`);
+      partes.push(texto(370, 293, 'Clique para adicionar um subtítulo', { tamanho: 13, cor: '#9ca3af', centro: true }));
+    }
   } else {
-    partes.push(texto(370, 223, 'Clique para adicionar um título', { tamanho: 21, cor: '#6b7280', centro: true }));
+    if (titulo) {
+      partes.push(`  <text x="176" y="180" font-size="24" font-weight="700" fill="${corTexto}">${esc(titulo)}</text>`);
+    } else {
+      partes.push(`  <rect x="166" y="148" width="408" height="44" ${estado === 'editando' ? continuo : tracejado}/>`);
+      partes.push(texto(370, 177, 'Clique para adicionar um título', { tamanho: 18, cor: '#6b7280', centro: true }));
+      if (estado === 'editando') partes.push('  <rect x="176" y="156" width="2" height="26" fill="#1f2937"/>');
+    }
+    partes.push(`  <rect x="166" y="202" width="408" height="156" ${editandoTopicos ? continuo : tracejado}/>`);
+    if (topicos && topicos.length) {
+      topicos.forEach((t, i) => {
+        partes.push(`  <circle cx="186" cy="${234 + i * 30}" r="3.5" fill="${corTexto}"/>`);
+        partes.push(`  <text x="198" y="${240 + i * 30}" font-size="17" fill="${corTexto}">${esc(t)}</text>`);
+      });
+      if (editandoTopicos) {
+        const ultimo = topicos[topicos.length - 1];
+        partes.push(`  <rect x="${200 + ultimo.length * 8.8}" y="${224 + (topicos.length - 1) * 30}" width="2" height="20" fill="${corTexto}"/>`);
+      }
+    } else {
+      partes.push(`  <circle cx="186" cy="234" r="3.5" fill="#9ca3af"/>${texto(198, 240, 'Clique para adicionar texto', { tamanho: 16, cor: '#9ca3af' })}`);
+      if (editandoTopicos) partes.push('  <rect x="198" y="224" width="2" height="20" fill="#1f2937"/>');
+    }
   }
-  partes.push('  <rect x="220" y="268" width="300" height="40" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>');
-  partes.push(texto(370, 293, 'Clique para adicionar um subtítulo', { tamanho: 13, cor: '#9ca3af', centro: true }));
+  if (forma) partes.push(`  <rect x="${forma.x}" y="${forma.y}" width="${forma.largura}" height="${forma.altura}" rx="10" fill="${forma.cor}"/>`);
   return partes.join('\n');
+}
+
+/** Apresentação em tela cheia (depois de F5). Use com `svg(trechos, '#000000')`. */
+export function telaCheiaPowerPoint({ titulo, subtitulo = null, tema = null }) {
+  const fundo = tema?.fundo ?? '#ffffff';
+  const cor = tema?.texto ?? TEXTO;
+  return `  <rect x="0" y="0" width="640" height="400" fill="${fundo}"/>
+  ${tema ? `<rect x="0" y="0" width="24" height="400" fill="${tema.cor}"/>` : ''}
+  <text x="320" y="196" font-size="42" font-weight="700" fill="${cor}" text-anchor="middle">${esc(titulo)}</text>
+  ${subtitulo ? `<text x="320" y="248" font-size="24" fill="${cor}" text-anchor="middle">${esc(subtitulo)}</text>` : ''}`;
+}
+
+/** Menu "Arquivo" do Office (bastidores). `conteudo`: o que aparece à direita (x 170–620). */
+export const ITENS_BASTIDORES = ['Início', 'Novo', 'Abrir', 'Salvar', 'Salvar como', 'Imprimir', 'Fechar'];
+export const posicaoBastidores = (item) => ({ x: 26, y: 62 + ITENS_BASTIDORES.indexOf(item) * 32, largura: 128, altura: 28 });
+export function bastidoresOffice(app, item, conteudo = '') {
+  const partes = [
+    '  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>',
+    `  <path d="M30 16 h130 v368 h-130 a10 10 0 0 1 -10 -10 v-348 a10 10 0 0 1 10 -10 z" fill="${app.cor}"/>`,
+    '  <circle cx="44" cy="38" r="12" fill="none" stroke="#ffffff" stroke-width="1.6"/>',
+    texto(44, 43, '←', { tamanho: 13, cor: '#ffffff', centro: true }),
+  ];
+  ITENS_BASTIDORES.forEach((nome) => {
+    const p = posicaoBastidores(nome);
+    if (nome === item) partes.push(`  <rect x="${p.x}" y="${p.y}" width="${p.largura}" height="${p.altura}" rx="5" fill="#ffffff" fill-opacity="0.22"/>`);
+    partes.push(texto(p.x + 12, p.y + 19, nome, { tamanho: 13, cor: '#ffffff', negrito: nome === item }));
+  });
+  partes.push(conteudo);
+  return partes.join('\n');
+}
+
+/** Tela "Salvar como" dos bastidores, com o botão Procurar. */
+export const POS_PROCURAR = { x: 180, y: 120, largura: 160, altura: 46 };
+export function conteudoSalvarComo() {
+  const { x, y, largura, altura } = POS_PROCURAR;
+  return `${texto(180, 64, 'Salvar como', { tamanho: 22, negrito: true })}
+  <rect x="180" y="84" width="160" height="26" rx="4" fill="#f3f4f6"/>${texto(192, 102, 'Este PC', { tamanho: 12.5 })}
+  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" rx="4" fill="#ffffff" stroke="#e5e7eb"/>
+  <path d="M${x + 14} ${y + 14} h10 l4 4 h14 v16 h-28 z" fill="#f6c343"/>${texto(x + 54, y + 28, 'Procurar', { tamanho: 13 })}`;
+}
+
+/** Tela "Abrir" dos bastidores com a lista de arquivos recentes (linhas de 40 px a partir de y 110). */
+export const posicaoRecente = (i) => ({ x: 176, y: 110 + i * 40, largura: 300, altura: 34 });
+export function conteudoAbrir(app, arquivos) {
+  return [texto(180, 64, 'Abrir', { tamanho: 22, negrito: true }), texto(180, 96, 'Recentes', { tamanho: 13, negrito: true }),
+    ...arquivos.map((nome, i) => {
+      const p = posicaoRecente(i);
+      return `  <rect x="${p.x}" y="${p.y}" width="${p.largura}" height="${p.altura}" rx="4" fill="#ffffff" stroke="#e5e7eb"/>
+${iconeApp(p.x + 8, p.y + 6, 22, app)}
+  ${texto(p.x + 40, p.y + 22, nome, { tamanho: 13 })}`;
+    })].join('\n');
+}
+
+/** Tela "Imprimir" dos bastidores: botão grande e a prévia da folha. */
+export const POS_IMPRIMIR = { x: 180, y: 90, largura: 96, altura: 84 };
+export function conteudoImprimir(linhasPrevia = []) {
+  const { x, y, largura, altura } = POS_IMPRIMIR;
+  return `${texto(180, 64, 'Imprimir', { tamanho: 22, negrito: true })}
+  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="${x + 30}" y="${y + 14}" width="36" height="10" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <rect x="${x + 22}" y="${y + 24}" width="52" height="22" rx="3" fill="#e5e7eb" stroke="#374151" stroke-width="1.6"/>
+  <rect x="${x + 30}" y="${y + 38}" width="36" height="14" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  ${texto(x + largura / 2, y + 72, 'Imprimir', { tamanho: 13, negrito: true, centro: true })}
+  ${texto(180, 204, 'Impressora', { tamanho: 12, negrito: true })}
+  <rect x="180" y="212" width="150" height="26" rx="4" fill="#ffffff" stroke="#cbd5e1"/>${texto(190, 230, 'Impressora da sala', { tamanho: 11.5 })}
+  <g filter="url(#sombra)"><rect x="380" y="60" width="200" height="280" fill="#ffffff" stroke="#d4d4d8"/></g>
+  ${linhasPrevia.map((l, i) => texto(400, 96 + i * 22, l, { tamanho: 12 })).join('\n  ')}`;
+}
+
+/** Janela "Salvar como" do Windows, com o campo do nome e o botão Salvar. */
+export const POS_SALVAR = { nome: { x: 214, y: 280, largura: 300, altura: 24 }, salvar: { x: 416, y: 318, largura: 78, altura: 28 } };
+export function dialogoSalvar(nome = '', { editando = true } = {}) {
+  const { nome: campo, salvar } = POS_SALVAR;
+  return `  <g filter="url(#sombra)"><rect x="70" y="40" width="500" height="320" rx="8" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M70 48 a8 8 0 0 1 8 -8 h484 a8 8 0 0 1 8 8 v22 h-500 z" fill="#f3f4f6"/>
+  ${texto(84, 60, 'Salvar como', { tamanho: 12 })}${texto(552, 61, '×', { tamanho: 14 })}
+  <rect x="84" y="78" width="472" height="22" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>${texto(94, 93, 'Este Computador   ›   Documentos', { tamanho: 11 })}
+  <g font-size="12" fill="#1f2937"><text x="88" y="128">Área de Trabalho</text><rect x="82" y="138" width="110" height="22" rx="4" fill="#e5edf8"/><text x="88" y="153" font-weight="700">Documentos</text><text x="88" y="178">Imagens</text></g>
+  <line x1="200" y1="108" x2="200" y2="262" stroke="#e5e7eb"/>
+  ${texto(90, 297, 'Nome do arquivo:', { tamanho: 12.5 })}
+  <rect x="${campo.x}" y="${campo.y}" width="${campo.largura}" height="${campo.altura}" rx="3" fill="#ffffff" stroke="${editando ? '#0067c0' : '#94a3b8'}" stroke-width="${editando ? 2 : 1}"/>
+  ${texto(campo.x + 8, campo.y + 17, nome, { tamanho: 13 })}
+  ${editando ? `<rect x="${campo.x + 10 + nome.length * 7.2}" y="${campo.y + 5}" width="1.6" height="15" fill="#1f2937"/>` : ''}
+  <rect x="${salvar.x}" y="${salvar.y}" width="${salvar.largura}" height="${salvar.altura}" rx="4" fill="#0067c0"/>${texto(salvar.x + salvar.largura / 2, salvar.y + 19, 'Salvar', { tamanho: 13, cor: '#ffffff', negrito: true, centro: true })}
+  <rect x="502" y="318" width="60" height="28" rx="4" fill="#ffffff" stroke="#cbd5e1"/>${texto(532, 337, 'Cancelar', { tamanho: 12, centro: true })}`;
+}
+
+/** Ícone do som na barra de tarefas (perto do relógio) e o painel que abre com o controle de volume. */
+export const POS_SOM = { cx: 566, cy: 383 };
+export function iconeSomBarra() {
+  return `  <path d="M558 380 h4 l5 -4 v14 l-5 -4 h-4 z" fill="#374151"/><path d="M570 379 a5 5 0 0 1 0 8" fill="none" stroke="#374151" stroke-width="1.5"/>`;
+}
+export function painelSom(nivel = 0.5) {
+  const x0 = 406;
+  const x1 = x0 + 180 * nivel;
+  return `  <g filter="url(#sombra)"><rect x="356" y="208" width="264" height="150" rx="10" fill="#f3f4f6" stroke="#d4d4d8"/></g>
+  <rect x="372" y="224" width="110" height="44" rx="6" fill="#0067c0"/>${texto(384, 251, 'Wi-Fi', { tamanho: 12, cor: '#ffffff' })}
+  <rect x="492" y="224" width="110" height="44" rx="6" fill="#ffffff" stroke="#d4d4d8"/>${texto(504, 251, 'Bluetooth', { tamanho: 12 })}
+  <path d="M372 314 h5 l6 -5 v18 l-6 -5 h-5 z" fill="#374151"/>
+  <rect x="${x0}" y="316" width="180" height="5" rx="2.5" fill="#cbd5e1"/>
+  <rect x="${x0}" y="316" width="${x1 - x0}" height="5" rx="2.5" fill="#0067c0"/>
+  <circle cx="${x1}" cy="318.5" r="9" fill="#ffffff" stroke="#0067c0" stroke-width="4"/>
+  ${texto(600, 323, String(Math.round(nivel * 100)), { tamanho: 12 })}`;
 }
 
 /** Pessoa desenhada de forma simples (cabeça e corpo), em pé sobre `base`. */
@@ -876,8 +1185,9 @@ export function janelaConversa(mensagens, { entrada = '', entradaProibida = fals
     if (de === 'ia') partes.push(`  <circle cx="58" cy="${y + 18}" r="16" fill="#ede9fe" stroke="#7c4dd6" stroke-width="2"/>${texto(58, y + 23, 'IA', { tamanho: 12, negrito: true, cor: '#5b21b6', centro: true })}`);
     partes.push(`  <rect x="${x}" y="${y}" width="${largura}" height="${altura}" rx="14" fill="${de === 'pessoa' ? '#dbeafe' : '#ffffff'}" stroke="${de === 'pessoa' ? '#93c5fd' : '#d4d4d8'}"/>`);
     linhas.forEach((linha, i) => partes.push(texto(x + 15, y + 27 + i * 21, linha, { tamanho: 15 })));
-    if (marca === 'certo') partes.push(certo(x + largura + 26, y + altura / 2, 18));
-    if (marca === 'erro') partes.push(proibido(x + largura + 26, y + altura / 2, 18));
+    const xMarca = de === 'pessoa' ? x - 26 : x + largura + 26;
+    if (marca === 'certo') partes.push(certo(xMarca, y + altura / 2, 18));
+    if (marca === 'erro') partes.push(proibido(xMarca, y + altura / 2, 18));
     y += altura + 18;
   }
   partes.push('  <rect x="40" y="326" width="520" height="40" rx="20" fill="#ffffff" stroke="#cbd5e1"/>');
@@ -892,7 +1202,8 @@ export function janelaConversa(mensagens, { entrada = '', entradaProibida = fals
  * `{ link: '...' }` sai azul e sublinhada. `marcaLink`: 'etiqueta' (mostra o que é um link)
  * | 'proibido' (não clique). Nunca anel laranja: link estranho não é para clicar.
  */
-export function celular(contato, detalhe, baloes, { marcaLink = null, respostaProibida = false, menuApagar = false } = {}) {
+export const POS_PONTINHOS = { cx: 414, cy: 52 };
+export function celular(contato, detalhe, baloes, { marcaLink = null, respostaProibida = false, menuApagar = false, menuOpcoes = null } = {}) {
   const partes = [
     '  <g filter="url(#sombra)"><rect x="196" y="6" width="248" height="390" rx="30" fill="#111827"/></g>',
     '  <rect x="208" y="24" width="224" height="356" rx="18" fill="#ffffff"/>',
@@ -901,6 +1212,7 @@ export function celular(contato, detalhe, baloes, { marcaLink = null, respostaPr
     texto(238, 58, '?', { tamanho: 16, negrito: true, cor: '#ffffff', centro: true }),
     texto(262, 50, contato, { tamanho: 13.5, negrito: true }),
     texto(262, 68, detalhe, { tamanho: 11, cor: CINZA }),
+    `  <g fill="#374151"><circle cx="${POS_PONTINHOS.cx}" cy="${POS_PONTINHOS.cy - 7}" r="2.2"/><circle cx="${POS_PONTINHOS.cx}" cy="${POS_PONTINHOS.cy}" r="2.2"/><circle cx="${POS_PONTINHOS.cx}" cy="${POS_PONTINHOS.cy + 7}" r="2.2"/></g>`,
   ];
   let y = 92;
   let caixaLink = null;
@@ -926,6 +1238,15 @@ export function celular(contato, detalhe, baloes, { marcaLink = null, respostaPr
   if (menuApagar) {
     partes.push(menu(250, 150, [['Responder', '', false], ['Copiar', '', false], ['Apagar', '', true]], 150));
     partes.push(alvoRet(256, 205, 138, 26, 6));
+  }
+  if (menuOpcoes) {
+    const itens = menuOpcoes.itens.map((nome) => [nome, '', nome === menuOpcoes.alvo]);
+    partes.push(menu(280, 64, itens, 140));
+    let topo = 70;
+    for (const [nome] of itens) {
+      if (nome === menuOpcoes.alvo) partes.push(alvoRet(284, topo - 2, 132, 30, 7));
+      topo += 26;
+    }
   }
   partes.push('  <rect x="218" y="338" width="166" height="30" rx="15" fill="#f3f4f6" stroke="#d4d4d8"/>');
   partes.push(texto(232, 358, 'Mensagem', { tamanho: 12, cor: '#9ca3af' }));

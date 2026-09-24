@@ -14,7 +14,7 @@
   align-items: center;
   gap: var(--space-5);
   width: 100%;
-  max-width: 1080px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: var(--space-4) var(--space-5);
 }
@@ -84,7 +84,7 @@
 
 .palco {
   width: 100%;
-  max-width: 1080px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 var(--space-5) var(--space-6);
   display: flex;
@@ -114,11 +114,6 @@
   animation: recompensa 2.6s var(--ease-out) forwards;
 }
 
-.estrela {
-  color: var(--guiado-estrela);
-  fill: currentColor;
-}
-
 @keyframes recompensa {
   0% {
     opacity: 0;
@@ -140,7 +135,7 @@
   display: flex;
   gap: var(--space-4);
   width: 100%;
-  max-width: 1080px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: var(--space-4) var(--space-5) var(--space-5);
   background: var(--guiado-fundo);

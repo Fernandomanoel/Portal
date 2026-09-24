@@ -4,44 +4,16 @@
 // - "olhe isto" usa etiqueta (rótulo amarelo), nunca o anel;
 // - quase nenhum texto na imagem: a instrução está escrita e narrada ao lado.
 import {
-  alvo, alvoRet, areaDeTrabalho, arquivo, carregandoApp, celular, certo, cursor, etiqueta, gradeExcel,
+  alvo, alvoRet, arquivo, carregandoApp, celular, certo, cursor, etiqueta, gradeExcel,
   inicioOffice, janela, janelaConversa, janelaOffice, menu, menuIniciar, mouseBotao, paginaWord, pasta,
   pastaTela, pessoa, posicaoCelula, proibido, robo, slidePowerPoint, svg, teclaGrande, texto,
 } from '../pecas.mjs';
+import {
+  EXCEL, FUNDO_TECLA, POWERPOINT, WORD, alvoCelula, alvoItem, atalho, desktop, mouseCanto as dupla,
+} from '../passo-a-passo-comum.mjs';
 
 export const destino = 'passo-a-passo';
 export const telas = {};
-
-const WORD = { nome: 'Word', cor: '#2b579a', letra: 'W' };
-const EXCEL = { nome: 'Excel', cor: '#217346', letra: 'X' };
-const POWERPOINT = { nome: 'PowerPoint', cor: '#b7472a', letra: 'P' };
-const FUNDO_TECLA = '#eef2f7';
-
-const desktop = (...trechos) => svg([areaDeTrabalho(), ...trechos], '#1d4ed8');
-
-/** Moldura "clique aqui" em volta de um item de `menu(x, y, itens, largura)`. */
-function alvoItem(x, y, itens, rotulo, largura) {
-  let topo = y + 6;
-  for (const [nome] of itens) {
-    if (nome === rotulo) return alvoRet(x + 2, topo - 2, largura - 4, 30, 7);
-    topo += nome ? 26 : 10;
-  }
-  throw new Error(`Item "${rotulo}" não está no menu`);
-}
-
-function alvoCelula(ref) {
-  const c = posicaoCelula(ref);
-  return alvoRet(c.x - 6, c.y - 6, c.largura + 12, c.altura + 12, 6);
-}
-
-const atalho = (letra, rotulo) => svg([
-  teclaGrande(215, 170, 'Ctrl', 190),
-  texto(335, 184, '+', { tamanho: 40, negrito: true, centro: true }),
-  teclaGrande(440, 170, letra, 130),
-  texto(320, 300, rotulo, { tamanho: 32, negrito: true, centro: true }),
-], FUNDO_TECLA);
-
-const dupla = (mouse = 'esquerdo') => mouseBotao(548, 250, mouse);
 
 /** Moldura "clique aqui" em volta de uma pasta/arquivo inteiro (ícone e nome) no Explorador. */
 const alvoIcone = (cx, y) => alvoRet(cx - 60, y - 4, 120, 100, 10);
@@ -53,8 +25,8 @@ const alvoIconeTela = (cx, y, rotulo) => {
 
 // ---------------- Windows: área de trabalho e menus ----------------
 
-const MENU_DESKTOP = (novo) => [['Exibir', '›', false], ['Classificar por', '›', false], ['Atualizar', '', false],
-  ['', '', false], ['Novo', '›', novo], ['', '', false], ['Personalizar', '', false]];
+export const MENU_DESKTOP = (novo, personalizar = false) => [['Exibir', '›', false], ['Classificar por', '›', false], ['Atualizar', '', false],
+  ['', '', false], ['Novo', '›', novo], ['', '', false], ['Personalizar', '', personalizar]];
 const SUBMENU_NOVO = (item) => [['Pasta', '', item === 'Pasta'], ['Atalho', '', false], ['', '', false],
   ['Documento de Texto', '', item === 'Documento de Texto']];
 
@@ -324,7 +296,7 @@ telas['ia-pronto'] = svg([robo(320, 214, 1.4), certo(430, 110, 34)], FUNDO_IA);
 
 // ---------------- Segurança na era digital ----------------
 
-const DESCONHECIDO = ['Número desconhecido', '+55 11 90000-0000'];
+const DESCONHECIDO = ['Desconhecido', '+55 11 90000-0000'];
 const PREMIO = ['Parabéns!', 'Você ganhou', 'um prêmio!'];
 const LINK_PREMIO = ['Clique aqui:', { link: 'premio-gratis.xyz' }];
 const tela = (...trechos) => svg(trechos, '#eef2f7');

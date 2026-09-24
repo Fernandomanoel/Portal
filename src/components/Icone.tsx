@@ -30,7 +30,6 @@ export type NomeIcone =
   | "alvo"
   | "alerta"
   | "som"
-  | "estrela"
   | "mouse"
   | "robo";
 
@@ -177,9 +176,6 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
       <path d="M4 9.5h3l4.5-4v13L7 14.5H4Z" />
       <path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" />
     </>
-  ),
-  estrela: (
-    <path d="m12 3.8 2.5 5.1 5.6.8-4.05 3.95.95 5.6L12 16.6l-5 2.65.95-5.6L3.9 9.7l5.6-.8Z" />
   ),
   mouse: (
     <>

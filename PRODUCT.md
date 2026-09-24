@@ -70,7 +70,8 @@ conteúdo próximo de zero para quem não é programador.
 - Modo claro e escuro são parte do produto, não um extra.
 - Seção "Passo a Passo": tutoriais de um micro-passo por tela (indicador "passo X
   de Y", imagem por passo, narração por voz do navegador só quando a pessoa clica,
-  recompensa leve a cada passo) e jogos de conceito básico de informática. Tem
+  recompensa leve a cada passo — só o texto "Muito bem!", sem som nem
+  estrela, porque repetidos a cada passo cansam) e jogos de conceito básico de informática. Tem
   identidade visual própria — mais previsível e com menos estímulo que o resto do
   portal: "Voltar" sempre à esquerda e "Próximo" sempre à direita, com cor fixa
   por tipo de ação, e sem menu do portal na tela de execução. A escolha da

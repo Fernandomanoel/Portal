@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#f5f3ff"/>
+  <rect x="60" y="90" width="230" height="130" rx="12" fill="#ffffff" stroke="#d4d4d8"/>
+  <text x="76" y="124" font-size="14" fill="#5b21b6" font-weight="700">Resposta da IA:</text>
+  <text x="76" y="152" font-size="14" fill="#1f2937">Fração é um número</text>
+  <text x="76" y="174" font-size="14" fill="#1f2937">que mostra partes...</text>
+  <path d="M300 160 H 360" stroke="#ea580c" stroke-width="4" stroke-dasharray="8 6"/><path d="M360 150 l16 10 l-16 10 z" fill="#ea580c"/>
+  <rect x="390" y="110" width="150" height="110" rx="6" fill="#ffffff" stroke="#1f2937" stroke-width="2.5"/>
+  <g stroke="#93c5fd" stroke-width="2"><line x1="402" y1="134" x2="528" y2="134"/><line x1="402" y1="154" x2="528" y2="154"/><line x1="402" y1="174" x2="528" y2="174"/><line x1="402" y1="194" x2="528" y2="194"/></g>
+  <path d="M406 130 q10 -8 20 0 t20 0 t20 0 M406 150 q10 -8 20 0 t20 0" fill="none" stroke="#1f2937" stroke-width="2"/>
+  <text x="465" y="250" font-size="16" fill="#1f2937" font-weight="700" text-anchor="middle">copiado</text>
+  <circle cx="330" cy="110" r="26" fill="#dc2626" stroke="#ffffff" stroke-width="4"/>
+  <path d="M319.6 99.6 L340.4 120.4 M340.4 99.6 L319.6 120.4" stroke="#ffffff" stroke-width="5.2" stroke-linecap="round"/>
+</svg>

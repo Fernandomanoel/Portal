@@ -57,7 +57,6 @@ export function MolduraGuiado({ titulo, sairPara, acento, progresso, recompensa,
         <div className={estilos.recompensaLugar} aria-live="polite">
           {recompensa > 0 && (
             <p key={recompensa} className={estilos.recompensa}>
-              <Icone nome="estrela" tamanho={24} className={estilos.estrela} />
               Muito bem!
             </p>
           )}
