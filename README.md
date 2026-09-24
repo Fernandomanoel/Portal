@@ -54,15 +54,30 @@ PRODUCT.md          verdade de produto: usuários, propósito, restrições
   Programação, Design
 - **Inglês** — trilha à parte, com atividades e provas próprias
 - **Digitação** — treino de teclado com velocidade, precisão e contagem de erros
+- **Passo a Passo** — tutoriais guiados e jogos de conceito de informática
+  básica, para quem tem mais dificuldade de leitura
 - **Provas** — o aluno se identifica pelo nome, faz a prova (travada em tela
   cheia quando a prova pede) e envia; a área do professor (`/professor`, com
   login) mostra os envios, os arquivos e as notas por 7 dias
 
 ## Conteúdo
 
-Os catálogos nascem vazios e as telas foram construídas contra esse estado: cada
-listagem tem um estado vazio desenhado, não uma frase solta. Adicionar conteúdo é
-editar um arquivo em `src/data/` — nenhuma tela nova precisa ser criada.
+Os catálogos são dado tipado em `src/data/`, e as telas foram construídas
+contra o estado vazio como padrão: cada listagem tem um estado vazio
+desenhado, não uma frase solta. Adicionar conteúdo é editar ou acrescentar
+um objeto num desses arquivos — nenhuma tela nova precisa ser criada. Os
+formatos mais elaborados têm guia próprio:
+
+| O que adicionar | Guia |
+|---|---|
+| Material de apoio de um curso (PDF, vídeo, imagem, planilha...) | [`src/data/COMO-FORNECER-MATERIAL.md`](src/data/COMO-FORNECER-MATERIAL.md) |
+| Atividade autocorrigida | [`src/data/atividadesAutocorrigidas/COMO-CRIAR-ATIVIDADE.md`](src/data/atividadesAutocorrigidas/COMO-CRIAR-ATIVIDADE.md) |
+| Prova interativa | [`src/data/provasInterativas/COMO-CRIAR-PROVA.md`](src/data/provasInterativas/COMO-CRIAR-PROVA.md) |
+
+Regra central do material de curso: todo arquivo do próprio portal (PDF,
+Word, planilha, slides, vídeo, imagem) **baixa na hora, sem sair da aba da
+atividade** — só `tipo: "link"` (site externo ou página HTML autocontida)
+abre em nova aba. Ver o guia acima antes de cadastrar um material novo.
 
 ## Verificação
 

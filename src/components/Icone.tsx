@@ -45,7 +45,8 @@ export type NomeIcone =
   | "lixeira"
   | "relogio"
   | "sair"
-  | "usuario";
+  | "usuario"
+  | "video";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -280,6 +281,12 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     <>
       <circle cx="12" cy="8.3" r="3.3" />
       <path d="M5 20c.9-3.8 3.8-6 7-6s6.1 2.2 7 6" />
+    </>
+  ),
+  video: (
+    <>
+      <rect x="3" y="5.5" width="14" height="13" rx="2" />
+      <path d="m17 10 4-2.7v9.4L17 14" />
     </>
   ),
 };

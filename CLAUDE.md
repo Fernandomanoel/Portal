@@ -37,10 +37,14 @@ componente ou rota nova, verifique se não é só um item faltando em
 merece confirmação do usuário, porque tudo que já existe depende deles.
 
 Materiais de curso (`Material` em `src/types/curso.ts`) só têm tipo
-`pdf | doc | planilha | slides | link`. Arquivo local: `arquivo` +
-caminho em `public/atividades/<slug>/...`. Externo ou página HTML
-autocontida: `tipo: "link"` + `url` (mesmo quando a "URL" é um caminho
-local tipo `/atividades/<slug>/pagina.html`).
+`pdf | doc | planilha | slides | video | imagem | link` — guia completo em
+`src/data/COMO-FORNECER-MATERIAL.md`. Arquivo local (todo tipo exceto
+`link`): `arquivo` + caminho em `public/atividades/<slug>/...` — a tela
+baixa esse arquivo na hora, sem sair da aba da atividade. Externo ou
+página HTML autocontida: `tipo: "link"` + `url` (mesmo quando a "URL" é um
+caminho local tipo `/atividades/<slug>/pagina.html`) — só esse tipo abre em
+nova aba. Nunca cadastrar arquivo binário (vídeo, imagem, `.pptx`...) como
+`"link"`.
 
 Provas interativas (`ProvaInterativa` em `src/types/quiz.ts`) moram em
 `src/data/provasInterativas/<Curso>/<slug>.prova.ts` — molde e regras
