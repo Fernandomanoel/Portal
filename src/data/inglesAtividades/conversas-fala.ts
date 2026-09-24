@@ -1,0 +1,156 @@
+import type { AtividadeIngles } from "@/types/ingles";
+
+const atividade: AtividadeIngles = {
+  slug: "conversas-fala",
+  titulo: "Fala do Dia a Dia — gonna, wanna, gotta",
+  descricao: "3 conversas faladas (saída do trabalho, cafeteria, reencontro na rua) com áudio, para entender gonna, wanna, gotcha e as frases prontas do dia a dia.",
+  nivel: "Intermediário",
+  trilha: "vida-real",
+  cor: "#0f766e",
+  abertura: {
+    titulo: "Como o inglês soa na rua",
+    texto: "Falando, o inglês encolhe: going to vira gonna, want to vira wanna. São três conversas cara a cara para ouvir fala por fala, tocar nas expressões e entender quando cada uma cabe. Aqui a gente só ouve e lê — não precisa falar nada.",
+  },
+  conteudo: {
+    tipo: "conversas",
+    conversas: [
+      {
+        titulo: "Na saída do trabalho",
+        canal: "presencial",
+        situacao: "Dois colegas de trabalho conversam no elevador na sexta-feira à tarde.",
+        pessoas: ["Mike", "Sarah"],
+        falas: [
+          { quem: 0, texto: "Hey Sarah, what's up?", traducao: "Oi, Sarah, e aí?" },
+          { quem: 1, texto: "Not much. I'm gonna grab some food. Wanna come?", traducao: "Nada demais. Vou comer alguma coisa. Quer vir?" },
+          { quem: 0, texto: "I'd love to, but I gotta finish this report first.", traducao: "Eu adoraria, mas tenho que terminar este relatório antes." },
+          { quem: 1, texto: "No worries. Maybe next time?", traducao: "Sem problema. Quem sabe da próxima vez?" },
+          { quem: 0, texto: "For sure. Have a good one!", traducao: "Com certeza. Bom fim de semana!" },
+          { quem: 1, texto: "You too! See ya!", traducao: "Pra você também! Até!" },
+        ],
+        expressoes: [
+          { termo: "what's up", porExtenso: "what is up", significado: "e aí? tudo certo?", registro: "informal", uso: "Cumprimento entre amigos e colegas. A resposta comum é not much (nada demais). Numa entrevista de emprego, prefira Hello, how are you?" },
+          { termo: "gonna", porExtenso: "going to", significado: "vou (fazer algo)", registro: "informal", uso: "Só falando ou em mensagem para amigos. Em e-mail ou prova, gonna é erro: escreva going to." },
+          { termo: "wanna", porExtenso: "want to", significado: "quer? / quero", registro: "informal", uso: "Fala e mensagem entre amigos. Wanna come? = Do you want to come?" },
+          { termo: "gotta", porExtenso: "have got to / have to", significado: "tenho que", registro: "informal", uso: "Fala do dia a dia. Por escrito no trabalho, use I have to." },
+          { termo: "no worries", significado: "sem problema, relaxa", registro: "neutro", uso: "Resposta a desculpas ou agradecimento. Serve com amigos e colegas; muito comum na Austrália e no Reino Unido." },
+          { termo: "for sure", significado: "com certeza", registro: "neutro", uso: "Concordar com entusiasmo, falando ou em mensagem." },
+          { termo: "have a good one", significado: "tenha um bom dia (ou uma boa noite, um bom fim de semana)", registro: "neutro", uso: "Despedida educada para qualquer hora: com colega, atendente, vizinho." },
+          { termo: "see ya", porExtenso: "see you", significado: "até mais", registro: "informal", uso: "Despedida entre pessoas conhecidas." },
+        ],
+        perguntas: [
+          {
+            pergunta: "Por que o Mike não foi comer com a Sarah?",
+            opcoes: ["Ele tinha que terminar um relatório.", "Ele não estava com fome.", "Ele ia ao cinema."],
+            resposta: 0,
+            explicacao: "“I gotta finish this report first” = tenho que terminar este relatório antes.",
+          },
+          {
+            pergunta: "O que “Wanna come?” quer dizer?",
+            opcoes: ["Quer vir junto?", "Você já comeu?", "Quando você volta?"],
+            resposta: 0,
+            explicacao: "Wanna come? é a forma falada de Do you want to come? — quer vir?",
+          },
+          {
+            pergunta: "Como escrever “I'm gonna grab some food” num e-mail para o gerente?",
+            opcoes: ["I'm going to get some food.", "I'm gonna grab some food.", "Im gona grab food."],
+            resposta: 0,
+            explicacao: "Gonna é da fala. Por escrito, use going to.",
+          },
+        ],
+      },
+      {
+        titulo: "Na cafeteria",
+        canal: "presencial",
+        situacao: "O Leo pede um café numa cafeteria nos Estados Unidos. Repare nas frases curtas que os atendentes usam.",
+        pessoas: ["Barista", "Leo"],
+        falas: [
+          { quem: 0, texto: "Hi there! What can I get you?", traducao: "Oi! O que vai ser?" },
+          { quem: 1, texto: "Can I get a medium latte, please?", traducao: "Pode me ver um latte médio, por favor?" },
+          { quem: 0, texto: "Sure thing. For here or to go?", traducao: "Claro. Pra tomar aqui ou pra viagem?" },
+          { quem: 1, texto: "To go, please.", traducao: "Pra viagem, por favor." },
+          { quem: 0, texto: "Gotcha. Anything else?", traducao: "Entendi. Mais alguma coisa?" },
+          { quem: 1, texto: "Nope, that's it.", traducao: "Não, é só isso." },
+          { quem: 0, texto: "Alright, that's four fifty.", traducao: "Certo, dá quatro e cinquenta." },
+          { quem: 1, texto: "Here you go. Keep the change.", traducao: "Aqui está. Pode ficar com o troco." },
+          { quem: 0, texto: "Thanks a bunch! Have a good one.", traducao: "Muito obrigado! Tenha um bom dia." },
+        ],
+        expressoes: [
+          { termo: "Can I get", significado: "pode me ver / eu quero", registro: "neutro", uso: "O jeito normal de pedir em loja e restaurante nos EUA. Mais educado que I want." },
+          { termo: "sure thing", significado: "claro, pode deixar", registro: "neutro", uso: "Resposta simpática a um pedido. Atendentes usam muito." },
+          { termo: "For here or to go", significado: "pra comer aqui ou pra viagem?", registro: "neutro", uso: "Pergunta padrão em lanchonete e cafeteria nos EUA. No Reino Unido: eat in or take away?" },
+          { termo: "gotcha", porExtenso: "got you", significado: "entendi", registro: "informal", uso: "Fala rápida do dia a dia. Por escrito ao chefe, use Understood ou Got it." },
+          { termo: "nope", porExtenso: "no", significado: "não", registro: "informal", uso: "Um não leve e simpático, falando ou no chat. Numa entrevista, diga no." },
+          { termo: "that's it", porExtenso: "that is it", significado: "é só isso", registro: "neutro", uso: "Encerrar um pedido ou uma lista. Serve em qualquer lugar." },
+          { termo: "keep the change", significado: "pode ficar com o troco", registro: "neutro", uso: "Quando você paga em dinheiro e deixa o troco de gorjeta." },
+          { termo: "thanks a bunch", significado: "muito obrigado(a)", registro: "informal", uso: "Agradecimento animado e leve. Em e-mail formal, use thank you very much." },
+        ],
+        perguntas: [
+          {
+            pergunta: "Onde o Leo vai tomar o café?",
+            opcoes: ["Vai levar para viagem.", "Vai tomar na cafeteria.", "Vai pedir para entregar em casa."],
+            resposta: 0,
+            explicacao: "Ele respondeu “To go” à pergunta “For here or to go?”.",
+          },
+          {
+            pergunta: "Quanto custou o café?",
+            opcoes: ["US$ 4,50.", "US$ 14,50.", "US$ 4,15."],
+            resposta: 0,
+            explicacao: "“four fifty” é o jeito falado de 4.50 — quatro dólares e cinquenta centavos.",
+          },
+          {
+            pergunta: "Qual é o jeito mais natural de pedir num café nos EUA?",
+            opcoes: ["Can I get a latte, please?", "I want latte.", "Give me a latte."],
+            resposta: 0,
+            explicacao: "Can I get..., please? é o pedido educado e comum. I want e Give me soam mandões.",
+          },
+        ],
+      },
+      {
+        titulo: "Encontro na rua",
+        canal: "presencial",
+        situacao: "Chris e Dani eram colegas de escola e se encontram por acaso na rua depois de muito tempo.",
+        pessoas: ["Chris", "Dani"],
+        falas: [
+          { quem: 0, texto: "Dani? No way! Long time no see!", traducao: "Dani? Não acredito! Quanto tempo!" },
+          { quem: 1, texto: "Chris! Oh my gosh, how've you been?", traducao: "Chris! Nossa, como você tem passado?" },
+          { quem: 0, texto: "Pretty good, thanks. Kinda busy with work. You?", traducao: "Bem, obrigado. Meio ocupado com o trabalho. E você?" },
+          { quem: 1, texto: "Same old, same old. Hey, we should hang out sometime.", traducao: "O de sempre. Ei, a gente devia sair qualquer dia." },
+          { quem: 0, texto: "Totally! Let's grab a coffee next week.", traducao: "Com certeza! Vamos tomar um café semana que vem." },
+          { quem: 1, texto: "Sounds good. I'll text you.", traducao: "Fechado. Eu te mando mensagem." },
+        ],
+        expressoes: [
+          { termo: "No way", significado: "não acredito! / de jeito nenhum", registro: "informal", uso: "Surpresa (No way! = não acredito!) ou recusa (No way = de jeito nenhum). O tom de voz mostra qual é." },
+          { termo: "Long time no see", significado: "quanto tempo (sem te ver)!", registro: "informal", uso: "Ao reencontrar alguém conhecido. Não use com quem você viu ontem nem numa reunião formal." },
+          { termo: "how've you been", porExtenso: "how have you been", significado: "como você tem passado?", registro: "neutro", uso: "Para alguém que você não vê há um tempo. Serve com amigos e colegas." },
+          { termo: "kinda", porExtenso: "kind of", significado: "meio, um pouco", registro: "informal", uso: "Fala e mensagem. Por escrito formal, use a bit ou somewhat." },
+          { termo: "Same old, same old", significado: "o de sempre, nada de novo", registro: "informal", uso: "Resposta descontraída a How are you? ou What's new?, entre conhecidos." },
+          { termo: "hang out", significado: "sair, passar um tempo junto", registro: "informal", uso: "Combinar de encontrar amigos sem nada muito planejado." },
+          { termo: "Totally", significado: "com certeza, total", registro: "informal", uso: "Concordar com entusiasmo, falando. Em texto formal, use certainly." },
+          { termo: "Sounds good", porExtenso: "that sounds good", significado: "fechado, parece bom", registro: "neutro", uso: "Aceitar um plano. Serve com amigos e no trabalho." },
+        ],
+        perguntas: [
+          {
+            pergunta: "Por que o Chris disse “Long time no see”?",
+            opcoes: ["Porque fazia muito tempo que eles não se viam.", "Porque ele não enxerga bem.", "Porque eles se viram ontem."],
+            resposta: 0,
+            explicacao: "Long time no see = quanto tempo sem te ver.",
+          },
+          {
+            pergunta: "O que eles combinaram?",
+            opcoes: ["Tomar um café na semana que vem.", "Estudar juntos amanhã.", "Ir a um show no fim de semana."],
+            resposta: 0,
+            explicacao: "“Let's grab a coffee next week.” — “Sounds good. I'll text you.”",
+          },
+          {
+            pergunta: "“Kinda busy” quer dizer:",
+            opcoes: ["Meio ocupado.", "Muito feliz.", "Sem trabalho."],
+            resposta: 0,
+            explicacao: "kinda = kind of = meio, um pouco.",
+          },
+        ],
+      },
+    ],
+  },
+};
+
+export default atividade;

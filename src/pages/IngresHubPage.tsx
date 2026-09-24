@@ -17,7 +17,7 @@ export function IngresHubPage() {
     <>
       <CabecalhoPagina
         titulo="Inglês"
-        texto="Trilha própria, com atividades e provas separadas do restante do portal."
+        texto="Práticas organizadas por habilidade: vocabulário com imagens, frases, conversas com a Gabi, o inglês da vida real e textos para ouvir."
       />
 
       <nav className={estilos.abas} aria-label="Seções de Inglês">

@@ -6,6 +6,7 @@ const atividade: AtividadeIngles = {
   titulo: "Ouça e Leia em Inglês",
   descricao: "20 exercícios com a Gabi: ouvir e escolher, ler e escolher, ouvir e escrever e traduzir, com áudio normal e devagar.",
   nivel: "Básico",
+  trilha: "ouvir-ler",
   cor: "#0369a1",
   abertura: {
     titulo: "Oi! Eu sou a Gabi.",

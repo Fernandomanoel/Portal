@@ -48,7 +48,7 @@
   padding: 16px;
 }
 
-header {
+.conteudo header {
   text-align: center;
   padding: 14px 10px 6px;
 }
@@ -58,7 +58,7 @@ header {
   color: var(--ouro);
   text-shadow: 0 0 18px rgba(246, 196, 69, 0.45);
 }
-header p {
+.conteudo header p {
   color: var(--apagado);
   font-size: clamp(0.76rem, 2.4vw, 0.92rem);
   margin-top: 4px;

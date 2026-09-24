@@ -1,0 +1,82 @@
+.montar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.linha {
+  min-height: 72px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) 0 var(--space-4);
+  border-bottom: 2px solid var(--line-strong);
+}
+
+.vazia {
+  align-self: center;
+  color: var(--ink-faint);
+  font-size: var(--text-md);
+}
+
+.certa {
+  border-bottom-color: var(--success);
+}
+
+.errada {
+  border-bottom-color: var(--danger);
+}
+
+.banco {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ficha {
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-lg);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--line-strong);
+  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out), transform 140ms var(--ease-out);
+}
+
+.ficha:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--acento) 55%, var(--line-strong));
+  background: color-mix(in srgb, var(--acento) 6%, var(--surface));
+}
+
+.ficha:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.ficha:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.ficha:disabled {
+  cursor: default;
+}
+
+.linha .ficha {
+  border-color: color-mix(in srgb, var(--acento) 50%, var(--line-strong));
+  background: color-mix(in srgb, var(--acento) 8%, var(--surface));
+}
+
+/* A ficha usada deixa a vaga marcada no banco, sem sumir: o banco não "pula". */
+.usada,
+.usada:disabled {
+  color: transparent;
+  background: var(--surface-soft);
+  border-style: dashed;
+  box-shadow: none;
+}

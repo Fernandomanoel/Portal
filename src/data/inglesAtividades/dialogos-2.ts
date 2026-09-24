@@ -6,6 +6,7 @@ const atividade: AtividadeIngles = {
   titulo: "Diálogos em Inglês 2 — Complete a Frase",
   descricao: "Mais 5 conversas (hotel, escola, aeroporto, loja de roupas, cinema) com um exercício novo: completar o espaço em branco escolhendo a palavra certa.",
   nivel: "Básico",
+  trilha: "gabi",
   cor: "#9d174d",
   abertura: {
     titulo: "Mais conversas com a Gabi!",

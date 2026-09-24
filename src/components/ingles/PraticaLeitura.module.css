@@ -1,0 +1,119 @@
+.titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 1rem + 1.3vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-7);
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 20px 20px;
+  background: var(--surface-soft);
+}
+
+.aviso {
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.seguir {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--acento);
+  color: #fff;
+  font: inherit;
+  font-size: var(--text-md);
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(22, 32, 68, 0.12), 0 10px 22px color-mix(in srgb, var(--acento) 28%, transparent);
+}
+
+.seguir:hover {
+  background: color-mix(in srgb, var(--acento) 86%, black);
+}
+
+.seguir:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.contador {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: color-mix(in srgb, var(--acento) 75%, var(--ink-soft));
+  font-variant-numeric: tabular-nums;
+}
+
+.pergunta {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.65rem);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.rever {
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-3);
+}
+
+.rever summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  color: color-mix(in srgb, var(--acento) 80%, var(--ink));
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+
+.rever summary::-webkit-details-marker {
+  display: none;
+}
+
+.rever summary:hover {
+  background: color-mix(in srgb, var(--acento) 7%, var(--surface));
+}
+
+.rever summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.reverCorpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+@media (max-width: 640px) {
+  .rodape {
+    padding: var(--space-4);
+  }
+
+  .aviso {
+    display: none;
+  }
+
+  .seguir {
+    width: 100%;
+    justify-content: center;
+  }
+}

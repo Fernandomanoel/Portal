@@ -6,6 +6,7 @@ const atividade: AtividadeIngles = {
   titulo: "Ouça e Leia em Inglês 2 — Comida, Compras e Rotina",
   descricao: "Mais 20 exercícios com a Gabi sobre restaurante, compras e preços, direções, família, trabalho e hobbies.",
   nivel: "Básico",
+  trilha: "ouvir-ler",
   cor: "#0e7490",
   abertura: {
     titulo: "Oi de novo!",

@@ -1,24 +1,34 @@
 import { useEffect, useState } from "react";
 
-import { respostaEscritaCerta, tituloDoResultado } from "@/lib/ingles";
-import type { AtividadeIngles, ExercicioIngles } from "@/types/ingles";
+import { normalizarResposta, respostaEscritaCerta, tituloDoResultado } from "@/lib/ingles";
+import type { AtividadeIngles, ExercicioIngles, ItemVocabulario } from "@/types/ingles";
 import { CampoResposta } from "./CampoResposta";
 import { ControlesAudio } from "./ControlesAudio";
+import { FiguraIngles } from "./FiguraIngles";
 import type { HumorGabi } from "./Gabi";
 import { MolduraPratica } from "./MolduraPratica";
+import { MontarFrase } from "./MontarFrase";
+import { OpcoesFiguras } from "./OpcoesFiguras";
 import { OpcoesResposta } from "./OpcoesResposta";
 import { RodapeResposta } from "./RodapeResposta";
 import { TelaAbertura, TelaResultado } from "./TelasPratica";
+import { VocabularioIlustrado } from "./VocabularioIlustrado";
 import estilos from "./ExerciciosIngles.module.css";
 
 const PONTOS_POR_ACERTO = 15;
 const ELOGIOS = ["Você acertou!", "Isso mesmo, acertou!", "Certíssimo!"];
 
-const ENUNCIADO: Record<ExercicioIngles["tipo"], string> = {
+type TipoExercicio = ExercicioIngles["tipo"];
+
+const ENUNCIADO: Record<TipoExercicio, string> = {
   "ouvir-multipla": "Ouça e escolha o que você entendeu",
   "ouvir-escrever": "Ouça e escreva em inglês o que você ouviu",
   "ler-multipla": "Leia e escolha a tradução certa",
   traduzir: "Como se diz isso em inglês?",
+  "imagem-multipla": "O que é isso? Escolha em inglês",
+  "imagem-escrever": "Escreva em inglês o nome do desenho",
+  "ouvir-imagem": "Ouça e toque no desenho certo",
+  ordenar: "Monte a frase em inglês",
 };
 
 const ETIQUETA = {
@@ -26,29 +36,68 @@ const ETIQUETA = {
   "ouvir-escrever": { icone: "som", texto: "Audição e escrita" },
   "ler-multipla": { icone: "livro", texto: "Leitura" },
   traduzir: { icone: "lapis", texto: "Escrita" },
+  "imagem-multipla": { icone: "imagem", texto: "Imagem" },
+  "imagem-escrever": { icone: "imagem", texto: "Imagem e escrita" },
+  "ouvir-imagem": { icone: "som", texto: "Audição e imagem" },
+  ordenar: { icone: "blocos", texto: "Montar frase" },
 } as const;
 
-type Fase = { tipo: "abertura" } | { tipo: "fazendo"; indice: number } | { tipo: "resultado" };
+/** Habilidade de cada tipo, para o resumo da tela de abertura. */
+const HABILIDADE: Record<TipoExercicio, string> = {
+  "ouvir-multipla": "Audição",
+  "ouvir-escrever": "Audição",
+  "ouvir-imagem": "Audição",
+  "ler-multipla": "Leitura",
+  traduzir: "Escrita",
+  "imagem-escrever": "Escrita",
+  "imagem-multipla": "Imagens",
+  ordenar: "Montar frases",
+};
+
+function ehEscrita(exercicio: ExercicioIngles) {
+  return exercicio.tipo === "ouvir-escrever" || exercicio.tipo === "traduzir" || exercicio.tipo === "imagem-escrever";
+}
+
+function respostaCerta(exercicio: ExercicioIngles): string {
+  switch (exercicio.tipo) {
+    case "ouvir-escrever":
+    case "traduzir":
+    case "imagem-escrever":
+      return exercicio.respostas[0];
+    case "ouvir-imagem":
+      return exercicio.frase;
+    case "ordenar":
+      return exercicio.palavras.join(" ");
+    default:
+      return exercicio.opcoes[exercicio.resposta];
+  }
+}
+
+type Fase = { tipo: "abertura" } | { tipo: "vocabulario" } | { tipo: "fazendo"; indice: number } | { tipo: "resultado" };
 
 interface Props {
   atividade: AtividadeIngles;
   exercicios: ExercicioIngles[];
+  vocabulario?: ItemVocabulario[];
 }
 
-/** "Ouça e Leia": um exercício por vez, corrigido na hora, com a Gabi reagindo. */
-export function ExerciciosIngles({ atividade, exercicios }: Props) {
+/** Exercícios um por vez, corrigidos na hora, com a Gabi reagindo. */
+export function ExerciciosIngles({ atividade, exercicios, vocabulario }: Props) {
   const total = exercicios.length;
   const [fase, definirFase] = useState<Fase>({ tipo: "abertura" });
   const [escolhida, definirEscolhida] = useState<number | null>(null);
   const [texto, definirTexto] = useState("");
+  const [montada, definirMontada] = useState<number[]>([]);
   const [acertou, definirAcertou] = useState<boolean | null>(null);
   const [acertos, definirAcertos] = useState(0);
 
   const indice = fase.tipo === "fazendo" ? fase.indice : 0;
   const exercicio = exercicios[indice];
-  const escrita = exercicio.tipo === "ouvir-escrever" || exercicio.tipo === "traduzir";
+  const escrita = ehEscrita(exercicio);
   const verificado = acertou !== null;
-  const podeVerificar = !verificado && (escrita ? texto.trim() !== "" : escolhida !== null);
+  const podeVerificar =
+    !verificado && (escrita ? texto.trim() !== "" : exercicio.tipo === "ordenar" ? montada.length > 0 : escolhida !== null);
+  const fichas = exercicio.tipo === "ordenar" ? [...exercicio.palavras, ...(exercicio.extras ?? [])] : [];
 
   function comecar() {
     definirAcertos(0);
@@ -58,23 +107,29 @@ export function ExerciciosIngles({ atividade, exercicios }: Props) {
   function irPara(proximo: number) {
     definirEscolhida(null);
     definirTexto("");
+    definirMontada([]);
     definirAcertou(null);
     definirFase(proximo < total ? { tipo: "fazendo", indice: proximo } : { tipo: "resultado" });
   }
 
   function verificar() {
     if (!podeVerificar) return;
-    const certo =
-      exercicio.tipo === "ouvir-escrever" || exercicio.tipo === "traduzir"
-        ? respostaEscritaCerta(texto, exercicio.respostas)
-        : escolhida === exercicio.resposta;
+    let certo: boolean;
+    if (exercicio.tipo === "ouvir-escrever" || exercicio.tipo === "traduzir" || exercicio.tipo === "imagem-escrever") {
+      certo = respostaEscritaCerta(texto, exercicio.respostas);
+    } else if (exercicio.tipo === "ordenar") {
+      // Compara o texto, não os índices: palavra repetida ("the ... the") vale em qualquer das duas fichas.
+      certo = normalizarResposta(montada.map((i) => fichas[i]).join(" ")) === normalizarResposta(exercicio.palavras.join(" "));
+    } else {
+      certo = escolhida === exercicio.resposta;
+    }
     definirAcertou(certo);
     if (certo) definirAcertos((n) => n + 1);
   }
 
   const continuar = () => irPara(indice + 1);
 
-  // Teclado: 1, 2, 3 escolhem a opção; Enter verifica e depois continua.
+  // Teclado: 1 a 9 escolhem a opção; Enter verifica e depois continua.
   useEffect(() => {
     if (fase.tipo !== "fazendo") return;
     const aoTeclar = (evento: KeyboardEvent) => {
@@ -96,14 +151,23 @@ export function ExerciciosIngles({ atividade, exercicios }: Props) {
   });
 
   if (fase.tipo === "abertura") {
+    const habilidades = [...new Set(exercicios.map((e) => HABILIDADE[e.tipo]))];
     return (
       <MolduraPratica titulo={atividade.titulo} acento={atividade.cor} humor="neutra">
         <TelaAbertura
           titulo={atividade.abertura.titulo}
           texto={atividade.abertura.texto}
-          resumo={[`${total} exercícios`, "Audição", "Leitura", "Escrita"]}
-          aoComecar={comecar}
+          resumo={[...(vocabulario ? [`${vocabulario.length} palavras novas`] : []), `${total} exercícios`, ...habilidades]}
+          aoComecar={() => (vocabulario ? definirFase({ tipo: "vocabulario" }) : comecar())}
         />
+      </MolduraPratica>
+    );
+  }
+
+  if (fase.tipo === "vocabulario" && vocabulario) {
+    return (
+      <MolduraPratica titulo={atividade.titulo} acento={atividade.cor} humor="explicando">
+        <VocabularioIlustrado itens={vocabulario} aoComecar={comecar} />
       </MolduraPratica>
     );
   }
@@ -118,8 +182,38 @@ export function ExerciciosIngles({ atividade, exercicios }: Props) {
   }
 
   const humor: HumorGabi = verificado ? (acertou ? "acertou" : "errou") : "explicando";
-  const respostaCerta =
-    exercicio.tipo === "ouvir-escrever" || exercicio.tipo === "traduzir" ? exercicio.respostas[0] : exercicio.opcoes[exercicio.resposta];
+  const certa = respostaCerta(exercicio);
+
+  let detalhe;
+  if (escrita) {
+    detalhe = (
+      <>
+        Você escreveu: <b lang="en">{texto}</b>
+        <br />
+        Resposta certa: <b lang="en">{certa}</b>
+      </>
+    );
+  } else if (exercicio.tipo === "ordenar") {
+    detalhe = (
+      <>
+        {acertou ? "A frase é: " : "A frase certa é: "}
+        <b lang="en">{certa}</b>
+      </>
+    );
+  } else if (exercicio.tipo === "ouvir-imagem") {
+    detalhe = (
+      <>
+        Você ouviu: <b lang="en">{certa}</b>
+      </>
+    );
+  } else {
+    detalhe = (
+      <>
+        {acertou ? "A resposta era: " : "A resposta certa é: "}
+        <b>{certa}</b>
+      </>
+    );
+  }
 
   return (
     <MolduraPratica
@@ -140,17 +234,14 @@ export function ExerciciosIngles({ atividade, exercicios }: Props) {
               ? {
                   acertou: !!acertou,
                   titulo: acertou ? ELOGIOS[indice % ELOGIOS.length] : "Você errou — vamos praticar mais.",
-                  detalhe: escrita ? (
+                  detalhe: exercicio.explicacao ? (
                     <>
-                      Você escreveu: <b lang="en">{texto}</b>
+                      {detalhe}
                       <br />
-                      Resposta certa: <b lang="en">{respostaCerta}</b>
+                      {exercicio.explicacao}
                     </>
                   ) : (
-                    <>
-                      {acertou ? "A resposta era: " : "A resposta certa é: "}
-                      <b>{respostaCerta}</b>
-                    </>
+                    detalhe
                   ),
                 }
               : null
@@ -160,7 +251,7 @@ export function ExerciciosIngles({ atividade, exercicios }: Props) {
     >
       <h1 className={estilos.enunciado}>{ENUNCIADO[exercicio.tipo]}</h1>
 
-      {(exercicio.tipo === "ouvir-multipla" || exercicio.tipo === "ouvir-escrever") && (
+      {(exercicio.tipo === "ouvir-multipla" || exercicio.tipo === "ouvir-escrever" || exercicio.tipo === "ouvir-imagem") && (
         <div className={estilos.estimuloAudio}>
           <ControlesAudio key={indice} texto={exercicio.frase} tocarAoAbrir />
           <p className={estilos.dica}>Ouça quantas vezes quiser.</p>
@@ -185,16 +276,56 @@ export function ExerciciosIngles({ atividade, exercicios }: Props) {
         </p>
       )}
 
-      {exercicio.tipo === "ouvir-multipla" || exercicio.tipo === "ler-multipla" ? (
+      {(exercicio.tipo === "imagem-multipla" || exercicio.tipo === "imagem-escrever") && (
+        <div className={estilos.quadro}>
+          <FiguraIngles nome={exercicio.figura} descricao="Desenho para você dizer o nome em inglês" className={estilos.quadroFigura} />
+          {verificado && <ControlesAudio key={indice} texto={certa} tamanho="compacto" />}
+        </div>
+      )}
+
+      {exercicio.tipo === "ordenar" && (
+        <div className={estilos.estimuloOrdenar}>
+          <p className={estilos.traduzir}>
+            <span className={estilos.aspas} aria-hidden="true">
+              “
+            </span>
+            {exercicio.traducao}
+          </p>
+          {exercicio.dica && <p className={estilos.dica}>{exercicio.dica}</p>}
+          {verificado && <ControlesAudio key={indice} texto={certa} tamanho="compacto" />}
+        </div>
+      )}
+
+      {exercicio.tipo === "ouvir-multipla" || exercicio.tipo === "ler-multipla" || exercicio.tipo === "imagem-multipla" ? (
         <OpcoesResposta
           key={indice}
           opcoes={exercicio.opcoes}
+          resposta={exercicio.resposta}
+          chave={exercicio.tipo === "imagem-multipla" ? `${exercicio.figura}-${indice}` : exercicio.frase}
+          escolhida={escolhida}
+          verificado={verificado}
+          aoEscolher={definirEscolhida}
+          idioma={exercicio.tipo === "imagem-multipla" ? "en" : "pt-BR"}
+        />
+      ) : exercicio.tipo === "ouvir-imagem" ? (
+        <OpcoesFiguras
+          key={indice}
+          figuras={exercicio.figuras}
           resposta={exercicio.resposta}
           chave={exercicio.frase}
           escolhida={escolhida}
           verificado={verificado}
           aoEscolher={definirEscolhida}
-          idioma="pt-BR"
+        />
+      ) : exercicio.tipo === "ordenar" ? (
+        <MontarFrase
+          key={indice}
+          fichas={fichas}
+          chave={exercicio.traducao}
+          montada={montada}
+          aoMudar={definirMontada}
+          verificado={verificado}
+          acertou={!!acertou}
         />
       ) : (
         <CampoResposta key={indice} valor={texto} aoMudar={definirTexto} verificado={verificado} acertou={!!acertou} />

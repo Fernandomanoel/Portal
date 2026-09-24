@@ -6,6 +6,7 @@ const atividade: AtividadeIngles = {
   titulo: "Diálogos em Inglês — Converse com a Gabi",
   descricao: "5 conversas com a Gabi (café, trabalho, rua, fim de semana, médico): escolha ou escreva a resposta certa para continuar cada diálogo.",
   nivel: "Básico",
+  trilha: "gabi",
   cor: "#6d28d9",
   abertura: {
     titulo: "Vamos conversar?",
