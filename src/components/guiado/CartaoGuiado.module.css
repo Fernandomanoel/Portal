@@ -121,4 +121,8 @@
   .comNumero {
     padding-top: calc(var(--space-5) + 36px);
   }
+
+  .visualAlto {
+    aspect-ratio: 1 / 1;
+  }
 }

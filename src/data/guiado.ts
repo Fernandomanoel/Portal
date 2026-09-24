@@ -327,6 +327,26 @@ export const JOGOS_CONCEITO: JogoConceito[] = [
     titulo: "O que é o Mouse?",
     descricao: "Clique em cada parte do mouse e descubra para que ela serve.",
   },
+  {
+    slug: "pecas-do-computador",
+    titulo: "Peças do Computador",
+    descricao: "Descubra o monitor, o gabinete, o teclado e o mouse.",
+  },
+  {
+    slug: "cpu-e-hd",
+    titulo: "CPU e HD",
+    descricao: "Abra o gabinete e descubra a peça que faz as contas e a que guarda.",
+  },
+  {
+    slug: "peca-ou-programa",
+    titulo: "Peça ou Programa?",
+    descricao: "Peça você pega com a mão. Programa você só vê na tela.",
+  },
+  {
+    slug: "ligando-o-computador",
+    titulo: "Ligando o Computador",
+    descricao: "Clique nos passos na ordem certa para ligar o computador.",
+  },
 ];
 
 export function acharAssunto(id: AssuntoGuiado) {

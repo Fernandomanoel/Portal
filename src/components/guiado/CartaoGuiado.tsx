@@ -13,10 +13,12 @@ interface Props {
   texto?: string;
   /** O que o botão "Ouvir" fala; sem isso, fala o título e o texto. */
   narracao?: string;
+  /** Visual com botões dentro (jogos): no celular, a área fica quadrada para o desenho não sumir. */
+  visualAlto?: boolean;
 }
 
 /** Imagem de um lado, frase grande e botão "Ouvir" do outro: nenhuma instrução aparece só em texto. */
-export function CartaoGuiado({ visual, titulo, tituloRef, etiqueta, numero, texto, narracao }: Props) {
+export function CartaoGuiado({ visual, titulo, tituloRef, etiqueta, numero, texto, narracao, visualAlto }: Props) {
   const falado = narracao ?? (texto ? `${titulo} ${texto}` : titulo);
 
   return (
@@ -27,7 +29,7 @@ export function CartaoGuiado({ visual, titulo, tituloRef, etiqueta, numero, text
           <span className={estilos.numeroValor}>{numero}</span>
         </p>
       )}
-      <div className={estilos.visual}>{visual}</div>
+      <div className={visualAlto ? `${estilos.visual} ${estilos.visualAlto}` : estilos.visual}>{visual}</div>
       <div className={estilos.conteudo}>
         {etiqueta && <p className={estilos.etiqueta}>{etiqueta}</p>}
         <h1 ref={tituloRef} tabIndex={-1} className={estilos.titulo}>
