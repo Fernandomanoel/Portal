@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="320" y="34" font-size="14" fill="#1f2937" font-weight="700" text-anchor="middle">Níveis</text>
+  <rect x="60" y="56" width="520" height="220" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="60" y="262.35907980478635" width="12" height="13.640920195213672" fill="#9ca3af"/>
+  <rect x="73" y="262.0350448413071" width="12" height="13.964955158692883" fill="#9ca3af"/>
+  <rect x="86" y="261.5073210513472" width="12" height="14.492678948652806" fill="#9ca3af"/>
+  <rect x="99" y="260.6722329129902" width="12" height="15.327767087009821" fill="#9ca3af"/>
+  <rect x="112" y="259.3885720047611" width="12" height="16.611427995238877" fill="#9ca3af"/>
+  <rect x="125" y="257.4724560244231" width="12" height="18.527543975576894" fill="#9ca3af"/>
+  <rect x="138" y="254.69605305299865" width="12" height="21.303946947001343" fill="#9ca3af"/>
+  <rect x="151" y="250.79271422377124" width="12" height="25.207285776228765" fill="#9ca3af"/>
+  <rect x="164" y="245.471067232324" width="12" height="30.52893276767599" fill="#9ca3af"/>
+  <rect x="177" y="238.4399879773744" width="12" height="37.560012022625614" fill="#9ca3af"/>
+  <rect x="190" y="229.44492729031424" width="12" height="46.555072709685774" fill="#9ca3af"/>
+  <rect x="203" y="218.31383206877805" width="12" height="57.686167931221945" fill="#9ca3af"/>
+  <rect x="216" y="205.00812113014354" width="12" height="70.99187886985646" fill="#9ca3af"/>
+  <rect x="229" y="189.6713858966918" width="12" height="86.32861410330823" fill="#9ca3af"/>
+  <rect x="242" y="172.66642774372707" width="12" height="103.33357225627294" fill="#9ca3af"/>
+  <rect x="255" y="154.59071276040044" width="12" height="121.40928723959958" fill="#9ca3af"/>
+  <rect x="268" y="136.261931536442" width="12" height="139.738068463558" fill="#9ca3af"/>
+  <rect x="281" y="118.66927299722505" width="12" height="157.33072700277495" fill="#9ca3af"/>
+  <rect x="294" y="102.89182549917857" width="12" height="173.10817450082143" fill="#9ca3af"/>
+  <rect x="307" y="89.99215057802888" width="12" height="186.00784942197112" fill="#9ca3af"/>
+  <rect x="320" y="80.89904575156734" width="12" height="195.10095424843266" fill="#9ca3af"/>
+  <rect x="333" y="76.29726665886778" width="12" height="199.70273334113222" fill="#9ca3af"/>
+  <rect x="346" y="76.54234248867914" width="12" height="199.45765751132086" fill="#9ca3af"/>
+  <rect x="359" y="81.6151903138882" width="12" height="194.3848096861118" fill="#9ca3af"/>
+  <rect x="372" y="91.12457016509651" width="12" height="184.87542983490349" fill="#9ca3af"/>
+  <rect x="385" y="104.35694245585603" width="12" height="171.64305754414397" fill="#9ca3af"/>
+  <rect x="398" y="120.36490893583539" width="12" height="155.6350910641646" fill="#9ca3af"/>
+  <rect x="411" y="138.07902639368447" width="12" height="137.92097360631553" fill="#9ca3af"/>
+  <rect x="424" y="156.4247241960007" width="12" height="119.57527580399929" fill="#9ca3af"/>
+  <rect x="437" y="174.42679256485457" width="12" height="101.57320743514543" fill="#9ca3af"/>
+  <rect x="450" y="191.28794668644406" width="12" height="84.71205331355596" fill="#9ca3af"/>
+  <rect x="463" y="206.43408124958412" width="12" height="69.56591875041588" fill="#9ca3af"/>
+  <rect x="476" y="219.52544163832317" width="12" height="56.47455836167683" fill="#9ca3af"/>
+  <rect x="489" y="230.43859189418686" width="12" height="45.56140810581316" fill="#9ca3af"/>
+  <rect x="502" y="239.22775815924757" width="12" height="36.77224184075244" fill="#9ca3af"/>
+  <rect x="515" y="246.0755025068077" width="12" height="29.9244974931923" fill="#9ca3af"/>
+  <rect x="528" y="251.24196569224392" width="12" height="24.758034307756084" fill="#9ca3af"/>
+  <rect x="541" y="255.01974927715642" width="12" height="20.98025072284357" fill="#9ca3af"/>
+  <rect x="554" y="257.69868762797813" width="12" height="18.301312372021876" fill="#9ca3af"/>
+  <rect x="567" y="259.5420159424147" width="12" height="16.45798405758529" fill="#9ca3af"/>
+  <g stroke-width="2"><line x1="101.6" y1="56" x2="101.6" y2="276" stroke="#111827"/>
+    <line x1="314.8" y1="56" x2="314.8" y2="276" stroke="#6b7280"/>
+    <line x1="528" y1="56" x2="528" y2="276" stroke="#e5e7eb"/></g>
+  <text x="101.6" y="300" font-size="10.5" fill="#111827" text-anchor="middle">Ponto preto</text>
+  <text x="320" y="300" font-size="10.5" fill="#6b7280" text-anchor="middle">Gama</text>
+  <text x="528" y="300" font-size="10.5" fill="#9ca3af" text-anchor="middle">Ponto branco</text>
+</svg>

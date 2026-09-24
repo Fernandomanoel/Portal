@@ -75,6 +75,7 @@ Em `src/data/atividades.ts`, dentro do curso, acrescente ao array `atividades`:
 | `desafio` | Caixa "Desafio extra:" com uma tarefa a mais, para quem terminar antes. |
 | `aviso` | Caixa amarela "Atenção:" com um cuidado que o aluno precisa ter. |
 | `imagem` | Imagem de demonstração. `url` recebe um `import` de `src/assets/` ou um link externo. |
+| `codigo` | Comando de terminal ou trecho de código, em fonte monoespaçada. `terminal: true` prefixa cada linha com `$` (ex.: cursos de programação como Cordova). |
 | `cenario` / `instrucao` | Texto de contexto e enunciado. |
 | `tabelaReferencia` | Tabela de dados para exercícios de cálculo. |
 | `campos` | Perguntas corrigidas automaticamente (`selecao`, `multipla_escolha`, `numero`, `texto`, `padrao`). |
@@ -91,6 +92,10 @@ pergunta em `campos` — atividade só com exercícios práticos não mostra o b
   rápido. Recorte só a parte da tela que importa para o passo.
 - **Casos especiais: ilustração pelo kit** (`npm run ilustracoes`), quando
   precisar destacar um ponto ou quando a tela for difícil/arriscada de
-  capturar. Veja `scripts/ilustracoes/README.md`.
+  capturar. Veja `scripts/ilustracoes/README.md`. Para um app criativo
+  (Photoshop, CorelDraw, Illustrator...), o kit já tem peças genéricas —
+  `janelaCriativa`, `caixaFerramentas`, `painelCriativo` — usadas em
+  `scripts/ilustracoes/telas/photoshop.mjs`; copie esse arquivo em vez de
+  partir do zero.
 - Não use prints de filmes, séries ou memes, nem imagens de sites de terceiros.
 - Sem emoji no texto: ícones do portal vêm de `src/components/Icone.tsx`.

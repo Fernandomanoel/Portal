@@ -437,6 +437,119 @@ export const ATIVIDADES: Curso[] = [
       },
     ],
   },
+  {
+    slug: "photoshop",
+    titulo: "Adobe Photoshop",
+    descricao: "Do primeiro clique a composições avançadas — curso completo em 8 graus.",
+    categoria: "design",
+    sigla: "PS",
+    cor: "#001e36",
+    materiais: [
+      {
+        titulo: "Foto de apoio — esfera lisa",
+        descricao:
+          "Fundo neutro e sem texturas complicadas — boa para praticar recorte e remoção de fundo (Graus 1 e 3) se você não tiver uma foto sua à mão.",
+        tipo: "link",
+        url: "/atividades/photoshop/material-esfera.jpg",
+      },
+    ],
+    atividades: [
+      {
+        titulo: "Adobe Photoshop — Grau 1: Conhecendo a Ferramenta",
+        descricao:
+          "Reconhecer a tela do Photoshop, inserir uma imagem, recortar e remover o fundo de uma foto por dois caminhos diferentes.",
+        caminho: "Photoshop/photoshop-grau1-conhecendo-a-ferramenta",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 2: Seleções e Camadas Avançadas",
+        descricao:
+          "Seleção por cor, Laço Poligonal/Magnético, máscaras de camada e modos de mesclagem, com prática de montagem por máscara.",
+        caminho: "Photoshop/photoshop-grau2-selecoes-e-camadas",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 3: Ajustes de Cor e Retoque",
+        descricao:
+          "Níveis, Curvas, Balanço de Cor e as ferramentas de retoque (Carimbo, Pincel de Recuperação, Correção Pontual) em camadas de ajuste não destrutivas.",
+        caminho: "Photoshop/photoshop-grau3-cor-e-retoque",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 4: Texto, Formas e Composição",
+        descricao:
+          "Ferramenta Texto, estilos de camada, formas vetoriais, Regra dos Terços e a montagem de um post pronto para redes sociais.",
+        caminho: "Photoshop/photoshop-grau4-texto-formas-e-composicao",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 5: Efeitos e Filtros Criativos",
+        descricao: "Objetos Inteligentes, Filtros Inteligentes e a montagem de um efeito de dupla exposição.",
+        caminho: "Photoshop/photoshop-grau5-efeitos-e-filtros",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 6: Composição Avançada",
+        descricao:
+          "Perspectiva, refinamento de seleção, harmonização de cor e luz entre elementos de fontes diferentes — a técnica por trás de qualquer montagem que engana o olho.",
+        caminho: "Photoshop/photoshop-grau6-composicao-avancada",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 7: Projeto Final Integrador",
+        descricao:
+          "Um briefing de verdade, do planejamento à entrega organizada: peça principal, adaptação para Stories e exportação para diferentes usos.",
+        caminho: "Photoshop/photoshop-grau7-projeto-final",
+      },
+      {
+        titulo: "Adobe Photoshop — Grau 8 (Bônus): Auras e Efeitos de Invocação",
+        descricao:
+          "Luz de contorno, auras coloridas e texto de efeito — o estilo por trás dos memes de personagem com elemento fantástico atrás dele.",
+        caminho: "Photoshop/photoshop-grau8-auras-e-invocacao",
+      },
+    ],
+  },
+  {
+    slug: "cordova",
+    titulo: "Apps Mobile com Ionic e Cordova",
+    descricao: "Construa um aplicativo de celular de verdade, do primeiro componente ao emulador Android.",
+    categoria: "programacao",
+    sigla: "ION",
+    cor: "#3880ff",
+    materiais: [],
+    atividades: [
+      {
+        titulo: "Ionic e Cordova — Primeiros Passos",
+        descricao:
+          "O que são Ionic e Cordova, criando o projeto pelo terminal, primeiro componente (cabeçalho e cartão), cores do tema e o Console como ferramenta de investigação de erros.",
+        caminho: "Cordova/cordova-primeiros-passos",
+      },
+      {
+        titulo: "Ionic — Prática de Componentes",
+        descricao:
+          "14 componentes visuais do Ionic (input, botões, lista, badge, chip, toggle, busca, FAB, avatar, grid, progress bar, spinner, footer), um a um, até montar a tela completa do app.",
+        caminho: "Cordova/cordova-componentes-visuais",
+      },
+      {
+        titulo: "Ionic — Prática de JavaScript",
+        descricao:
+          "Eventos, arrays e listas dinâmicas: adicionar, excluir, marcar como concluída, buscar em tempo real, ordenar e o modo escuro ganhando lógica de verdade.",
+        caminho: "Cordova/cordova-javascript-e-listas",
+      },
+      {
+        titulo: "Ionic — LocalStorage e Emulador",
+        descricao:
+          "Fazendo o app lembrar das missões com localStorage e rodando pela primeira vez dentro de um celular Android simulado no Android Studio.",
+        caminho: "Cordova/cordova-localstorage-e-emulador",
+      },
+      {
+        titulo: "Ionic — Projeto Final",
+        descricao:
+          "Desafios práticos (fáceis, médios e difíceis), um código de referência completo e o fechamento do projeto \"Minhas Missões\".",
+        caminho: "Cordova/cordova-projeto-final",
+      },
+      {
+        titulo: "Ionic — Projeto Livre: Rede Social",
+        descricao:
+          "Projeto final aberto: uma mini rede social (ConectaTurma) com perfil, posts, curtidas, comentários, seguir colegas e busca — com gabarito comentado completo.",
+        caminho: "Cordova/cordova-projeto-livre-rede-social",
+      },
+    ],
+  },
 ];
 
 export function acharCurso(slug: string): Curso | undefined {

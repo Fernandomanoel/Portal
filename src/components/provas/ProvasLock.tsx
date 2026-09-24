@@ -9,7 +9,7 @@ import estilos from "./ProvasLock.module.css";
  * convenção de sala de aula, e é explicitamente provisória — a direção é
  * substituí-la por login de instrutor com JWT quando o backend existir.
  */
-const SENHA = "microlins";
+const SENHA = "T1ringa@";
 
 export function ProvasLock({ aoEntrar }: { aoEntrar: () => void }) {
   const [senha, definirSenha] = useState("");
