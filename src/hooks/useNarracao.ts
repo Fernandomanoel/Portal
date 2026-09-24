@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type EstadoNarracao = "parada" | "falando";
+import { dividirFala, ordenarVozes, type IdiomaNarracao } from "@/lib/vozes";
 
-export type IdiomaNarracao = "pt-BR" | "en-US";
+export type { IdiomaNarracao } from "@/lib/vozes";
+
+type EstadoNarracao = "parada" | "falando";
 
 interface Opcoes {
   idioma?: IdiomaNarracao;
@@ -10,104 +12,102 @@ interface Opcoes {
   velocidade?: number;
 }
 
-// A API de voz não diz o gênero da voz: usamos os nomes das vozes femininas
-// mais comuns no Windows, no macOS, no Android e no Chrome.
-const VOZES_FEMININAS = [
-  "female",
-  "google us english",
-  "google uk english female",
-  "zira",
-  "aria",
-  "jenny",
-  "michelle",
-  "samantha",
-  "susan",
-  "karen",
-  "moira",
-  "tessa",
-  "victoria",
-  "fiona",
-  "kate",
-  "salli",
-  "joanna",
-  "ivy",
-  "kendra",
-  "kimberly",
-  "ava",
-  "allison",
-  "serena",
-  "hazel",
-  "libby",
-  "sonia",
-  "francisca",
-  "maria",
-  "luciana",
-  "vitoria",
-  "thalita",
-];
+// Voz que já falhou neste computador (online sem internet, por exemplo) não é
+// tentada de novo até recarregar a página.
+const vozesQueFalharam = new Set<string>();
 
-function ehFeminina(voz: SpeechSynthesisVoice) {
-  const nome = voz.name.toLowerCase();
-  return VOZES_FEMININAS.some((parte) => nome.includes(parte));
+// "interrupted"/"canceled" vêm do nosso próprio cancel() ao trocar de fala;
+// "not-allowed" é o navegador bloqueando fala sem clique (autoplay): trocar de
+// voz não resolve nenhum dos três.
+const ERROS_SEM_NOVA_TENTATIVA = new Set(["interrupted", "canceled", "not-allowed"]);
+
+function candidatas(idioma: IdiomaNarracao) {
+  return ordenarVozes(window.speechSynthesis.getVoices(), idioma).filter((voz) => !vozesQueFalharam.has(voz.voiceURI));
 }
 
-/** Voz do idioma pedido, de preferência feminina e do país exato (en-US antes de en-GB). */
-function escolherVoz(idioma: IdiomaNarracao): SpeechSynthesisVoice | undefined {
-  const vozes = window.speechSynthesis.getVoices();
-  const prefixo = idioma.slice(0, 2);
-  const doIdioma = vozes.filter((voz) => voz.lang.replace("_", "-").toLowerCase().startsWith(prefixo));
-  const doPais = doIdioma.filter((voz) => voz.lang.replace("_", "-") === idioma);
-  const candidatas = doPais.length ? doPais : doIdioma;
-  return candidatas.find(ehFeminina) ?? doIdioma.find(ehFeminina) ?? candidatas[0];
+/** No Chrome a lista de vozes chega depois do carregamento da página. */
+function esperarVozes(): Promise<void> {
+  if (window.speechSynthesis.getVoices().length) return Promise.resolve();
+  return new Promise((resolver) => {
+    const pronto = () => {
+      window.speechSynthesis.removeEventListener("voiceschanged", pronto);
+      resolver();
+    };
+    window.speechSynthesis.addEventListener("voiceschanged", pronto);
+    window.setTimeout(pronto, 1200);
+  });
 }
 
 /**
  * Narração pela voz do próprio navegador, sempre com voz feminina quando o
- * sistema tiver uma. Pode ser repetida sem limite. Trocar por áudio gravado
- * no futuro é mudar só `falar`/`parar` aqui dentro.
+ * sistema tiver uma. Se a voz der erro, tenta a próxima do mesmo idioma. Pode
+ * ser repetida sem limite. Trocar por áudio gravado no futuro é mudar só
+ * `falar`/`parar` aqui dentro.
  */
 export function useNarracao({ idioma = "pt-BR", velocidade = 0.85 }: Opcoes = {}) {
   const suportado = typeof window !== "undefined" && "speechSynthesis" in window;
   const [estado, definirEstado] = useState<EstadoNarracao>("parada");
-  const vozRef = useRef<SpeechSynthesisVoice | undefined>(undefined);
-
-  useEffect(() => {
-    if (!suportado) return;
-    // No Chrome a lista de vozes chega depois do carregamento; sem esperar
-    // por ela, a fala sai na voz padrão do sistema (às vezes em outro idioma).
-    const atualizar = () => {
-      vozRef.current = escolherVoz(idioma);
-    };
-    atualizar();
-    window.speechSynthesis.addEventListener("voiceschanged", atualizar);
-    return () => {
-      window.speechSynthesis.removeEventListener("voiceschanged", atualizar);
-      window.speechSynthesis.cancel();
-    };
-  }, [suportado, idioma]);
+  // Cada fala nova invalida os eventos atrasados da anterior.
+  const falaAtual = useRef(0);
 
   const parar = useCallback(() => {
     if (!suportado) return;
+    falaAtual.current += 1;
     window.speechSynthesis.cancel();
     definirEstado("parada");
+  }, [suportado]);
+
+  useEffect(() => {
+    if (!suportado) return;
+    return () => {
+      falaAtual.current += 1;
+      window.speechSynthesis.cancel();
+    };
   }, [suportado]);
 
   const falar = useCallback(
     (texto: string, velocidadeDestaVez?: number) => {
       if (!suportado) return;
-      window.speechSynthesis.cancel();
-      vozRef.current ??= escolherVoz(idioma);
-      const fala = new SpeechSynthesisUtterance(texto);
-      fala.lang = idioma;
-      fala.rate = velocidadeDestaVez ?? velocidade;
-      if (vozRef.current) fala.voice = vozRef.current;
-      fala.onstart = () => definirEstado("falando");
-      fala.onend = () => definirEstado("parada");
-      fala.onerror = () => definirEstado("parada");
-      // Chrome às vezes fica "pausado" depois de um cancel(): retomar antes
-      // de falar evita o botão que não faz som nenhum.
-      window.speechSynthesis.resume();
-      window.speechSynthesis.speak(fala);
+      const sintese = window.speechSynthesis;
+      const minha = ++falaAtual.current;
+      sintese.cancel();
+      const partes = dividirFala(texto);
+      if (!partes.length) return;
+
+      const dizer = (indice: number, vozes: SpeechSynthesisVoice[]) => {
+        if (minha !== falaAtual.current) return;
+        const [voz, ...reservas] = vozes;
+        const fala = new SpeechSynthesisUtterance(partes[indice]);
+        fala.lang = voz?.lang ?? idioma;
+        fala.rate = velocidadeDestaVez ?? velocidade;
+        if (voz) fala.voice = voz;
+        fala.onstart = () => {
+          if (minha === falaAtual.current) definirEstado("falando");
+        };
+        fala.onend = () => {
+          if (minha !== falaAtual.current) return;
+          if (indice + 1 < partes.length) dizer(indice + 1, vozes);
+          else definirEstado("parada");
+        };
+        fala.onerror = (evento) => {
+          if (minha !== falaAtual.current) return;
+          if (!ERROS_SEM_NOVA_TENTATIVA.has(evento.error) && voz && reservas.length) {
+            vozesQueFalharam.add(voz.voiceURI);
+            dizer(indice, reservas);
+            return;
+          }
+          definirEstado("parada");
+        };
+        // Chrome às vezes fica "pausado" depois de um cancel(): retomar antes
+        // de falar evita o botão que não faz som nenhum.
+        sintese.resume();
+        sintese.speak(fala);
+      };
+
+      void esperarVozes().then(() => {
+        // Falar logo depois do cancel() faz o Chrome engolir a fala nova.
+        window.setTimeout(() => dizer(0, candidatas(idioma)), 60);
+      });
     },
     [suportado, idioma, velocidade],
   );

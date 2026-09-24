@@ -19,7 +19,8 @@ interface Props {
 
 /** Imagem de um lado, frase grande e botão "Ouvir" do outro: nenhuma instrução aparece só em texto. */
 export function CartaoGuiado({ visual, titulo, tituloRef, etiqueta, numero, texto, narracao, visualAlto }: Props) {
-  const falado = narracao ?? (texto ? `${titulo} ${texto}` : titulo);
+  // Ponto depois do título: sem ele a voz emenda o título no texto sem pausa.
+  const falado = narracao ?? (texto ? `${/[.!?:]$/.test(titulo) ? titulo : `${titulo}.`} ${texto}` : titulo);
 
   return (
     <article className={numero !== undefined ? `${estilos.cartao} ${estilos.comNumero}` : estilos.cartao}>
