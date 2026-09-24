@@ -44,7 +44,8 @@ export type NomeIcone =
   | "baixar"
   | "lixeira"
   | "relogio"
-  | "sair";
+  | "sair"
+  | "usuario";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -275,6 +276,12 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     </>
   ),
   sair: <path d="M14 4.5h3.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H14M10 16l-4-4 4-4m-4 4h10" />,
+  usuario: (
+    <>
+      <circle cx="12" cy="8.3" r="3.3" />
+      <path d="M5 20c.9-3.8 3.8-6 7-6s6.1 2.2 7 6" />
+    </>
+  ),
 };
 
 interface Props extends SVGProps<SVGSVGElement> {

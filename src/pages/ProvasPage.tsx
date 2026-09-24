@@ -1,7 +1,5 @@
 import { useMemo, useState } from "react";
 
-import { Link } from "react-router-dom";
-
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
@@ -9,7 +7,6 @@ import { ProvaCard } from "@/components/cards/ProvaCard";
 import { ProvasLock } from "@/components/provas/ProvasLock";
 import { PROVAS_CATEGORIAS, PROVAS_MANIFEST } from "@/data/provasManifest";
 import { normalizar } from "@/lib/busca";
-import { rotas } from "@/lib/rotas";
 import estilos from "./ProvasPage.module.css";
 
 export function ProvasPage() {
@@ -49,19 +46,13 @@ export function ProvasPage() {
         titulo="Provas"
         texto="Provas dos cursos, por categoria."
         acoes={
-          <div className={estilos.acoesTopo}>
-            <Link to={rotas.professor()} className={estilos.professor}>
-              <Icone nome="prova" tamanho={16} />
-              Provas enviadas pelos alunos
-            </Link>
-            <button
-              type="button"
-              className={estilos.sair}
-              onClick={() => definirLiberada(false)}
-            >
-              Sair da área de provas
-            </button>
-          </div>
+          <button
+            type="button"
+            className={estilos.sair}
+            onClick={() => definirLiberada(false)}
+          >
+            Sair da área de provas
+          </button>
         }
       />
 
