@@ -1,0 +1,38 @@
+.campo {
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  caret-color: var(--acento);
+}
+
+.campo::placeholder {
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+.campo:focus {
+  outline: none;
+  border-color: var(--acento);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--acento) 18%, transparent);
+}
+
+.certo {
+  border-color: var(--success);
+  background: var(--success-tint);
+}
+
+.errado {
+  border-color: var(--danger);
+  background: var(--danger-tint);
+}
+
+.campo:disabled {
+  color: var(--ink);
+  opacity: 1;
+}

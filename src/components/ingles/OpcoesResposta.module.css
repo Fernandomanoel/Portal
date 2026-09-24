@@ -1,0 +1,104 @@
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.fichas {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-md);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--line-strong);
+  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out), transform 140ms var(--ease-out);
+}
+
+.fichas .opcao {
+  width: auto;
+  padding: var(--space-2) var(--space-5);
+}
+
+.opcao:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--acento) 55%, var(--line-strong));
+  background: color-mix(in srgb, var(--acento) 5%, var(--surface));
+}
+
+.opcao:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.opcao:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.opcao:disabled {
+  cursor: default;
+}
+
+.tecla {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.escolhida {
+  border-color: var(--acento);
+  background: color-mix(in srgb, var(--acento) 9%, var(--surface));
+  box-shadow: 0 2px 0 var(--acento);
+}
+
+.escolhida .tecla {
+  border-color: var(--acento);
+  background: var(--acento);
+  color: #fff;
+}
+
+.certa,
+.certa:disabled {
+  border-color: var(--success);
+  background: var(--success-tint);
+  box-shadow: 0 2px 0 var(--success);
+}
+
+.certa .tecla {
+  border-color: var(--success);
+  background: var(--success);
+  color: #fff;
+}
+
+.errada,
+.errada:disabled {
+  border-color: var(--danger);
+  background: var(--danger-tint);
+  box-shadow: 0 2px 0 var(--danger);
+}
+
+.errada .tecla {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}

@@ -82,6 +82,14 @@ histórico já mergeado.
 
 ## Fronteiras
 
+- **Tudo que for puxado do portal antigo ou criado entra no padrão do
+  portal — sem exceção.** Nunca copiar a página HTML antiga para `public/`
+  e só linkar: atividade vira `.atividade.ts` (molde em
+  `atividadesAutocorrigidas/COMO-CRIAR-ATIVIDADE.md`), dado tipado,
+  componentes e tokens do portal, sem emoji, com o conteúdo inteiro
+  preservado. Se o molde não comportar a mecânica, estenda o molde (ou crie
+  um componente no padrão) em vez de pendurar HTML solto.
+
 - Nunca inventar conteúdo de curso/prova sem fonte — quando não houver
   arquivo real (nem no repo antigo, nem enviado pelo usuário), deixe
   `materiais: []`/manifesto vazio; a tela já trata isso como estado vazio.

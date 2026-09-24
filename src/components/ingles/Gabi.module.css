@@ -1,0 +1,31 @@
+.gabi {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  user-select: none;
+  animation: entra 360ms var(--ease-out);
+}
+
+/* Recorte do rosto: a imagem tem a Gabi de corpo inteiro com folga em volta. */
+.busto {
+  object-fit: cover;
+  object-position: 50% 8%;
+  transform: scale(1.9);
+  transform-origin: 50% 12%;
+  animation: none;
+}
+
+@keyframes entra {
+  from {
+    opacity: 0.4;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gabi {
+    animation: none;
+  }
+}

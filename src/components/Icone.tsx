@@ -31,7 +31,10 @@ export type NomeIcone =
   | "alerta"
   | "som"
   | "mouse"
-  | "robo";
+  | "robo"
+  | "conversa"
+  | "devagar"
+  | "lapis";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -187,6 +190,24 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     <>
       <rect x="5" y="8" width="14" height="11" rx="3" />
       <path d="M12 8V4.5M12 4.5h.01M9.5 13h.01M14.5 13h.01M10 16h4M3 12.5v2.5M21 12.5v2.5" />
+    </>
+  ),
+  conversa: (
+    <>
+      <path d="M3.5 5.5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3.5 3v-3a2 2 0 0 1-2-2Z" />
+      <path d="M18.5 8.5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v3L15 17.5h-3.5a2 2 0 0 1-2-1.6" />
+    </>
+  ),
+  devagar: (
+    <>
+      <path d="M4 16.5a8 8 0 1 1 16 0" />
+      <path d="m12 16.5-4.2-3.4M12 16.5h.01" />
+    </>
+  ),
+  lapis: (
+    <>
+      <path d="M15.5 4.5 19.5 8.5 8.5 19.5 4 20l.5-4.5Z" />
+      <path d="m13.5 6.5 4 4" />
     </>
   ),
 };
