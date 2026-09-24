@@ -22,7 +22,7 @@ A troca entre Blob e disco é a interface `Armazenamento`
 |---|---|---|
 | `PROFESSORES` | sim | Lista JSON de professores com a senha em hash. Gere cada item com `npm run professor:senha`. |
 | `SEGREDO_SESSAO` | sim | Pelo menos 32 caracteres aleatórios. Assina o cookie de sessão; trocar derruba todas as sessões. |
-| `BLOB_READ_WRITE_TOKEN` | na Vercel | Criada sozinha quando o Blob é ligado ao projeto. |
+| `BLOB_READ_WRITE_TOKEN` | na Vercel | Criada sozinha quando o Blob é ligado ao projeto. Se a loja for ligada com um prefixo próprio (ex. `provas_READ_WRITE_TOKEN`), o servidor acha essa variável sozinho — não precisa ser exatamente esse nome. |
 | `CRON_SECRET` | na Vercel | Autoriza a limpeza diária agendada em `vercel.json`. |
 | `LIMITE_ARQUIVO_MB` | não | Tamanho máximo do arquivo da prova. Padrão 4 (na Vercel o corpo da requisição não passa de 4,5 MB). |
 | `DADOS_DIR` | não | Servidor físico e dev: pasta dos dados. Padrão `./dados`. |
