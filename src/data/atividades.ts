@@ -397,14 +397,7 @@ export const ATIVIDADES: Curso[] = [
     categoria: "informatica",
     sigla: "W11",
     cor: "#0078d4",
-    materiais: [
-      {
-        titulo: "Atalhos de Teclado e Acessibilidade",
-        descricao: "6 atividades: atalhos essenciais, organizar janelas sem mouse, um desafio 'sem mouse', teclas de aderência/filtragem, Acesso por Voz, Narrador, alto contraste e Lupa.",
-        tipo: "link",
-        url: "/atividades/windows-11/windows11-atalhos-acessibilidade.html",
-      },
-    ],
+    materiais: [],
     atividades: [
       {
         titulo: "Atividade Prática: Windows 11 — Pastas, Arquivos e Print da Tela",
@@ -441,6 +434,11 @@ export const ATIVIDADES: Curso[] = [
         descricao:
           "Criar, usar e apagar uma partição de até 1 GB no Gerenciamento de Disco e entender a diferença entre RAM e memória virtual.",
         caminho: "Windows 11/windows11-particao-disco-memoria",
+      },
+      {
+        titulo: "Atalhos de Teclado e Acessibilidade",
+        descricao: "6 atividades: atalhos essenciais, organizar janelas sem mouse, um desafio 'sem mouse', teclas de aderência/filtragem, Acesso por Voz, Narrador, alto contraste e Lupa.",
+        caminho: "Windows 11/windows11-atalhos-acessibilidade",
       },
     ],
   },
@@ -564,12 +562,12 @@ export const ATIVIDADES: Curso[] = [
     categoria: "design",
     sigla: "C",
     cor: "#6a2c91",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Avaliação Prática: Post Carrossel com IA",
         descricao: "Apresentação interativa guiando o aluno a criar um carrossel para Instagram: edição de imagem, geração de vídeo com IA, edição de vídeo e montagem final.",
-        tipo: "link",
-        url: "/atividades/canva/canva-avaliacao-carrossel.html",
+        caminho: "Canva/canva-avaliacao-carrossel",
       },
     ],
   },
@@ -582,100 +580,87 @@ export const ATIVIDADES: Curso[] = [
     cor: "#1d6f42",
     materiais: [
       {
-        titulo: "Tabela INSS",
-        descricao: "Atividade prática para aprender a criar tabelas no Excel e calcular o desconto do INSS utilizando fórmulas simples e porcentagem.",
-        tipo: "link",
-        url: "/atividades/excel/excel-tabela-inss.html",
-      },
-      {
-        titulo: "Cálculo de Empréstimo",
-        descricao: "Exercício voltado ao cálculo de juros simples usando Excel.",
-        tipo: "link",
-        url: "/atividades/excel/excel-calculo-emprestimo.html",
-      },
-      {
-        titulo: "Formatação Básica",
-        descricao: "Primeiros passos no Excel: formatar células, ajustar colunas e deixar a planilha organizada.",
-        tipo: "link",
-        url: "/atividades/excel/excel-formatacao-basica.html",
-      },
-      {
-        titulo: "Tabela de Receitas de Bolo",
-        descricao: "Atividade prática montando uma tabela de receitas, trabalhando organização de dados e cálculo de quantidades.",
-        tipo: "link",
-        url: "/atividades/excel/excel-tabela-receitas-bolo.html",
-      },
-      {
-        titulo: "Tabela de Impostos",
-        descricao: "Atividade para criar uma tabela de impostos utilizando fórmulas básicas.",
-        tipo: "link",
-        url: "/atividades/excel/excel-tabela-impostos.html",
-      },
-      {
-        titulo: "Planilha Empresarial (EOBRA S/A)",
-        descricao: "Atividade prática que simula um relatório de vendas de uma empresa, trabalhando organização de dados e cálculos como total, média, maior e menor valor.",
-        tipo: "link",
-        url: "/atividades/excel/excel-relatorio-vendas-mensais.html",
-      },
-      {
-        titulo: "Fórmulas e Funções",
-        descricao: "Atividade introdutória para compreender o uso de fórmulas e funções no Excel aplicadas em situações do dia a dia.",
-        tipo: "link",
-        url: "/atividades/excel/excel-formulas-e-funcoes.html",
-      },
-      {
-        titulo: "Contas a Pagar usando o Excel",
-        descricao: "Atividade prática para criar uma planilha de contas a pagar utilizando Excel no dia a dia.",
-        tipo: "link",
-        url: "/atividades/excel/excel-contas-a-pagar.html",
-      },
-      {
-        titulo: "Convertendo em Dólar e usando o SE",
-        descricao: "Exercício para aprender a função SE no Excel convertendo valores em dólar.",
-        tipo: "link",
-        url: "/atividades/excel/excel-conversao-dolar-se.html",
-      },
-      {
-        titulo: "Planilha com Máximo, Mínimo e Soma",
-        descricao: "Exercício para aprender a fazer uma planilha com as funções Máximo, Mínimo e Soma.",
-        tipo: "link",
-        url: "/atividades/excel/excel-maximo-minimo-soma.html",
-      },
-      {
-        titulo: "Departamento de Vendas e Filtro de Dados",
-        descricao: "Atividade prática de organização de dados, filtro de dados e gráfico dinâmico.",
-        tipo: "link",
-        url: "/atividades/excel/excel-filtro-de-dados.html",
-      },
-      {
-        titulo: "Aprendendo e Fazendo na Prática — Básico",
-        descricao: "Atividade prática de organização de dados, filtro de dados e gráfico dinâmico.",
-        tipo: "link",
-        url: "/atividades/excel/excel-aprendendo-fazendo-basico.html",
-      },
-      {
-        titulo: "Lista de Atividades Excel",
-        descricao: "Uma lista de atividades práticas para o Excel.",
-        tipo: "link",
-        url: "/atividades/excel/excel-lista-de-atividades.html",
-      },
-      {
-        titulo: "Função SE — Bônus por Faltas",
-        descricao: "Exercício para aprender a função SE no Excel calculando bônus de funcionários conforme faltas.",
-        tipo: "link",
-        url: "/atividades/excel/excel-funcao-se-bonus-faltas.html",
-      },
-      {
-        titulo: "Função SE — Multa por Atraso",
-        descricao: "Atividade para aplicar a função SE no cálculo automático de multa de 2% em pagamentos atrasados.",
-        tipo: "link",
-        url: "/atividades/excel/excel-funcao-se-multa-atraso.html",
-      },
-      {
         titulo: "Planilha da Atividade de Estoque",
         descricao: "Planilha base para a atividade de controle de estoque.",
         tipo: "planilha",
         arquivo: "/atividades/excel/planilha-da-atividade-de-estoque.xlsx",
+      },
+    ],
+    atividades: [
+      {
+        titulo: "Tabela INSS",
+        descricao: "Atividade prática para aprender a criar tabelas no Excel e calcular o desconto do INSS utilizando fórmulas simples e porcentagem.",
+        caminho: "Excel/excel-tabela-inss",
+      },
+      {
+        titulo: "Cálculo de Empréstimo",
+        descricao: "Exercício voltado ao cálculo de juros simples usando Excel.",
+        caminho: "Excel/excel-calculo-emprestimo",
+      },
+      {
+        titulo: "Formatação Básica",
+        descricao: "Primeiros passos no Excel: formatar células, ajustar colunas e deixar a planilha organizada.",
+        caminho: "Excel/excel-formatacao-basica",
+      },
+      {
+        titulo: "Tabela de Receitas de Bolo",
+        descricao: "Atividade prática montando uma tabela de receitas, trabalhando organização de dados e cálculo de quantidades.",
+        caminho: "Excel/excel-tabela-receitas-bolo",
+      },
+      {
+        titulo: "Tabela de Impostos",
+        descricao: "Atividade para criar uma tabela de impostos utilizando fórmulas básicas.",
+        caminho: "Excel/excel-tabela-impostos",
+      },
+      {
+        titulo: "Planilha Empresarial (EOBRA S/A)",
+        descricao: "Atividade prática que simula um relatório de vendas de uma empresa, trabalhando organização de dados e cálculos como total, média, maior e menor valor.",
+        caminho: "Excel/excel-relatorio-vendas-mensais",
+      },
+      {
+        titulo: "Fórmulas e Funções",
+        descricao: "Atividade introdutória para compreender o uso de fórmulas e funções no Excel aplicadas em situações do dia a dia.",
+        caminho: "Excel/excel-formulas-e-funcoes",
+      },
+      {
+        titulo: "Contas a Pagar usando o Excel",
+        descricao: "Atividade prática para criar uma planilha de contas a pagar utilizando Excel no dia a dia.",
+        caminho: "Excel/excel-contas-a-pagar",
+      },
+      {
+        titulo: "Convertendo em Dólar e usando o SE",
+        descricao: "Exercício para aprender a função SE no Excel convertendo valores em dólar.",
+        caminho: "Excel/excel-conversao-dolar-se",
+      },
+      {
+        titulo: "Planilha com Máximo, Mínimo e Soma",
+        descricao: "Exercício para aprender a fazer uma planilha com as funções Máximo, Mínimo e Soma.",
+        caminho: "Excel/excel-maximo-minimo-soma",
+      },
+      {
+        titulo: "Departamento de Vendas e Filtro de Dados",
+        descricao: "Atividade prática de organização de dados, filtro de dados e gráfico dinâmico.",
+        caminho: "Excel/excel-filtro-de-dados",
+      },
+      {
+        titulo: "Aprendendo e Fazendo na Prática — Básico",
+        descricao: "Atividade prática de organização de dados, filtro de dados e gráfico dinâmico.",
+        caminho: "Excel/excel-aprendendo-fazendo-basico",
+      },
+      {
+        titulo: "Lista de Atividades Excel",
+        descricao: "Uma lista de atividades práticas para o Excel.",
+        caminho: "Excel/excel-lista-de-atividades",
+      },
+      {
+        titulo: "Função SE — Bônus por Faltas",
+        descricao: "Exercício para aprender a função SE no Excel calculando bônus de funcionários conforme faltas.",
+        caminho: "Excel/excel-funcao-se-bonus-faltas",
+      },
+      {
+        titulo: "Função SE — Multa por Atraso",
+        descricao: "Atividade para aplicar a função SE no cálculo automático de multa de 2% em pagamentos atrasados.",
+        caminho: "Excel/excel-funcao-se-multa-atraso",
       },
     ],
   },
@@ -687,12 +672,6 @@ export const ATIVIDADES: Curso[] = [
     sigla: "X+",
     cor: "#0f5132",
     materiais: [
-      {
-        titulo: "Iniciando com o PROCV",
-        descricao: "Primeira atividade do Excel Avançado: buscar informações em outra tabela com a função PROCV.",
-        tipo: "link",
-        url: "/atividades/excel-avancado/excel-procv.html",
-      },
       {
         titulo: "Controle de Vendas e Comissões (Cálculo Avançado)",
         descricao: "Planilha extensa com 40 vendas para praticar fórmulas SE aninhadas, SOMASE, CONT.SE, MÁXIMO e ÍNDICE/CORRESP no cálculo de descontos, comissões e resumo por vendedor.",
@@ -712,6 +691,13 @@ export const ATIVIDADES: Curso[] = [
         arquivo: "/atividades/excel-avancado/excel-avancado-notas-da-turma-e-otimizacao-com-solver.xlsx",
       },
     ],
+    atividades: [
+      {
+        titulo: "Iniciando com o PROCV",
+        descricao: "Primeira atividade do Excel Avançado: buscar informações em outra tabela com a função PROCV.",
+        caminho: "Excel Avançado/excel-procv",
+      },
+    ],
   },
   {
     slug: "power-bi",
@@ -720,30 +706,27 @@ export const ATIVIDADES: Curso[] = [
     categoria: "informatica",
     sigla: "BI",
     cor: "#c9a227",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Criando o seu primeiro Dashboard",
         descricao: "Conectar o Excel ao Power BI e tratar os dados.",
-        tipo: "link",
-        url: "/atividades/power-bi/powerbi-primeiro-dashboard.html",
+        caminho: "Power BI/powerbi-primeiro-dashboard",
       },
       {
         titulo: "Fazendo Análise de Funcionários de RH",
         descricao: "Criar gráficos a partir de uma base de RH.",
-        tipo: "link",
-        url: "/atividades/power-bi/powerbi-analise-rh.html",
+        caminho: "Power BI/powerbi-analise-rh",
       },
       {
         titulo: "Análise de Vendas",
         descricao: "Criar o primeiro dashboard de vendas com os recursos básicos.",
-        tipo: "link",
-        url: "/atividades/power-bi/powerbi-analise-de-vendas.html",
+        caminho: "Power BI/powerbi-analise-de-vendas",
       },
       {
         titulo: "Dashboard de Vendas do Atacadão",
         descricao: "Criar um dashboard de vendas completo.",
-        tipo: "link",
-        url: "/atividades/power-bi/powerbi-dashboard-atacadao.html",
+        caminho: "Power BI/powerbi-dashboard-atacadao",
       },
     ],
   },
@@ -756,46 +739,42 @@ export const ATIVIDADES: Curso[] = [
     cor: "#2b579a",
     materiais: [
       {
-        titulo: "A Importância do Celular na Vida Escolar",
-        descricao: "Atividade prática para aprender a criar e formatar um documento no Word, utilizando título, fonte adequada e texto reflexivo sobre o uso do celular nos estudos.",
-        tipo: "link",
-        url: "/atividades/word/word-importancia-celular-vida-escolar.html",
-      },
-      {
-        titulo: "Coisas da Vida",
-        descricao: "Atividade introdutória para praticar digitação, organização de texto e uso básico do Word 2021.",
-        tipo: "link",
-        url: "/atividades/word/word-coisas-da-vida.html",
-      },
-      {
-        titulo: "Criando e Formatando um Documento",
-        descricao: "Atividade prática para aprender a criar, formatar e organizar documentos no Word 2021, utilizando fontes, alinhamento e estilos.",
-        tipo: "link",
-        url: "/atividades/word/word-criando-formatando-documento.html",
-      },
-      {
-        titulo: "Lista de Atividades",
-        descricao: "Lista de atividades para o Word 2021.",
-        tipo: "link",
-        url: "/atividades/word/word-lista-de-atividades.html",
-      },
-      {
-        titulo: "Mala Direta",
-        descricao: "Atividade voltada à criação de documentos com Mala Direta no Word 2021, automatizando o preenchimento de informações a partir de uma lista de dados.",
-        tipo: "link",
-        url: "/atividades/word/word-mala-direta.html",
-      },
-      {
-        titulo: "Normas ABNT",
-        descricao: "Atividade prática de formatação de trabalho acadêmico no Word seguindo as normas ABNT.",
-        tipo: "link",
-        url: "/atividades/word/word-normas-abnt.html",
-      },
-      {
         titulo: "Atividade interativa (Genially)",
         descricao: "Atividade extra interativa, aberta direto no navegador.",
         tipo: "link",
         url: "https://view.genially.com/6939df52cb698f4dbb4d8e35",
+      },
+    ],
+    atividades: [
+      {
+        titulo: "A Importância do Celular na Vida Escolar",
+        descricao: "Atividade prática para aprender a criar e formatar um documento no Word, utilizando título, fonte adequada e texto reflexivo sobre o uso do celular nos estudos.",
+        caminho: "Word/word-importancia-celular-vida-escolar",
+      },
+      {
+        titulo: "Coisas da Vida",
+        descricao: "Atividade introdutória para praticar digitação, organização de texto e uso básico do Word 2021.",
+        caminho: "Word/word-coisas-da-vida",
+      },
+      {
+        titulo: "Criando e Formatando um Documento",
+        descricao: "Atividade prática para aprender a criar, formatar e organizar documentos no Word 2021, utilizando fontes, alinhamento e estilos.",
+        caminho: "Word/word-criando-formatando-documento",
+      },
+      {
+        titulo: "Lista de Atividades",
+        descricao: "Lista de atividades para o Word 2021.",
+        caminho: "Word/word-lista-de-atividades",
+      },
+      {
+        titulo: "Mala Direta",
+        descricao: "Atividade voltada à criação de documentos com Mala Direta no Word 2021, automatizando o preenchimento de informações a partir de uma lista de dados.",
+        caminho: "Word/word-mala-direta",
+      },
+      {
+        titulo: "Normas ABNT",
+        descricao: "Atividade prática de formatação de trabalho acadêmico no Word seguindo as normas ABNT.",
+        caminho: "Word/word-normas-abnt",
       },
     ],
   },
@@ -808,28 +787,32 @@ export const ATIVIDADES: Curso[] = [
     cor: "#d24726",
     materiais: [
       {
+        titulo: "Vídeo de prática — tartaruga no computador",
+        descricao: "Vídeo curto usado na Avaliação Prática: Vídeo, Edição e Transições. Baixe e insira no slide.",
+        tipo: "link",
+        url: "/atividades/powerpoint/tartaruga-no-computador.mp4",
+      },
+    ],
+    atividades: [
+      {
         titulo: "Lista de Atividades",
         descricao: "Criação de slides básicos com título, texto e organização.",
-        tipo: "link",
-        url: "/atividades/powerpoint/powerpoint-lista-atividades-basico.html",
+        caminho: "PowerPoint/powerpoint-lista-atividades-basico",
       },
       {
         titulo: "Avaliação Prática: Criação e Design de Apresentação",
         descricao: "Atividade guiada (tema livre) para criar uma apresentação com no mínimo 6 slides, aplicando boas práticas de design: estrutura, regra 60/30/10 de cores e consistência visual.",
-        tipo: "link",
-        url: "/atividades/powerpoint/powerpoint-criacao-e-design.html",
+        caminho: "PowerPoint/powerpoint-criacao-e-design",
       },
       {
         titulo: "Avaliação Prática: Tabelas e Gráficos",
         descricao: "Atividade guiada (tema livre) para criar uma apresentação com no mínimo 5 slides, incluindo pelo menos uma tabela e um gráfico com dados formatados.",
-        tipo: "link",
-        url: "/atividades/powerpoint/powerpoint-tabelas-e-graficos.html",
+        caminho: "PowerPoint/powerpoint-tabelas-e-graficos",
       },
       {
         titulo: "Avaliação Prática: Vídeo, Edição e Transições",
         descricao: "Atividade guiada para inserir um vídeo em um slide, aplicar recursos de edição de vídeo (cortar, fade) e efeitos de transição entre slides. Inclui vídeo de prática para download.",
-        tipo: "link",
-        url: "/atividades/powerpoint/powerpoint-video-e-transicoes.html",
+        caminho: "PowerPoint/powerpoint-video-e-transicoes",
       },
     ],
   },
@@ -840,48 +823,42 @@ export const ATIVIDADES: Curso[] = [
     categoria: "informatica",
     sigla: "SD",
     cor: "#b91c1c",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Atividade de Segurança",
         descricao: "Atividade prática sobre os cuidados básicos de segurança no uso do computador e da internet.",
-        tipo: "link",
-        url: "/atividades/seguranca-era-digital/seguranca-atividade-basica.html",
+        caminho: "Segurança na Era Digital/seguranca-atividade-basica",
       },
       {
         titulo: "Identificando E-mails Suspeitos",
         descricao: "Exercício para reconhecer tentativas de golpe e phishing antes de clicar em qualquer link.",
-        tipo: "link",
-        url: "/atividades/seguranca-era-digital/seguranca-emails-suspeitos.html",
+        caminho: "Segurança na Era Digital/seguranca-emails-suspeitos",
       },
       {
         titulo: "Atividade Prática: Segurança na Era Digital e Cibersegurança",
         descricao: "Fundamentos de cibersegurança: senhas, autenticação, redes e boas práticas para se proteger online.",
-        tipo: "link",
-        url: "/atividades/seguranca-era-digital/seguranca-ciberseguranca-fundamentos.html",
+        caminho: "Segurança na Era Digital/seguranca-ciberseguranca-fundamentos",
       },
       {
         titulo: "Atividade Prática: Segurança na Era Digital e Defesa Cibernética",
         descricao: "Cenários práticos de defesa cibernética: identificar ataques, reagir a incidentes e reduzir riscos digitais.",
-        tipo: "link",
-        url: "/atividades/seguranca-era-digital/seguranca-defesa-cibernetica.html",
+        caminho: "Segurança na Era Digital/seguranca-defesa-cibernetica",
       },
       {
         titulo: "Atividade Prática: Privacidade Avançada, Anonimato e Navegação Tor",
         descricao: "Privacidade digital avançada, anonimato online e como funciona a navegação pela rede Tor.",
-        tipo: "link",
-        url: "/atividades/seguranca-era-digital/seguranca-privacidade-avancada-tor.html",
+        caminho: "Segurança na Era Digital/seguranca-privacidade-avancada-tor",
       },
       {
         titulo: "Atividade Prática: Inteligência Artificial e Produtividade Digital",
         descricao: "Uso responsável e produtivo de ferramentas de Inteligência Artificial no dia a dia digital.",
-        tipo: "link",
-        url: "/atividades/seguranca-era-digital/seguranca-ia-produtividade-digital.html",
+        caminho: "Segurança na Era Digital/seguranca-ia-produtividade-digital",
       },
       {
         titulo: "Atividade Prática: Defesa Pessoal, Consciência Situacional e Proteção Urbana",
         descricao: "Consciência situacional e proteção pessoal no dia a dia, além da segurança digital.",
-        tipo: "link",
-        url: "/atividades/seguranca-era-digital/seguranca-defesa-pessoal-consciencia-situacional.html",
+        caminho: "Segurança na Era Digital/seguranca-defesa-pessoal-consciencia-situacional",
       },
     ],
   },
@@ -892,24 +869,22 @@ export const ATIVIDADES: Curso[] = [
     categoria: "programacao",
     sigla: "GIT",
     cor: "#f05033",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Git e GitHub — Criando seu Repositório",
         descricao: "Guia completo, passo a passo: instalar o Git, criar sua conta e seu repositório no GitHub, e aprender os comandos que você vai usar em toda atividade (init, add, commit, push e mais). Comece por aqui.",
-        tipo: "link",
-        url: "/atividades/criar-seu-site/site-git-repositorio.html",
+        caminho: "Criando seu Site/site-git-repositorio",
       },
       {
         titulo: "Atividade 1 — Site SaaS",
         descricao: "Construa a landing page de um produto SaaS fictício: cabeçalho, seção de destaque, recursos, planos e contato. Tema livre, imagens que você mesmo busca, sem prazo de entrega — salve o progresso no seu repositório.",
-        tipo: "link",
-        url: "/atividades/criar-seu-site/site-atividade1-saas.html",
+        caminho: "Criando seu Site/site-atividade1-saas",
       },
       {
         titulo: "Atividade 2 — Site Pessoal com Python",
         descricao: "Monte o seu portfólio (um site sobre você) com um back-end em Python usando Flask: servir páginas, gerar a lista de projetos com Jinja, receber o formulário de contato e contar visitas. Introdução ao Python aplicada a um site real.",
-        tipo: "link",
-        url: "/atividades/criar-seu-site/site-atividade2-portfolio-python.html",
+        caminho: "Criando seu Site/site-atividade2-portfolio-python",
       },
     ],
   },
@@ -920,36 +895,32 @@ export const ATIVIDADES: Curso[] = [
     categoria: "programacao",
     sigla: "PY",
     cor: "#ff9f43",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Fazendo o Primeiro Código",
         descricao: "Primeiro contato com Python: print(), comentários e tipos de dados básicos (texto, inteiro, decimal), com exercícios progressivos.",
-        tipo: "link",
-        url: "/atividades/python/python-primeiro-codigo.html",
+        caminho: "Python/python-primeiro-codigo",
       },
       {
         titulo: "Lógica de Programação em Python",
         descricao: "Variáveis, input() e conversão de tipos (int/float), f-strings, e um mini formulário com várias perguntas.",
-        tipo: "link",
-        url: "/atividades/python/python-logica-e-variaveis.html",
+        caminho: "Python/python-logica-e-variaveis",
       },
       {
         titulo: "Entrada de Dados em Python",
         descricao: "Atividade introdutória para aprender os primeiros comandos e conceitos básicos da linguagem Python.",
-        tipo: "link",
-        url: "/atividades/python/python-entrada-de-dados.html",
+        caminho: "Python/python-entrada-de-dados",
       },
       {
         titulo: "Usando e aprendendo Operadores Matemáticos",
         descricao: "Os 5 operadores aritméticos, a diferença entre / e //, operadores de comparação (==, >, <...) e uma calculadora completa.",
-        tipo: "link",
-        url: "/atividades/python/python-operadores-matematicos.html",
+        caminho: "Python/python-operadores-matematicos",
       },
       {
         titulo: "Lista de Atividades",
         descricao: "Lista de atividades com o foco de reforçar as aulas de Python.",
-        tipo: "link",
-        url: "/atividades/python/python-atividade-complementar.html",
+        caminho: "Python/python-atividade-complementar",
       },
     ],
   },
@@ -960,18 +931,17 @@ export const ATIVIDADES: Curso[] = [
     categoria: "programacao",
     sigla: "LP",
     cor: "#4a69bd",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Desvendando a Lógica de Programação!",
         descricao: "O que é um algoritmo, variáveis e tipos, estrutura SE/SENÃO, com exercícios em Portugol (Olá Mundo, soma, maioridade, par/ímpar, média de notas).",
-        tipo: "link",
-        url: "/atividades/logica-programacao/logica-programacao-fundamentos.html",
+        caminho: "Lógica de Programação/logica-programacao-fundamentos",
       },
       {
         titulo: "Além do Básico — Lógica Avançada",
         descricao: "Vetores e matrizes, funções com retorno, laço enquanto x para, com 5 desafios em Portugol (média, busca, matriz 3x3, função e validação).",
-        tipo: "link",
-        url: "/atividades/logica-programacao/logica-programacao-avancada.html",
+        caminho: "Lógica de Programação/logica-programacao-avancada",
       },
     ],
   },
@@ -983,36 +953,6 @@ export const ATIVIDADES: Curso[] = [
     sigla: "JS",
     cor: "#9b59b6",
     materiais: [
-      {
-        titulo: "Sistema de Análise de Números",
-        descricao: "O aluno cria um programa em JavaScript que solicita um número inicial e um número final, exibe os valores do intervalo e identifica números pares e ímpares.",
-        tipo: "link",
-        url: "/atividades/javascript/javascript-analise-numeros.html",
-      },
-      {
-        titulo: "Simulador de Tabuada Inteligente",
-        descricao: "O aluno cria um programa em JavaScript que gera a tabuada de um número informado pelo usuário.",
-        tipo: "link",
-        url: "/atividades/javascript/javascript-tabuada-inteligente.html",
-      },
-      {
-        titulo: "Guia: Criando sua Primeira API REST",
-        descricao: "Guia completo com índice navegável para criar uma API REST do zero com Node.js e Express, do básico até deploy em produção.",
-        tipo: "link",
-        url: "/atividades/javascript/javascript-guia-api-rest.html",
-      },
-      {
-        titulo: "Simulador de Caixa Eletrônico",
-        descricao: "O aluno desenvolve um simulador de caixa eletrônico com saldo inicial, menu de opções (ver saldo, depositar, sacar e sair), validação de saldo e execução contínua até encerrar.",
-        tipo: "link",
-        url: "/atividades/javascript/javascript-caixa-eletronico.html",
-      },
-      {
-        titulo: "Jogo de Adivinhação com Tentativas Limitadas",
-        descricao: "O aluno cria um jogo em JavaScript que gera um número aleatório entre 1 e 50 e permite até 5 tentativas para adivinhar.",
-        tipo: "link",
-        url: "/atividades/javascript/javascript-jogo-adivinhacao.html",
-      },
       {
         titulo: "Slides — Javascript, Parte 1",
         descricao: "Apresentação da aula: o que é JavaScript, variáveis e primeiros comandos.",
@@ -1026,6 +966,33 @@ export const ATIVIDADES: Curso[] = [
         arquivo: "/atividades/javascript/javascript-parte-2.pptx",
       },
     ],
+    atividades: [
+      {
+        titulo: "Sistema de Análise de Números",
+        descricao: "O aluno cria um programa em JavaScript que solicita um número inicial e um número final, exibe os valores do intervalo e identifica números pares e ímpares.",
+        caminho: "Javascript/javascript-analise-numeros",
+      },
+      {
+        titulo: "Simulador de Tabuada Inteligente",
+        descricao: "O aluno cria um programa em JavaScript que gera a tabuada de um número informado pelo usuário.",
+        caminho: "Javascript/javascript-tabuada-inteligente",
+      },
+      {
+        titulo: "Guia: Criando sua Primeira API REST",
+        descricao: "Guia completo com índice navegável para criar uma API REST do zero com Node.js e Express, do básico até deploy em produção.",
+        caminho: "Javascript/javascript-guia-api-rest",
+      },
+      {
+        titulo: "Simulador de Caixa Eletrônico",
+        descricao: "O aluno desenvolve um simulador de caixa eletrônico com saldo inicial, menu de opções (ver saldo, depositar, sacar e sair), validação de saldo e execução contínua até encerrar.",
+        caminho: "Javascript/javascript-caixa-eletronico",
+      },
+      {
+        titulo: "Jogo de Adivinhação com Tentativas Limitadas",
+        descricao: "O aluno cria um jogo em JavaScript que gera um número aleatório entre 1 e 50 e permite até 5 tentativas para adivinhar.",
+        caminho: "Javascript/javascript-jogo-adivinhacao",
+      },
+    ],
   },
   {
     slug: "inteligencia-artificial",
@@ -1034,18 +1001,17 @@ export const ATIVIDADES: Curso[] = [
     categoria: "informatica",
     sigla: "IA",
     cor: "#ff4d4d",
-    materiais: [
+    materiais: [],
+    atividades: [
       {
         titulo: "Introdução à IA e Engenharia de Prompt",
         descricao: "O que é IA/IA generativa/LLM na prática, como escrever bons prompts (com exemplos ruim x bom), atividade guiada numa IA de conversação gratuita, e uso responsável.",
-        tipo: "link",
-        url: "/atividades/inteligencia-artificial/ia-introducao-e-prompts.html",
+        caminho: "Inteligência Artificial/ia-introducao-e-prompts",
       },
       {
         titulo: "Atividade Prática: IA Generativa, Engenharia de Prompt e Aplicações",
         descricao: "Aprofunda engenharia de prompt e explora aplicações práticas de IA generativa no dia a dia e no trabalho, com correção automática das respostas.",
-        tipo: "link",
-        url: "/atividades/inteligencia-artificial/ia-generativa-engenharia-prompt-aplicacoes.html",
+        caminho: "Inteligência Artificial/ia-generativa-engenharia-prompt-aplicacoes",
       },
     ],
   },
@@ -1058,24 +1024,6 @@ export const ATIVIDADES: Curso[] = [
     cor: "#00758f",
     materiais: [
       {
-        titulo: "Apostila — Banco de Dados SQL",
-        descricao: "Introdução ao banco de dados.",
-        tipo: "link",
-        url: "/atividades/banco-dados-sql/sql-apostila.html",
-      },
-      {
-        titulo: "Meu Primeiro Banco de Dados",
-        descricao: "Exercícios de atividade básica de SQL.",
-        tipo: "link",
-        url: "/atividades/banco-dados-sql/sql-primeiro-banco-de-dados.html",
-      },
-      {
-        titulo: "Cadastrando Dados no SQL",
-        descricao: "Crie a tabela de produtos de uma loja, cadastre os dados e pratique SELECT, WHERE, ORDER BY, UPDATE e DELETE.",
-        tipo: "link",
-        url: "/atividades/banco-dados-sql/sql-cadastro-de-produtos.html",
-      },
-      {
         titulo: "Baixar MySQL Workbench",
         descricao: "Programa usado nas atividades de SQL.",
         tipo: "link",
@@ -1086,6 +1034,23 @@ export const ATIVIDADES: Curso[] = [
         descricao: "Servidor local usado para rodar o banco de dados.",
         tipo: "link",
         url: "https://sourceforge.net/projects/xampp/",
+      },
+    ],
+    atividades: [
+      {
+        titulo: "Apostila — Banco de Dados SQL",
+        descricao: "Introdução ao banco de dados.",
+        caminho: "Banco de Dados SQL/sql-apostila",
+      },
+      {
+        titulo: "Meu Primeiro Banco de Dados",
+        descricao: "Exercícios de atividade básica de SQL.",
+        caminho: "Banco de Dados SQL/sql-primeiro-banco-de-dados",
+      },
+      {
+        titulo: "Cadastrando Dados no SQL",
+        descricao: "Crie a tabela de produtos de uma loja, cadastre os dados e pratique SELECT, WHERE, ORDER BY, UPDATE e DELETE.",
+        caminho: "Banco de Dados SQL/sql-cadastro-de-produtos",
       },
     ],
   },
