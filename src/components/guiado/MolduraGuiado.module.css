@@ -1,0 +1,225 @@
+.tela {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--guiado-fundo);
+  color: var(--ink);
+}
+
+/* ---------- Topo: Sair · título · progresso ---------- */
+
+.topo {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-5);
+}
+
+.sair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--guiado-voltar);
+  color: var(--guiado-voltar-texto);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+}
+
+.sair:focus-visible,
+.voltar:focus-visible,
+.avancar:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progresso {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.progressoTexto {
+  font-weight: 700;
+  font-size: var(--text-md);
+  text-align: right;
+}
+
+.barra {
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--guiado-voltar);
+  overflow: hidden;
+}
+
+.barra span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--guiado-avancar);
+  transform-origin: left center;
+  transition: transform 320ms var(--ease-out);
+}
+
+/* ---------- Palco ---------- */
+
+.palco {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Espaço sempre reservado para o "Muito bem!", para o conteúdo não pular
+   quando a recompensa aparece e some. */
+.recompensaLugar {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recompensa {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--guiado-recompensa);
+  color: var(--guiado-recompensa-texto);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  animation: recompensa 2.6s var(--ease-out) forwards;
+}
+
+.estrela {
+  color: var(--guiado-estrela);
+  fill: currentColor;
+}
+
+@keyframes recompensa {
+  0% {
+    opacity: 0;
+  }
+  8%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- Navegação: Voltar à esquerda, Próximo à direita, sempre ---------- */
+
+.navegacao {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  background: var(--guiado-fundo);
+}
+
+.voltar,
+.avancar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: 64px;
+  min-width: 180px;
+  padding: 0 var(--space-6);
+  border: 0;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.voltar {
+  background: var(--guiado-voltar);
+  color: var(--guiado-voltar-texto);
+}
+
+.avancar {
+  margin-left: auto;
+  background: var(--guiado-avancar);
+  color: var(--guiado-avancar-texto);
+}
+
+.avancar:hover {
+  background: var(--guiado-avancar-hover);
+}
+
+@media (max-width: 760px) {
+  .topo {
+    grid-template-columns: auto 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .titulo {
+    text-align: left;
+  }
+
+  .progresso {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .progressoTexto {
+    text-align: left;
+  }
+
+  .palco {
+    padding: 0 var(--space-4) var(--space-4);
+  }
+
+  .navegacao {
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+
+  .voltar,
+  .avancar {
+    flex: 1;
+    min-width: 0;
+    padding: 0 var(--space-4);
+  }
+}
+
+/* Sem movimento, o "Muito bem!" fica parado até o próximo passo. */
+@media (prefers-reduced-motion: reduce) {
+  .barra span {
+    transition: none;
+  }
+  .recompensa {
+    animation: none;
+  }
+}

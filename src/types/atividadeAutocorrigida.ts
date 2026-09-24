@@ -61,6 +61,17 @@ export interface BlocoCodigo {
 }
 
 /**
+ * Micro-passo da seção "Passo a Passo": uma ação só, com imagem e narração
+ * próprias. `textoNarrado` existe para quando a frase escrita tem algo que
+ * não deve ser lido em voz alta; sem ele, narra-se `texto`.
+ */
+export interface PassoGuiado {
+  texto: string;
+  textoNarrado?: string;
+  imagem?: ImagemReferencia;
+}
+
+/**
  * Um item serve dois formatos com o mesmo molde:
  * - exercício prático (o aluno faz no próprio computador): `passos` +
  *   `objetivo` + `imagem`, sem `campos` — não há o que corrigir;
@@ -74,6 +85,9 @@ export interface ItemAtividade {
   instrucao?: string;
   /** Tarefa em passos numerados, na ordem em que o aluno executa. */
   passos?: string[];
+  /** Só na seção "Passo a Passo": um passo por tela, navegado pela visão
+   *  dedicada da seção, nunca pelo AtividadeAutocorrigidaVisao. */
+  passosGuiados?: PassoGuiado[];
   /** Comando de terminal ou trecho de código citado no item. */
   codigo?: BlocoCodigo;
   /** Tarefa opcional a mais, para quem terminar antes ("Desafio extra"). */

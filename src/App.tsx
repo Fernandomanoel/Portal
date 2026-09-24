@@ -24,6 +24,9 @@ import { CavaleirosZodiacoPage } from "@/pages/digitacao/cavaleirosZodiaco/Caval
 import { LetrasInglesPage } from "@/pages/digitacao/letrasIngles/LetrasInglesPage";
 import { SonicPage } from "@/pages/digitacao/sonic/SonicPage";
 import { TextosClassicosPage } from "@/pages/digitacao/textosClassicos/TextosClassicosPage";
+import { GuiadoJogoPage } from "@/pages/guiado/GuiadoJogoPage";
+import { GuiadoTutorialPage } from "@/pages/guiado/GuiadoTutorialPage";
+import { GuiadoVitrinePage } from "@/pages/guiado/GuiadoVitrinePage";
 import { ProvasPage } from "@/pages/ProvasPage";
 import { QuizPage } from "@/pages/QuizPage";
 
@@ -75,6 +78,10 @@ const roteador = criarRoteador([
       { path: "digitacao/cavaleiros-zodiaco", element: <CavaleirosZodiacoPage /> },
       { path: "digitacao/letras-ingles", element: <LetrasInglesPage /> },
       { path: "digitacao/sonic", element: <SonicPage /> },
+
+      { path: "passo-a-passo", element: <GuiadoVitrinePage /> },
+      { path: "passo-a-passo/tutorial/:caminho", element: <GuiadoTutorialPage /> },
+      { path: "passo-a-passo/jogo/:slug", element: <GuiadoJogoPage /> },
 
       { path: "provas", element: <ProvasPage /> },
       { path: "provas/quiz/:categoria/:prova", element: <QuizPage /> },

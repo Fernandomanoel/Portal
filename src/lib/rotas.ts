@@ -18,6 +18,9 @@ export const rotas = {
   digitacaoLetrasIngles: () => "/digitacao/letras-ingles",
   digitacaoSonic: () => "/digitacao/sonic",
   digitacaoRanking: () => "/digitacao/ranking",
+  guiado: () => "/passo-a-passo",
+  guiadoTutorial: (caminho: string) => `/passo-a-passo/tutorial/${encodeURIComponent(caminho)}`,
+  guiadoJogo: (slug: string) => `/passo-a-passo/jogo/${slug}`,
   provas: () => "/provas",
   quiz: (categoria: string, prova: string) =>
     `/provas/quiz/${encodeURIComponent(categoria)}/${encodeURIComponent(prova)}`,

@@ -10,6 +10,7 @@ const SECOES = [
   { para: rotas.atividades(), rotulo: "Atividades" },
   { para: rotas.ingles(), rotulo: "Inglês" },
   { para: rotas.digitacao(), rotulo: "Digitação" },
+  { para: rotas.guiado(), rotulo: "Passo a Passo" },
   { para: rotas.provas(), rotulo: "Provas" },
 ];
 

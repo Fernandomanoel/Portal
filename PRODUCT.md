@@ -16,6 +16,13 @@ Instrutores são o segundo público: usam a área de Provas para distribuir prov
 provas descritivas, para ler as respostas do aluno e lançar a nota na própria tela de
 revisão.
 
+Uma terceira frente é o público da seção "Passo a Passo": crianças e pessoas com
+dificuldade de leitura ou de interpretação de texto, incluindo pessoas no espectro
+autista. Precisam de tarefas bem pequenas dentro dos programas reais (Windows, Word,
+Excel, PowerPoint) e de noções básicas de inteligência artificial e segurança
+digital — narradas em voz, com imagem de onde clicar ou do que reconhecer, e
+feedback positivo a cada passo concluído.
+
 ## Product Purpose
 
 Centralizar o material de aula em um endereço único, para que o aluno chegue na
@@ -61,6 +68,14 @@ conteúdo próximo de zero para quem não é programador.
   instrutor com JWT** quando o backend existir; o front deve ser desenhado prevendo
   essa troca.
 - Modo claro e escuro são parte do produto, não um extra.
+- Seção "Passo a Passo": tutoriais de um micro-passo por tela (indicador "passo X
+  de Y", imagem por passo, narração por voz do navegador só quando a pessoa clica,
+  recompensa leve a cada passo) e jogos de conceito básico de informática. Tem
+  identidade visual própria — mais previsível e com menos estímulo que o resto do
+  portal: "Voltar" sempre à esquerda e "Próximo" sempre à direita, com cor fixa
+  por tipo de ação, e sem menu do portal na tela de execução. A escolha da
+  atividade é uma vitrine em fileiras, no jeito de app de streaming. Sem correção
+  automática e sem nota.
 - **Nesta fase de reconstrução nenhum conteúdo de atividade ou prova é criado**: as
   telas nascem com catálogo vazio, então os estados vazios são o estado padrão e
   precisam ser tratados como tela de primeira classe.

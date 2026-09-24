@@ -28,7 +28,11 @@ export type NomeIcone =
   | "raio"
   | "trofeu"
   | "alvo"
-  | "alerta";
+  | "alerta"
+  | "som"
+  | "estrela"
+  | "mouse"
+  | "robo";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -166,6 +170,27 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     <>
       <path d="M10.3 4.2 2.9 17.5A1.9 1.9 0 0 0 4.6 20.3h14.8a1.9 1.9 0 0 0 1.7-2.8L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z" />
       <path d="M12 9.5v4.2M12 16.8h.01" />
+    </>
+  ),
+  som: (
+    <>
+      <path d="M4 9.5h3l4.5-4v13L7 14.5H4Z" />
+      <path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" />
+    </>
+  ),
+  estrela: (
+    <path d="m12 3.8 2.5 5.1 5.6.8-4.05 3.95.95 5.6L12 16.6l-5 2.65.95-5.6L3.9 9.7l5.6-.8Z" />
+  ),
+  mouse: (
+    <>
+      <rect x="6.5" y="3" width="11" height="18" rx="5.5" />
+      <path d="M6.5 10.5h11M12 3v7.5" />
+    </>
+  ),
+  robo: (
+    <>
+      <rect x="5" y="8" width="14" height="11" rx="3" />
+      <path d="M12 8V4.5M12 4.5h.01M9.5 13h.01M14.5 13h.01M10 16h4M3 12.5v2.5M21 12.5v2.5" />
     </>
   ),
 };
