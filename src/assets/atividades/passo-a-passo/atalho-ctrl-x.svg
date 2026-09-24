@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <rect x="120" y="138" width="190" height="80" rx="14" fill="#94a3b8"/>
+  <rect x="120" y="130" width="190" height="80" rx="14" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+  <text x="215" y="181" font-size="30" font-weight="700" fill="#1f2937" text-anchor="middle">Ctrl</text>
+  <text x="335" y="184" font-size="40" fill="#1f2937" font-weight="700" text-anchor="middle">+</text>
+  <rect x="375" y="138" width="130" height="80" rx="14" fill="#94a3b8"/>
+  <rect x="375" y="130" width="130" height="80" rx="14" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+  <text x="440" y="181" font-size="30" font-weight="700" fill="#1f2937" text-anchor="middle">X</text>
+  <text x="320" y="300" font-size="32" fill="#1f2937" font-weight="700" text-anchor="middle">Recortar</text>
+</svg>

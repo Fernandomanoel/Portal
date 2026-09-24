@@ -1,0 +1,128 @@
+.cartao {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  border-radius: 24px;
+  background: var(--guiado-cartao);
+  box-shadow: var(--shadow-2);
+}
+
+.visual {
+  aspect-ratio: 16 / 10;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.visualIcone {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--acento) 14%, var(--guiado-cartao));
+  color: color-mix(in srgb, var(--acento), white var(--guiado-clarear));
+}
+
+.visualDestaque {
+  background: var(--success-tint);
+  color: var(--success);
+}
+
+.imagem {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--surface-soft);
+}
+
+.imagem img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.etiqueta {
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: var(--text-md);
+}
+
+/* Aba presa no canto de cima do cartão: fica sempre no mesmo lugar, qualquer
+   que seja o tamanho da frase, para o olho achar o número sem procurar. */
+.numero {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  border-radius: 0 24px 0 14px;
+  background: var(--acento);
+  color: #fff;
+  font-family: var(--font-display);
+  line-height: 1.2;
+}
+
+.numeroRotulo {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.numeroValor {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.125rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+/* O foco vai para o título a cada passo (o leitor de tela anuncia o passo
+   novo), mas não foi a pessoa que clicou ali — sem anel de foco. */
+.titulo:focus {
+  outline: none;
+}
+
+.texto {
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.comNumero {
+  padding-top: calc(var(--space-6) + 24px);
+}
+
+@media (max-width: 760px) {
+  .cartao {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+    padding: var(--space-5);
+  }
+
+  .comNumero {
+    padding-top: calc(var(--space-5) + 36px);
+  }
+
+  .visualAlto {
+    aspect-ratio: 1 / 1;
+  }
+}

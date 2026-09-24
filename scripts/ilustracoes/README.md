@@ -41,6 +41,22 @@ resultado, abra o `.svg` no navegador.
 | `tecla`, `cursor`, `botao`, `caixaSelecao`, `texto` | Tecla do teclado, ponteiro do mouse, botão, caixa de seleção e texto solto. |
 | `arvore`, `disco`, `unidade` | Esquema de pastas, faixa de disco (Gerenciamento de Disco) e unidade em Este Computador. |
 
+### Peças da seção "Passo a Passo" (`telas/passo-a-passo.mjs`)
+
+Anel laranja marca **só** onde clicar; "olhe isto" usa `etiqueta`.
+
+| Peça | O que desenha |
+| --- | --- |
+| `alvo(cx, cy, r)` / `alvoRet(x, y, largura, altura)` | Anel / moldura laranja "clique aqui". |
+| `etiqueta(x, y, texto)` | Rótulo amarelo em letra grande (nome de uma parte da tela). |
+| `certo`, `proibido` | Selo verde de "deu certo" e vermelho de "não faça". |
+| `teclaGrande`, `mouseBotao` | Tecla grande; mouse com o botão certo pintado de laranja. |
+| `pastaTela` | Pasta na área de trabalho azul (nome em branco). |
+| `menuIniciar`, `iconeApp`, `carregandoApp` | Menu Iniciar com a busca; ícone do programa; tela de abertura. |
+| `inicioOffice`, `janelaOffice` | Tela inicial e janela do Word/Excel/PowerPoint. |
+| `paginaWord`, `gradeExcel` (+ `posicaoCelula`), `slidePowerPoint` | Folha do Word, planilha e slide. |
+| `janelaConversa`, `celular`, `pessoa`, `robo` | Conversa com IA, celular com mensagens, pessoa e robô simples. |
+
 Coordenadas: a janela padrão ocupa x 20–620 e y 16–384. Deixe pelo menos
 10 px de folga no fim dos textos: nos computadores sem a fonte do Windows
 (Segoe UI) o texto fica um pouco mais largo.

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <g transform="translate(114.1 150) scale(0.62)">  <rect x="-55" y="-32" width="110" height="80" rx="14" fill="#94a3b8"/>
+  <rect x="-55" y="-40" width="110" height="80" rx="14" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+  <text x="0" y="11" font-size="30" font-weight="700" fill="#1f2937" text-anchor="middle">F2</text></g>
+  <text x="330" y="160" font-size="28" fill="#1f2937" font-weight="700">Mudar o nome</text>
+  <g transform="translate(132.7 250) scale(0.62)">  <rect x="-85" y="-32" width="170" height="80" rx="14" fill="#94a3b8"/>
+  <rect x="-85" y="-40" width="170" height="80" rx="14" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+  <text x="0" y="11" font-size="30" font-weight="700" fill="#1f2937" text-anchor="middle">Ctrl</text></g>
+  <text x="199.4" y="259" font-size="26" fill="#1f2937" font-weight="700" text-anchor="middle">+</text>
+  <g transform="translate(247.5 250) scale(0.62)">  <rect x="-55" y="-32" width="110" height="80" rx="14" fill="#94a3b8"/>
+  <rect x="-55" y="-40" width="110" height="80" rx="14" fill="#ffffff" stroke="#64748b" stroke-width="2"/>
+  <text x="0" y="11" font-size="30" font-weight="700" fill="#1f2937" text-anchor="middle">Z</text></g>
+  <text x="330" y="260" font-size="28" fill="#1f2937" font-weight="700">Desfazer</text>
+</svg>

@@ -61,6 +61,31 @@ export interface BlocoCodigo {
 }
 
 /**
+ * Conteúdo de um item na ordem em que ele é lido: explicação, código,
+ * explicação, tabela... Serve às aulas longas (programação, apostilas),
+ * onde forçar tudo nos campos fixos (`instrucao` → `passos` → `codigo`)
+ * mudaria a ordem do texto original.
+ */
+export type BlocoConteudo =
+  | { tipo: "texto"; texto: string }
+  | { tipo: "subtitulo"; texto: string }
+  | { tipo: "lista"; itens: string[]; numerada?: boolean }
+  | { tipo: "codigo"; conteudo: string; rotulo?: string; terminal?: boolean }
+  | { tipo: "tabela"; colunas: string[]; linhas: string[][] }
+  | { tipo: "nota"; variante: "objetivo" | "desafio" | "aviso" | "dica"; rotulo?: string; texto: string; itens?: string[] };
+
+/**
+ * Micro-passo da seção "Passo a Passo": uma ação só, com imagem e narração
+ * próprias. `textoNarrado` existe para quando a frase escrita tem algo que
+ * não deve ser lido em voz alta; sem ele, narra-se `texto`.
+ */
+export interface PassoGuiado {
+  texto: string;
+  textoNarrado?: string;
+  imagem?: ImagemReferencia;
+}
+
+/**
  * Um item serve dois formatos com o mesmo molde:
  * - exercício prático (o aluno faz no próprio computador): `passos` +
  *   `objetivo` + `imagem`, sem `campos` — não há o que corrigir;
@@ -72,8 +97,13 @@ export interface ItemAtividade {
   titulo: string;
   cenario?: string;
   instrucao?: string;
+  /** Conteúdo em ordem de leitura, exibido logo depois de `cenario`/`instrucao`. */
+  blocos?: BlocoConteudo[];
   /** Tarefa em passos numerados, na ordem em que o aluno executa. */
   passos?: string[];
+  /** Só na seção "Passo a Passo": um passo por tela, navegado pela visão
+   *  dedicada da seção, nunca pelo AtividadeAutocorrigidaVisao. */
+  passosGuiados?: PassoGuiado[];
   /** Comando de terminal ou trecho de código citado no item. */
   codigo?: BlocoCodigo;
   /** Tarefa opcional a mais, para quem terminar antes ("Desafio extra"). */

@@ -1,0 +1,58 @@
+.desenho {
+  width: 100%;
+  height: 100%;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--acento) 10%, var(--guiado-cartao));
+}
+
+/* Traço único para todo desenho de jogo: contorno escuro, miolo da cor do cartão.
+   `data-linha` é detalhe só de traço; `data-ponto` é detalhe cheio. */
+.desenho [data-forma],
+.desenho [data-fundo] {
+  fill: var(--guiado-cartao);
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-linejoin: round;
+}
+
+.desenho [data-linha] {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.desenho [data-ponto] {
+  fill: var(--ink);
+  stroke: none;
+}
+
+.parteInterativa {
+  cursor: pointer;
+}
+
+.parteInterativa [data-forma] {
+  transition: fill 140ms var(--ease-out);
+}
+
+.parteInterativa:hover [data-forma] {
+  fill: color-mix(in srgb, var(--acento) 22%, var(--guiado-cartao));
+}
+
+.parteInterativa:focus-visible {
+  outline: none;
+}
+
+.parteInterativa:focus-visible [data-forma] {
+  stroke: var(--focus);
+  stroke-width: 7;
+}
+
+.parteEncontrada [data-forma] {
+  fill: color-mix(in srgb, var(--acento) 30%, var(--guiado-cartao));
+}
+
+.parteDestacada [data-forma],
+.parteDestacada:hover [data-forma] {
+  fill: var(--acento);
+}

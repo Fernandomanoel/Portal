@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M30 16 h130 v368 h-130 a10 10 0 0 1 -10 -10 v-348 a10 10 0 0 1 10 -10 z" fill="#2b579a"/>
+  <circle cx="44" cy="38" r="12" fill="none" stroke="#ffffff" stroke-width="1.6"/>
+  <text x="44" y="43" font-size="13" fill="#ffffff" text-anchor="middle">←</text>
+  <text x="38" y="81" font-size="13" fill="#ffffff">Início</text>
+  <text x="38" y="113" font-size="13" fill="#ffffff">Novo</text>
+  <text x="38" y="145" font-size="13" fill="#ffffff">Abrir</text>
+  <text x="38" y="177" font-size="13" fill="#ffffff">Salvar</text>
+  <text x="38" y="209" font-size="13" fill="#ffffff">Salvar como</text>
+  <rect x="26" y="222" width="128" height="28" rx="5" fill="#ffffff" fill-opacity="0.22"/>
+  <text x="38" y="241" font-size="13" fill="#ffffff" font-weight="700">Imprimir</text>
+  <text x="38" y="273" font-size="13" fill="#ffffff">Fechar</text>
+  <text x="180" y="64" font-size="22" fill="#1f2937" font-weight="700">Imprimir</text>
+  <rect x="180" y="90" width="96" height="84" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="210" y="104" width="36" height="10" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <rect x="202" y="114" width="52" height="22" rx="3" fill="#e5e7eb" stroke="#374151" stroke-width="1.6"/>
+  <rect x="210" y="128" width="36" height="14" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+    <text x="228" y="162" font-size="13" fill="#1f2937" font-weight="700" text-anchor="middle">Imprimir</text>
+    <text x="180" y="204" font-size="12" fill="#1f2937" font-weight="700">Impressora</text>
+  <rect x="180" y="212" width="150" height="26" rx="4" fill="#ffffff" stroke="#cbd5e1"/>  <text x="190" y="230" font-size="11.5" fill="#1f2937">Impressora da sala</text>
+  <g filter="url(#sombra)"><rect x="380" y="60" width="200" height="280" fill="#ffffff" stroke="#d4d4d8"/></g>
+    <text x="400" y="96" font-size="12" fill="#1f2937">Ana Souza</text>
+  <rect x="175" y="85" width="106" height="94" rx="7" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <rect x="175" y="85" width="106" height="94" rx="7" fill="none" stroke="#ea580c" stroke-width="5"/>
+</svg>

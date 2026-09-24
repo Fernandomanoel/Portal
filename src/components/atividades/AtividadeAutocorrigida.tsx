@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 
 import { Icone, type NomeIcone } from "@/components/Icone";
 import { corrigirItem, itemTemCorrecao, type ResultadoItem } from "@/lib/atividadeAutocorrigida";
-import type { AtividadeAutocorrigida, Campo } from "@/types/atividadeAutocorrigida";
+import type { AtividadeAutocorrigida, BlocoConteudo, Campo } from "@/types/atividadeAutocorrigida";
 import estilos from "./AtividadeAutocorrigida.module.css";
 
 interface Props {
@@ -80,6 +80,8 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
             {item.cenario && <p className={estilos.cenario}>{item.cenario}</p>}
             {item.instrucao && <p className={estilos.instrucao}>{item.instrucao}</p>}
 
+            {item.blocos?.map((bloco, indiceBloco) => <Bloco key={indiceBloco} bloco={bloco} />)}
+
             {item.passos && item.passos.length > 0 && (
               <>
                 <h4 className={estilos.passosTitulo}>Tarefa</h4>
@@ -107,26 +109,7 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
             )}
 
             {item.tabelaReferencia && (
-              <div className={estilos.tabelaEnvoltorio}>
-                <table className={estilos.tabela}>
-                  <thead>
-                    <tr>
-                      {item.tabelaReferencia.colunas.map((coluna) => (
-                        <th key={coluna}>{coluna}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {item.tabelaReferencia.linhas.map((linha, linhaIndice) => (
-                      <tr key={linhaIndice}>
-                        {linha.map((celula, celulaIndice) => (
-                          <td key={celulaIndice}>{celula}</td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <Tabela colunas={item.tabelaReferencia.colunas} linhas={item.tabelaReferencia.linhas} />
             )}
 
             {item.desafio && (
@@ -185,12 +168,124 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
   );
 }
 
-const ICONE_NOTA: Record<"objetivo" | "desafio" | "aviso" | "regras", NomeIcone> = {
+const ICONE_NOTA: Record<"objetivo" | "desafio" | "aviso" | "regras" | "dica", NomeIcone> = {
   objetivo: "alvo",
   desafio: "trofeu",
   aviso: "alerta",
   regras: "escudo",
+  dica: "livro",
 };
+
+const ROTULO_NOTA = { objetivo: "Objetivo", desafio: "Desafio extra", aviso: "Atenção", dica: "Dica" };
+
+// Só endereços com http(s) viram link: os "www.golpe..." dos exemplos de
+// Segurança precisam continuar não clicáveis, e localhost não existe fora
+// do computador do aluno.
+const URL_NO_TEXTO = /https?:\/\/[^\s<>"]+[^\s<>".,;:!?)]/g;
+
+function ComLinks({ texto }: { texto: string }) {
+  const partes: ReactNode[] = [];
+  let inicio = 0;
+  for (const achado of texto.matchAll(URL_NO_TEXTO)) {
+    const url = achado[0];
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)\b/.test(url)) continue;
+    partes.push(texto.slice(inicio, achado.index));
+    partes.push(
+      <a key={achado.index} href={url} target="_blank" rel="noreferrer" className={estilos.linkTexto}>
+        {url}
+      </a>,
+    );
+    inicio = achado.index + url.length;
+  }
+  partes.push(texto.slice(inicio));
+  return <>{partes}</>;
+}
+
+function Tabela({ colunas, linhas }: { colunas: string[]; linhas: string[][] }) {
+  return (
+    <div className={estilos.tabelaEnvoltorio}>
+      <table className={estilos.tabela}>
+        <thead>
+          <tr>
+            {colunas.map((coluna, indice) => (
+              <th key={indice}>{coluna}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {linhas.map((linha, linhaIndice) => (
+            <tr key={linhaIndice}>
+              {linha.map((celula, celulaIndice) => (
+                <td key={celulaIndice}>{celula}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Bloco({ bloco }: { bloco: BlocoConteudo }) {
+  switch (bloco.tipo) {
+    case "texto":
+      return <p className={estilos.texto}><ComLinks texto={bloco.texto} /></p>;
+    case "subtitulo":
+      return <h4 className={estilos.subtitulo}>{bloco.texto}</h4>;
+    case "lista":
+      return bloco.numerada ? (
+        <ol className={estilos.passos}>
+          {bloco.itens.map((item, indice) => (
+            <li key={indice}>
+              <ComLinks texto={item} />
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <ul className={estilos.listaSimples}>
+          {bloco.itens.map((item, indice) => (
+            <li key={indice}>
+              <ComLinks texto={item} />
+            </li>
+          ))}
+        </ul>
+      );
+    case "codigo":
+      return (
+        <figure className={estilos.codigoFigura}>
+          {bloco.rotulo && <figcaption className={estilos.codigoRotulo}>{bloco.rotulo}</figcaption>}
+          <pre className={bloco.terminal ? `${estilos.codigo} ${estilos.codigoTerminal}` : estilos.codigo}>
+            <code>{bloco.terminal ? comoTerminal(bloco.conteudo) : bloco.conteudo}</code>
+          </pre>
+        </figure>
+      );
+    case "tabela":
+      return <Tabela colunas={bloco.colunas} linhas={bloco.linhas} />;
+    case "nota":
+      return (
+        <Nota tipo={bloco.variante} rotulo={bloco.rotulo ?? ROTULO_NOTA[bloco.variante]}>
+          {bloco.itens ? (
+            <>
+              {bloco.texto && (
+                <p>
+                  <ComLinks texto={bloco.texto} />
+                </p>
+              )}
+              <ul className={estilos.regrasLista}>
+                {bloco.itens.map((item, indice) => (
+                  <li key={indice}>
+              <ComLinks texto={item} />
+            </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <ComLinks texto={bloco.texto} />
+          )}
+        </Nota>
+      );
+  }
+}
 
 function Nota({ tipo, rotulo, children }: { tipo: keyof typeof ICONE_NOTA; rotulo: string; children: ReactNode }) {
   return (

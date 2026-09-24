@@ -1,0 +1,232 @@
+.tela {
+  --acento: var(--brand-deep);
+  width: min(100% - 2 * var(--space-5), 1120px);
+  margin-inline: auto;
+  padding-block: var(--space-5) var(--space-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ---------- Topo ---------- */
+
+.topo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(140px, 260px) auto;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  color: var(--ink-soft);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.voltar:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.voltar:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.progresso {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.progressoTexto {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.trilho {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--ground-sunken);
+  overflow: hidden;
+}
+
+.trilho span {
+  display: block;
+  height: 100%;
+  background: var(--acento);
+  transform-origin: left;
+  transition: transform 420ms var(--ease-out);
+}
+
+.pontos {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--warning-tint);
+  color: var(--warning);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.pontos strong {
+  font-size: var(--text-md);
+}
+
+/* ---------- Palco: Gabi + cartão ---------- */
+
+.palco {
+  display: grid;
+  grid-template-columns: clamp(180px, 22vw, 270px) minmax(0, 1fr);
+  align-items: end;
+  gap: var(--space-6);
+}
+
+.colunaGabi {
+  position: sticky;
+  bottom: var(--space-5);
+  height: clamp(340px, 62vh, 560px);
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Sombra do chão: a Gabi pisa no mesmo plano do cartão. */
+.colunaGabi::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -6px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(22, 32, 68, 0.18), transparent);
+  z-index: -1;
+}
+
+/* O cartão é o balão de fala da Gabi: a ponta do lado esquerdo aponta para ela. */
+.cartao {
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(340px, 62vh, 560px);
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-3);
+}
+
+.cartao::before {
+  content: "";
+  position: absolute;
+  left: -11px;
+  top: 34%;
+  width: 20px;
+  height: 20px;
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  transform: rotate(45deg);
+}
+
+.corpo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6) var(--space-7);
+}
+
+.cabecalhoCartao {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.bustoGabi {
+  display: none;
+}
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--acento) 12%, var(--surface));
+  color: color-mix(in srgb, var(--acento) 78%, var(--ink));
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+@media (max-width: 860px) {
+  .topo {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .progresso {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .progressoTexto {
+    text-align: left;
+  }
+
+  .palco {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .colunaGabi,
+  .cartao::before {
+    display: none;
+  }
+
+  .cartao {
+    min-height: 0;
+  }
+
+  .corpo {
+    padding: var(--space-5);
+  }
+
+  .bustoGabi {
+    display: block;
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--acento) 12%, var(--surface));
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 520px) {
+  .titulo {
+    display: none;
+  }
+
+  .topo {
+    grid-template-columns: auto 1fr auto;
+  }
+}

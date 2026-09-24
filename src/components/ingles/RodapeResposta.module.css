@@ -1,0 +1,130 @@
+.rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-7);
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 20px 20px;
+  background: var(--surface-soft);
+  animation: sobe 260ms var(--ease-out);
+}
+
+.acertou {
+  --tom: var(--success);
+  background: var(--success-tint);
+  border-top-color: color-mix(in srgb, var(--success) 30%, transparent);
+  justify-content: space-between;
+}
+
+.errou {
+  --tom: var(--danger);
+  background: var(--danger-tint);
+  border-top-color: color-mix(in srgb, var(--danger) 30%, transparent);
+  justify-content: space-between;
+}
+
+.mensagem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.selo {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-lg);
+  background: var(--tom);
+  color: #fff;
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: color-mix(in srgb, var(--tom) 80%, var(--ink));
+}
+
+.detalhe {
+  color: var(--ink);
+  font-size: var(--text-base);
+  line-height: 1.45;
+}
+
+.detalhe b {
+  font-weight: 700;
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 160px;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--acento);
+  color: #fff;
+  font: inherit;
+  font-size: var(--text-md);
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--acento) 70%, black);
+  transition: transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out);
+}
+
+.acertou .botao {
+  background: var(--success);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--success) 70%, black);
+}
+
+.errou .botao {
+  background: color-mix(in srgb, var(--danger) 88%, black);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--danger) 60%, black);
+}
+
+.botao:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.botao:disabled {
+  background: var(--ground-sunken);
+  color: var(--ink-faint);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.botao:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@keyframes sobe {
+  from {
+    transform: translateY(6px);
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 860px) {
+  .rodape {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .botao {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rodape {
+    animation: none;
+  }
+}

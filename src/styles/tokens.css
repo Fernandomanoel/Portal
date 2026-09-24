@@ -71,6 +71,23 @@
   --page-max: 1180px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Seção "Passo a Passo": fundo pastel, e uma cor fixa por tipo de ação —
+     avançar, voltar, ouvir, recompensa — igual em todas as telas da seção,
+     para que a pessoa reconheça o botão pela cor e pelo lugar. */
+  --guiado-fundo: #f1f5fd;
+  --guiado-cartao: #ffffff;
+  --guiado-avancar: #1e40af;
+  --guiado-avancar-hover: #16327a;
+  --guiado-avancar-texto: #ffffff;
+  --guiado-voltar: #dde5fb;
+  --guiado-voltar-texto: #1e40af;
+  --guiado-ouvir: #e1f3e7;
+  --guiado-ouvir-texto: #0f6b32;
+  --guiado-recompensa: #fdf2e0;
+  --guiado-recompensa-texto: #7a4e00;
+  /* Quanto a cor do assunto clareia quando vira ícone/texto sobre fundo escuro. */
+  --guiado-clarear: 0%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -110,6 +127,19 @@
     --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.4), 0 6px 16px rgba(0, 0, 0, 0.45);
     --shadow-3: 0 4px 8px rgba(0, 0, 0, 0.45), 0 16px 32px rgba(0, 0, 0, 0.5);
+
+    --guiado-fundo: #131926;
+    --guiado-cartao: #1b2230;
+    --guiado-avancar: #7fa0ff;
+    --guiado-avancar-hover: #96b1ff;
+    --guiado-avancar-texto: #0b0e14;
+    --guiado-voltar: #24325a;
+    --guiado-voltar-texto: #dbe4ff;
+    --guiado-ouvir: #16301f;
+    --guiado-ouvir-texto: #86dca4;
+    --guiado-recompensa: #2e2413;
+    --guiado-recompensa-texto: #f0c36e;
+    --guiado-clarear: 40%;
   }
 }
 
@@ -149,4 +179,17 @@
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.4), 0 6px 16px rgba(0, 0, 0, 0.45);
   --shadow-3: 0 4px 8px rgba(0, 0, 0, 0.45), 0 16px 32px rgba(0, 0, 0, 0.5);
+
+  --guiado-fundo: #131926;
+  --guiado-cartao: #1b2230;
+  --guiado-avancar: #7fa0ff;
+  --guiado-avancar-hover: #96b1ff;
+  --guiado-avancar-texto: #0b0e14;
+  --guiado-voltar: #24325a;
+  --guiado-voltar-texto: #dbe4ff;
+  --guiado-ouvir: #16301f;
+  --guiado-ouvir-texto: #86dca4;
+  --guiado-recompensa: #2e2413;
+  --guiado-recompensa-texto: #f0c36e;
+  --guiado-clarear: 40%;
 }

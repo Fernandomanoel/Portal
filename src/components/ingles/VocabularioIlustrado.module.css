@@ -1,0 +1,117 @@
+.tela {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.topo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.texto {
+  color: var(--ink-soft);
+  font-size: var(--text-md);
+  line-height: 1.5;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartao {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--acento) 5%, var(--surface));
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+
+.cartao:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--acento) 45%, var(--line));
+  background: color-mix(in srgb, var(--acento) 10%, var(--surface));
+  box-shadow: var(--shadow-1);
+}
+
+.cartao:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.cartao:disabled {
+  cursor: default;
+}
+
+.figura {
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--space-1);
+}
+
+.palavra {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.traducao {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+.som {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  color: color-mix(in srgb, var(--acento) 70%, var(--ink-soft));
+}
+
+.comecar {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--acento);
+  color: #fff;
+  font: inherit;
+  font-size: var(--text-md);
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(22, 32, 68, 0.12), 0 10px 22px color-mix(in srgb, var(--acento) 28%, transparent);
+}
+
+.comecar:hover {
+  background: color-mix(in srgb, var(--acento) 86%, black);
+}
+
+.comecar:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}

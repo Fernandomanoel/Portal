@@ -78,6 +78,7 @@ Em `src/data/atividades.ts`, dentro do curso, acrescente ao array `atividades`:
 | `codigo` | Comando de terminal ou trecho de código, em fonte monoespaçada. `terminal: true` prefixa cada linha com `$` (ex.: cursos de programação como Cordova). |
 | `cenario` / `instrucao` | Texto de contexto e enunciado. |
 | `tabelaReferencia` | Tabela de dados para exercícios de cálculo. |
+| `blocos` | Conteúdo livre na ordem de leitura, depois de `cenario`/`instrucao`: `texto`, `subtitulo`, `lista`, `codigo`, `tabela` e `nota` (`objetivo`/`desafio`/`aviso`/`dica`). Use quando a página original intercala explicação, tabelas e código — é assim que as páginas do portal antigo foram portadas sem perder conteúdo. |
 | `campos` | Perguntas corrigidas automaticamente (`selecao`, `multipla_escolha`, `numero`, `texto`, `padrao`). |
 | `regras` (na atividade) | Caixa amarela no topo com regras lidas antes de começar (ex.: segurança ao mexer no disco). |
 | `fonte` (na atividade) | Nota de crédito quando as imagens vêm de terceiros. |

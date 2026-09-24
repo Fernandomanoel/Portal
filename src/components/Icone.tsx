@@ -28,7 +28,19 @@ export type NomeIcone =
   | "raio"
   | "trofeu"
   | "alvo"
-  | "alerta";
+  | "alerta"
+  | "som"
+  | "mouse"
+  | "robo"
+  | "conversa"
+  | "devagar"
+  | "lapis"
+  | "celular"
+  | "email"
+  | "pessoas"
+  | "imagem"
+  | "megafone"
+  | "blocos";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -166,6 +178,83 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     <>
       <path d="M10.3 4.2 2.9 17.5A1.9 1.9 0 0 0 4.6 20.3h14.8a1.9 1.9 0 0 0 1.7-2.8L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z" />
       <path d="M12 9.5v4.2M12 16.8h.01" />
+    </>
+  ),
+  som: (
+    <>
+      <path d="M4 9.5h3l4.5-4v13L7 14.5H4Z" />
+      <path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" />
+    </>
+  ),
+  mouse: (
+    <>
+      <rect x="6.5" y="3" width="11" height="18" rx="5.5" />
+      <path d="M6.5 10.5h11M12 3v7.5" />
+    </>
+  ),
+  robo: (
+    <>
+      <rect x="5" y="8" width="14" height="11" rx="3" />
+      <path d="M12 8V4.5M12 4.5h.01M9.5 13h.01M14.5 13h.01M10 16h4M3 12.5v2.5M21 12.5v2.5" />
+    </>
+  ),
+  conversa: (
+    <>
+      <path d="M3.5 5.5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3.5 3v-3a2 2 0 0 1-2-2Z" />
+      <path d="M18.5 8.5a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v3L15 17.5h-3.5a2 2 0 0 1-2-1.6" />
+    </>
+  ),
+  devagar: (
+    <>
+      <path d="M4 16.5a8 8 0 1 1 16 0" />
+      <path d="m12 16.5-4.2-3.4M12 16.5h.01" />
+    </>
+  ),
+  lapis: (
+    <>
+      <path d="M15.5 4.5 19.5 8.5 8.5 19.5 4 20l.5-4.5Z" />
+      <path d="m13.5 6.5 4 4" />
+    </>
+  ),
+  celular: (
+    <>
+      <rect x="7" y="3" width="10" height="18" rx="2" />
+      <path d="M11 17.5h2" />
+    </>
+  ),
+  email: (
+    <>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+      <path d="m4 7 8 6 8-6" />
+    </>
+  ),
+  pessoas: (
+    <>
+      <circle cx="9" cy="8.5" r="3" />
+      <path d="M3.5 19a5.5 5.5 0 0 1 11 0" />
+      <circle cx="16.5" cy="9.5" r="2.5" />
+      <path d="M15.5 14.2a4.5 4.5 0 0 1 5 4.8" />
+    </>
+  ),
+  imagem: (
+    <>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+      <circle cx="9" cy="10" r="1.8" />
+      <path d="m4 18 5-5 3.5 3.5L15 14l5 4.5" />
+    </>
+  ),
+  megafone: (
+    <>
+      <path d="M4 10v4a1 1 0 0 0 1 1h2l8 4.5v-15L7 9H5a1 1 0 0 0-1 1Z" />
+      <path d="m8 15 1.2 4.5h2.4L10.6 16" />
+      <path d="M18 9.5a3.5 3.5 0 0 1 0 5" />
+    </>
+  ),
+  blocos: (
+    <>
+      <rect x="3.5" y="13.5" width="7" height="6" rx="1.2" />
+      <rect x="13.5" y="13.5" width="7" height="6" rx="1.2" />
+      <rect x="8.5" y="5" width="7" height="6" rx="1.2" />
     </>
   ),
 };
