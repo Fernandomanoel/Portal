@@ -1,4 +1,5 @@
 .cartao {
+  position: relative;
   flex: 1;
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
@@ -57,25 +58,33 @@
   font-size: var(--text-md);
 }
 
-.linhaTitulo {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-4);
-}
-
+/* Aba presa no canto de cima do cartão: fica sempre no mesmo lugar, qualquer
+   que seja o tamanho da frase, para o olho achar o número sem procurar. */
 .numero {
-  flex-shrink: 0;
-  width: 56px;
-  height: 56px;
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-5);
+  border-radius: 0 24px 0 14px;
   background: var(--acento);
   color: #fff;
   font-family: var(--font-display);
+  line-height: 1.2;
+}
+
+.numeroRotulo {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.numeroValor {
   font-size: var(--text-xl);
   font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 
 .titulo {
@@ -98,10 +107,18 @@
   color: var(--ink-soft);
 }
 
+.comNumero {
+  padding-top: calc(var(--space-6) + 24px);
+}
+
 @media (max-width: 760px) {
   .cartao {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-5);
     padding: var(--space-5);
+  }
+
+  .comNumero {
+    padding-top: calc(var(--space-5) + 36px);
   }
 }

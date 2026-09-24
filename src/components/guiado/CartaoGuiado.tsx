@@ -20,20 +20,19 @@ export function CartaoGuiado({ visual, titulo, tituloRef, etiqueta, numero, text
   const falado = narracao ?? (texto ? `${titulo} ${texto}` : titulo);
 
   return (
-    <article className={estilos.cartao}>
+    <article className={numero !== undefined ? `${estilos.cartao} ${estilos.comNumero}` : estilos.cartao}>
+      {numero !== undefined && (
+        <p className={estilos.numero} aria-hidden="true">
+          <span className={estilos.numeroRotulo}>Passo</span>
+          <span className={estilos.numeroValor}>{numero}</span>
+        </p>
+      )}
       <div className={estilos.visual}>{visual}</div>
       <div className={estilos.conteudo}>
         {etiqueta && <p className={estilos.etiqueta}>{etiqueta}</p>}
-        <div className={estilos.linhaTitulo}>
-          {numero !== undefined && (
-            <span className={estilos.numero} aria-hidden="true">
-              {numero}
-            </span>
-          )}
-          <h1 ref={tituloRef} tabIndex={-1} className={estilos.titulo}>
-            {titulo}
-          </h1>
-        </div>
+        <h1 ref={tituloRef} tabIndex={-1} className={estilos.titulo}>
+          {titulo}
+        </h1>
         {texto && <p className={estilos.texto}>{texto}</p>}
         <BotaoOuvir texto={falado} />
       </div>
