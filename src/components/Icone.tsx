@@ -40,7 +40,13 @@ export type NomeIcone =
   | "pessoas"
   | "imagem"
   | "megafone"
-  | "blocos";
+  | "blocos"
+  | "baixar"
+  | "lixeira"
+  | "relogio"
+  | "sair"
+  | "usuario"
+  | "video";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -255,6 +261,32 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
       <rect x="3.5" y="13.5" width="7" height="6" rx="1.2" />
       <rect x="13.5" y="13.5" width="7" height="6" rx="1.2" />
       <rect x="8.5" y="5" width="7" height="6" rx="1.2" />
+    </>
+  ),
+  baixar: <path d="M12 4v11m-5-5 5 5 5-5M5 19.5h14" />,
+  lixeira: (
+    <>
+      <path d="M4.5 7h15M9.5 7V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v2" />
+      <path d="m6.5 7 .9 12.1A2 2 0 0 0 9.4 21h5.2a2 2 0 0 0 2-1.9L17.5 7M10 11v6m4-6v6" />
+    </>
+  ),
+  relogio: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M12 7.5V12l3 2" />
+    </>
+  ),
+  sair: <path d="M14 4.5h3.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H14M10 16l-4-4 4-4m-4 4h10" />,
+  usuario: (
+    <>
+      <circle cx="12" cy="8.3" r="3.3" />
+      <path d="M5 20c.9-3.8 3.8-6 7-6s6.1 2.2 7 6" />
+    </>
+  ),
+  video: (
+    <>
+      <rect x="3" y="5.5" width="14" height="13" rx="2" />
+      <path d="m17 10 4-2.7v9.4L17 14" />
     </>
   ),
 };

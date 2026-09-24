@@ -14,14 +14,20 @@
 
 .item {
   display: flex;
-  align-items: center;
-  gap: var(--space-4);
+  flex-direction: column;
+  gap: var(--space-3);
   padding: var(--space-4);
   border-bottom: 1px solid var(--line);
 }
 
 .item:last-child {
   border-bottom: 0;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
 }
 
 .selo {
@@ -53,9 +59,9 @@
 }
 
 .acao {
-  flex: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-sm);
@@ -64,6 +70,7 @@
   border: 1px solid var(--line-strong);
   background: var(--surface);
   color: var(--ink);
+  text-decoration: none;
   transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out);
 }
 

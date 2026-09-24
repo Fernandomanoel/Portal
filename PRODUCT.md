@@ -12,9 +12,9 @@ Alunos de cursos profissionalizantes de informática, acessando principalmente n
 computadores do laboratório da escola durante a aula, para abrir a atividade do dia
 (PDF, slide, planilha, link ou página de exercício) e para responder provas.
 
-Instrutores são o segundo público: usam a área de Provas para distribuir provas e, nas
-provas descritivas, para ler as respostas do aluno e lançar a nota na própria tela de
-revisão.
+Instrutores são o segundo público: usam a área de Provas para distribuir provas e a
+área do professor (com login) para ver quem enviou, baixar o arquivo anexado, ler as
+respostas e lançar a nota.
 
 Uma terceira frente é o público da seção "Passo a Passo": crianças e pessoas com
 dificuldade de leitura ou de interpretação de texto, incluindo pessoas no espectro
@@ -46,10 +46,12 @@ conteúdo próximo de zero para quem não é programador.
   também em celular e tablet — não apenas "não quebrar".
 - O instrutor conduz a aula e aponta o aluno para a atividade; o aluno navega sozinho
   a partir dali.
-- Provas descritivas são corrigidas presencialmente: o aluno envia uma única vez e o
-  instrutor lança a nota na mesma tela, na hora.
-- Provas de múltipla escolha corrigem no navegador do aluno, sem servidor — é
-  autoavaliação, não avaliação à prova de cola.
+- O aluno se identifica digitando o nome antes de começar; não existe login de aluno.
+- Provas de múltipla escolha são corrigidas pelo servidor no envio e o aluno vê a nota
+  na hora; o gabarito não chega ao navegador. Descritivas e práticas ficam "a corrigir"
+  até o professor lançar a nota na área dele.
+- Algumas provas pedem arquivo (a planilha do Excel), outras não; é regra de cada
+  prova.
 
 ## Capabilities and Constraints
 
@@ -61,12 +63,14 @@ conteúdo próximo de zero para quem não é programador.
 - Durante uma prova em andamento a interface trava: menu, rodapé e botão de voltar
   desaparecem e o navegador avisa antes de fechar ou recarregar. A saída só volta
   depois do envio.
-- Trava contra reenvio de prova descritiva é por navegador (`localStorage`), não por
-  aluno — hoje não existe login de aluno.
-- A senha única da área de Provas é uma trava de interface, não segurança real: é
-  explicitamente provisória. A direção confirmada é substituí-la por **login real de
-  instrutor com JWT** quando o backend existir; o front deve ser desenhado prevendo
-  essa troca.
+- Prova travada (o padrão; a de IA, por exemplo, desliga) abre em tela cheia e, se o
+  aluno trocar de aba, de janela ou sair da tela cheia, bloqueia até um professor
+  digitar usuário e senha. O navegador não impede a saída — a trava denuncia e
+  bloqueia, e cada saída fica registrada no envio.
+- Envios e arquivos são apagados sozinhos 7 dias depois do envio.
+- A senha única da tela de listagem de Provas continua sendo trava de interface. O
+  acesso real é o login da área do professor (usuário e senha por professor, sessão
+  por cookie).
 - Modo claro e escuro são parte do produto, não um extra.
 - Seção "Passo a Passo": tutoriais de um micro-passo por tela (indicador "passo X
   de Y", imagem por passo, narração por voz do navegador só quando a pessoa clica,
@@ -108,8 +112,9 @@ conteúdo próximo de zero para quem não é programador.
 - Arquivos reais de conteúdo em `atividades/pdfs/`, `atividades/slides/` e
   `provas/<curso>/`, além de capas em `img/` e ícones em `images/cursos/`.
 - Formato das provas interativas documentado em `COMO-CRIAR-PROVAS.md`.
-- Não existe backend, banco de dados, login ou API neste momento — nada disso deve ser
-  descrito como existente.
+- Existe um servidor só para as provas (`servidor/`, ver `docs/SERVIDOR.md`), com
+  armazenamento no Vercel Blob ou em disco no servidor físico da escola. Não existe
+  banco relacional nem login de aluno.
 
 ## Product Principles
 

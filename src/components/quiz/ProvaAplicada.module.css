@@ -1,0 +1,307 @@
+/* ---------- Identificação ---------- */
+
+.identificacao {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.identificacaoTopo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.identificacaoTitulo {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.regras {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.regras li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.regras svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--brand-deep);
+}
+
+/* ---------- Campos ---------- */
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.campo label {
+  font-weight: 600;
+}
+
+.campo input {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+  transition: border-color 140ms var(--ease-out);
+}
+
+.campo input:focus-visible {
+  border-color: var(--brand);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.campo input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.campoAjuda {
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.campoErro {
+  color: var(--danger);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* ---------- Botões ---------- */
+
+.botoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.principal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.principal:hover:not(:disabled) {
+  background: var(--brand-deepest);
+}
+
+.principal:disabled {
+  background: var(--surface-soft);
+  color: var(--ink-faint);
+  cursor: not-allowed;
+}
+
+.secundario {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.secundario:hover {
+  background: var(--surface-soft);
+}
+
+.principal:focus-visible,
+.secundario:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---------- Prova travada ---------- */
+
+.bloqueioFundo {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  /* Opaco de propósito: travada, a prova não pode ficar legível por trás. */
+  background: var(--ground-sunken);
+}
+
+.bloqueio {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-3);
+}
+
+.bloqueio .principal {
+  width: 100%;
+}
+
+.bloqueioSelo {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-lg);
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.bloqueioTitulo {
+  font-size: var(--text-lg);
+}
+
+.bloqueioTexto {
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
+/* ---------- Arquivo ---------- */
+
+.arquivo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.arquivoTitulo {
+  font-size: var(--text-md);
+  font-weight: 700;
+}
+
+.opcional {
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+.arquivoEntrada {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.arquivoAlvo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--brand-deep);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+}
+
+.arquivoAlvo:hover {
+  border-color: var(--brand);
+  background: var(--brand-tint);
+}
+
+.arquivoEntrada:focus-visible + .arquivoAlvo,
+.arquivoEntrada:focus-visible + .arquivoEscolhido .secundario {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.arquivoEscolhido {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--success) 35%, var(--line));
+  border-radius: var(--radius);
+  background: var(--success-tint);
+}
+
+.arquivoEscolhido > svg {
+  flex: none;
+  color: var(--success);
+}
+
+.arquivoProblema {
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--line));
+  background: var(--danger-tint);
+}
+
+.arquivoProblema > svg {
+  color: var(--danger);
+}
+
+.arquivoInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.arquivoNome {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .identificacao {
+    padding: var(--space-5);
+  }
+
+  .botoes .principal,
+  .botoes .secundario {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}

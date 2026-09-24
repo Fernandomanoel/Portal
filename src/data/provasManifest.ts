@@ -2,15 +2,26 @@ import type { CategoriaProva, ManifestoProvas } from "@/types/prova";
 
 /**
  * Índice das provas. As categorias e os cursos já refletem a grade real de
- * provas do instrutor; os arquivos de cada curso ainda não foram portados
- * (manifesto vazio) — o curso aparece na lista com "Em breve" até o arquivo
- * chegar.
- *
- * Quando houver conteúdo, este arquivo volta a ser gerado por
- * `scripts/generate-provas-manifest.py` a partir da pasta `provas/` — o gerador
- * passa a emitir TypeScript em vez do JS antigo. Não edite à mão a partir daí.
+ * provas do instrutor; curso sem entrada aqui aparece na lista com "Em
+ * breve" até a prova chegar. Cada entrada aponta para um `.prova.ts` em
+ * `src/data/provasInterativas/` — ver COMO-CRIAR-PROVA.md lá dentro.
  */
-export const PROVAS_MANIFEST: ManifestoProvas = {};
+export const PROVAS_MANIFEST: ManifestoProvas = {
+  "Windows 11": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Ferramentas e Sistema",
+      caminho: "Windows 11/ferramentas-e-sistema",
+      tamanho: "6 tarefas",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação Completa",
+      caminho: "Windows 11/avaliacao-completa",
+      tamanho: "7 tarefas",
+    },
+  ],
+};
 
 export const PROVAS_CATEGORIAS: CategoriaProva[] = [
   {

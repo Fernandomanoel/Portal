@@ -32,3 +32,8 @@ dist-preview
 
 # Capturas de revisão: geradas por scripts/capturar.mjs.
 .impeccable/review/
+
+# Provas enviadas no servidor físico e no npm run dev (servidor/armazenamentoDisco.ts).
+dados/
+dist-servidor/
+.env

@@ -1,5 +1,10 @@
 # Contrato da API
 
+> **O servidor que existe hoje está em [`SERVIDOR.md`](SERVIDOR.md).** Ele é
+> mais simples que este contrato (sessão por cookie em vez de JWT, sem
+> "aplicações" com código, rotas em `/api` sem versão) e cobre o que as provas
+> precisam agora. Este documento continua sendo o desenho de longo prazo.
+
 Base: `https://<dominio-da-api>/api/v1`
 
 Todo corpo é JSON UTF-8. Todo campo de resposta é camelCase. Recursos são

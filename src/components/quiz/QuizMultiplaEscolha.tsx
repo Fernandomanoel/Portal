@@ -1,26 +1,13 @@
-import { QuizNota } from "./QuizNota";
-import type { useQuiz } from "@/hooks/useQuiz";
-import type { ProvaMultiplaEscolha } from "@/types/quiz";
+import type { ProvaMultiplaEscolhaAluno } from "@/types/quiz";
 import estilos from "./Quiz.module.css";
 
 interface Props {
-  prova: ProvaMultiplaEscolha;
-  quiz: ReturnType<typeof useQuiz>;
+  prova: ProvaMultiplaEscolhaAluno;
+  escolhas: Record<number, number>;
+  aoResponder: (pergunta: number, opcao: number) => void;
 }
 
-export function QuizMultiplaEscolha({ prova, quiz }: Props) {
-  const { estado, escolhas, responder, finalizar, completa } = quiz;
-
-  if (estado.fase === "corrigida") {
-    const nota = (estado.acertos / estado.total) * 10;
-    return (
-      <QuizNota
-        nota={nota}
-        detalhe={`Você acertou ${estado.acertos} de ${estado.total} questões.`}
-      />
-    );
-  }
-
+export function QuizMultiplaEscolha({ prova, escolhas, aoResponder }: Props) {
   return (
     <>
       {prova.perguntas.map((pergunta, indice) => (
@@ -34,18 +21,8 @@ export function QuizMultiplaEscolha({ prova, quiz }: Props) {
             {pergunta.opcoes.map((opcao, opcaoIndice) => {
               const marcada = escolhas[indice] === opcaoIndice;
               return (
-                <label
-                  key={opcaoIndice}
-                  className={
-                    marcada ? `${estilos.opcao} ${estilos.opcaoMarcada}` : estilos.opcao
-                  }
-                >
-                  <input
-                    type="radio"
-                    name={`pergunta-${indice}`}
-                    checked={marcada}
-                    onChange={() => responder(indice, opcaoIndice)}
-                  />
+                <label key={opcaoIndice} className={marcada ? `${estilos.opcao} ${estilos.opcaoMarcada}` : estilos.opcao}>
+                  <input type="radio" name={`pergunta-${indice}`} checked={marcada} onChange={() => aoResponder(indice, opcaoIndice)} />
                   <span>{opcao}</span>
                 </label>
               );
@@ -53,20 +30,6 @@ export function QuizMultiplaEscolha({ prova, quiz }: Props) {
           </div>
         </fieldset>
       ))}
-
-      <div className={estilos.acoes}>
-        <button
-          type="button"
-          className={estilos.enviar}
-          disabled={!completa}
-          onClick={finalizar}
-        >
-          Finalizar prova
-        </button>
-        {!completa && (
-          <p className={estilos.aviso}>Responda todas as questões para finalizar.</p>
-        )}
-      </div>
     </>
   );
 }
