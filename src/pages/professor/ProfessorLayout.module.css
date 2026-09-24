@@ -1,0 +1,165 @@
+/* ---------- Login: mesmo vocabulário da trava da área de Provas ---------- */
+
+.caixa {
+  max-width: 420px;
+  margin: var(--space-8) auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+}
+
+.selo {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  background: var(--brand-tint);
+  color: var(--brand-deep);
+}
+
+.titulo {
+  font-size: var(--text-lg);
+}
+
+.texto {
+  margin-top: calc(var(--space-2) * -1);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.aviso {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--warning-tint);
+  color: var(--warning);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.campo label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.campo input {
+  padding: var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+  transition: border-color 140ms var(--ease-out);
+}
+
+.campo input:focus-visible {
+  border-color: var(--brand);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.erro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--danger-tint);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.entrar {
+  padding: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.entrar:hover:not(:disabled) {
+  background: var(--brand-deepest);
+}
+
+.entrar:disabled {
+  background: var(--surface-soft);
+  color: var(--ink-faint);
+  cursor: not-allowed;
+}
+
+.entrar:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---------- Barra de quem está logado ---------- */
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.quem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.quem svg {
+  color: var(--brand-deep);
+}
+
+.quem strong {
+  color: var(--ink);
+}
+
+.sair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 140ms var(--ease-out), border-color 140ms var(--ease-out);
+}
+
+.sair:hover {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+.sair:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

@@ -2,17 +2,20 @@
 
 Contexto de produto completo está em `PRODUCT.md` (leia antes de qualquer
 mudança de UI — é o contrato usado pela skill Impeccable). Estrutura de
-pastas e comandos estão no `README.md`. O contrato de API (ainda sem
-backend) está em `docs/API.md` + `contrato/api.ts`. Este arquivo não repete
-esses três — cobre só o que um agente precisa saber para não quebrar
-convenção ao editar código.
+pastas e comandos estão no `README.md`. O servidor das provas que existe
+está em `docs/SERVIDOR.md`; `docs/API.md` + `contrato/api.ts` são o desenho
+de longo prazo. Este arquivo não repete esses — cobre só o que um agente
+precisa saber para não quebrar convenção ao editar código.
 
 ## Stack
 
 React 19 + TypeScript (strict) + Vite 8, React Router 7 (data router).
 CSS Modules + custom properties (`src/styles/tokens.css`) — sem
-Tailwind, sem CSS-in-JS. Sem backend ainda: tudo é dado estático em
-`src/data/*.ts` + arquivos em `public/`.
+Tailwind, sem CSS-in-JS. O catálogo é dado estático em `src/data/*.ts` +
+arquivos em `public/`. O único servidor é o das provas (`servidor/`, TS em
+Node, sem framework): função da Vercel em `api/index.ts` e servidor físico
+em `servidor/local.ts`, os dois chamando `servidor/rotas.ts`. Código do
+servidor importa com extensão `.js` e não usa o atalho `@/`.
 
 ## Comandos
 
@@ -40,9 +43,13 @@ autocontida: `tipo: "link"` + `url` (mesmo quando a "URL" é um caminho
 local tipo `/atividades/<slug>/pagina.html`).
 
 Provas interativas (`ProvaInterativa` em `src/types/quiz.ts`) moram em
-`src/data/provasInterativas/<Curso>/<slug>.prova.ts`, carregadas por
-`import.meta.glob` — nunca por import direto. Cada uma exporta default um
-objeto `{ tipo: "multipla_escolha" | "descritiva", titulo, perguntas }`.
+`src/data/provasInterativas/<Curso>/<slug>.prova.ts` — molde e regras
+(`envioArquivo`, `permiteSairDaAba`, `tipo: "pratica"`) em
+`COMO-CRIAR-PROVA.md` na mesma pasta. **Nunca importe um `.prova.ts` em
+`src/`**: quem carrega é o servidor, pelo registro gerado
+(`servidor/provas.gerado.ts`, feito por `scripts/gerar-registro-provas.mjs`
+no `dev`/`build`), e o navegador recebe a prova sem o gabarito por
+`GET /api/provas/<id>`. Import no front vaza a resposta certa no bundle.
 Isso é a área do instrutor (senha em `ProvasLock.tsx`), separada de
 Atividades — não confundir as duas ao portar conteúdo do repositório
 antigo (`Portal-Atividades`): prova/avaliação de curso vai em
@@ -94,7 +101,11 @@ histórico já mergeado.
   arquivo real (nem no repo antigo, nem enviado pelo usuário), deixe
   `materiais: []`/manifesto vazio; a tela já trata isso como estado vazio.
 - Não mudar `lancarNota`/`LancarNotaInput` (contrato de nota do instrutor)
-  sem pedido explícito — é o ponto de "IA sugere, instrutor decide".
+  sem pedido explícito — é o ponto de "IA sugere, instrutor decide". Hoje
+  ele é o `PATCH /api/envios/<id>` da área do professor.
+- Envio de prova some em 7 dias (`DIAS_GUARDADOS`) por decisão do usuário —
+  não aumentar sem pedido. Segredos (`PROFESSORES`, `SEGREDO_SESSAO`,
+  `CRON_SECRET`) só em variável de ambiente, nunca no repositório.
 - Mudança visual em qualquer tela existente passa pela skill **Impeccable**
   (`impeccable context` antes, `impeccable detect --json` depois),
   usando `PRODUCT.md` e um componente já existente (ex. `CursoCard`) como

@@ -1,69 +1,227 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useBlocker, useNavigate } from "react-router-dom";
 
+import { useProvaEmAndamento } from "@/hooks/ProvaEmAndamento";
+import { useTravaProva } from "@/hooks/useTravaProva";
+import { ErroApi, enviarProva } from "@/lib/apiProvas";
+import type { ReciboEnvio, SaidaProva } from "@/types/envio";
+import { ehDescritiva, ehPratica, totalDeQuestoes, type ProvaParaAluno } from "@/types/quiz";
+import { CampoArquivo, problemaDoArquivo } from "./CampoArquivo";
+import { ProvaBloqueada } from "./ProvaBloqueada";
+import { ProvaIdentificacao } from "./ProvaIdentificacao";
 import { QuizDescritiva } from "./QuizDescritiva";
 import { QuizMultiplaEscolha } from "./QuizMultiplaEscolha";
+import { QuizNota } from "./QuizNota";
+import { QuizPratica } from "./QuizPratica";
 import { QuizSaidaBloqueada } from "./QuizSaidaBloqueada";
-import { useQuiz } from "@/hooks/useQuiz";
-import { ehDescritiva, type ProvaInterativa } from "@/types/quiz";
 import estilos from "./Quiz.module.css";
 
+type Fase =
+  | { tipo: "identificacao" }
+  | { tipo: "respondendo" }
+  | { tipo: "enviando" }
+  | { tipo: "enviada"; recibo: ReciboEnvio };
+
 interface Props {
-  prova: ProvaInterativa;
-  chave: string;
+  prova: ProvaParaAluno;
+  /** Caminho da prova em provasInterativas/, sem ".prova.ts": o id que o servidor conhece. */
+  provaId: string;
   voltarPara: string;
 }
 
-export function QuizContainer({ prova, chave, voltarPara }: Props) {
-  const quiz = useQuiz(prova, chave);
+/**
+ * A regra da trava: prova travada é o padrão. `permiteSairDaAba: true`
+ * desliga (a de IA). Prova prática, que é feita em outro programa, já nasce
+ * destravada, a não ser que a prova diga `permiteSairDaAba: false`.
+ */
+function provaTravada(prova: ProvaParaAluno) {
+  if (prova.permiteSairDaAba !== undefined) return !prova.permiteSairDaAba;
+  return !ehPratica(prova);
+}
+
+export function QuizContainer({ prova, provaId, voltarPara }: Props) {
   const navegar = useNavigate();
-  const respondendo = quiz.estado.fase === "respondendo";
+  const { travar, liberar } = useProvaEmAndamento();
+  const travada = provaTravada(prova);
+  const totalQuestoes = totalDeQuestoes(prova);
 
-  // Fechar a aba já é barrado pelo beforeunload; isto barra o resto:
-  // um link do portal, o botão voltar do navegador.
-  const bloqueio = useBlocker(
-    ({ currentLocation, nextLocation }) =>
-      respondendo && currentLocation.pathname !== nextLocation.pathname,
-  );
+  const [fase, definirFase] = useState<Fase>({ tipo: "identificacao" });
+  const [nomeAluno, definirNomeAluno] = useState("");
+  const [iniciadaEm, definirIniciadaEm] = useState("");
+  // Uma chave por prova aberta: reenviar depois de falha de rede não duplica o envio.
+  const [chave] = useState(() => crypto.randomUUID());
+  const [escolhas, definirEscolhas] = useState<Record<number, number>>({});
+  const [textos, definirTextos] = useState<string[]>(() => Array.from({ length: totalQuestoes }, () => ""));
+  const [arquivo, definirArquivo] = useState<File | null>(null);
+  const [saidas, definirSaidas] = useState<SaidaProva[]>([]);
+  const [erroEnvio, definirErroEnvio] = useState<string | null>(null);
 
-  const respondidas = ehDescritiva(prova)
-    ? quiz.textos.filter((texto) => texto.trim().length > 0).length
-    : Object.keys(quiz.escolhas).length;
+  const emAndamento = fase.tipo === "respondendo" || fase.tipo === "enviando";
+  const saidaPendente = saidas.find((saida) => !saida.liberadaEm) ?? null;
+
+  const registrarSaida = useCallback((motivo: SaidaProva["motivo"]) => {
+    definirSaidas((atual) => (atual.some((s) => !s.liberadaEm) ? atual : [...atual, { em: new Date().toISOString(), motivo }]));
+  }, []);
+
+  const trava = useTravaProva(travada && fase.tipo === "respondendo", registrarSaida);
+  const { sairTelaCheia } = trava;
+
+  useEffect(() => {
+    if (emAndamento) travar();
+    else liberar();
+    return liberar;
+  }, [emAndamento, travar, liberar]);
+
+  useEffect(() => {
+    if (fase.tipo === "enviada") sairTelaCheia();
+  }, [fase.tipo, sairTelaCheia]);
+
+  // Fechar a aba é barrado pelo beforeunload do ProvedorProvaEmAndamento; isto
+  // barra o resto: um link do portal, o botão voltar do navegador.
+  const bloqueio = useBlocker(({ currentLocation, nextLocation }) => emAndamento && currentLocation.pathname !== nextLocation.pathname);
+
+  const respondidas = ehPratica(prova)
+    ? 0
+    : ehDescritiva(prova)
+      ? textos.filter((texto) => texto.trim().length > 0).length
+      : Object.keys(escolhas).length;
+
+  const problemaArquivo = arquivo && prova.envioArquivo ? problemaDoArquivo(arquivo, prova.envioArquivo) : null;
+  const faltaArquivo = !!prova.envioArquivo?.obrigatorio && !arquivo;
+  const completa = respondidas === totalQuestoes && !faltaArquivo && !problemaArquivo;
+
+  const pendencia = useMemo(() => {
+    if (respondidas < totalQuestoes) return `Responda todas as questões (${respondidas} de ${totalQuestoes}).`;
+    if (faltaArquivo) return "Anexe o arquivo da prova.";
+    if (problemaArquivo) return problemaArquivo;
+    return null;
+  }, [respondidas, totalQuestoes, faltaArquivo, problemaArquivo]);
+
+  async function comecar(nome: string) {
+    definirNomeAluno(nome);
+    definirIniciadaEm(new Date().toISOString());
+    if (travada) await trava.entrarTelaCheia();
+    definirFase({ tipo: "respondendo" });
+  }
+
+  async function aoLiberar(professor: string) {
+    definirSaidas((atual) => atual.map((s) => (s.liberadaEm ? s : { ...s, liberadaEm: new Date().toISOString(), liberadaPor: professor })));
+    await trava.entrarTelaCheia();
+  }
+
+  async function enviar() {
+    if (!completa) return;
+    definirFase({ tipo: "enviando" });
+    definirErroEnvio(null);
+    const respostas = ehPratica(prova)
+      ? []
+      : ehDescritiva(prova)
+        ? textos
+        : Array.from({ length: totalQuestoes }, (_, i) => escolhas[i] ?? null);
+    try {
+      const recibo = await enviarProva({ chave, provaId, nomeAluno, iniciadaEm, respostas, saidas }, arquivo);
+      definirFase({ tipo: "enviada", recibo });
+    } catch (falha) {
+      definirErroEnvio(falha instanceof ErroApi ? falha.message : "Não foi possível enviar. Tente de novo.");
+      definirFase({ tipo: "respondendo" });
+    }
+  }
+
+  if (fase.tipo === "identificacao") {
+    return (
+      <div className={estilos.prova}>
+        <ProvaIdentificacao prova={prova} travada={travada} aoComecar={comecar} aoVoltar={() => navegar(voltarPara)} />
+      </div>
+    );
+  }
+
+  if (fase.tipo === "enviada") {
+    const { recibo } = fase;
+    const hora = new Date(recibo.enviadaEm).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+    return (
+      <div className={estilos.prova}>
+        <header className={estilos.topo}>
+          <h1 className={estilos.titulo}>{prova.titulo}</h1>
+        </header>
+        <QuizNota
+          nota={recibo.nota}
+          detalhe={
+            recibo.correcao
+              ? `${nomeAluno}, você acertou ${recibo.correcao.acertos} de ${recibo.correcao.total} questões. Prova enviada em ${hora}.`
+              : `${nomeAluno}, sua prova foi enviada em ${hora}. O professor vai corrigir e lançar a nota.`
+          }
+        />
+        <div className={estilos.acoes}>
+          <button type="button" className={estilos.sair} onClick={() => navegar(voltarPara)}>
+            Voltar para as provas
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={estilos.prova}>
       <header className={estilos.topo}>
-        <h1 className={estilos.titulo}>{prova.titulo}</h1>
-        {respondendo && (
+        <div className={estilos.topoTexto}>
+          <h1 className={estilos.titulo}>{prova.titulo}</h1>
+          <p className={estilos.aluno}>{nomeAluno}</p>
+        </div>
+        {totalQuestoes > 0 && (
           <span className={`${estilos.andamento} tabular`}>
-            {respondidas} de {prova.perguntas.length}
+            {respondidas} de {totalQuestoes}
           </span>
         )}
       </header>
 
-      {ehDescritiva(prova) ? (
-        <QuizDescritiva prova={prova} quiz={quiz} />
+      {ehPratica(prova) ? (
+        <QuizPratica prova={prova} />
+      ) : ehDescritiva(prova) ? (
+        <QuizDescritiva
+          prova={prova}
+          textos={textos}
+          aoEscrever={(pergunta, texto) =>
+            definirTextos((atual) => {
+              const proximo = [...atual];
+              proximo[pergunta] = texto;
+              return proximo;
+            })
+          }
+        />
       ) : (
-        <QuizMultiplaEscolha prova={prova} quiz={quiz} />
-      )}
-
-      {!respondendo && (
-        <div className={estilos.acoes}>
-          <button
-            type="button"
-            className={estilos.sair}
-            onClick={() => navegar(voltarPara)}
-          >
-            Voltar para as provas
-          </button>
-        </div>
-      )}
-
-      {bloqueio.state === "blocked" && (
-        <QuizSaidaBloqueada
-          aoFicar={() => bloqueio.reset()}
-          aoSair={() => bloqueio.proceed()}
+        <QuizMultiplaEscolha
+          prova={prova}
+          escolhas={escolhas}
+          aoResponder={(pergunta, opcao) => definirEscolhas((atual) => ({ ...atual, [pergunta]: opcao }))}
         />
       )}
+
+      {prova.envioArquivo && (
+        <CampoArquivo
+          regra={prova.envioArquivo}
+          arquivo={arquivo}
+          aoEscolher={definirArquivo}
+          aoAbrirSeletor={trava.pausar}
+          aoFecharSeletor={trava.retomar}
+        />
+      )}
+
+      <div className={estilos.acoes}>
+        <button type="button" className={estilos.enviar} disabled={!completa || fase.tipo === "enviando"} onClick={enviar}>
+          {fase.tipo === "enviando" ? "Enviando…" : "Enviar prova"}
+        </button>
+        {erroEnvio ? (
+          <p className={estilos.erro} role="alert">
+            {erroEnvio}
+          </p>
+        ) : (
+          <p className={estilos.aviso}>{pendencia ?? "O envio é único: depois de enviar não dá para refazer."}</p>
+        )}
+      </div>
+
+      {travada && saidaPendente && <ProvaBloqueada saida={saidaPendente} aoLiberar={aoLiberar} />}
+
+      {bloqueio.state === "blocked" && <QuizSaidaBloqueada aoFicar={() => bloqueio.reset()} aoSair={() => bloqueio.proceed()} />}
     </div>
   );
 }

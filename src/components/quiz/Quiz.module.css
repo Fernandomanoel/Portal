@@ -185,52 +185,11 @@ legend.enunciado {
   font-size: var(--text-sm);
 }
 
-.revisao {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  margin-bottom: var(--space-4);
-}
 
-.revisaoTexto {
-  white-space: pre-wrap;
-  color: var(--ink-soft);
-  border-left: 1px solid var(--line-strong);
-  padding-left: var(--space-4);
-  margin-top: var(--space-3);
-}
 
-.campoNota {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-top: var(--space-6);
-  padding: var(--space-4);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-}
 
-.campoNota label {
-  font-weight: 600;
-}
 
-.campoNota input {
-  width: 90px;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--line-strong);
-  background: var(--surface);
-  outline: none;
-  font-variant-numeric: tabular-nums;
-}
 
-.campoNota input:focus-visible {
-  border-color: var(--brand);
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
 
 .sair {
   padding: var(--space-3) var(--space-5);
@@ -242,5 +201,45 @@ legend.enunciado {
 }
 
 .sair:hover {
+  background: var(--surface-soft);
+}
+
+.topoTexto {
+  min-width: 0;
+}
+
+.aluno {
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.erro {
+  color: var(--danger);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.instrucoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-5);
+  line-height: 1.55;
+}
+
+.material {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  color: var(--brand-deep);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.material:hover {
   background: var(--surface-soft);
 }

@@ -1,7 +1,8 @@
 # Portal de Atividades
 
-Portal de materiais de aula e provas dos cursos. Frontend em React + TypeScript,
-hospedado na Vercel; backend em PHP + PostgreSQL, ainda por implementar.
+Portal de materiais de aula e provas dos cursos. Frontend em React + TypeScript;
+o servidor das provas (`servidor/`) é TypeScript também e roda na Vercel ou num
+servidor físico da escola — ver [`docs/SERVIDOR.md`](docs/SERVIDOR.md).
 
 Este é o portal novo, escrito do zero. O site estático antigo continua no
 repositório `Portal-Atividades` e serve apenas de referência — os dois não se
@@ -18,8 +19,11 @@ O portal sobe em `http://localhost:5173`.
 
 | Comando | O que faz |
 |---|---|
-| `npm run dev` | Servidor de desenvolvimento |
+| `npm run dev` | Servidor de desenvolvimento, com a `/api` gravando em `./dados` |
 | `npm run build` | Checagem de tipos e build de produção em `dist/` |
+| `npm run build:servidor` | Servidor físico em `dist-servidor/servidor.mjs` |
+| `npm run servidor` | Sobe o servidor físico (site + `/api`) |
+| `npm run professor:senha` | Gera o login de um professor para `PROFESSORES` |
 | `npm run preview` | Serve o build de produção |
 | `npm run lint` | oxlint |
 
@@ -33,9 +37,12 @@ src/
 ├── data/           catálogo: atividades, provas, inglês, digitação
 ├── types/          contratos de dados
 ├── styles/         tokens, reset e fontes
-└── lib/            rotas e busca
+└── lib/            rotas, busca e cliente da API
 
-docs/API.md         contrato da API
+servidor/           API das provas: envios, correção, área do professor, limpeza
+api/index.ts        a mesma API como função da Vercel
+docs/SERVIDOR.md    como o servidor roda, variáveis, rotas e garantias
+docs/API.md         contrato da API de longo prazo
 contrato/api.ts     os mesmos formatos em TypeScript
 PRODUCT.md          verdade de produto: usuários, propósito, restrições
 .impeccable/        contrato de direção visual
@@ -47,7 +54,9 @@ PRODUCT.md          verdade de produto: usuários, propósito, restrições
   Programação, Design
 - **Inglês** — trilha à parte, com atividades e provas próprias
 - **Digitação** — treino de teclado com velocidade, precisão e contagem de erros
-- **Provas** — área do instrutor, protegida por senha
+- **Provas** — o aluno se identifica pelo nome, faz a prova (travada em tela
+  cheia quando a prova pede) e envia; a área do professor (`/professor`, com
+  login) mostra os envios, os arquivos e as notas por 7 dias
 
 ## Conteúdo
 
@@ -65,18 +74,12 @@ node scripts/verificar-prova.mjs   # os dois fluxos de prova, ponta a ponta
 node scripts/verificar-telas.mjs   # 320/768/1024/1440 e ordem de tabulação
 ```
 
-## Princípios do backend
+## Princípios do servidor
 
-Ainda não implementado. O contrato em [`docs/API.md`](docs/API.md) já fixa o que
-a implementação precisa honrar:
-
-1. **PDO com prepared statements, sempre.** Nenhuma variável entra concatenada em
-   SQL.
-2. **O gabarito nunca sai do servidor.** A correção de múltipla escolha acontece
-   no backend.
-3. **Todo payload JSON é revalidado no PHP.** O TypeScript do frontend garante
+1. **O gabarito nunca sai do servidor.** O aluno recebe a prova sem a resposta
+   certa; a correção de múltipla escolha acontece no servidor.
+2. **Todo envio é revalidado no servidor.** O TypeScript do frontend garante
    estrutura para quem escreve o frontend, não para quem recebe a requisição.
-4. **CORS restrito à origem oficial do frontend.** Uma origem, não curinga.
-   HTTPS obrigatório.
-5. **Envio de prova é idempotente.** Uma submissão reenviada por timeout de rede
-   não vira duas notas.
+3. **Envio de prova é idempotente.** Uma submissão reenviada por falha de rede
+   não vira duas.
+4. **Nada é guardado por mais de 7 dias.** Quem precisa guardar nota baixa antes.

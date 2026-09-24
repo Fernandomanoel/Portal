@@ -1,6 +1,35 @@
-.sair {
-  align-self: flex-start;
+.acoesTopo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
   margin-top: var(--space-2);
+}
+
+.professor {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.professor:hover {
+  background: var(--brand-deepest);
+}
+
+.professor:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sair {
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
   border: 1px solid var(--line-strong);
