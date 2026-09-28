@@ -27,6 +27,9 @@ import { TextosClassicosPage } from "@/pages/digitacao/textosClassicos/TextosCla
 import { GuiadoJogoPage } from "@/pages/guiado/GuiadoJogoPage";
 import { GuiadoTutorialPage } from "@/pages/guiado/GuiadoTutorialPage";
 import { GuiadoVitrinePage } from "@/pages/guiado/GuiadoVitrinePage";
+import { ProfessorEnvioPage } from "@/pages/professor/ProfessorEnvioPage";
+import { ProfessorEnviosPage } from "@/pages/professor/ProfessorEnviosPage";
+import { ProfessorLayout } from "@/pages/professor/ProfessorLayout";
 import { ProvasPage } from "@/pages/ProvasPage";
 import { QuizPage } from "@/pages/QuizPage";
 
@@ -85,6 +88,15 @@ const roteador = criarRoteador([
 
       { path: "provas", element: <ProvasPage /> },
       { path: "provas/quiz/:categoria/:prova", element: <QuizPage /> },
+
+      {
+        path: "professor",
+        element: <ProfessorLayout />,
+        children: [
+          { index: true, element: <ProfessorEnviosPage /> },
+          { path: "envios/:id", element: <ProfessorEnvioPage /> },
+        ],
+      },
 
       { path: "*", element: <Navigate to="/" replace /> },
     ],

@@ -22,6 +22,8 @@ export const rotas = {
   guiadoTutorial: (caminho: string) => `/passo-a-passo/tutorial/${encodeURIComponent(caminho)}`,
   guiadoJogo: (slug: string) => `/passo-a-passo/jogo/${slug}`,
   provas: () => "/provas",
+  professor: () => "/professor",
+  professorEnvio: (id: string) => `/professor/envios/${encodeURIComponent(id)}`,
   quiz: (categoria: string, prova: string) =>
     `/provas/quiz/${encodeURIComponent(categoria)}/${encodeURIComponent(prova)}`,
 } as const;

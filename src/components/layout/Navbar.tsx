@@ -68,6 +68,15 @@ export function Navbar() {
           >
             <Icone nome={tema === "escuro" ? "sol" : "lua"} tamanho={18} />
           </button>
+
+          <NavLink
+            to={rotas.professor()}
+            className={({ isActive }) => (isActive ? `${estilos.professor} ${estilos.professorAtivo}` : estilos.professor)}
+            aria-label="Área do professor"
+            title="Área do professor"
+          >
+            <Icone nome="usuario" tamanho={18} />
+          </NavLink>
         </div>
       </nav>
     </header>

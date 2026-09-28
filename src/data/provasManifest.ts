@@ -2,15 +2,59 @@ import type { CategoriaProva, ManifestoProvas } from "@/types/prova";
 
 /**
  * Índice das provas. As categorias e os cursos já refletem a grade real de
- * provas do instrutor; os arquivos de cada curso ainda não foram portados
- * (manifesto vazio) — o curso aparece na lista com "Em breve" até o arquivo
- * chegar.
- *
- * Quando houver conteúdo, este arquivo volta a ser gerado por
- * `scripts/generate-provas-manifest.py` a partir da pasta `provas/` — o gerador
- * passa a emitir TypeScript em vez do JS antigo. Não edite à mão a partir daí.
+ * provas do instrutor; curso sem entrada aqui aparece na lista com "Em
+ * breve" até a prova chegar. Cada entrada aponta para um `.prova.ts` em
+ * `src/data/provasInterativas/` — ver COMO-CRIAR-PROVA.md lá dentro.
  */
-export const PROVAS_MANIFEST: ManifestoProvas = {};
+export const PROVAS_MANIFEST: ManifestoProvas = {
+  "Windows 11": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Ferramentas e Sistema",
+      caminho: "Windows 11/ferramentas-e-sistema",
+      tamanho: "6 tarefas",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação Completa",
+      caminho: "Windows 11/avaliacao-completa",
+      tamanho: "7 tarefas",
+    },
+  ],
+  "Word": [
+    { 
+      tipo: "pratica", 
+      rotulo: "avaliacao A", 
+      caminho: "Word/avaliacao-peso2", 
+      tamanho: "10 tarefas",
+    },
+    {
+      tipo: "pratica", 
+      rotulo: "avaliacao B", 
+      caminho: "Word/avaliacao-word-peso1", 
+      tamanho: "10 tarefas",
+    },
+  ],
+
+  "Excel": [
+  // ... outras provas existentes ...
+  { 
+    tipo: "pratica", 
+    rotulo: "Prova Básica - Boletim Escolar", 
+    caminho: "av-excel-1" ,
+    tamanho: "11 tarefas",
+  },
+  { 
+    tipo: "pratica", 
+    rotulo: "Prova Básica - Compras do mês", 
+    caminho: "av-excel-2" ,
+    tamanho: "8 tarefas",
+  },
+],
+
+
+
+}; // <-- O objeto PROVAS_MANIFEST é fechado aqui.
 
 export const PROVAS_CATEGORIAS: CategoriaProva[] = [
   {

@@ -454,8 +454,8 @@ export const ATIVIDADES: Curso[] = [
         titulo: "Foto de apoio — esfera lisa",
         descricao:
           "Fundo neutro e sem texturas complicadas — boa para praticar recorte e remoção de fundo (Graus 1 e 3) se você não tiver uma foto sua à mão.",
-        tipo: "link",
-        url: "/atividades/photoshop/material-esfera.jpg",
+        tipo: "imagem",
+        arquivo: "/atividades/photoshop/material-esfera.jpg",
       },
     ],
     atividades: [
@@ -789,8 +789,8 @@ export const ATIVIDADES: Curso[] = [
       {
         titulo: "Vídeo de prática — tartaruga no computador",
         descricao: "Vídeo curto usado na Avaliação Prática: Vídeo, Edição e Transições. Baixe e insira no slide.",
-        tipo: "link",
-        url: "/atividades/powerpoint/tartaruga-no-computador.mp4",
+        tipo: "video",
+        arquivo: "/atividades/powerpoint/tartaruga-no-computador.mp4",
       },
     ],
     atividades: [

@@ -1,0 +1,46 @@
+import type { ProvaInterativa, ProvaParaAluno } from "../src/types/quiz.js";
+import { REGISTRO_PROVAS } from "./provas.gerado.js";
+
+export async function acharProva(id: string): Promise<ProvaInterativa | null> {
+  const carregar = REGISTRO_PROVAS[id];
+  if (!carregar) return null;
+  return (await carregar()).default;
+}
+
+/** Tira o gabarito: é isto que vai para o navegador do aluno. */
+export function semGabarito(prova: ProvaInterativa): ProvaParaAluno {
+  if (prova.tipo === "descritiva" || prova.tipo === "pratica") return prova;
+  return { ...prova, perguntas: prova.perguntas.map(({ pergunta, opcoes }) => ({ pergunta, opcoes })) };
+}
+
+export function tipoDe(prova: ProvaInterativa) {
+  return prova.tipo ?? "multipla_escolha";
+}
+
+/**
+ * Confere as respostas contra a prova. Devolve as respostas normalizadas ou a
+ * mensagem do que está errado — o envio chega do navegador e não é confiável.
+ */
+export function validarRespostas(prova: ProvaInterativa, respostas: unknown): { ok: true; respostas: (number | string | null)[] } | { ok: false; erro: string } {
+  if (prova.tipo === "pratica") return { ok: true, respostas: [] };
+  if (!Array.isArray(respostas) || respostas.length !== prova.perguntas.length) {
+    return { ok: false, erro: "As respostas não batem com o número de questões da prova." };
+  }
+  if (prova.tipo === "descritiva") {
+    const textos = respostas.map((r) => (typeof r === "string" ? r.slice(0, 20_000) : null));
+    if (textos.some((t) => t === null || !t.trim())) return { ok: false, erro: "Toda questão descritiva precisa de resposta." };
+    return { ok: true, respostas: textos };
+  }
+  const escolhas = respostas.map((r, i) =>
+    Number.isInteger(r) && (r as number) >= 0 && (r as number) < prova.perguntas[i].opcoes.length ? (r as number) : null,
+  );
+  if (escolhas.some((e) => e === null)) return { ok: false, erro: "Toda questão precisa de uma opção marcada." };
+  return { ok: true, respostas: escolhas };
+}
+
+export function corrigir(prova: ProvaInterativa, respostas: (number | string | null)[]) {
+  if (prova.tipo === "pratica" || prova.tipo === "descritiva") return null;
+  const acertos = prova.perguntas.reduce((soma, pergunta, i) => (respostas[i] === pergunta.correta ? soma + 1 : soma), 0);
+  const total = prova.perguntas.length;
+  return { acertos, total, nota: Math.round((acertos / total) * 100) / 10 };
+}
