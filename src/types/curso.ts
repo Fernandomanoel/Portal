@@ -4,15 +4,19 @@ export type CategoriaAtividade =
   | "programacao"
   | "design";
 
-export type TipoMaterial = "pdf" | "doc" | "planilha" | "slides" | "link";
+export type TipoMaterial = "pdf" | "doc" | "planilha" | "slides" | "video" | "imagem" | "link";
 
 export interface Material {
   titulo: string;
   descricao?: string;
   tipo: TipoMaterial;
-  /** Caminho do arquivo, para tudo que não é `link`. */
+  /**
+   * Caminho do arquivo em `public/`, para tudo que não é `link`. A tela
+   * sempre baixa esse arquivo na hora — nunca navega para fora do portal.
+   * Ver `src/data/COMO-FORNECER-MATERIAL.md`.
+   */
   arquivo?: string;
-  /** Endereço externo, para `tipo: "link"`. */
+  /** Endereço externo ou página HTML autocontida, para `tipo: "link"` — abre em nova aba. */
   url?: string;
 }
 

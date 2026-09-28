@@ -19,13 +19,15 @@ export function ListaProvas({ arquivos, categoria }: Props) {
     <ul className={estilos.lista}>
       {arquivos.map((arquivo) => (
         <li key={arquivo.caminho} className={estilos.item}>
-          <span className={estilos.selo}>
-            <Icone nome={arquivo.tipo === "quiz" ? "prova" : "pdf"} />
-          </span>
+          <div className={estilos.cabecalho}>
+            <span className={estilos.selo}>
+              <Icone nome={arquivo.tipo === "quiz" ? "prova" : "pdf"} />
+            </span>
 
-          <div className={estilos.texto}>
-            <p className={estilos.rotulo}>{arquivo.rotulo}</p>
-            <p className={`${estilos.meta} tabular`}>{arquivo.tamanho}</p>
+            <div className={estilos.texto}>
+              <p className={estilos.rotulo}>{arquivo.rotulo}</p>
+              <p className={`${estilos.meta} tabular`}>{arquivo.tamanho}</p>
+            </div>
           </div>
 
           {arquivo.tipo === "quiz" ? (

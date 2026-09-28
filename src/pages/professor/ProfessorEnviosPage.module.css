@@ -1,0 +1,304 @@
+/* ---------- Ferramentas: mesmo vocabulário da área de Provas ---------- */
+
+.ferramentas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.busca {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+  color: var(--ink-faint);
+  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+}
+
+.busca:focus-within {
+  border-color: var(--brand);
+  background: var(--surface);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.busca input {
+  width: 200px;
+  padding: var(--space-2) 0;
+  border: 0;
+  background: none;
+  outline: none;
+  color: var(--ink);
+  font: inherit;
+}
+
+.busca input::placeholder {
+  color: var(--ink-faint);
+}
+
+.prova {
+  max-width: 260px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+}
+
+.prova:focus-visible {
+  border-color: var(--brand);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out), color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+}
+
+.filtro:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+.filtroAtivo,
+.filtroAtivo:hover {
+  border-color: var(--brand-deep);
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+}
+
+.filtro:focus-visible,
+.atualizar:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.conta {
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--warning-tint);
+  color: var(--warning);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-align: center;
+}
+
+.atualizar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.atualizar:hover:not(:disabled) {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+.atualizar:disabled {
+  cursor: progress;
+}
+
+.erro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--danger-tint);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+/* ---------- Lista ---------- */
+
+.total {
+  margin-bottom: var(--space-3);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+
+.item:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-1);
+}
+
+.item:has(a:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.itemTexto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.aluno {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.aluno a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.aluno a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.aluno a:focus-visible {
+  outline: none;
+}
+
+.provaTitulo {
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: 2px;
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.marcaAlerta {
+  color: var(--warning);
+}
+
+.nota {
+  min-width: 64px;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pendente {
+  background: var(--warning-tint);
+  color: var(--warning);
+}
+
+.aprovado {
+  background: var(--success-tint);
+  color: var(--success);
+}
+
+.reprovado {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.seta {
+  color: var(--ink-faint);
+  transition: transform 140ms var(--ease-out), color 140ms var(--ease-out);
+}
+
+.item:hover .seta {
+  color: var(--brand-deep);
+  transform: translateX(2px);
+}
+
+@media (max-width: 640px) {
+  .busca,
+  .prova {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+
+  .busca input {
+    width: 100%;
+  }
+
+  .atualizar {
+    margin-left: 0;
+  }
+
+  .item {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .seta {
+    display: none;
+  }
+}
