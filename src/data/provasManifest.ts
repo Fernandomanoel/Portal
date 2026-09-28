@@ -23,13 +23,13 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
   ],
   "Word": [
     { 
-      tipo: "pratica", 
+      tipo: "quiz", 
       rotulo: "avaliacao A", 
       caminho: "Word/avaliacao-peso2", 
       tamanho: "10 tarefas",
     },
     {
-      tipo: "pratica", 
+      tipo: "quiz", 
       rotulo: "avaliacao B", 
       caminho: "Word/avaliacao-word-peso1", 
       tamanho: "10 tarefas",
@@ -39,13 +39,13 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
   "Excel": [
   // ... outras provas existentes ...
   { 
-    tipo: "pratica", 
+    tipo: "quiz", 
     rotulo: "Prova Básica - Boletim Escolar", 
     caminho: "av-excel-1" ,
     tamanho: "11 tarefas",
   },
   { 
-    tipo: "pratica", 
+    tipo: "quiz", 
     rotulo: "Prova Básica - Compras do mês", 
     caminho: "av-excel-2" ,
     tamanho: "8 tarefas",
