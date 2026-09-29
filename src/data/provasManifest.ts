@@ -5,6 +5,12 @@ import type { CategoriaProva, ManifestoProvas } from "@/types/prova";
  * provas do instrutor; curso sem entrada aqui aparece na lista com "Em
  * breve" até a prova chegar. Cada entrada aponta para um `.prova.ts` em
  * `src/data/provasInterativas/` — ver COMO-CRIAR-PROVA.md lá dentro.
+ *
+ * Os nomes de curso aqui (chaves deste objeto e itens de
+ * `PROVAS_CATEGORIAS`) são mantidos iguais ao `titulo` do curso
+ * correspondente em `src/data/atividades.ts`, para as duas telas falarem
+ * do mesmo curso com o mesmo nome. Cursos sem equivalente em Atividades
+ * (ex.: grade antiga do instrutor) continuam como estavam.
  */
 export const PROVAS_MANIFEST: ManifestoProvas = {
   "Windows 11": [
@@ -22,21 +28,21 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
     },
   ],
   "Word": [
-    { 
-      tipo: "quiz", 
-      rotulo: "avaliacao A", 
-      caminho: "Word/avaliacao-peso2", 
+    {
+      tipo: "quiz",
+      rotulo: "avaliacao A",
+      caminho: "Word/avaliacao-peso2",
       tamanho: "10 tarefas",
     },
     {
-      tipo: "quiz", 
-      rotulo: "avaliacao B", 
-      caminho: "Word/avaliacao-word-peso1", 
+      tipo: "quiz",
+      rotulo: "avaliacao B",
+      caminho: "Word/avaliacao-word-peso1",
       tamanho: "10 tarefas",
     },
   ],
 
-  "Excel": [
+  "Excel Básico": [
     {
       tipo: "quiz",
       rotulo: "Prova Básica - Boletim Escolar",
@@ -50,7 +56,7 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "8 tarefas",
     },
   ],
-  "ADM": [
+  "Administração": [
     {
       tipo: "quiz",
       rotulo: "Prova de Administração",
@@ -58,7 +64,7 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "10 questões",
     },
   ],
-  "Assistente de Departamento Pessoal": [
+  "Departamento Pessoal": [
     {
       tipo: "quiz",
       rotulo: "Avaliação de Departamento Pessoal",
@@ -66,7 +72,7 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "10 questões",
     },
   ],
-  "Assistente de Logística": [
+  "Assistente de Gestão": [
     {
       tipo: "quiz",
       rotulo: "Avaliação de Logística",
@@ -112,7 +118,7 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "10 questões",
     },
   ],
-  "Escrita Fiscal e Contabilidade": [
+  "Assistente de Escrita Fiscal": [
     {
       tipo: "quiz",
       rotulo: "Avaliação de Escrita Fiscal e Contabilidade",
@@ -142,7 +148,7 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "10 questões",
     },
   ],
-  "RH": [
+  "Recursos Humanos": [
     {
       tipo: "quiz",
       rotulo: "Avaliação de Recursos Humanos",
@@ -178,18 +184,21 @@ export const PROVAS_CATEGORIAS: CategoriaProva[] = [
   {
     nome: "Informática",
     cursos: [
-      "Excel",
+      "Excel Básico",
       "Excel Avançado I",
       "Excel Avançado II",
+      "Hardware — Montagens e Manutenção",
       "Internet e Outlook",
       "Internet, Redes Sociais e Aplicativos",
       "Introdução à Informática",
       "KIDS",
       "Manutenção de Computadores",
+      "Manutenção de Notebooks",
+      "Montagem de Dispositivos Móveis",
       "Power BI",
-      "Power Point",
+      "PowerPoint",
       "Redes",
-      "Segurança da Era Digital",
+      "Segurança na Era Digital",
       "Windows 11",
       "Word",
     ],
@@ -197,20 +206,26 @@ export const PROVAS_CATEGORIAS: CategoriaProva[] = [
   {
     nome: "Administrativo e Gestão",
     cursos: [
-      "ADM",
+      "Administração",
       "Assistente ADM",
-      "Assistente de Departamento Pessoal",
-      "Assistente de Logística",
+      "Assistente de Administração Financeira",
+      "Assistente de Escrita Fiscal",
+      "Assistente de Gestão",
       "Atendimento ao Cliente",
+      "Comunicação e Oratória",
       "Compras e Estoque",
+      "Contabilidade",
       "Crédito e Cobrança",
       "Custos",
-      "Escrita Fiscal e Contabilidade",
+      "Departamento Pessoal",
+      "Ferramentas para Gestão de Projetos",
       "Gestão de Pessoas",
+      "Marketing",
       "Operador de Caixa",
       "Operador de Telemarketing",
-      "RH",
+      "Recursos Humanos",
       "Secretariado",
+      "Segurança do Trabalho",
       "Vendas",
     ],
   },
@@ -218,41 +233,43 @@ export const PROVAS_CATEGORIAS: CategoriaProva[] = [
     nome: "Design Gráfico",
     cursos: [
       "Adobe Illustrator",
-      "Adobe Photoshop I",
-      "Adobe Photoshop II",
-      "Adobe Photoshop III",
+      "Adobe Photoshop",
       "Adobe Premiere",
+      "After Effects",
       "Canva",
-      "CorelDraw I",
-      "CorelDraw II",
+      "CorelDraw",
       "Design Gráfico",
+      "Figma",
+      "Premiere",
     ],
   },
   {
     nome: "Desenvolvimento Web e Mobile",
     cursos: [
+      "Apps Mobile com Ionic e Cordova",
       "Cordova",
-      "Criando Aplicativo com Angular",
       "Criando Aplicativos Mobile Ionic",
+      "Criando com Angular",
+      "Criando seu Site",
       "CSS",
       "Desenvolvimento WEB - Html, CSS e JavaScript",
       "Fundamentos Web",
       "HTML",
-      "JavaScript",
+      "Javascript",
       "WordPress",
     ],
   },
   {
     nome: "Programação e Dados",
-    cursos: ["Banco de Dados", "C#", "Inteligência Artificial", "Lógica de Programação", "Python"],
+    cursos: ["Análise de Dados", "Banco de Dados | SQL", "C#", "Inteligência Artificial", "Lógica de Programação", "Python"],
   },
   {
     nome: "Marketing",
-    cursos: ["Google Adwords", "Marketing Digital I", "Marketing Digital II"],
+    cursos: ["Assistente de Propaganda e Marketing", "Google Adwords", "Marketing Digital", "Marketing Pessoal"],
   },
   {
     nome: "Saúde",
-    cursos: ["Auxiliar Médico", "Farmácia", "Recepcionista de Saúde"],
+    cursos: ["Assistente de Saúde Bucal", "Atendente de Farmácia", "Auxiliar Médico", "Recepcionista de Serviços de Saúde"],
   },
   {
     nome: "Comportamental",
@@ -262,7 +279,6 @@ export const PROVAS_CATEGORIAS: CategoriaProva[] = [
       "Inteligência Emocional",
       "Liderança",
       "Matemática Financeira",
-      "Segurança no Trabalho",
     ],
   },
   {

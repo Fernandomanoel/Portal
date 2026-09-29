@@ -1387,6 +1387,15 @@ export const ATIVIDADES: Curso[] = [
     cor: "#a16207",
     materiais: [],
   },
+  {
+    slug: "google-adwords",
+    titulo: "Google Adwords",
+    descricao: "Campanhas de anúncios e links patrocinados no Google Ads.",
+    categoria: "marketing",
+    sigla: "GA",
+    cor: "#34a853",
+    materiais: [],
+  },
 ];
 
 export function acharCurso(slug: string): Curso | undefined {
