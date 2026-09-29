@@ -66,8 +66,14 @@ export interface ProvaPratica extends RegrasProva {
   /** Material de apoio: o enunciado em PDF, a planilha de dados. */
   material?: { rotulo: string; url: string };
   /** Tabela de exemplo só para ilustrar o formato esperado (útil em Excel) —
-   *  não é editável, não é enviada, é puramente uma demonstração visual. */
-  exemploTabela?: { colunas: string[]; linhas: string[][] };
+   *  não é editável, não é enviada, é puramente uma demonstração visual.
+   *  `rotulo` troca a legenda padrão (“não precisa ser igual”) quando a
+   *  tabela traz os dados que o aluno tem de digitar. */
+  exemploTabela?: { rotulo?: string; colunas: string[]; linhas: string[][] };
+  /** Imagem de exemplo só para ilustrar o resultado esperado (ex.: um e-mail
+   *  com assinatura). `url` é um caminho em `public/` — a prova é carregada
+   *  pelo servidor, então não pode importar arquivo de `src/assets/`. */
+  exemploImagem?: { url: string; alt: string; legenda?: string };
   envioArquivo: EnvioArquivo;
 }
 

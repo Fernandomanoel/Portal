@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M20 26 a10 10 0 0 1 10 -10 h580 a10 10 0 0 1 10 10 v26 h-600 z" fill="#0f6cbd"/>
+  <text x="320" y="34" font-size="12" fill="#ffffff" text-anchor="middle">Nova mensagem - Outlook</text>
+  <g fill="#ffffff" font-size="12"><text x="556" y="34">—</text><rect x="578" y="26" width="9" height="9" fill="none" stroke="#ffffff"/><text x="600" y="35">×</text></g>
+  <rect x="20" y="42" width="600" height="34" fill="#f3f4f6"/>
+  <rect x="32" y="48" width="66" height="22" rx="4" fill="#0f6cbd"/>
+  <text x="65" y="63" font-size="11.5" fill="#ffffff" font-weight="700" text-anchor="middle">Enviar</text>
+  <text x="112" y="63" font-size="11" fill="#374151">Anexar</text>
+  <text x="164" y="63" font-size="11" fill="#374151">Assinatura</text>
+  <text x="36" y="98" font-size="11" fill="#6b7280">Para</text>
+  <text x="86" y="98" font-size="11.5" fill="#1f2937">professora@exemplo.com</text>
+  <line x1="32" y1="105" x2="424" y2="105" stroke="#e5e7eb"/>
+  <text x="36" y="122" font-size="11" fill="#6b7280">Cc</text>
+  <text x="86" y="122" font-size="11.5" fill="#1f2937">coordenacao@exemplo.com</text>
+  <line x1="32" y1="129" x2="424" y2="129" stroke="#e5e7eb"/>
+  <text x="36" y="146" font-size="11" fill="#6b7280">Assunto</text>
+  <text x="86" y="146" font-size="11.5" fill="#1f2937">Avaliação Internet e Outlook – Maria Silva</text>
+  <line x1="32" y1="153" x2="424" y2="153" stroke="#e5e7eb"/>
+  <text x="36" y="176" font-size="12" fill="#1f2937">Prezada professora,</text>
+  <text x="36" y="198" font-size="12" fill="#1f2937">Segue em anexo a pesquisa sobre a história da internet</text>
+  <text x="36" y="214" font-size="12" fill="#1f2937">no Brasil e a imagem solicitada na avaliação.</text>
+  <text x="36" y="238" font-size="12" fill="#1f2937">Atenciosamente,</text>
+  <rect x="30" y="250" width="396" height="64" rx="4" fill="#f8fafc" stroke="#60a5fa" stroke-width="1.4" stroke-dasharray="4 3"/>
+  <text x="40" y="270" font-size="12.5" fill="#1f2937" font-weight="700">Maria Silva</text>
+  <text x="40" y="285" font-size="10.5" fill="#6b7280">Aluna do curso de Informática</text>
+  <text x="40" y="300" font-size="10.5" fill="#6b7280">Tel.: (00) 90000-0000  •  maria.silva@exemplo.com</text>
+  <rect x="32" y="328" width="160" height="24" rx="4" fill="#eef2fb" stroke="#cbd5e1"/>
+  <text x="42" y="344" font-size="10" fill="#1f2937">Internet_MariaSilva.docx</text>
+  <rect x="200" y="328" width="100" height="24" rx="4" fill="#eef2fb" stroke="#cbd5e1"/>
+  <text x="210" y="344" font-size="10" fill="#1f2937">tecnologia.jpg</text>
+  <rect x="440" y="90" width="168" height="64" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="452" y="110" font-size="11.5" font-weight="700" fill="#0b4a9e">Assunto claro</text>
+  <text x="452" y="128" font-size="11" fill="#1f2937">nome da prova</text>
+  <text x="452" y="144" font-size="11" fill="#1f2937">e o seu nome</text>
+  <rect x="440" y="160" width="168" height="64" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="452" y="180" font-size="11.5" font-weight="700" fill="#0b4a9e">Corpo formal</text>
+  <text x="452" y="198" font-size="11" fill="#1f2937">saudação, o que está</text>
+  <text x="452" y="214" font-size="11" fill="#1f2937">anexado, despedida</text>
+  <rect x="440" y="240" width="168" height="64" rx="8" fill="#0b4a9e"/>
+  <text x="452" y="260" font-size="11.5" font-weight="700" fill="#ffffff">Assinatura</text>
+  <text x="452" y="278" font-size="11" fill="#dbeafe">nome, curso e contato</text>
+  <text x="452" y="294" font-size="11" fill="#dbeafe">já vem pronta</text>
+  <rect x="440" y="314" width="168" height="48" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="452" y="334" font-size="11.5" font-weight="700" fill="#0b4a9e">Anexos</text>
+  <text x="452" y="352" font-size="11" fill="#1f2937">os 2 arquivos juntos</text>
+</svg>

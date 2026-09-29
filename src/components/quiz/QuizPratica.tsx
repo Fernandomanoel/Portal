@@ -4,10 +4,10 @@ import { Icone } from "@/components/Icone";
 import type { ProvaPratica } from "@/types/quiz";
 import estilos from "./Quiz.module.css";
 
-/** "Tarefa 3 — Sensor de Armazenamento: ..." e "Passo 2 (Dados): ..." são a
- *  mesma ideia (um passo numerado com título opcional) em dois formatos que
+/** "Tarefa 3 — Sensor de Armazenamento: ...", "Passo 2 (Dados): ..." e
+ *  "Questão 1 (Totais): ..." são a mesma ideia (um passo numerado com título opcional) em dois formatos que
  *  já existem nas provas — o mesmo molde de card cobre os dois. */
-const CABECALHO_PASSO = /^(Tarefa|Passo)\s+(\d+)\s*(?:\(([^)]+)\))?\s*(?:—\s*([^:]+))?:\s*(.*)$/su;
+const CABECALHO_PASSO = /^(Tarefa|Passo|Questão)\s+(\d+)\s*(?:\(([^)]+)\))?\s*(?:—\s*([^:]+))?:\s*(.*)$/su;
 
 /** Nome de arquivo citado numa instrução ("salve como Print1_Sobre.png"):
  *  vira um destaque de código para ficar fácil de copiar o nome exato. */
@@ -94,7 +94,9 @@ export function QuizPratica({ prova }: { prova: ProvaPratica }) {
 
       {prova.exemploTabela && (
         <div className={estilos.exemplo}>
-          <p className={estilos.exemploRotulo}>Exemplo ilustrativo — sua tabela não precisa ser igual</p>
+          <p className={estilos.exemploRotulo}>
+            {prova.exemploTabela.rotulo ?? "Exemplo ilustrativo — sua tabela não precisa ser igual"}
+          </p>
           <div className={estilos.exemploTabelaCaixa}>
             <table className={estilos.exemploTabela}>
               <thead>
@@ -116,6 +118,14 @@ export function QuizPratica({ prova }: { prova: ProvaPratica }) {
             </table>
           </div>
         </div>
+      )}
+
+      {prova.exemploImagem && (
+        <figure className={estilos.exemploImagem}>
+          <p className={estilos.exemploRotulo}>Exemplo ilustrativo — o seu e-mail não precisa ser igual</p>
+          <img src={prova.exemploImagem.url} alt={prova.exemploImagem.alt} />
+          {prova.exemploImagem.legenda && <figcaption>{prova.exemploImagem.legenda}</figcaption>}
+        </figure>
       )}
 
       {prova.material && (
