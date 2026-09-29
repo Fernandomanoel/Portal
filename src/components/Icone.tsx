@@ -47,7 +47,9 @@ export type NomeIcone =
   | "relogio"
   | "sair"
   | "usuario"
-  | "video";
+  | "video"
+  | "saude"
+  | "bussola";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -289,6 +291,18 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     <>
       <rect x="3" y="5.5" width="14" height="13" rx="2" />
       <path d="m17 10 4-2.7v9.4L17 14" />
+    </>
+  ),
+  saude: (
+    <>
+      <path d="M12 20.5C6.5 16.8 3.5 13.4 3.5 9.8a4.8 4.8 0 0 1 8.5-3 4.8 4.8 0 0 1 8.5 3c0 3.6-3 7-8.5 10.7Z" />
+      <path d="M9.5 11.5h2l1-2.2 1.5 4.4 1-2.2h1.5" />
+    </>
+  ),
+  bussola: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m14.8 9.2-1.3 4-4 1.3 1.3-4Z" />
     </>
   ),
 };

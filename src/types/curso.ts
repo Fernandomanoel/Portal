@@ -2,7 +2,10 @@ export type CategoriaAtividade =
   | "informatica"
   | "administrativa"
   | "programacao"
-  | "design";
+  | "design"
+  | "marketing"
+  | "saude"
+  | "comportamental";
 
 export type TipoMaterial = "pdf" | "doc" | "planilha" | "slides" | "video" | "imagem" | "link";
 
@@ -68,5 +71,20 @@ export const CATEGORIAS: Categoria[] = [
     id: "design",
     nome: "Design",
     descricao: "Imagem, layout e ferramentas de criação.",
+  },
+  {
+    id: "marketing",
+    nome: "Marketing",
+    descricao: "Propaganda, marca pessoal e divulgação.",
+  },
+  {
+    id: "saude",
+    nome: "Saúde",
+    descricao: "Atendimento e rotinas de clínicas e farmácias.",
+  },
+  {
+    id: "comportamental",
+    nome: "Comportamental",
+    descricao: "Habilidades pessoais e de gestão para o trabalho.",
   },
 ];
