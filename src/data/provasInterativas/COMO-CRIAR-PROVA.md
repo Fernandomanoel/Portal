@@ -23,7 +23,7 @@ Depois de criar ou renomear um `.prova.ts`, rode `npm run dev` ou
 `npm run build`: os dois regeneram `servidor/provas.gerado.ts`, a lista de
 provas que o servidor conhece.
 
-## Os três tipos
+## Os quatro tipos
 
 ### Múltipla escolha — corrigida na hora
 
@@ -71,6 +71,43 @@ const prova: ProvaInterativa = {
   envioArquivo: { obrigatorio: true, extensoes: [".xlsx"], rotulo: "Envie a planilha com as fórmulas" },
 };
 ```
+
+### Mista — múltipla escolha + dissertativa autocorrigida, no mesmo formulário
+
+Pensada para provas que hoje são só múltipla escolha ficarem mais ricas sem
+virar 100% manual: cada `pergunta` do array escolhe seu próprio formato.
+Continua **toda autocorrigida** — a diferença é que uma dissertativa sem
+correspondência não vira "errada" na hora, ela fica **a revisar** até o
+professor conferir (ver `src/lib/correcaoTexto.ts`: a comparação ignora
+maiúsculas, acentos e espaço extra, e conta como certa se a resposta do
+aluno **contiver** alguma das `respostasAceitas`).
+
+```ts
+const prova: ProvaInterativa = {
+  tipo: "mista",
+  titulo: "Custos — Prova final",
+  perguntas: [
+    {
+      pergunta: "O que é custo fixo?",
+      opcoes: ["Varia com a produção", "Não varia com a produção", "É sempre imposto"],
+      correta: 1,
+    },
+    {
+      tipo: "dissertativa",
+      pergunta: "Dê um exemplo de custo fixo numa fábrica.",
+      // Várias formas aceitas da mesma resposta certa — nunca só uma.
+      respostasAceitas: ["aluguel", "salário", "depreciação"],
+    },
+  ],
+};
+```
+
+Se nenhuma dissertativa ficar "a revisar" no envio, a nota sai automática na
+hora, igual à múltipla escolha pura. Se alguma ficar, a nota do envio some
+(`null`) até o professor lançar — o aluno vê uma mensagem avisando que o
+professor vai conferir e pode ajustar a nota. **`respostasAceitas` é
+gabarito**: nunca vaza pro navegador do aluno (o servidor tira antes de
+entregar a prova), só a área do professor vê a lista completa.
 
 ## Regras que valem para qualquer tipo
 

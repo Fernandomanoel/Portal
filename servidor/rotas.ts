@@ -191,7 +191,9 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
     iniciadaEm,
     enviadaEm: agora.toISOString(),
     respostas: validacao.respostas,
-    ...(correcao ? { correcao: { acertos: correcao.acertos, total: correcao.total } } : {}),
+    ...(correcao
+      ? { correcao: { acertos: correcao.acertos, total: correcao.total, ...("aRevisar" in correcao && correcao.aRevisar ? { aRevisar: correcao.aRevisar } : {}) } }
+      : {}),
     // Múltipla escolha com arquivo anexo ainda sai com a nota automática; o
     // professor pode sobrescrever na área dele.
     nota: correcao ? correcao.nota : null,

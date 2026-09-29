@@ -5,11 +5,12 @@ import { useProvaEmAndamento } from "@/hooks/ProvaEmAndamento";
 import { useTravaProva } from "@/hooks/useTravaProva";
 import { ErroApi, enviarProva } from "@/lib/apiProvas";
 import type { ReciboEnvio, SaidaProva } from "@/types/envio";
-import { ehDescritiva, ehPratica, totalDeQuestoes, type ProvaParaAluno } from "@/types/quiz";
+import { ehDescritiva, ehMista, ehPratica, totalDeQuestoes, type ProvaParaAluno } from "@/types/quiz";
 import { CampoArquivo, problemaDoArquivo } from "./CampoArquivo";
 import { ProvaBloqueada } from "./ProvaBloqueada";
 import { ProvaIdentificacao } from "./ProvaIdentificacao";
 import { QuizDescritiva } from "./QuizDescritiva";
+import { QuizMista } from "./QuizMista";
 import { QuizMultiplaEscolha } from "./QuizMultiplaEscolha";
 import { QuizNota } from "./QuizNota";
 import { QuizPratica } from "./QuizPratica";
@@ -37,6 +38,14 @@ interface Props {
 function provaTravada(prova: ProvaParaAluno) {
   if (prova.permiteSairDaAba !== undefined) return !prova.permiteSairDaAba;
   return !ehPratica(prova);
+}
+
+function mensagemResultado(recibo: ReciboEnvio, nomeAluno: string, hora: string) {
+  if (!recibo.correcao) return `${nomeAluno}, sua prova foi enviada em ${hora}. O professor vai corrigir e lançar a nota.`;
+  const { acertos, total, aRevisar } = recibo.correcao;
+  if (!aRevisar) return `${nomeAluno}, você acertou ${acertos} de ${total} questões. Prova enviada em ${hora}.`;
+  const singular = aRevisar === 1;
+  return `${nomeAluno}, ${acertos} de ${total} questões já foram confirmadas. ${aRevisar} ${singular ? "questão vai" : "questões vão"} passar pelo professor(a) — se a resposta estiver certa, a nota é ajustada. Prova enviada em ${hora}.`;
 }
 
 export function QuizContainer({ prova, provaId, voltarPara }: Props) {
@@ -84,7 +93,9 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
     ? 0
     : ehDescritiva(prova)
       ? textos.filter((texto) => texto.trim().length > 0).length
-      : Object.keys(escolhas).length;
+      : ehMista(prova)
+        ? prova.perguntas.filter((pergunta, i) => (pergunta.tipo === "dissertativa" ? textos[i]?.trim().length > 0 : escolhas[i] !== undefined)).length
+        : Object.keys(escolhas).length;
 
   const problemaArquivo = arquivo && prova.envioArquivo ? problemaDoArquivo(arquivo, prova.envioArquivo) : null;
   const faltaArquivo = !!prova.envioArquivo?.obrigatorio && !arquivo;
@@ -117,7 +128,9 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
       ? []
       : ehDescritiva(prova)
         ? textos
-        : Array.from({ length: totalQuestoes }, (_, i) => escolhas[i] ?? null);
+        : ehMista(prova)
+          ? prova.perguntas.map((pergunta, i) => (pergunta.tipo === "dissertativa" ? (textos[i] ?? "") : (escolhas[i] ?? null)))
+          : Array.from({ length: totalQuestoes }, (_, i) => escolhas[i] ?? null);
     try {
       const recibo = await enviarProva({ chave, provaId, nomeAluno, iniciadaEm, respostas, saidas }, arquivo);
       definirFase({ tipo: "enviada", recibo });
@@ -143,14 +156,7 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
         <header className={estilos.topo}>
           <h1 className={estilos.titulo}>{prova.titulo}</h1>
         </header>
-        <QuizNota
-          nota={recibo.nota}
-          detalhe={
-            recibo.correcao
-              ? `${nomeAluno}, você acertou ${recibo.correcao.acertos} de ${recibo.correcao.total} questões. Prova enviada em ${hora}.`
-              : `${nomeAluno}, sua prova foi enviada em ${hora}. O professor vai corrigir e lançar a nota.`
-          }
-        />
+        <QuizNota nota={recibo.nota} detalhe={mensagemResultado(recibo, nomeAluno, hora)} />
         <div className={estilos.acoes}>
           <button type="button" className={estilos.sair} onClick={() => navegar(voltarPara)}>
             Voltar para as provas
@@ -180,6 +186,20 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
         <QuizDescritiva
           prova={prova}
           textos={textos}
+          aoEscrever={(pergunta, texto) =>
+            definirTextos((atual) => {
+              const proximo = [...atual];
+              proximo[pergunta] = texto;
+              return proximo;
+            })
+          }
+        />
+      ) : ehMista(prova) ? (
+        <QuizMista
+          prova={prova}
+          escolhas={escolhas}
+          textos={textos}
+          aoResponder={(pergunta, opcao) => definirEscolhas((atual) => ({ ...atual, [pergunta]: opcao }))}
           aoEscrever={(pergunta, texto) =>
             definirTextos((atual) => {
               const proximo = [...atual];

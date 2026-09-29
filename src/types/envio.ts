@@ -25,14 +25,17 @@ export interface Envio {
   /** Caminho do `.prova.ts` dentro de `provasInterativas/` ("IA/prompts"). */
   provaId: string;
   provaTitulo: string;
-  tipoProva: "multipla_escolha" | "descritiva" | "pratica";
+  tipoProva: "multipla_escolha" | "descritiva" | "pratica" | "mista";
   nomeAluno: string;
   iniciadaEm: string;
   enviadaEm: string;
-  /** Múltipla escolha: índice escolhido por questão. Descritiva: o texto. */
+  /** Múltipla escolha: índice escolhido por questão. Descritiva: o texto.
+   *  Mista: mistura os dois, na ordem das perguntas da prova. */
   respostas: (number | string | null)[];
-  /** Só em múltipla escolha, corrigida pelo servidor no envio. */
-  correcao?: { acertos: number; total: number };
+  /** Múltipla escolha e mista, corrigida pelo servidor no envio. `aRevisar`
+   *  só existe na mista: quantas dissertativas não bateram com nenhuma
+   *  resposta aceita (a nota fica pendente até o professor conferir). */
+  correcao?: { acertos: number; total: number; aRevisar?: number };
   /** 0 a 10. Nula até o professor corrigir (descritiva e prática). */
   nota: number | null;
   comentario?: string;
@@ -48,7 +51,7 @@ export interface Envio {
 export interface ReciboEnvio {
   id: string;
   nota: number | null;
-  correcao?: { acertos: number; total: number };
+  correcao?: { acertos: number; total: number; aRevisar?: number };
   enviadaEm: string;
 }
 

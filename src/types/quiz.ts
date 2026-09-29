@@ -1,9 +1,25 @@
 export interface PerguntaMultiplaEscolha {
+  tipo?: "multipla_escolha";
   pergunta: string;
   opcoes: string[];
   /** Índice da opção correta. Fica no servidor: nunca chega ao navegador do aluno. */
   correta: number;
 }
+
+/**
+ * Pergunta dissertativa que o servidor tenta corrigir sozinho, comparando a
+ * resposta do aluno com uma lista de respostas aceitas (ver
+ * `src/lib/correcaoTexto.ts`: ignora maiúsculas, acentos e espaço extra).
+ * Quando a resposta não bate com nenhuma, a questão fica "a revisar" — nunca
+ * marcada errada sem o professor conferir.
+ */
+export interface PerguntaDissertativaAuto {
+  tipo: "dissertativa";
+  pergunta: string;
+  respostasAceitas: string[];
+}
+
+export type PerguntaMista = PerguntaMultiplaEscolha | PerguntaDissertativaAuto;
 
 /** Arquivo que o aluno anexa à prova (a planilha da prova de Excel, por exemplo). */
 export interface EnvioArquivo {
@@ -55,7 +71,18 @@ export interface ProvaPratica extends RegrasProva {
   envioArquivo: EnvioArquivo;
 }
 
-export type ProvaInterativa = ProvaMultiplaEscolha | ProvaDescritiva | ProvaPratica;
+/**
+ * Prova mista: mistura múltipla escolha com dissertativas autocorrigidas no
+ * mesmo formulário. Continua 100% autocorrigida — a nota só fica pendente
+ * (null) quando alguma dissertativa cai em "a revisar".
+ */
+export interface ProvaMista extends RegrasProva {
+  tipo: "mista";
+  titulo: string;
+  perguntas: PerguntaMista[];
+}
+
+export type ProvaInterativa = ProvaMultiplaEscolha | ProvaDescritiva | ProvaPratica | ProvaMista;
 
 /**
  * A prova como chega ao navegador do aluno: igual, menos o gabarito. Quem
@@ -64,7 +91,9 @@ export type ProvaInterativa = ProvaMultiplaEscolha | ProvaDescritiva | ProvaPrat
 export type ProvaMultiplaEscolhaAluno = Omit<ProvaMultiplaEscolha, "perguntas"> & {
   perguntas: Omit<PerguntaMultiplaEscolha, "correta">[];
 };
-export type ProvaParaAluno = ProvaMultiplaEscolhaAluno | ProvaDescritiva | ProvaPratica;
+export type PerguntaMistaAluno = Omit<PerguntaMultiplaEscolha, "correta"> | Omit<PerguntaDissertativaAuto, "respostasAceitas">;
+export type ProvaMistaAluno = Omit<ProvaMista, "perguntas"> & { perguntas: PerguntaMistaAluno[] };
+export type ProvaParaAluno = ProvaMultiplaEscolhaAluno | ProvaDescritiva | ProvaPratica | ProvaMistaAluno;
 
 export const NOTA_APROVACAO = 7;
 
@@ -76,7 +105,11 @@ export function ehPratica(prova: ProvaParaAluno): prova is ProvaPratica {
   return prova.tipo === "pratica";
 }
 
-export function tipoDaProva(prova: ProvaParaAluno): "multipla_escolha" | "descritiva" | "pratica" {
+export function ehMista(prova: ProvaParaAluno): prova is ProvaMistaAluno {
+  return prova.tipo === "mista";
+}
+
+export function tipoDaProva(prova: ProvaParaAluno): "multipla_escolha" | "descritiva" | "pratica" | "mista" {
   return prova.tipo ?? "multipla_escolha";
 }
 

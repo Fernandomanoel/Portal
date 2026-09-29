@@ -50,6 +50,14 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "8 tarefas",
     },
   ],
+  "ADM": [
+    {
+      tipo: "quiz",
+      rotulo: "Prova de Administração",
+      caminho: "ADM/prova-administracao",
+      tamanho: "10 questões",
+    },
+  ],
 }; // <-- O objeto PROVAS_MANIFEST é fechado aqui.
 
 export const PROVAS_CATEGORIAS: CategoriaProva[] = [
@@ -75,6 +83,7 @@ export const PROVAS_CATEGORIAS: CategoriaProva[] = [
   {
     nome: "Administrativo e Gestão",
     cursos: [
+      "ADM",
       "Assistente ADM",
       "Assistente de Departamento Pessoal",
       "Assistente de Logística",
