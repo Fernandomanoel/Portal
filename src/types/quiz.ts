@@ -49,6 +49,9 @@ export interface ProvaPratica extends RegrasProva {
   instrucoes: string[];
   /** Material de apoio: o enunciado em PDF, a planilha de dados. */
   material?: { rotulo: string; url: string };
+  /** Tabela de exemplo só para ilustrar o formato esperado (útil em Excel) —
+   *  não é editável, não é enviada, é puramente uma demonstração visual. */
+  exemploTabela?: { colunas: string[]; linhas: string[][] };
   envioArquivo: EnvioArquivo;
 }
 

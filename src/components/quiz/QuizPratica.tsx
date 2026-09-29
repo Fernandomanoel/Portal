@@ -92,6 +92,32 @@ export function QuizPratica({ prova }: { prova: ProvaPratica }) {
         </ul>
       )}
 
+      {prova.exemploTabela && (
+        <div className={estilos.exemplo}>
+          <p className={estilos.exemploRotulo}>Exemplo ilustrativo — sua tabela não precisa ser igual</p>
+          <div className={estilos.exemploTabelaCaixa}>
+            <table className={estilos.exemploTabela}>
+              <thead>
+                <tr>
+                  {prova.exemploTabela.colunas.map((coluna, indice) => (
+                    <th key={indice}>{coluna}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {prova.exemploTabela.linhas.map((linha, indice) => (
+                  <tr key={indice}>
+                    {linha.map((celula, indiceCelula) => (
+                      <td key={indiceCelula}>{celula}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {prova.material && (
         <a href={prova.material.url} target="_blank" rel="noreferrer" className={estilos.material}>
           <Icone nome="pdf" tamanho={18} />

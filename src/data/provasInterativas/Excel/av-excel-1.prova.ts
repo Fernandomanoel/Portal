@@ -16,6 +16,13 @@ const prova: ProvaInterativa = {
     "Passo 10: Selecione a coluna dos Nomes e a coluna das Médias, e crie um Gráfico de Pizza demonstrando o desempenho da turma.",
     "Passo 11: Guarde a planilha no seu computador e envie o ficheiro final no campo abaixo."
   ],
+  exemploTabela: {
+    colunas: ["Nome do Aluno", "Nota 1", "Nota 2", "Nota 3", "Soma Total", "Média", "Situação"],
+    linhas: [
+      ["Ana", "8", "7", "9", "24", "8,0", "Aprovado"],
+      ["Carlos", "5", "6", "6", "17", "5,7", "Reprovado"],
+    ],
+  },
   envioArquivo: {
     obrigatorio: true,
     extensoes: [".xlsx"],

@@ -13,6 +13,13 @@ const prova: ProvaInterativa = {
     "Passo 7 (Gráfico): Selecione os dados das colunas 'Produto' e 'Total'. Insira um Gráfico de Colunas e altere o título do gráfico para 'Gastos por Produto'.",
     "Passo 8 (Envio): Guarde o ficheiro no seu computador e envie-o no campo abaixo."
   ],
+  exemploTabela: {
+    colunas: ["Produto", "Quantidade", "Preço Unitário", "Total"],
+    linhas: [
+      ["Arroz", "2", "R$ 25,00", "R$ 50,00"],
+      ["Feijão", "3", "R$ 8,00", "R$ 24,00"],
+    ],
+  },
   envioArquivo: {
     obrigatorio: true,
     extensoes: [".xlsx"],
