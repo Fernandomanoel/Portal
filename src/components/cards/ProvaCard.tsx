@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { Icone } from "@/components/Icone";
 import { ListaProvas } from "@/components/provas/ListaProvas";
@@ -14,6 +14,25 @@ interface Props {
 export function ProvaCard({ titulo, categoria, arquivos }: Props) {
   const [aberto, definirAberto] = useState(false);
   const idLista = useId();
+  const raiz = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!aberto) return;
+    function fora(evento: PointerEvent) {
+      if (!raiz.current?.contains(evento.target as Node)) definirAberto(false);
+    }
+    function tecla(evento: KeyboardEvent) {
+      if (evento.key !== "Escape") return;
+      definirAberto(false);
+      raiz.current?.querySelector("button")?.focus();
+    }
+    document.addEventListener("pointerdown", fora);
+    document.addEventListener("keydown", tecla);
+    return () => {
+      document.removeEventListener("pointerdown", fora);
+      document.removeEventListener("keydown", tecla);
+    };
+  }, [aberto]);
 
   if (arquivos.length === 0) {
     return (
@@ -27,7 +46,7 @@ export function ProvaCard({ titulo, categoria, arquivos }: Props) {
   const contagem = arquivos.length === 1 ? "1 prova" : `${arquivos.length} provas`;
 
   return (
-    <article className={aberto ? `${estilos.card} ${estilos.cardAberto}` : estilos.card}>
+    <article ref={raiz} className={aberto ? `${estilos.card} ${estilos.cardAberto}` : estilos.card}>
       <h3 className={estilos.cabecalho}>
         <button
           type="button"

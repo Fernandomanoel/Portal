@@ -1,4 +1,5 @@
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: var(--space-3);
@@ -15,7 +16,8 @@
 }
 
 .cardAberto {
-  border-color: var(--line-strong);
+  z-index: 20;
+  border-color: var(--brand);
   box-shadow: var(--shadow-2);
 }
 
@@ -128,22 +130,35 @@
 }
 
 .corpo {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 220ms var(--ease-out);
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 0;
+  right: 0;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out),
+    visibility 0s linear 160ms;
 }
 
 .corpoAberto {
-  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
 }
 
 .corpoInterno {
   min-height: 0;
-  overflow: hidden;
 }
 
 .lista {
-  padding: var(--space-3) var(--space-1) var(--space-1);
+  padding: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
