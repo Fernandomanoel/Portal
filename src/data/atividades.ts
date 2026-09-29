@@ -737,14 +737,7 @@ export const ATIVIDADES: Curso[] = [
     categoria: "informatica",
     sigla: "W",
     cor: "#2b579a",
-    materiais: [
-      {
-        titulo: "Atividade interativa (Genially)",
-        descricao: "Atividade extra interativa, aberta direto no navegador.",
-        tipo: "link",
-        url: "https://view.genially.com/6939df52cb698f4dbb4d8e35",
-      },
-    ],
+    materiais: [],
     atividades: [
       {
         titulo: "A Importância do Celular na Vida Escolar",

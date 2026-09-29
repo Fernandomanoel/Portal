@@ -1,3 +1,4 @@
+import imagemGrafico from "@/assets/atividades/powerpoint/grafico-inserido.svg";
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
 
 // Conteúdo de Portal-Atividades/atividades/paginas/powerpoint-tabelas-e-graficos.html, sem cortes.
@@ -163,6 +164,11 @@ const atividade: AtividadeAutocorrigida = {
           texto: "Feche a planilha — o gráfico no slide atualiza sozinho!",
         },
       ],
+      imagem: {
+        url: imagemGrafico,
+        alt: "Slide do PowerPoint com um gráfico de barras, ao lado de uma mini planilha do Excel aberta com as colunas Mês e Vendas.",
+        legenda: "O gráfico e a planilha ficam ligados: mude um número na planilha e a barra correspondente muda no slide.",
+      },
     },
     {
       id: "formatando-e-destacando-deixando-o-grafico-facil",
