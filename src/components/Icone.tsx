@@ -6,6 +6,7 @@ export type NomeIcone =
   | "lua"
   | "seta-direita"
   | "seta-esquerda"
+  | "seta-baixo"
   | "cadeado"
   | "pdf"
   | "doc"
@@ -65,6 +66,7 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
   lua: <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2Z" />,
   "seta-direita": <path d="M4 12h15m-6-6 6 6-6 6" />,
   "seta-esquerda": <path d="M20 12H5m6 6-6-6 6-6" />,
+  "seta-baixo": <path d="m6 9 6 6 6-6" />,
   cadeado: (
     <>
       <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" />
