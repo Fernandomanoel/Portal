@@ -58,6 +58,10 @@ export function liberarProva(usuario: string, senha: string) {
   return chamar<{ nome: string }>("liberacoes", comJson("POST", { usuario, senha }));
 }
 
+/** Só existe enquanto a nota está pendente (`correcao.aRevisar > 0`): fecha a
+ *  nota provisória ali mesmo, sem esperar o professor revisar. */
+export const aceitarResultadoProvisorio = (id: string) => chamar<ReciboEnvio>(`envios/${encodeURIComponent(id)}/aceitar`, { method: "POST" });
+
 // --------------------------------------------------------------- professor
 
 export const entrar = (usuario: string, senha: string) => chamar<Professor>("sessao", comJson("POST", { usuario, senha }));

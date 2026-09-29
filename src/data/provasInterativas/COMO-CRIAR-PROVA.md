@@ -105,7 +105,15 @@ const prova: ProvaInterativa = {
 Se nenhuma dissertativa ficar "a revisar" no envio, a nota sai automática na
 hora, igual à múltipla escolha pura. Se alguma ficar, a nota do envio some
 (`null`) até o professor lançar — o aluno vê uma mensagem avisando que o
-professor vai conferir e pode ajustar a nota. **`respostasAceitas` é
+professor vai conferir e pode ajustar a nota.
+
+Nesse caso o aluno também vê a nota provisória (contando a(s) dissertativa(s)
+pendente(s) como errada) e pode **aceitar esse resultado na hora**, em vez de
+esperar o professor: `POST /api/envios/<id>/aceitar`, público, mas só funciona
+enquanto a nota estiver mesmo pendente (nota `null` e `aRevisar > 0`) —
+tentar de novo depois de já lançada dá erro. A tela pede confirmação em dois
+passos antes de mandar, porque é definitivo: uma vez aceito, essa parte não
+volta a ficar disponível para o professor revisar. **`respostasAceitas` é
 gabarito**: nunca vaza pro navegador do aluno (o servidor tira antes de
 entregar a prova), só a área do professor vê a lista completa.
 

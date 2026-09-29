@@ -185,8 +185,41 @@ legend.enunciado {
   font-size: var(--text-sm);
 }
 
+.provisoria {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--warning-tint);
+  border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
+}
 
+.provisoriaTexto {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--text-sm);
+  flex: 1;
+  min-width: 220px;
+}
 
+.aceitarProvisoria {
+  flex: none;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--warning) 45%, transparent);
+  background: var(--surface);
+  color: var(--warning);
+  font-weight: 600;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.aceitarProvisoria:hover {
+  background: var(--warning-tint);
+}
 
 
 

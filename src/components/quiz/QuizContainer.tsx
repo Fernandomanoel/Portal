@@ -3,12 +3,13 @@ import { useBlocker, useNavigate } from "react-router-dom";
 
 import { useProvaEmAndamento } from "@/hooks/ProvaEmAndamento";
 import { useTravaProva } from "@/hooks/useTravaProva";
-import { ErroApi, enviarProva } from "@/lib/apiProvas";
+import { ErroApi, aceitarResultadoProvisorio, enviarProva } from "@/lib/apiProvas";
 import type { ReciboEnvio, SaidaProva } from "@/types/envio";
 import { ehDescritiva, ehMista, ehPratica, totalDeQuestoes, type ProvaParaAluno } from "@/types/quiz";
 import { CampoArquivo, problemaDoArquivo } from "./CampoArquivo";
 import { ProvaBloqueada } from "./ProvaBloqueada";
 import { ProvaIdentificacao } from "./ProvaIdentificacao";
+import { QuizAceitarResultado } from "./QuizAceitarResultado";
 import { QuizDescritiva } from "./QuizDescritiva";
 import { QuizMista } from "./QuizMista";
 import { QuizMultiplaEscolha } from "./QuizMultiplaEscolha";
@@ -40,10 +41,17 @@ function provaTravada(prova: ProvaParaAluno) {
   return !ehPratica(prova);
 }
 
+function formatarNota(valor: number) {
+  return valor.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
+
 function mensagemResultado(recibo: ReciboEnvio, nomeAluno: string, hora: string) {
   if (!recibo.correcao) return `${nomeAluno}, sua prova foi enviada em ${hora}. O professor vai corrigir e lançar a nota.`;
   const { acertos, total, aRevisar } = recibo.correcao;
-  if (!aRevisar) return `${nomeAluno}, você acertou ${acertos} de ${total} questões. Prova enviada em ${hora}.`;
+  if (recibo.nota !== null) {
+    if (!aRevisar) return `${nomeAluno}, você acertou ${acertos} de ${total} questões. Prova enviada em ${hora}.`;
+    return `${nomeAluno}, você aceitou o resultado provisório. Nota final: ${formatarNota(recibo.nota)}. Prova enviada em ${hora}.`;
+  }
   const singular = aRevisar === 1;
   return `${nomeAluno}, ${acertos} de ${total} questões já foram confirmadas. ${aRevisar} ${singular ? "questão vai" : "questões vão"} passar pelo professor(a) — se a resposta estiver certa, a nota é ajustada. Prova enviada em ${hora}.`;
 }
@@ -64,6 +72,9 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
   const [arquivo, definirArquivo] = useState<File | null>(null);
   const [saidas, definirSaidas] = useState<SaidaProva[]>([]);
   const [erroEnvio, definirErroEnvio] = useState<string | null>(null);
+  const [mostrarAceitar, definirMostrarAceitar] = useState(false);
+  const [aceitando, definirAceitando] = useState(false);
+  const [erroAceitar, definirErroAceitar] = useState<string | null>(null);
 
   const emAndamento = fase.tipo === "respondendo" || fase.tipo === "enviando";
   const saidaPendente = saidas.find((saida) => !saida.liberadaEm) ?? null;
@@ -140,6 +151,21 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
     }
   }
 
+  async function confirmarAceite() {
+    if (fase.tipo !== "enviada") return;
+    definirAceitando(true);
+    definirErroAceitar(null);
+    try {
+      const novoRecibo = await aceitarResultadoProvisorio(fase.recibo.id);
+      definirFase({ tipo: "enviada", recibo: novoRecibo });
+      definirMostrarAceitar(false);
+    } catch (falha) {
+      definirErroAceitar(falha instanceof ErroApi ? falha.message : "Não foi possível confirmar. Tente de novo.");
+    } finally {
+      definirAceitando(false);
+    }
+  }
+
   if (fase.tipo === "identificacao") {
     return (
       <div className={estilos.prova}>
@@ -151,17 +177,51 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
   if (fase.tipo === "enviada") {
     const { recibo } = fase;
     const hora = new Date(recibo.enviadaEm).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+    const pendente = recibo.nota === null && !!recibo.correcao?.aRevisar;
+    const notaProvisoria = pendente ? Math.round((recibo.correcao!.acertos / recibo.correcao!.total) * 100) / 10 : null;
+
     return (
       <div className={estilos.prova}>
         <header className={estilos.topo}>
           <h1 className={estilos.titulo}>{prova.titulo}</h1>
         </header>
         <QuizNota nota={recibo.nota} detalhe={mensagemResultado(recibo, nomeAluno, hora)} />
+
+        {pendente && notaProvisoria !== null && (
+          <div className={estilos.provisoria}>
+            <p className={estilos.provisoriaTexto}>
+              Se as questões pendentes forem consideradas erradas, sua nota seria <strong>{formatarNota(notaProvisoria)}</strong>. Prefere não
+              esperar o professor?
+            </p>
+            <button
+              type="button"
+              className={estilos.aceitarProvisoria}
+              onClick={() => {
+                definirErroAceitar(null);
+                definirMostrarAceitar(true);
+              }}
+            >
+              Aceitar este resultado agora
+            </button>
+          </div>
+        )}
+
         <div className={estilos.acoes}>
           <button type="button" className={estilos.sair} onClick={() => navegar(voltarPara)}>
             Voltar para as provas
           </button>
         </div>
+
+        {mostrarAceitar && notaProvisoria !== null && (
+          <QuizAceitarResultado
+            notaProvisoria={notaProvisoria}
+            aRevisar={recibo.correcao!.aRevisar!}
+            enviando={aceitando}
+            erro={erroAceitar}
+            aoConfirmar={confirmarAceite}
+            aoCancelar={() => definirMostrarAceitar(false)}
+          />
+        )}
       </div>
     );
   }

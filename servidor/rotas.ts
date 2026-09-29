@@ -342,6 +342,28 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
   // Público: o aluno envia a prova.
   if (partes[0] === "envios" && partes.length === 1 && metodo === "POST") return enviar(requisicao, armazenamento);
 
+  // Público: o aluno aceita a nota provisória de uma prova mista (dissertativa
+  // pendente vira errada) em vez de esperar o professor revisar. Só funciona
+  // enquanto a nota estiver mesmo pendente — nem antes, nem depois de lançada.
+  if (partes[0] === "envios" && partes.length === 3 && partes[2] === "aceitar" && metodo === "POST") {
+    const id = partes[1] ?? "";
+    if (!idValido(id)) return erro(404, "NAO_ENCONTRADO", "Envio não encontrado.");
+    const envio = await armazenamento.lerJson<Envio>(caminhoEnvio(id));
+    if (!envio) return erro(404, "NAO_ENCONTRADO", "Envio não encontrado.");
+    if (envio.nota !== null || !envio.correcao?.aRevisar) {
+      return erro(422, "VALIDATION_ERROR", "Este envio não tem nota provisória pendente.");
+    }
+    const notaProvisoria = Math.round((envio.correcao.acertos / envio.correcao.total) * 100) / 10;
+    const atualizado: Envio = {
+      ...envio,
+      nota: notaProvisoria,
+      corrigidaEm: new Date().toISOString(),
+      corrigidaPor: "Aluno (resultado provisório aceito)",
+    };
+    await armazenamento.salvarJson(caminhoEnvio(id), atualizado);
+    return json(recibo(atualizado));
+  }
+
   // Público: o professor libera, na máquina do aluno, a prova que travou.
   if (partes[0] === "liberacoes" && metodo === "POST") {
     const ip = ipDe(requisicao);
