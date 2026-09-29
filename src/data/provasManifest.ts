@@ -56,6 +56,88 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "8 tarefas",
     },
   ],
+  "Excel Avançado I": [
+    {
+      tipo: "file",
+      rotulo: "Avaliação Prática",
+      caminho: "/provas/excel-avancado-i/avaliacao-pratica.pdf",
+      tamanho: "PDF",
+    },
+    {
+      tipo: "file",
+      rotulo: "Avaliação Prática 2",
+      caminho: "/provas/excel-avancado-i/avaliacao-pratica-2.pdf",
+      tamanho: "PDF",
+    },
+  ],
+  "Excel Avançado II": [
+    {
+      tipo: "file",
+      rotulo: "Avaliação Teste",
+      caminho: "/provas/excel-avancado-ii/avaliacao-teste.pdf",
+      tamanho: "PDF",
+    },
+  ],
+  "Internet e Outlook": [
+    {
+      tipo: "file",
+      rotulo: "Avaliação Prática — versão 1",
+      caminho: "/provas/internet-e-outlook/avaliacao-pratica-1.pdf",
+      tamanho: "PDF",
+    },
+    {
+      tipo: "file",
+      rotulo: "Avaliação Prática — versão 2",
+      caminho: "/provas/internet-e-outlook/avaliacao-pratica-2.pdf",
+      tamanho: "PDF",
+    },
+  ],
+  "Internet, Redes Sociais e Aplicativos": [
+    {
+      tipo: "file",
+      rotulo: "Avaliação Prática — versão 1",
+      caminho: "/provas/internet-redes-sociais-e-aplicativos/avaliacao-pratica-1.pdf",
+      tamanho: "PDF",
+    },
+    {
+      tipo: "file",
+      rotulo: "Avaliação Prática — versão 2",
+      caminho: "/provas/internet-redes-sociais-e-aplicativos/avaliacao-pratica-2.pdf",
+      tamanho: "PDF",
+    },
+  ],
+  "Introdução à Informática": [
+    {
+      tipo: "file",
+      rotulo: "Avaliação Prática 01",
+      caminho: "/provas/introducao-a-informatica/avaliacao-pratica-01.pdf",
+      tamanho: "PDF",
+    },
+  ],
+  "KIDS": [
+    {
+      tipo: "file",
+      rotulo: "Avaliação Prática — Word Kids",
+      caminho: "/provas/kids/avaliacao-pratica-word-kids.pdf",
+      tamanho: "PDF",
+    },
+  ],
+  "Power BI": [
+    {
+      tipo: "file",
+      rotulo: "Avaliação — 01",
+      caminho: "/provas/power-bi/avaliacao-01.pdf",
+      tamanho: "PDF",
+    },
+  ],
+  "Segurança na Era Digital": [
+    {
+      tipo: "file",
+      rotulo: "Atividade Prática",
+      caminho: "/provas/seguranca-na-era-digital/atividade-pratica.pdf",
+      tamanho: "PDF",
+    },
+  ],
   "Administração": [
     {
       tipo: "quiz",
