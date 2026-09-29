@@ -84,12 +84,13 @@ material de apoio do aluno vai em `Curso.materiais`.
 Branch de trabalho: `alfred/practical-pascal-s5pzbq`. PRs são criados como
 draft, sem template no repo (escrever descrição livre, resumo + plano de
 teste). Rode `npx tsc -b --force` e `npm run build` limpos antes de todo
-push. Dois projetos Vercel buildam a cada push (`portal-atividades-
-microlins` e, por coincidência de nome de branch, `portal-atividades` —
-repositório antigo, não relacionado); confira os dois nos status checks.
-Se a branch de trabalho já tiver sido mergeada, reinicie-a a partir do
-default branch antes de empilhar commits novos — nunca empilhe sobre
-histórico já mergeado.
+push. O único projeto Vercel deste repositório é o **`portal.`**
+(`portal-microlins.vercel.app` e domínios irmãos) — o projeto duplicado
+`portal-atividades`, que chegou a compartilhar o mesmo repositório do
+GitHub e travava os dois deploys ao mesmo tempo, foi desconectado do Git e
+não recebe mais push; ignore-o nos status checks. Se a branch de trabalho
+já tiver sido mergeada, reinicie-a a partir do default branch antes de
+empilhar commits novos — nunca empilhe sobre histórico já mergeado.
 
 O time da Vercel é Hobby (não aceita colaboração): commit com autor
 diferente do dono da conta trava o deploy automático ("autor do commit não
