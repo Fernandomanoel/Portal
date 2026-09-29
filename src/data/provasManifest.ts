@@ -58,6 +58,120 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "10 questões",
     },
   ],
+  "Assistente de Departamento Pessoal": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Departamento Pessoal",
+      caminho: "Assistente de Departamento Pessoal/avaliacao-dp",
+      tamanho: "10 questões",
+    },
+  ],
+  "Assistente de Logística": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Logística",
+      caminho: "Assistente de Logística/avaliacao-logistica",
+      tamanho: "10 questões",
+    },
+  ],
+  "Atendimento ao Cliente": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação — Múltipla Escolha",
+      caminho: "Atendimento ao Cliente/avaliacao-multipla-escolha",
+      tamanho: "8 questões",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação — Descritiva",
+      caminho: "Atendimento ao Cliente/avaliacao-descritiva",
+      tamanho: "2 questões",
+    },
+  ],
+  "Compras e Estoque": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Compras e Estoque",
+      caminho: "Compras e Estoque/avaliacao-compras-e-estoque",
+      tamanho: "10 questões",
+    },
+  ],
+  "Crédito e Cobrança": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Crédito e Cobrança",
+      caminho: "Crédito e Cobrança/avaliacao-credito-e-cobranca",
+      tamanho: "10 questões",
+    },
+  ],
+  "Custos": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Custos",
+      caminho: "Custos/avaliacao-custos",
+      tamanho: "10 questões",
+    },
+  ],
+  "Escrita Fiscal e Contabilidade": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Escrita Fiscal e Contabilidade",
+      caminho: "Escrita Fiscal e Contabilidade/avaliacao-escrita-fiscal",
+      tamanho: "10 questões",
+    },
+  ],
+  "Gestão de Pessoas": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação — Múltipla Escolha",
+      caminho: "Gestão de Pessoas/avaliacao-multipla-escolha",
+      tamanho: "8 questões",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação — Descritiva",
+      caminho: "Gestão de Pessoas/avaliacao-descritiva",
+      tamanho: "2 questões",
+    },
+  ],
+  "Operador de Telemarketing": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Operador de Telemarketing",
+      caminho: "Operador de Telemarketing/avaliacao-operador-de-telemarketing",
+      tamanho: "10 questões",
+    },
+  ],
+  "RH": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Recursos Humanos",
+      caminho: "RH/avaliacao-recursos-humanos",
+      tamanho: "10 questões",
+    },
+  ],
+  "Secretariado": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Secretariado",
+      caminho: "Secretariado/avaliacao-secretariado",
+      tamanho: "10 questões",
+    },
+  ],
+  "Vendas": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação — Múltipla Escolha",
+      caminho: "Vendas/avaliacao-multipla-escolha",
+      tamanho: "8 questões",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação — Descritiva",
+      caminho: "Vendas/avaliacao-descritiva",
+      tamanho: "2 questões",
+    },
+  ],
 }; // <-- O objeto PROVAS_MANIFEST é fechado aqui.
 
 export const PROVAS_CATEGORIAS: CategoriaProva[] = [
