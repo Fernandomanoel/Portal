@@ -807,6 +807,16 @@ export const ATIVIDADES: Curso[] = [
         descricao: "Atividade guiada para inserir um vídeo em um slide, aplicar recursos de edição de vídeo (cortar, fade) e efeitos de transição entre slides. Inclui vídeo de prática para download.",
         caminho: "PowerPoint/powerpoint-video-e-transicoes",
       },
+      {
+        titulo: "Avaliação Prática: Slide Mestre e Consistência Visual",
+        descricao: "Atividade guiada para editar o Slide Mestre e aplicar um estilo consistente (fonte, cores, logotipo) a toda a apresentação de uma vez, em vez de formatar slide por slide.",
+        caminho: "PowerPoint/powerpoint-slide-mestre",
+      },
+      {
+        titulo: "Avaliação Prática: Apresentando com Confiança",
+        descricao: "Atividade guiada sobre o momento de apresentar ao vivo: atalhos de teclado, anotações do orador, ensaiar a apresentação com cronômetro e usar o Modo de Exibição do Apresentador.",
+        caminho: "PowerPoint/powerpoint-apresentando-com-confianca",
+      },
     ],
   },
   {

@@ -55,45 +55,27 @@ const atividade: AtividadeAutocorrigida = {
       titulo: "Passo a Passo: Inserindo uma Tabela — Organizando os dados em linhas e colunas",
       blocos: [
         {
-          tipo: "texto",
-          texto: "1",
-        },
-        {
-          tipo: "texto",
-          texto: "Inserir → Tabela",
-        },
-        {
-          tipo: "texto",
-          texto: "2",
-        },
-        {
-          tipo: "texto",
-          texto: "primeira linha",
-        },
-        {
-          tipo: "texto",
-          texto: "3",
-        },
-        {
-          tipo: "texto",
-          texto: "Preencha as demais linhas com os dados.",
-        },
-        {
-          tipo: "texto",
-          texto: "4",
-        },
-        {
-          tipo: "texto",
-          texto: "Design da Tabela",
+          tipo: "lista",
+          numerada: true,
+          itens: [
+            "Vá em Inserir → Tabela e escolha o número de linhas e colunas.",
+            "Preencha a primeira linha com os títulos das colunas (ex: Mês, Vendas).",
+            "Preencha as demais linhas com os dados.",
+            "Use a aba Design da Tabela para escolher um estilo de cores.",
+          ],
         },
         {
           tipo: "subtitulo",
           texto: "Exemplo:",
         },
         {
-          tipo: "nota",
-          variante: "dica",
-          texto: "MêsVendas (R$) Janeiro4.500 Fevereiro5.200 Março6.100",
+          tipo: "tabela",
+          colunas: ["Mês", "Vendas (R$)"],
+          linhas: [
+            ["Janeiro", "4.500"],
+            ["Fevereiro", "5.200"],
+            ["Março", "6.100"],
+          ],
         },
       ],
     },
@@ -132,36 +114,14 @@ const atividade: AtividadeAutocorrigida = {
       titulo: "Passo a Passo: Inserindo um Gráfico — Transformando números em imagem",
       blocos: [
         {
-          tipo: "texto",
-          texto: "1",
-        },
-        {
-          tipo: "texto",
-          texto: "Inserir → Gráfico",
-        },
-        {
-          tipo: "texto",
-          texto: "2",
-        },
-        {
-          tipo: "texto",
-          texto: "planilha do Excel",
-        },
-        {
-          tipo: "texto",
-          texto: "3",
-        },
-        {
-          tipo: "texto",
-          texto: "seus dados",
-        },
-        {
-          tipo: "texto",
-          texto: "4",
-        },
-        {
-          tipo: "texto",
-          texto: "Feche a planilha — o gráfico no slide atualiza sozinho!",
+          tipo: "lista",
+          numerada: true,
+          itens: [
+            "Vá em Inserir → Gráfico e escolha o tipo (Barras, Pizza ou Linha).",
+            "Uma planilha do Excel vai abrir automaticamente.",
+            "Apague os dados de exemplo e digite os seus dados (mesma estrutura da tabela).",
+            "Feche a planilha — o gráfico no slide atualiza sozinho!",
+          ],
         },
       ],
       imagem: {
@@ -259,8 +219,14 @@ const atividade: AtividadeAutocorrigida = {
       titulo: "Checklist Antes de Entregar",
       blocos: [
         {
-          tipo: "texto",
-          texto: "☐ Pelo menos 5 slides ☐ Pelo menos 1 tabela formatada ☐ Pelo menos 1 gráfico com título ☐ Tipo de gráfico combina com os dados ☐ Slide de capa e slide de conclusão",
+          tipo: "lista",
+          itens: [
+            "☐ Pelo menos 5 slides",
+            "☐ Pelo menos 1 tabela formatada",
+            "☐ Pelo menos 1 gráfico com título",
+            "☐ Tipo de gráfico combina com os dados",
+            "☐ Slide de capa e slide de conclusão",
+          ],
         },
         {
           tipo: "texto",
