@@ -37,23 +37,19 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
   ],
 
   "Excel": [
-  // ... outras provas existentes ...
-  { 
-    tipo: "quiz", 
-    rotulo: "Prova Básica - Boletim Escolar", 
-    caminho: "av-excel-1" ,
-    tamanho: "11 tarefas",
-  },
-  { 
-    tipo: "quiz", 
-    rotulo: "Prova Básica - Compras do mês", 
-    caminho: "av-excel-2" ,
-    tamanho: "8 tarefas",
-  },
-],
-
-
-
+    {
+      tipo: "quiz",
+      rotulo: "Prova Básica - Boletim Escolar",
+      caminho: "Excel/av-excel-1",
+      tamanho: "11 tarefas",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Prova Básica - Compras do mês",
+      caminho: "Excel/av-excel-2",
+      tamanho: "8 tarefas",
+    },
+  ],
 }; // <-- O objeto PROVAS_MANIFEST é fechado aqui.
 
 export const PROVAS_CATEGORIAS: CategoriaProva[] = [
