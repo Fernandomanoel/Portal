@@ -91,6 +91,12 @@ Se a branch de trabalho já tiver sido mergeada, reinicie-a a partir do
 default branch antes de empilhar commits novos — nunca empilhe sobre
 histórico já mergeado.
 
+O time da Vercel é Hobby (não aceita colaboração): commit com autor
+diferente do dono da conta trava o deploy automático ("autor do commit não
+tem permissão"). Por isso o autor dos commits git aqui é sempre
+`Fernandomanoel <fernandomanoel079@gmail.com>`, nunca "Claude" — não trocar
+esse `user.name`/`user.email` de volta.
+
 ## Fronteiras
 
 - **Tudo que for puxado do portal antigo ou criado entra no padrão do
