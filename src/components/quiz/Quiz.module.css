@@ -146,6 +146,16 @@ legend.enunciado {
   transition: border-color 140ms var(--ease-out);
 }
 
+.respostaCodigo {
+  min-height: 180px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  tab-size: 2;
+  white-space: pre;
+  overflow-x: auto;
+}
+
 .resposta:focus-visible {
   border-color: var(--brand);
   outline: 2px solid var(--focus);

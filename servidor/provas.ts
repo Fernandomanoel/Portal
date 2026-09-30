@@ -1,4 +1,4 @@
-import { respostaAceita } from "../src/lib/correcaoTexto.js";
+import { respostaAceita, verificarCodigo } from "../src/lib/correcaoTexto.js";
 import type { ProvaInterativa, ProvaParaAluno } from "../src/types/quiz.js";
 import { REGISTRO_PROVAS } from "./provas.gerado.js";
 
@@ -15,7 +15,9 @@ export function semGabarito(prova: ProvaInterativa): ProvaParaAluno {
     return {
       ...prova,
       perguntas: prova.perguntas.map((pergunta) =>
-        pergunta.tipo === "dissertativa" ? { tipo: pergunta.tipo, pergunta: pergunta.pergunta } : { pergunta: pergunta.pergunta, opcoes: pergunta.opcoes },
+        pergunta.tipo === "dissertativa"
+          ? { tipo: pergunta.tipo, pergunta: pergunta.pergunta, ...(pergunta.codigo ? { codigo: true as const } : {}) }
+          : { pergunta: pergunta.pergunta, opcoes: pergunta.opcoes },
       ),
     };
   }
@@ -64,7 +66,9 @@ export function corrigir(prova: ProvaInterativa, respostas: (number | string | n
     let acertos = 0;
     let aRevisar = 0;
     prova.perguntas.forEach((pergunta, i) => {
-      if (pergunta.tipo === "dissertativa") {
+      if (pergunta.tipo === "dissertativa" && pergunta.verificacoes) {
+        if (verificarCodigo(String(respostas[i] ?? ""), pergunta.verificacoes).every((v) => v.ok)) acertos += 1;
+      } else if (pergunta.tipo === "dissertativa") {
         if (respostaAceita(String(respostas[i] ?? ""), pergunta.respostasAceitas)) acertos += 1;
         else aRevisar += 1;
       } else if (respostas[i] === pergunta.correta) {

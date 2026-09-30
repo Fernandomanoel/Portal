@@ -117,6 +117,31 @@ volta a ficar disponível para o professor revisar. **`respostasAceitas` é
 gabarito**: nunca vaza pro navegador do aluno (o servidor tira antes de
 entregar a prova), só a área do professor vê a lista completa.
 
+### Código autocorrigido — pergunta `codigo` dentro da mista
+
+Para prova de programação: o aluno escreve o código num campo monoespaçado e o
+servidor confere cada `verificacao` (uma expressão regular, sem as barras)
+sobre o código **sem comentários**. Passou em todas, acertou; faltou alguma,
+errou — diferente da dissertativa, aqui a correção é definitiva, nunca fica "a
+revisar". `respostasAceitas` fica `[]`.
+
+```ts
+{
+  tipo: "dissertativa",
+  codigo: true,
+  pergunta: "Crie uma função calcular(a, b) que retorne a soma.",
+  respostasAceitas: [],
+  verificacoes: [
+    { descricao: "Função calcular com 2 parâmetros", padrao: String.raw`function\s+calcular\s*\(\s*\w+\s*,\s*\w+\s*\)` },
+    { descricao: "Retorna a soma", padrao: String.raw`return\s+\w+\s*\+\s*\w+` },
+  ],
+}
+```
+
+Escreva os padrões aceitando as variações comuns (`const`/`let`/`function`,
+`if`/ternário). Não executam o código do aluno: só procuram o que ele tem de
+conter. Exemplo completo: `JavaScript/prova-javascript-testes-automatizados`.
+
 ## Regras que valem para qualquer tipo
 
 ### Envio de arquivo — `envioArquivo`

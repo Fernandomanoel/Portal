@@ -21,7 +21,9 @@ export function QuizMista({ prova, escolhas, textos, aoResponder, aoEscrever }: 
             </label>
             <textarea
               id={`resposta-${indice}`}
-              className={estilos.resposta}
+              className={pergunta.codigo ? `${estilos.resposta} ${estilos.respostaCodigo}` : estilos.resposta}
+              spellCheck={pergunta.codigo ? false : undefined}
+              placeholder={pergunta.codigo ? "Escreva o seu código aqui" : undefined}
               value={textos[indice] ?? ""}
               onChange={(evento) => aoEscrever(indice, evento.target.value)}
             />

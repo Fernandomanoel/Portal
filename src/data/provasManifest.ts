@@ -150,6 +150,30 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "5 passos",
     },
   ],
+  "Inteligência Artificial": [
+    {
+      tipo: "quiz",
+      rotulo: "Engenharia de Prompts e LLMs",
+      caminho: "Inteligência Artificial/avaliacao-ia-engenharia-prompts-llms",
+      tamanho: "19 questões",
+    },
+  ],
+  "Javascript": [
+    {
+      tipo: "quiz",
+      rotulo: "Prova de JavaScript — correção automática",
+      caminho: "JavaScript/prova-javascript-testes-automatizados",
+      tamanho: "8 questões de código",
+    },
+  ],
+  "Auxiliar Médico": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação de Auxiliar Médico",
+      caminho: "Auxiliar Médico/prova-auxiliar-medico",
+      tamanho: "16 questões",
+    },
+  ],
   "Administração": [
     {
       tipo: "quiz",
@@ -301,7 +325,6 @@ export const PROVAS_CATEGORIAS: CategoriaProva[] = [
     nome: "Administrativo e Gestão",
     cursos: [
       "Administração",
-      "Assistente ADM",
       "Assistente de Administração Financeira",
       "Assistente de Escrita Fiscal",
       "Assistente de Gestão",

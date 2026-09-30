@@ -5,7 +5,7 @@ import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { ErroApi, apagarEnvio, lancarNota, obterEnvio, urlArquivo } from "@/lib/apiProvas";
-import { respostaAceita } from "@/lib/correcaoTexto";
+import { respostaAceita, verificarCodigo } from "@/lib/correcaoTexto";
 import { rotas } from "@/lib/rotas";
 import type { Envio, SaidaProva } from "@/types/envio";
 import type { ProvaInterativa } from "@/types/quiz";
@@ -191,6 +191,29 @@ function Respostas({ envio, prova }: { envio: Envio; prova: ProvaInterativa | nu
           }
 
           const pergunta = prova && prova.tipo !== "pratica" ? prova.perguntas[i] : undefined;
+
+          if (pergunta && pergunta.tipo === "dissertativa" && pergunta.verificacoes) {
+            const texto = String(resposta ?? "");
+            const testes = verificarCodigo(texto, pergunta.verificacoes);
+            const passou = testes.every((teste) => teste.ok);
+            return (
+              <li key={i} className={estilos.resposta}>
+                <p className={estilos.enunciado}>{pergunta.pergunta}</p>
+                <p className={passou ? estilos.certa : estilos.errada}>
+                  <Icone nome={passou ? "check" : "alerta"} tamanho={16} />
+                  {passou ? "Passou em todas as verificações" : "Não passou em todas as verificações"}
+                </p>
+                <pre className={estilos.texto}>{texto || "sem resposta"}</pre>
+                <ul className={estilos.gabarito}>
+                  {testes.map((teste) => (
+                    <li key={teste.descricao}>
+                      {teste.ok ? "✓" : "✗"} {teste.descricao}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          }
 
           if (pergunta && pergunta.tipo === "dissertativa") {
             const texto = String(resposta ?? "");

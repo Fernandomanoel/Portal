@@ -17,6 +17,22 @@ export interface PerguntaDissertativaAuto {
   tipo: "dissertativa";
   pergunta: string;
   respostasAceitas: string[];
+  /**
+   * Pergunta de programação: o aluno escreve código num campo monoespaçado e o
+   * servidor confere cada verificação. Aqui a correção é definitiva — passou
+   * em todas, acertou; faltou alguma, errou (nunca fica "a revisar"), então
+   * `respostasAceitas` fica `[]`.
+   */
+  codigo?: boolean;
+  verificacoes?: VerificacaoCodigo[];
+}
+
+/** Um requisito do código do aluno, checado por expressão regular (ver `verificarCodigo`). */
+export interface VerificacaoCodigo {
+  /** O que o código precisa ter; é o texto mostrado ao professor. */
+  descricao: string;
+  /** Fonte da RegExp, sem as barras. Roda sobre o código sem comentários. */
+  padrao: string;
 }
 
 export type PerguntaMista = PerguntaMultiplaEscolha | PerguntaDissertativaAuto;
@@ -97,7 +113,7 @@ export type ProvaInterativa = ProvaMultiplaEscolha | ProvaDescritiva | ProvaPrat
 export type ProvaMultiplaEscolhaAluno = Omit<ProvaMultiplaEscolha, "perguntas"> & {
   perguntas: Omit<PerguntaMultiplaEscolha, "correta">[];
 };
-export type PerguntaMistaAluno = Omit<PerguntaMultiplaEscolha, "correta"> | Omit<PerguntaDissertativaAuto, "respostasAceitas">;
+export type PerguntaMistaAluno = Omit<PerguntaMultiplaEscolha, "correta"> | Omit<PerguntaDissertativaAuto, "respostasAceitas" | "verificacoes">;
 export type ProvaMistaAluno = Omit<ProvaMista, "perguntas"> & { perguntas: PerguntaMistaAluno[] };
 export type ProvaParaAluno = ProvaMultiplaEscolhaAluno | ProvaDescritiva | ProvaPratica | ProvaMistaAluno;
 
