@@ -130,6 +130,26 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "4 passos",
     },
   ],
+  "Google Adwords": [
+    {
+      tipo: "quiz",
+      rotulo: "Google Ads e Marketing de Busca",
+      caminho: "Google Adwords/avaliacao-google-ads-marketing-busca",
+      tamanho: "20 questões",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Atividade Prática — Google Adwords",
+      caminho: "Google Adwords/atividade-pratica-google-adwords",
+      tamanho: "6 questões",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Simulação de Campanha",
+      caminho: "Google Adwords/simulacao-de-campanha",
+      tamanho: "5 passos",
+    },
+  ],
   "Administração": [
     {
       tipo: "quiz",
