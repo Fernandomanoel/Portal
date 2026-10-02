@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="14" y="10" width="612" height="380" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M14 20 a10 10 0 0 1 10 -10 h592 a10 10 0 0 1 10 10 v26 h-612 z" fill="#0f6cbd"/>
+  <text x="32" y="33" font-size="12.5" fill="#ffffff" font-weight="700">Outlook</text>
+  <text x="320" y="33" font-size="11" fill="#dbeafe" text-anchor="middle">Novo e-mail — Outlook</text>
+  <rect x="14" y="46" width="612" height="32" rx="0" fill="#f3f4f6"/>
+  <rect x="26" y="52" width="66" height="22" rx="4" fill="#0f6cbd"/>
+  <text x="59" y="67" font-size="10.5" fill="#ffffff" font-weight="700" text-anchor="middle">Enviar</text>
+  <text x="106" y="67" font-size="10" fill="#374151">Anexar     Assinatura     Opções</text>
+  <text x="30" y="100" font-size="10" fill="#6b7280">Para</text>
+  <rect x="66" y="86" width="300" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="74" y="102" font-size="10.5" fill="#1f2937">joana.mendes@empresa.com.br</text>
+  <text x="30" y="130" font-size="10" fill="#6b7280">Cc</text>
+  <rect x="66" y="116" width="300" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="74" y="132" font-size="10.5" fill="#1f2937">gerencia@empresa.com.br</text>
+  <text x="30" y="160" font-size="10" fill="#6b7280">Cco</text>
+  <rect x="66" y="146" width="300" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="74" y="162" font-size="10.5" fill="#1f2937">arquivo@empresa.com.br</text>
+  <text x="30" y="190" font-size="10" fill="#6b7280">Assunto</text>
+  <rect x="66" y="176" width="300" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="74" y="192" font-size="10.5" fill="#1f2937">Relatório de vendas de fevereiro — para aprovação</text>
+  <rect x="26" y="210" width="340" height="130" rx="4" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="36" y="228" font-size="10.5" fill="#1f2937">Prezada Joana,</text>
+  <text x="36" y="246" font-size="10.5" fill="#1f2937">Segue em anexo o relatório de vendas de fevereiro.</text>
+  <text x="36" y="262" font-size="10.5" fill="#1f2937">Peço sua aprovação até sexta-feira, dia 07.</text>
+  <text x="36" y="284" font-size="10.5" fill="#1f2937">Atenciosamente,</text>
+  <rect x="30" y="292" width="200" height="42" rx="3" fill="#f8fafc" stroke="#93c5fd" stroke-dasharray="4 3"/>
+  <text x="38" y="308" font-size="10.5" fill="#1f2937" font-weight="700">Marcos Oliveira</text>
+  <text x="38" y="323" font-size="8.5" fill="#6b7280">Assistente Administrativo  ·  (92) 90000-0000</text>
+  <rect x="26" y="346" width="190" height="26" rx="4" fill="#e6f0fa" stroke="#93c5fd"/>
+  <text x="36" y="363" font-size="9.5" fill="#1f2937">Relatorio_Vendas_Fev.xlsx  (48 KB)</text>
+  <line x1="366" y1="98" x2="400" y2="76" stroke="#0f6cbd" stroke-width="1.6"/><circle cx="366" cy="98" r="3" fill="#0f6cbd"/>
+  <rect x="404" y="52" width="168" height="52" rx="6" fill="#ffffff" stroke="#0f6cbd"/>
+  <text x="413" y="67" font-size="10.5" fill="#0f6cbd" font-weight="700">Para</text>
+  <text x="413" y="81" font-size="9.5" fill="#1f2937">Quem deve agir ou responder.</text>
+  <text x="413" y="94" font-size="9.5" fill="#1f2937">Um ou mais destinatários.</text>
+  <line x1="366" y1="128" x2="400" y2="134" stroke="#0f6cbd" stroke-width="1.6"/><circle cx="366" cy="128" r="3" fill="#0f6cbd"/>
+  <rect x="404" y="108" width="168" height="52" rx="6" fill="#ffffff" stroke="#0f6cbd"/>
+  <text x="413" y="123" font-size="10.5" fill="#0f6cbd" font-weight="700">Cc (cópia)</text>
+  <text x="413" y="137" font-size="9.5" fill="#1f2937">Quem precisa estar ciente.</text>
+  <text x="413" y="150" font-size="9.5" fill="#1f2937">Todos veem o endereço.</text>
+  <line x1="366" y1="158" x2="400" y2="190" stroke="#0f6cbd" stroke-width="1.6"/><circle cx="366" cy="158" r="3" fill="#0f6cbd"/>
+  <rect x="404" y="164" width="168" height="52" rx="6" fill="#ffffff" stroke="#0f6cbd"/>
+  <text x="413" y="179" font-size="10.5" fill="#0f6cbd" font-weight="700">Cco (cópia oculta)</text>
+  <text x="413" y="193" font-size="9.5" fill="#1f2937">Ninguém vê os endereços.</text>
+  <text x="413" y="206" font-size="9.5" fill="#1f2937">Use em listas e avisos.</text>
+  <line x1="366" y1="188" x2="400" y2="246" stroke="#0f6cbd" stroke-width="1.6"/><circle cx="366" cy="188" r="3" fill="#0f6cbd"/>
+  <rect x="404" y="220" width="168" height="52" rx="6" fill="#ffffff" stroke="#0f6cbd"/>
+  <text x="413" y="235" font-size="10.5" fill="#0f6cbd" font-weight="700">Assunto</text>
+  <text x="413" y="249" font-size="9.5" fill="#1f2937">Curto e específico: diz o</text>
+  <text x="413" y="262" font-size="9.5" fill="#1f2937">que é e o que se espera.</text>
+  <line x1="230" y1="313" x2="400" y2="302" stroke="#16a34a" stroke-width="1.6"/><circle cx="230" cy="313" r="3" fill="#16a34a"/>
+  <rect x="404" y="276" width="168" height="52" rx="6" fill="#ffffff" stroke="#16a34a"/>
+  <text x="413" y="291" font-size="10.5" fill="#16a34a" font-weight="700">Assinatura</text>
+  <text x="413" y="305" font-size="9.5" fill="#1f2937">Nome, cargo e contato,</text>
+  <text x="413" y="318" font-size="9.5" fill="#1f2937">sempre no mesmo padrão.</text>
+  <line x1="216" y1="359" x2="400" y2="358" stroke="#16a34a" stroke-width="1.6"/><circle cx="216" cy="359" r="3" fill="#16a34a"/>
+  <rect x="404" y="332" width="168" height="52" rx="6" fill="#ffffff" stroke="#16a34a"/>
+  <text x="413" y="347" font-size="10.5" fill="#16a34a" font-weight="700">Anexo</text>
+  <text x="413" y="361" font-size="9.5" fill="#1f2937">Cite no texto e confira</text>
+  <text x="413" y="374" font-size="9.5" fill="#1f2937">o arquivo certo.</text>
+</svg>

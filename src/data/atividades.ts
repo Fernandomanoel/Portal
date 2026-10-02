@@ -1182,6 +1182,33 @@ export const ATIVIDADES: Curso[] = [
     sigla: "IO",
     cor: "#1a73e8",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Conhecendo o Outlook: Explorando a Ferramenta",
+        descricao: "Reconheça as áreas da tela do Outlook, as pastas e a pesquisa, e aprenda a achar qualquer mensagem.",
+        caminho: "Internet e Outlook/outlook-conhecendo-a-ferramenta",
+      },
+      {
+        titulo: "Escrevendo e Enviando um E-mail Corporativo",
+        descricao: "As partes de um e-mail profissional (Para, Cc, Cco, assunto, assinatura, anexo), o tom certo e o envio do primeiro e-mail.",
+        caminho: "Internet e Outlook/outlook-escrevendo-email-corporativo",
+      },
+      {
+        titulo: "Moldes de E-mails Administrativos",
+        descricao: "Estrutura de 7 blocos e 6 moldes prontos: orçamento, documentos, cobrança cordial, comunicado, confirmação e esclarecimento.",
+        caminho: "Internet e Outlook/outlook-moldes-emails-administrativos",
+      },
+      {
+        titulo: "Assinatura, Resposta Automática e Regras no Outlook",
+        descricao: "Crie a assinatura profissional, configure respostas automáticas de ausência e organize a caixa com pastas e regras.",
+        caminho: "Internet e Outlook/outlook-assinatura-resposta-automatica-regras",
+      },
+      {
+        titulo: "Convites de Reunião e Segurança no E-mail",
+        descricao: "Envie convites de reunião com pauta e aprenda a reconhecer e-mails falsos (phishing).",
+        caminho: "Internet e Outlook/outlook-convites-e-seguranca",
+      },
+    ],
   },
   {
     slug: "hardware-manutencao",

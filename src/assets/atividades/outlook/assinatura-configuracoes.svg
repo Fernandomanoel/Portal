@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="14" y="10" width="612" height="380" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M14 20 a10 10 0 0 1 10 -10 h592 a10 10 0 0 1 10 10 v26 h-612 z" fill="#0f6cbd"/>
+  <text x="32" y="33" font-size="12.5" fill="#ffffff" font-weight="700">Outlook</text>
+  <text x="320" y="33" font-size="11" fill="#dbeafe" text-anchor="middle">Configurações — Outlook</text>
+  <rect x="14" y="46" width="150" height="344" rx="0" fill="#faf9f8"/>
+  <text x="28" y="70" font-size="11.5" fill="#1f2937" font-weight="700">Configurações</text>
+  <text x="28" y="96" font-size="10.5" fill="#374151">Geral</text>
+  <rect x="20" y="110" width="138" height="22" rx="4" fill="#e6f0fa"/>
+  <text x="28" y="125" font-size="10.5" fill="#0f6cbd" font-weight="700">Email</text>
+  <text x="28" y="152" font-size="10.5" fill="#374151">Calendário</text>
+  <text x="28" y="176" font-size="10.5" fill="#374151">Pessoas</text>
+  <rect x="164" y="46" width="150" height="344" rx="0" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="176" y="70" font-size="10.5" fill="#0f6cbd" font-weight="700">Redigir e responder</text>
+  <rect x="168" y="56" width="142" height="22" rx="4" fill="#e6f0fa" opacity="0.6"/>
+  <text x="176" y="98" font-size="10.5" fill="#374151">Regras</text>
+  <text x="176" y="122" font-size="10.5" fill="#374151">Respostas automáticas</text>
+  <text x="176" y="146" font-size="10.5" fill="#374151">Layout</text>
+  <text x="176" y="170" font-size="10.5" fill="#374151">Pastas</text>
+  <text x="332" y="70" font-size="13" fill="#1f2937" font-weight="700">Assinatura de email</text>
+  <text x="332" y="90" font-size="9.5" fill="#6b7280">Nome da assinatura</text>
+  <rect x="332" y="96" width="190" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="340" y="112" font-size="10.5" fill="#1f2937">Padrão — Marcos</text>
+  <rect x="332" y="124" width="282" height="100" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="344" y="144" font-size="11.5" fill="#1f2937" font-weight="700">Marcos Oliveira</text>
+  <text x="344" y="160" font-size="10" fill="#1f2937">Assistente Administrativo</text>
+  <text x="344" y="175" font-size="10" fill="#1f2937">Empresa Alfa Ltda</text>
+  <text x="344" y="190" font-size="10" fill="#6b7280">Tel.: (92) 90000-0000</text>
+  <text x="344" y="205" font-size="10" fill="#0f6cbd">marcos.oliveira@empresaalfa.com.br</text>
+  <text x="332" y="244" font-size="10.5" fill="#1f2937" font-weight="700">Assinatura padrão</text>
+  <text x="332" y="262" font-size="9.5" fill="#374151">Para novas mensagens:</text>
+  <rect x="332" y="267" width="190" height="22" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="340" y="282" font-size="10.5" fill="#1f2937">Padrão — Marcos</text>
+  <text x="332" y="306" font-size="9.5" fill="#374151">Para respostas e encaminhamentos:</text>
+  <rect x="332" y="311" width="190" height="22" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="340" y="326" font-size="10.5" fill="#1f2937">Padrão — Marcos</text>
+  <rect x="332" y="346" width="13" height="13" rx="2" fill="#0f6cbd"/>
+  <path d="M335 352 l3 3 l5 -6" fill="none" stroke="#fff" stroke-width="1.8"/>
+  <text x="352" y="357" font-size="9.5" fill="#1f2937">Incluir nas mensagens que eu enviar</text>
+  <rect x="546" y="340" width="66.8" height="24" rx="5" fill="#0067c0"/>
+  <text x="579.4" y="356" font-size="10.5" fill="#ffffff" text-anchor="middle">Salvar</text>
+</svg>
