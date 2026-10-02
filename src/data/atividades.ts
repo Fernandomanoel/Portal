@@ -1128,6 +1128,33 @@ export const ATIVIDADES: Curso[] = [
     sigla: "HT",
     cor: "#e34c26",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Meu Primeiro HTML",
+        descricao: "O que é HTML, a estrutura básica de uma página, as tags h1, p e img, e como abrir o arquivo no navegador.",
+        caminho: "HTML/html-meu-primeiro-html",
+      },
+      {
+        titulo: "Textos, Listas e Links em HTML",
+        descricao: "Títulos, parágrafos, ênfase, listas com marcadores e numeradas, e links para sites, páginas e e-mail.",
+        caminho: "HTML/html-textos-listas-e-links",
+      },
+      {
+        titulo: "Imagens e Tabelas em HTML",
+        descricao: "Imagens com src, alt e tamanho, e tabelas com cabeçalho, linhas e células.",
+        caminho: "HTML/html-imagens-e-tabelas",
+      },
+      {
+        titulo: "Formulários em HTML",
+        descricao: "Campos de texto, e-mail, lista, escolha e envio, com labels ligados corretamente e validação básica.",
+        caminho: "HTML/html-formularios",
+      },
+      {
+        titulo: "Projeto Final: Minha Página Completa em HTML Semântico",
+        descricao: "Junte tudo em uma página com header, nav, main, section, article e footer, com lista, tabela, imagem, links e formulário.",
+        caminho: "HTML/html-pagina-completa-semantica",
+      },
+    ],
   },
   {
     slug: "css",

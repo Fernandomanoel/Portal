@@ -100,3 +100,10 @@ pergunta em `campos` — atividade só com exercícios práticos não mostra o b
   partir do zero.
 - Não use prints de filmes, séries ou memes, nem imagens de sites de terceiros.
 - Sem emoji no texto: ícones do portal vêm de `src/components/Icone.tsx`.
+
+## Campo em que o aluno escreve código (HTML, CSS...)
+
+Para conferir um trecho de código de uma linha (`<img src="…" alt="…">`, `<!DOCTYPE html>`), use a
+regra `padrao` com uma expressão regular que aceite as variações (ordem dos atributos, aspas simples
+ou duplas). **Não use a regra `texto`**: o filtro de "digitação aleatória" dela reprova código
+(`html` não tem vogais, um link não tem espaços). Exemplo: `HTML/html-pagina-completa-semantica`.
