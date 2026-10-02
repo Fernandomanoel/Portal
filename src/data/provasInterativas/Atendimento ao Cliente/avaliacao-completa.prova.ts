@@ -1,15 +1,15 @@
 import type { ProvaInterativa } from "@/types/quiz";
 
 /**
- * Portada de Portal-Atividades (provas/Atendimento ao Cliente/
- * Avaliação - Atendimento ao Cliente (Múltipla Escolha).prova.js): mesmas 8
- * perguntas e o mesmo gabarito do arquivo original. Metade virou dissertativa
- * autocorrigida, usando a resposta certa original como base das
- * `respostasAceitas`.
+ * Portada de Portal-Atividades (provas/Atendimento ao Cliente/): reúne em uma só prova as
+ * duas avaliações do arquivo original — as 8 perguntas objetivas e as 2
+ * perguntas abertas, que antes eram uma prova descritiva à parte. As abertas
+ * agora também são conferidas por palavras-chave (`respostasAceitas`); quando
+ * a resposta não bate com nenhuma, ela fica a revisar para o professor.
  */
 const prova: ProvaInterativa = {
   tipo: "mista",
-  titulo: "Avaliação — Atendimento ao Cliente",
+  titulo: "Avaliação — Atendimento ao Cliente (Completa)",
   perguntas: [
     {
       tipo: "dissertativa",
@@ -65,6 +65,16 @@ const prova: ProvaInterativa = {
         "É importante só para o cliente, não para o atendente",
       ],
       correta: 1,
+    },
+    {
+      tipo: "dissertativa",
+      pergunta: "Descreva como você agiria ao atender um cliente muito irritado que reclama de um produto com defeito.",
+      respostasAceitas: ["ouvir com calma", "escutar", "empatia", "pedir desculpa", "pedir desculpas", "buscar uma solucao", "oferecer uma solucao", "troca", "conserto", "reparo"],
+    },
+    {
+      tipo: "dissertativa",
+      pergunta: "Na sua opinião, o que diferencia um bom atendimento de um atendimento excelente? Dê um exemplo.",
+      respostasAceitas: ["superar as expectativas", "superar a expectativa", "alem do esperado", "antecipar", "surpreender", "encantar", "encantamento"],
     },
   ],
 };

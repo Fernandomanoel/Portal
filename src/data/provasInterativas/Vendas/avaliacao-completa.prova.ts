@@ -1,15 +1,15 @@
 import type { ProvaInterativa } from "@/types/quiz";
 
 /**
- * Portada de Portal-Atividades (provas/Vendas/
- * Avaliação - Vendas (Múltipla Escolha).prova.js): mesmas 8 perguntas e o
- * mesmo gabarito do arquivo original. Metade virou dissertativa
- * autocorrigida, usando a resposta certa original como base das
- * `respostasAceitas`.
+ * Portada de Portal-Atividades (provas/Vendas/): reúne em uma só prova as
+ * duas avaliações do arquivo original — as 8 perguntas objetivas e as 2
+ * perguntas abertas, que antes eram uma prova descritiva à parte. As abertas
+ * agora também são conferidas por palavras-chave (`respostasAceitas`); quando
+ * a resposta não bate com nenhuma, ela fica a revisar para o professor.
  */
 const prova: ProvaInterativa = {
   tipo: "mista",
-  titulo: "Avaliação — Vendas",
+  titulo: "Avaliação — Vendas (Completa)",
   perguntas: [
     {
       tipo: "dissertativa",
@@ -70,6 +70,16 @@ const prova: ProvaInterativa = {
         "Devolver um produto",
       ],
       correta: 1,
+    },
+    {
+      tipo: "dissertativa",
+      pergunta: "Descreva as etapas que você seguiria para atender e fechar uma venda com um novo cliente.",
+      respostasAceitas: ["prospec", "abordagem", "necessidade", "apresentacao do produto", "objec", "fechamento", "pos-venda", "pos venda", "negociacao"],
+    },
+    {
+      tipo: "dissertativa",
+      pergunta: "Na sua opinião, por que a ética é importante no processo de vendas? Dê um exemplo de atitude antiética que deve ser evitada.",
+      respostasAceitas: ["confianca", "honestidade", "mentir", "enganar", "propaganda enganosa", "omitir", "manipular", "credibilidade", "fidelizar", "reputacao"],
     },
   ],
 };

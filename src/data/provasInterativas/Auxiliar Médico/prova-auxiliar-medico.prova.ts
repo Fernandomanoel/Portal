@@ -1,161 +1,126 @@
 import type { ProvaInterativa } from "@/types/quiz";
 
 /**
- * Portada de Portal-Atividades (provas/Auxiliar Médico/
- * prova-auxiliar-medico.prova.html): as mesmas 10 questões e o mesmo
- * gabarito. Cada uma das 3 questões práticas (8, 9 e 10) tinha 3 partes com
- * 1/3 de ponto; aqui cada parte é uma pergunta. As partes numéricas (idade,
- * contagens, horas de jejum) eram digitadas e viraram escolha, porque a
- * dissertativa aceita por "contém" e um "2" casaria com "12".
+ * Reorganizada a partir de Portal-Atividades (provas/Auxiliar Médico/
+ * prova-auxiliar-medico.prova.html). Os mesmos assuntos da prova antiga
+ * (sigilo, higienização, perfurocortantes, resíduos, limites de atuação,
+ * classificação de risco, ficha de atendimento, sinais vitais, prontuário e
+ * preparo de exames), agora em 10 situações do dia a dia da clínica, cada uma
+ * com uma decisão a tomar. As questões 6 e 7 seguem o mesmo caso (a paciente
+ * da recepção). Corrigida na hora.
  */
 const prova: ProvaInterativa = {
   tipo: "mista",
-  titulo: "Auxiliar Médico — Avaliação",
+  titulo: "Auxiliar Médico — Avaliação Prática: Um Dia na Clínica",
   perguntas: [
     {
       pergunta:
-        "Questão 1 — Sigilo profissional. O filho de uma paciente liga para a clínica e pede o resultado do exame dela, dizendo que é ele quem cuida da mãe e que ela não sabe usar o celular. Qual é a conduta correta do auxiliar?",
+        "Situação 1 — Telefone. O filho de uma paciente liga para a clínica e pede o resultado do exame da mãe. Ele diz que é quem cuida dela e que ela não sabe usar o celular. O que você faz?",
       opcoes: [
-        "Informar, porque o grau de parentesco de primeiro grau autoriza o acesso aos dados da paciente.",
-        "Informar apenas se ele confirmar por telefone o nome completo e a data de nascimento da mãe.",
-        "Informar somente a parte do laudo que estiver dentro dos valores considerados normais no exame.",
-        "Não informar: o resultado só é entregue à paciente ou a quem ela tiver autorizado formalmente.",
+        "Informa o resultado, porque o parentesco de primeiro grau autoriza o acesso.",
+        "Informa o resultado se ele souber o nome completo e a data de nascimento da mãe.",
+        "Explica que o resultado só é entregue à paciente ou a quem ela autorizou formalmente, e orienta como a autorização pode ser feita.",
+        "Informa só a parte do laudo que estiver dentro dos valores normais.",
       ],
-      correta: 3,
+      correta: 2,
     },
     {
-      pergunta: "Questão 2 — Higienização das mãos. Sobre a higienização das mãos na assistência, assinale a correta:",
+      pergunta:
+        "Situação 2 — Entre dois atendimentos. Você acabou de ajudar com um curativo e, ao tirar as luvas, vê sangue visível na sua mão. O próximo paciente já está na porta. O que fazer?",
       opcoes: [
-        "O álcool 70% substitui a lavagem com água e sabão em qualquer situação, inclusive com sujidade.",
-        "Com sujidade visível é obrigatório água e sabão; o álcool 70% não substitui a lavagem nesse caso.",
-        "A higienização é necessária apenas antes do contato com o paciente, não depois do atendimento.",
-        "O uso de luvas dispensa a higienização das mãos, desde que elas sejam trocadas a cada paciente.",
+        "Passar álcool 70%, que resolve qualquer situação em segundos.",
+        "Trocar de luvas e chamar o paciente, porque luva dispensa lavar as mãos.",
+        "Lavar as mãos com água e sabão, porque com sujidade visível o álcool 70% não substitui a lavagem.",
+        "Lavar as mãos só ao final do plantão, para não atrasar o atendimento.",
+      ],
+      correta: 2,
+    },
+    {
+      pergunta:
+        "Situação 3 — Coleta de sangue. Terminada a coleta, a agulha ainda está na sua mão e a caixa de perfurocortantes já chegou à linha de preenchimento máximo. Qual é a conduta correta?",
+      opcoes: [
+        "Reencapar a agulha com as duas mãos e jogar no lixo comum, para proteger quem recolhe.",
+        "Colocar a agulha na caixa mesmo cheia, empurrando para caber.",
+        "Descartar a agulha sem reencapar numa caixa rígida nova e avisar para a caixa cheia ser fechada e trocada.",
+        "Deixar a agulha sobre a bancada até alguém trazer outra caixa.",
+      ],
+      correta: 2,
+    },
+    {
+      pergunta:
+        "Situação 4 — Fim do curativo. Na sala restaram: uma gaze com sangue, um frasco de medicamento vencido, um copo descartável usado para água e a agulha de uma injeção. Qual é a destinação correta de cada um?",
+      opcoes: [
+        "Gaze: grupo D (comum). Medicamento vencido: grupo A. Copo: grupo B. Agulha: grupo D.",
+        "Gaze: grupo A (infectante). Medicamento vencido: grupo B (químico). Copo: grupo D (comum). Agulha: grupo E (perfurocortante).",
+        "Tudo no saco branco leitoso, porque está tudo na sala de procedimentos.",
+        "Gaze e agulha no grupo E. Medicamento vencido no grupo D. Copo no grupo A.",
       ],
       correta: 1,
     },
     {
-      pergunta: "Questão 3 — Perfurocortantes. Sobre o descarte de material perfurocortante, é correto afirmar:",
+      pergunta:
+        "Situação 5 — Balcão. Um paciente conta que o remédio que o médico receitou \"não fez efeito nenhum\" e pede que você mande tomar o dobro. A farmácia ao lado também sugeriu trocar por outro mais barato. O que o auxiliar deve fazer?",
       opcoes: [
-        "A agulha vai direto ao recipiente rígido, sem reencapar, respeitando o limite de preenchimento.",
-        "A agulha deve ser reencapada com as duas mãos antes do descarte, para proteger quem a manuseia.",
-        "O recipiente pode ser preenchido até a borda, desde que seja fechado com fita antes do transporte.",
-        "Agulhas e seringas podem ir no lixo comum quando o paciente não tem doença infecciosa conhecida.",
+        "Orientar o dobro da dose, já que o paciente relatou que não teve efeito.",
+        "Autorizar a troca por um similar, porque a farmácia já sugeriu.",
+        "Dizer qual é o provável diagnóstico e deixar o paciente decidir sozinho.",
+        "Não alterar dose nem trocar o medicamento: registrar o relato e comunicar ao médico ou ao enfermeiro responsável.",
       ],
-      correta: 0,
+      correta: 3,
     },
     {
-      pergunta: "Questão 4 — Processamento de artigos. Sobre esterilização, desinfecção e antissepsia, assinale a correta:",
+      pergunta:
+        "Situação 6 — Recepção (parte 1 do caso). Atendimento em 10/03/2026. A paciente diz: \"Meu nome é Ana Beatriz Souza Lima, nasci em 12 de março de 1958. Tô com uma dor no peito desde ontem à noite e hoje começou a puxar pro braço esquerdo. Já tomei um remédio de pressão que a minha vizinha me deu.\" Como preencher a ficha (idade em anos completos e queixa)?",
       opcoes: [
-        "A desinfecção elimina todas as formas de vida, inclusive os esporos, em artigos e em superfícies.",
-        "A antissepsia é aplicada em superfícies e bancadas, e a desinfecção é aplicada na pele do paciente.",
-        "A esterilização elimina todas as formas de vida, inclusive esporos; a antissepsia atua em tecido vivo.",
-        "Os três termos descrevem o mesmo processo, mudando apenas o produto químico que será utilizado.",
-      ],
-      correta: 2,
-    },
-    {
-      pergunta: "Questão 5 — Resíduos de saúde. Sobre a segregação dos resíduos de serviços de saúde, é correto afirmar:",
-      opcoes: [
-        "Todos os resíduos gerados no consultório são infectantes e seguem no mesmo saco branco leitoso.",
-        "O grupo A é o infectante, o B é o químico, o D é o comum e o E reúne os perfurocortantes.",
-        "Medicamentos vencidos são resíduo comum e podem ser descartados junto com o lixo do escritório.",
-        "A segregação é feita apenas no expurgo, ao final do turno, e não no local em que o resíduo é gerado.",
+        "66 anos. Diagnóstico: infarto, porque é o quadro mais provável para essa idade.",
+        "67 anos. Queixa principal com as palavras da paciente: dor no peito desde ontem à noite, irradiando para o braço esquerdo, e remédio de pressão tomado por conta própria.",
+        "67 anos. Observações gerais: \"paciente passando mal desde ontem\".",
+        "65 anos. Deixar a queixa em branco, porque só o médico escreve na consulta.",
       ],
       correta: 1,
     },
     {
-      pergunta: "Questão 6 — Limites de atuação. Sobre os limites de atuação do auxiliar na clínica, assinale a correta:",
+      pergunta: "Situação 7 — Recepção (parte 2 do caso). Com a ficha pronta, qual deve ser a sua conduta imediata?",
       opcoes: [
-        "Ele pode orientar a troca de medicamento por um similar quando a farmácia não tiver o prescrito.",
-        "Ele pode informar ao paciente o provável diagnóstico quando o quadro for evidente e conhecido.",
-        "Ele pode ajustar a dose prescrita se o paciente relatar que a medicação não fez efeito nenhum.",
-        "Ele atua sob supervisão e não prescreve, não dá diagnóstico e não altera dose de medicamento.",
+        "Pedir que aguarde a ordem de chegada, como os demais pacientes da recepção.",
+        "Orientar que repita o remédio de pressão da vizinha enquanto espera.",
+        "Encaminhar já à classificação de risco, informando dor no peito com irradiação para o braço: a ordem segue a gravidade, não a chegada.",
+        "Pedir que volte amanhã em jejum para colher exames antes da consulta.",
       ],
-      correta: 3,
-    },
-    {
-      pergunta: "Questão 7 — Acolhimento e classificação de risco. Sobre o acolhimento com classificação de risco, é correto afirmar:",
-      opcoes: [
-        "A ordem de atendimento segue a gravidade do quadro, e não a ordem de chegada dos pacientes.",
-        "A ordem de chegada deve ser mantida sempre, pois é o critério mais justo para todos os pacientes.",
-        "A classificação de risco é feita pela recepção, que decide quem entra primeiro no consultório.",
-        "Pacientes classificados como não urgentes devem ser dispensados e orientados a voltar outro dia.",
-      ],
-      correta: 0,
+      correta: 2,
     },
     {
       pergunta:
-        "Questão 8 (prática: cadastro e ficha de atendimento), parte a. Você está na recepção e vai preencher a ficha a partir da fala da paciente. Data do atendimento: 10/03/2026. A paciente diz no balcão: \"Meu nome é Ana Beatriz Souza Lima, nasci em 12 de março de 1958. Tô com uma dor no peito desde ontem à noite e hoje começou a puxar pro braço esquerdo. Já tomei um remédio de pressão que a minha vizinha me deu.\" Ficha: nome completo Ana Beatriz Souza Lima; data de nascimento 12/03/1958; data do atendimento 10/03/2026; queixa relatada: dor no peito com irradiação para o braço esquerdo. Qual idade registrar na ficha? (A idade é registrada em anos completos na data do atendimento.)",
-      opcoes: ["65 anos", "66 anos", "67 anos", "68 anos"],
-      correta: 2,
-    },
-    {
-      pergunta: "Questão 8, parte b. Onde e como registrar o que a paciente relatou?",
+        "Situação 8 — Triagem. Você aferiu um adulto em repouso: pressão 150 x 96 mmHg (referência: até 129 x 84); frequência cardíaca 104 bpm (60 a 100); frequência respiratória 18 irpm (12 a 20); temperatura axilar 37,2 °C (35,5 a 37,4); saturação 97% (95% ou mais). Qual leitura e qual conduta estão corretas?",
       opcoes: [
-        "No campo de diagnóstico, anotando “infarto”, que é o quadro mais provável para essa idade.",
-        "Nas observações gerais, de forma resumida, apenas como “paciente passando mal desde ontem”.",
-        "Na queixa principal, com as palavras da paciente, incluindo início, evolução e o remédio usado.",
-        "Em nenhum campo por enquanto: a queixa só deve ser escrita pelo médico durante a consulta.",
-      ],
-      correta: 2,
-    },
-    {
-      pergunta: "Questão 8, parte c. Qual deve ser a sua conduta imediata na recepção?",
-      opcoes: [
-        "Encaminhar já à classificação de risco, informando dor torácica com irradiação para o braço.",
-        "Registrar a ficha e pedir que ela aguarde a ordem de chegada, como os demais da recepção.",
-        "Orientar que repita o remédio de pressão da vizinha enquanto aguarda a chamada do médico.",
-        "Pedir que retorne amanhã em jejum, porque será preciso colher exames antes da consulta.",
-      ],
-      correta: 0,
-    },
-    {
-      pergunta:
-        "Questão 9 (prática: sinais vitais), parte a. Você aferiu os sinais vitais de um paciente adulto em repouso: pressão arterial 150 x 96 mmHg (referência: até 129 x 84); frequência cardíaca 104 bpm (referência: 60 a 100); frequência respiratória 18 irpm (referência: 12 a 20); temperatura axilar 37,2 °C (referência: 35,5 a 37,4); saturação de oxigênio 97% (referência: 95% ou mais). Quantos parâmetros ficaram fora da faixa de referência?",
-      opcoes: ["Nenhum", "1", "2", "3"],
-      correta: 2,
-    },
-    {
-      pergunta: "Questão 9, parte b. Como registrar corretamente essas medidas no prontuário?",
-      opcoes: [
-        "Anotar a lápis para poder corrigir depois, caso a próxima aferição dê um resultado diferente.",
-        "Anotar valor, unidade, horário da aferição e quem aferiu, sem rasuras e sem apagar nada.",
-        "Anotar somente os valores alterados, pois os que estão normais não mudam a conduta clínica.",
-        "Arredondar os valores para facilitar a leitura e registrar tudo apenas ao final do plantão.",
+        "Tudo normal, porque só há alteração real quando três ou mais parâmetros estão fora.",
+        "Pressão e frequência cardíaca fora da referência: comunicar ao enfermeiro ou ao médico, repetir a aferição após repouso e registrar as duas medidas.",
+        "Só a pressão alterada: orientar que o paciente meça de novo numa farmácia e volte se a pressão continuar alta.",
+        "Pressão, frequência cardíaca e temperatura alteradas: dar o anti-hipertensivo que ele costuma usar.",
       ],
       correta: 1,
     },
     {
-      pergunta: "Questão 9, parte c. Qual é a conduta correta do auxiliar diante desses valores?",
+      pergunta:
+        "Situação 9 — Prontuário. Ao registrar, você percebe que anotou a pressão de outro paciente na ficha errada. Como corrigir?",
       opcoes: [
-        "Administrar o anti-hipertensivo que o paciente costuma usar e repetir a medida em trinta minutos.",
-        "Orientar que ele procure uma farmácia para aferir de novo e retorne se o valor continuar alto.",
-        "Registrar como normal, pois só há alteração real quando três ou mais parâmetros estão fora.",
-        "Comunicar ao enfermeiro ou médico, repetir a aferição após repouso e registrar as duas medidas.",
+        "Apagar com corretivo e escrever o valor certo por cima.",
+        "Riscar com um traço simples, mantendo o texto legível, escrever o valor correto ao lado e assinar com data e hora; registro nunca se apaga nem se rasura.",
+        "Arrancar a folha e refazer a ficha, para o prontuário ficar limpo.",
+        "Deixar como está e corrigir só se alguém perguntar.",
       ],
-      correta: 3,
+      correta: 1,
     },
     {
       pergunta:
-        "Questão 10 (prática: agendamento e preparo de exames), parte a. A paciente vai realizar todos os exames do pedido no mesmo dia, às 08h00. Preparo: glicemia de jejum — jejum de 8 horas; colesterol total e frações — jejum de 12 horas; hemograma completo — não exige jejum; ultrassonografia de abdome total — jejum de 6 horas + bexiga cheia. Quantos exames do pedido exigem jejum?",
-      opcoes: ["1", "2", "3", "4"],
-      correta: 2,
-    },
-    {
-      pergunta:
-        "Questão 10, parte b. Quando há vários exames no mesmo dia, vale sempre a exigência mais rigorosa. Qual jejum, em horas, você deve orientar à paciente?",
-      opcoes: ["6 horas", "8 horas", "10 horas", "12 horas"],
-      correta: 3,
-    },
-    {
-      pergunta: "Questão 10, parte c. Qual orientação deve ser dada à paciente?",
+        "Situação 10 — Agendamento. Uma paciente fará todos os exames do pedido no mesmo dia, às 08h00: glicemia de jejum (jejum de 8 horas), colesterol total e frações (jejum de 12 horas), hemograma completo (sem jejum) e ultrassonografia de abdome total (jejum de 6 horas + bexiga cheia). Quando há vários exames no mesmo dia, vale a exigência mais rigorosa. Qual orientação você dá?",
       opcoes: [
-        "Jejum de 8 horas, que é o do primeiro exame da lista, refazendo o colesterol em outra data.",
-        "Jejum de 6 horas, o menor da lista, para que ela não fique tempo demais sem se alimentar.",
+        "Jejum de 8 horas, o do primeiro exame da lista, e refazer o colesterol em outra data.",
+        "Nenhum jejum, porque o hemograma é o exame principal do pedido.",
+        "Jejum de 6 horas, o menor, para ela não ficar tanto tempo sem comer.",
         "Jejum de 12 horas, com água liberada, e beber água antes do ultrassom sem urinar até o exame.",
-        "Nenhum jejum, porque o hemograma é o exame principal do pedido e não exige preparo algum.",
       ],
-      correta: 2,
+      correta: 3,
     },
   ],
 };

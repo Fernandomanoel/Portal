@@ -1,15 +1,15 @@
 import type { ProvaInterativa } from "@/types/quiz";
 
 /**
- * Portada de Portal-Atividades (provas/Gestão de Pessoas/
- * Avaliação - Gestão de Pessoas (Múltipla Escolha).prova.js): mesmas 8
- * perguntas e o mesmo gabarito do arquivo original. Metade virou dissertativa
- * autocorrigida, usando a resposta certa original como base das
- * `respostasAceitas`.
+ * Portada de Portal-Atividades (provas/Gestão de Pessoas/): reúne em uma só prova as
+ * duas avaliações do arquivo original — as 8 perguntas objetivas e as 2
+ * perguntas abertas, que antes eram uma prova descritiva à parte. As abertas
+ * agora também são conferidas por palavras-chave (`respostasAceitas`); quando
+ * a resposta não bate com nenhuma, ela fica a revisar para o professor.
  */
 const prova: ProvaInterativa = {
   tipo: "mista",
-  titulo: "Avaliação — Gestão de Pessoas",
+  titulo: "Avaliação — Gestão de Pessoas (Completa)",
   perguntas: [
     {
       tipo: "dissertativa",
@@ -70,6 +70,16 @@ const prova: ProvaInterativa = {
         "É responsabilidade exclusiva do RH, sem envolver gestores",
       ],
       correta: 1,
+    },
+    {
+      tipo: "dissertativa",
+      pergunta: "Explique, com suas palavras, por que reter talentos é importante para uma empresa.",
+      respostasAceitas: ["rotatividade", "turnover", "custo de recrutamento", "custo de contratacao", "conhecimento", "experiencia", "produtividade", "engajamento"],
+    },
+    {
+      tipo: "dissertativa",
+      pergunta: "Descreva uma ação que um gestor pode tomar para melhorar o clima organizacional de sua equipe.",
+      respostasAceitas: ["feedback", "reconhecimento", "reconhecer", "valorizar", "comunicacao", "reuniao", "integracao", "pesquisa de clima", "confianca", "escuta", "ouvir a equipe"],
     },
   ],
 };

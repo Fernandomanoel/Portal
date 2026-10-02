@@ -89,13 +89,13 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
   "Internet, Redes Sociais e Aplicativos": [
     {
       tipo: "quiz",
-      rotulo: "Historiador Digital",
+      rotulo: "Linha do Tempo das Redes Sociais",
       caminho: "Internet, Redes Sociais e Aplicativos/avaliacao-historiador-digital",
-      tamanho: "4 passos",
+      tamanho: "7 passos",
     },
     {
       tipo: "quiz",
-      rotulo: "Cotidiano Digital",
+      rotulo: "Guia de Uso Consciente",
       caminho: "Internet, Redes Sociais e Aplicativos/avaliacao-cotidiano-digital",
       tamanho: "5 passos",
     },
@@ -169,9 +169,9 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
   "Auxiliar Médico": [
     {
       tipo: "quiz",
-      rotulo: "Avaliação de Auxiliar Médico",
+      rotulo: "Um Dia na Clínica",
       caminho: "Auxiliar Médico/prova-auxiliar-medico",
-      tamanho: "16 questões",
+      tamanho: "10 questões",
     },
   ],
   "Administração": [
@@ -201,15 +201,9 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
   "Atendimento ao Cliente": [
     {
       tipo: "quiz",
-      rotulo: "Avaliação — Múltipla Escolha",
-      caminho: "Atendimento ao Cliente/avaliacao-multipla-escolha",
-      tamanho: "8 questões",
-    },
-    {
-      tipo: "quiz",
-      rotulo: "Avaliação — Descritiva",
-      caminho: "Atendimento ao Cliente/avaliacao-descritiva",
-      tamanho: "2 questões",
+      rotulo: "Avaliação de Atendimento ao Cliente",
+      caminho: "Atendimento ao Cliente/avaliacao-completa",
+      tamanho: "12 questões",
     },
   ],
   "Compras e Estoque": [
@@ -247,15 +241,9 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
   "Gestão de Pessoas": [
     {
       tipo: "quiz",
-      rotulo: "Avaliação — Múltipla Escolha",
-      caminho: "Gestão de Pessoas/avaliacao-multipla-escolha",
-      tamanho: "8 questões",
-    },
-    {
-      tipo: "quiz",
-      rotulo: "Avaliação — Descritiva",
-      caminho: "Gestão de Pessoas/avaliacao-descritiva",
-      tamanho: "2 questões",
+      rotulo: "Avaliação de Gestão de Pessoas",
+      caminho: "Gestão de Pessoas/avaliacao-completa",
+      tamanho: "12 questões",
     },
   ],
   "Operador de Telemarketing": [
@@ -285,15 +273,9 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
   "Vendas": [
     {
       tipo: "quiz",
-      rotulo: "Avaliação — Múltipla Escolha",
-      caminho: "Vendas/avaliacao-multipla-escolha",
-      tamanho: "8 questões",
-    },
-    {
-      tipo: "quiz",
-      rotulo: "Avaliação — Descritiva",
-      caminho: "Vendas/avaliacao-descritiva",
-      tamanho: "2 questões",
+      rotulo: "Avaliação de Vendas",
+      caminho: "Vendas/avaliacao-completa",
+      tamanho: "12 questões",
     },
   ],
 }; // <-- O objeto PROVAS_MANIFEST é fechado aqui.
