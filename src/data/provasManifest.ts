@@ -190,6 +190,30 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "10 questões de código",
     },
   ],
+  "Banco de Dados | SQL": [
+    {
+      tipo: "quiz",
+      rotulo: "Controle de Biblioteca",
+      caminho: "Banco de Dados/avaliacao-controle-de-biblioteca",
+      tamanho: "5 passos de SQL",
+    },
+  ],
+  "Lógica de Programação": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação Prática de Lógica",
+      caminho: "Lógica de Programação/avaliacao-pratica-logica",
+      tamanho: "9 questões",
+    },
+  ],
+  "Python": [
+    {
+      tipo: "quiz",
+      rotulo: "Prova de Python — correção automática",
+      caminho: "Python/prova-python-testes-automatizados",
+      tamanho: "8 questões de código",
+    },
+  ],
   "Administração": [
     {
       tipo: "quiz",

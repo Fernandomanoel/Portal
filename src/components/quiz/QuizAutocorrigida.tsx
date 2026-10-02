@@ -145,6 +145,12 @@ export function QuizAutocorrigida({ prova, valores, resultados, testando, aoMuda
             </h2>
             {item.enunciado && <p className={estilos.textoItem}>{item.enunciado}</p>}
             {item.referencia && <p className={estilos.referencia}>{item.referencia}</p>}
+            {item.imagem && (
+              <figure className={estilos.figuraItem}>
+                <img src={item.imagem.url} alt={item.imagem.alt} />
+                {item.imagem.legenda && <figcaption>{item.imagem.legenda}</figcaption>}
+              </figure>
+            )}
             {item.exemplo && (
               <div className={estilos.exemploCodigo}>
                 <p className={estilos.exemploRotulo}>{item.exemplo.rotulo}</p>

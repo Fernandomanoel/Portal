@@ -608,3 +608,21 @@ legend.enunciado {
   font-size: var(--text-sm);
   color: var(--ink-faint);
 }
+
+.figuraItem {
+  margin: 0 0 var(--space-4);
+}
+
+.figuraItem img {
+  display: block;
+  max-width: 100%;
+  width: 640px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.figuraItem figcaption {
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  margin-top: var(--space-2);
+}

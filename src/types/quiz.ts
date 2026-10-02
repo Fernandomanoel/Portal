@@ -151,6 +151,8 @@ export interface ItemProva {
   referencia?: string;
   /** Exemplo de saída ou de chamada, em fonte monoespaçada. */
   exemplo?: { rotulo: string; conteudo: string };
+  /** Figura da questão (um fluxograma, por exemplo). `url` é um caminho em `public/`. */
+  imagem?: { url: string; alt: string; legenda?: string };
   campos: CampoProva[];
   mensagemCerta?: string;
   mensagemErrada?: string;
