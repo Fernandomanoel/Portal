@@ -3,7 +3,8 @@ import { randomUUID } from "node:crypto";
 import type { ArquivoEnviado, Envio, LancarNotaInput, Professor, ReciboEnvio, SaidaProva } from "../src/types/envio.js";
 import { DIAS_GUARDADOS, LIMITE_ARQUIVO_MB } from "../src/types/envio.js";
 import type { Armazenamento } from "./armazenamento.js";
-import { acharProva, corrigir, semGabarito, tipoDe, validarRespostas } from "./provas.js";
+import { conferirItem } from "../src/lib/correcaoProva.js";
+import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
 import {
   COOKIE_SESSAO,
   autenticar,
@@ -337,6 +338,18 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
   if (partes[0] === "provas" && partes.length > 1 && metodo === "GET") {
     const prova = await acharProva(partes.slice(1).map(decodeURIComponent).join("/"));
     return prova ? json(semGabarito(prova)) : erro(404, "NAO_ENCONTRADO", "Essa prova não existe.");
+  }
+
+  // Público: "Testar resposta" de uma questão da prova autocorrigida. O
+  // servidor confere e devolve onde errou, sem revelar o gabarito; vale
+  // tentar quantas vezes quiser — o que conta é o envio final.
+  if (partes[0] === "provas" && partes.length > 2 && partes[partes.length - 1] === "verificar" && metodo === "POST") {
+    const prova = await acharProva(partes.slice(1, -1).map(decodeURIComponent).join("/"));
+    if (!prova || prova.tipo !== "autocorrigida") return erro(404, "NAO_ENCONTRADO", "Essa prova não existe.");
+    const corpo = await lerCorpoJson(requisicao);
+    const item = prova.itens[Number(corpo?.item)];
+    if (!item) return erro(422, "VALIDATION_ERROR", "Questão inexistente.");
+    return json(conferirItem(item, valoresDoItem(item, corpo?.valores)));
   }
 
   // Público: o aluno envia a prova.

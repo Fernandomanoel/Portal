@@ -25,7 +25,7 @@ export interface Envio {
   /** Caminho do `.prova.ts` dentro de `provasInterativas/` ("IA/prompts"). */
   provaId: string;
   provaTitulo: string;
-  tipoProva: "multipla_escolha" | "descritiva" | "pratica" | "mista";
+  tipoProva: "multipla_escolha" | "descritiva" | "pratica" | "mista" | "autocorrigida";
   nomeAluno: string;
   iniciadaEm: string;
   enviadaEm: string;

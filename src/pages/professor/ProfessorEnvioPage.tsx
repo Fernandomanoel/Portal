@@ -5,6 +5,7 @@ import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { ErroApi, apagarEnvio, lancarNota, obterEnvio, urlArquivo } from "@/lib/apiProvas";
+import { conferirItem } from "@/lib/correcaoProva";
 import { respostaAceita, verificarCodigo } from "@/lib/correcaoTexto";
 import { rotas } from "@/lib/rotas";
 import type { Envio, SaidaProva } from "@/types/envio";
@@ -186,6 +187,49 @@ function Respostas({ envio, prova }: { envio: Envio; prova: ProvaInterativa | nu
               <li key={i} className={estilos.resposta}>
                 <p className={estilos.enunciado}>{prova.perguntas[i]}</p>
                 <p className={estilos.texto}>{String(resposta ?? "")}</p>
+              </li>
+            );
+          }
+
+          if (prova?.tipo === "autocorrigida") {
+            const item = prova.itens[i];
+            let valores: Record<string, string> = {};
+            try {
+              valores = JSON.parse(String(resposta ?? "{}"));
+            } catch {
+              valores = {};
+            }
+            const resultado = conferirItem(item, valores);
+            return (
+              <li key={i} className={estilos.resposta}>
+                <p className={estilos.enunciado}>{item.titulo}</p>
+                <p className={resultado.certo ? estilos.certa : estilos.errada}>
+                  <Icone nome={resultado.certo ? "check" : "x"} tamanho={16} />
+                  {resultado.certo ? "Questão certa" : "Questão errada"}
+                </p>
+                {item.campos.map((campo) => {
+                  const campoResultado = resultado.campos[campo.id];
+                  const valor = valores[campo.id] ?? "";
+                  return (
+                    <div key={campo.id}>
+                      {campo.rotulo && <p className={estilos.gabarito}>{campo.rotulo}</p>}
+                      <pre className={estilos.texto}>{valor || "sem resposta"}</pre>
+                      <p className={campoResultado.certo ? estilos.certa : estilos.errada}>
+                        <Icone nome={campoResultado.certo ? "check" : "x"} tamanho={16} />
+                        {campoResultado.certo ? "Campo certo" : (campoResultado.mensagem ?? "Campo errado")}
+                      </p>
+                      {campoResultado.detalhes && (
+                        <ul className={estilos.gabarito}>
+                          {campoResultado.detalhes.map((detalhe) => (
+                            <li key={detalhe.descricao}>
+                              {detalhe.ok ? "✓" : "✗"} {detalhe.descricao}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  );
+                })}
               </li>
             );
           }

@@ -23,7 +23,7 @@ Depois de criar ou renomear um `.prova.ts`, rode `npm run dev` ou
 `npm run build`: os dois regeneram `servidor/provas.gerado.ts`, a lista de
 provas que o servidor conhece.
 
-## Os quatro tipos
+## Os cinco tipos
 
 ### Múltipla escolha — corrigida na hora
 
@@ -117,30 +117,57 @@ volta a ficar disponível para o professor revisar. **`respostasAceitas` é
 gabarito**: nunca vaza pro navegador do aluno (o servidor tira antes de
 entregar a prova), só a área do professor vê a lista completa.
 
-### Código autocorrigido — pergunta `codigo` dentro da mista
+### Autocorrigida — "Testar resposta" quantas vezes quiser
 
-Para prova de programação: o aluno escreve o código num campo monoespaçado e o
-servidor confere cada `verificacao` (uma expressão regular, sem as barras)
-sobre o código **sem comentários**. Passou em todas, acertou; faltou alguma,
-errou — diferente da dissertativa, aqui a correção é definitiva, nunca fica "a
-revisar". `respostasAceitas` fica `[]`.
+Para provas que vieram de página interativa (IA, Google Ads, JavaScript): cada
+**item** é uma questão com 1+ **campos**, e ele só conta como certo se todos os
+campos estiverem certos. O aluno clica em "Testar resposta", o servidor confere
+e mostra onde errou; ele ajusta e testa de novo, sem limite. No envio, o
+servidor corrige tudo outra vez (o que não estiver certo vale zero) e a nota é
+`acertos ÷ questões × 10`. A prova é travada como qualquer outra que não seja
+prática: ao entrar, o aluno não sai da tela.
 
 ```ts
-{
-  tipo: "dissertativa",
-  codigo: true,
-  pergunta: "Crie uma função calcular(a, b) que retorne a soma.",
-  respostasAceitas: [],
-  verificacoes: [
-    { descricao: "Função calcular com 2 parâmetros", padrao: String.raw`function\s+calcular\s*\(\s*\w+\s*,\s*\w+\s*\)` },
-    { descricao: "Retorna a soma", padrao: String.raw`return\s+\w+\s*\+\s*\w+` },
+const prova: ProvaInterativa = {
+  tipo: "autocorrigida",
+  titulo: "Prova de JavaScript",
+  introducao: "Escreva o código e use “Testar resposta”.",
+  itens: [
+    {
+      titulo: "Questão 1: Soma",
+      enunciado: "Crie uma função calcular(a, b) que retorne a soma.",
+      exemplo: { rotulo: "Exemplo de chamada", conteudo: "calcular(5, 3); // 8" },
+      campos: [
+        {
+          id: "codigo",
+          rotulo: "Escreva seu código:",
+          regra: {
+            tipo: "codigo",
+            verificacoes: [{ descricao: "Função calcular com 2 parâmetros", padrao: String.raw`function\s+calcular\s*\(\s*\w+\s*,\s*\w+\s*\)` }],
+          },
+        },
+      ],
+      mensagemCerta: "Excelente!",
+      mensagemErrada: "Use function com return e +",
+    },
   ],
-}
+};
 ```
 
-Escreva os padrões aceitando as variações comuns (`const`/`let`/`function`,
-`if`/ternário). Não executam o código do aluno: só procuram o que ele tem de
-conter. Exemplo completo: `JavaScript/prova-javascript-testes-automatizados`.
+Tipos de `regra` de cada campo: `selecao` (lista suspensa, `esperado` é o
+`valor` da opção), `multipla_escolha` (`correta` é o índice), `marcar`
+(caixas; `corretas` são os índices), `numero` (`esperado` e `tolerancia`),
+`texto` (`minPalavras`, `minCaracteres`, `palavrasChave` como fonte de RegExp) e
+`codigo` (`verificacoes`: expressões regulares aplicadas ao código **sem
+comentários**; o código do aluno nunca é executado). Os campos que mostram
+resultado por linha (`rotulo`, `mensagemCerta`, `mensagemErrada`) valem por campo
+e por item. O gabarito (`regra`, mensagens) fica no servidor: o navegador só
+recebe o tipo de entrada de cada campo.
+
+Para portar uma página interativa de Portal-Atividades, mantenha os mesmos
+módulos, ordem, gabarito, mensagens e palavras-chave — só o suporte muda.
+Exemplos: `JavaScript/prova-javascript-testes-automatizados`,
+`Inteligência Artificial/avaliacao-ia-engenharia-prompts-llms`.
 
 ## Regras que valem para qualquer tipo
 

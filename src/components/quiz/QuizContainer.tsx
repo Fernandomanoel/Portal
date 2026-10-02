@@ -3,13 +3,14 @@ import { useBlocker, useNavigate } from "react-router-dom";
 
 import { useProvaEmAndamento } from "@/hooks/ProvaEmAndamento";
 import { useTravaProva } from "@/hooks/useTravaProva";
-import { ErroApi, aceitarResultadoProvisorio, enviarProva } from "@/lib/apiProvas";
+import { ErroApi, aceitarResultadoProvisorio, enviarProva, verificarItem } from "@/lib/apiProvas";
 import type { ReciboEnvio, SaidaProva } from "@/types/envio";
-import { ehDescritiva, ehMista, ehPratica, totalDeQuestoes, type ProvaParaAluno } from "@/types/quiz";
+import { ehAutocorrigida, ehDescritiva, ehMista, ehPratica, totalDeQuestoes, type ProvaParaAluno, type ResultadoItem } from "@/types/quiz";
 import { CampoArquivo, problemaDoArquivo } from "./CampoArquivo";
 import { ProvaBloqueada } from "./ProvaBloqueada";
 import { ProvaIdentificacao } from "./ProvaIdentificacao";
 import { QuizAceitarResultado } from "./QuizAceitarResultado";
+import { QuizAutocorrigida } from "./QuizAutocorrigida";
 import { QuizDescritiva } from "./QuizDescritiva";
 import { QuizMista } from "./QuizMista";
 import { QuizMultiplaEscolha } from "./QuizMultiplaEscolha";
@@ -69,6 +70,9 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
   const [chave] = useState(() => crypto.randomUUID());
   const [escolhas, definirEscolhas] = useState<Record<number, number>>({});
   const [textos, definirTextos] = useState<string[]>(() => Array.from({ length: totalQuestoes }, () => ""));
+  const [valores, definirValores] = useState<Record<string, string>[]>(() => Array.from({ length: totalQuestoes }, () => ({})));
+  const [resultados, definirResultados] = useState<(ResultadoItem | undefined)[]>([]);
+  const [testando, definirTestando] = useState<number | null>(null);
   const [arquivo, definirArquivo] = useState<File | null>(null);
   const [saidas, definirSaidas] = useState<SaidaProva[]>([]);
   const [erroEnvio, definirErroEnvio] = useState<string | null>(null);
@@ -102,7 +106,9 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
 
   const respondidas = ehPratica(prova)
     ? 0
-    : ehDescritiva(prova)
+    : ehAutocorrigida(prova)
+      ? resultados.filter((resultado) => resultado?.certo).length
+      : ehDescritiva(prova)
       ? textos.filter((texto) => texto.trim().length > 0).length
       : ehMista(prova)
         ? prova.perguntas.filter((pergunta, i) => (pergunta.tipo === "dissertativa" ? textos[i]?.trim().length > 0 : escolhas[i] !== undefined)).length
@@ -110,14 +116,16 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
 
   const problemaArquivo = arquivo && prova.envioArquivo ? problemaDoArquivo(arquivo, prova.envioArquivo) : null;
   const faltaArquivo = !!prova.envioArquivo?.obrigatorio && !arquivo;
-  const completa = respondidas === totalQuestoes && !faltaArquivo && !problemaArquivo;
+  // Na prova com teste na hora, o aluno envia quando quiser: o que não estiver certo vale zero.
+  const completa = (ehAutocorrigida(prova) || respondidas === totalQuestoes) && !faltaArquivo && !problemaArquivo;
 
   const pendencia = useMemo(() => {
+    if (ehAutocorrigida(prova)) return `${respondidas} de ${totalQuestoes} questões testadas e certas. Questão sem acerto vale zero no envio.`;
     if (respondidas < totalQuestoes) return `Responda todas as questões (${respondidas} de ${totalQuestoes}).`;
     if (faltaArquivo) return "Anexe o arquivo da prova.";
     if (problemaArquivo) return problemaArquivo;
     return null;
-  }, [respondidas, totalQuestoes, faltaArquivo, problemaArquivo]);
+  }, [prova, respondidas, totalQuestoes, faltaArquivo, problemaArquivo]);
 
   async function comecar(nome: string) {
     definirNomeAluno(nome);
@@ -137,7 +145,9 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
     definirErroEnvio(null);
     const respostas = ehPratica(prova)
       ? []
-      : ehDescritiva(prova)
+      : ehAutocorrigida(prova)
+        ? prova.itens.map((_, i) => JSON.stringify(valores[i] ?? {}))
+        : ehDescritiva(prova)
         ? textos
         : ehMista(prova)
           ? prova.perguntas.map((pergunta, i) => (pergunta.tipo === "dissertativa" ? (textos[i] ?? "") : (escolhas[i] ?? null)))
@@ -148,6 +158,30 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
     } catch (falha) {
       definirErroEnvio(falha instanceof ErroApi ? falha.message : "Não foi possível enviar. Tente de novo.");
       definirFase({ tipo: "respondendo" });
+    }
+  }
+
+  function mudarCampo(item: number, campo: string, valor: string) {
+    definirValores((atual) => atual.map((v, i) => (i === item ? { ...v, [campo]: valor } : v)));
+    // A resposta mudou: o resultado antigo não vale mais, só um novo teste confirma.
+    definirResultados((atual) => atual.map((r, i) => (i === item ? undefined : r)));
+  }
+
+  async function testarItem(item: number) {
+    if (!ehAutocorrigida(prova)) return;
+    definirTestando(item);
+    definirErroEnvio(null);
+    try {
+      const resultado = await verificarItem(provaId, item, valores[item] ?? {});
+      definirResultados((atual) => {
+        const proximo = [...atual];
+        proximo[item] = resultado;
+        return proximo;
+      });
+    } catch (falha) {
+      definirErroEnvio(falha instanceof ErroApi ? falha.message : "Não foi possível testar agora. Tente de novo.");
+    } finally {
+      definirTestando(null);
     }
   }
 
@@ -236,6 +270,7 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
         {totalQuestoes > 0 && (
           <span className={`${estilos.andamento} tabular`}>
             {respondidas} de {totalQuestoes}
+            {ehAutocorrigida(prova) ? " certas" : ""}
           </span>
         )}
       </header>
@@ -254,6 +289,8 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
             })
           }
         />
+      ) : ehAutocorrigida(prova) ? (
+        <QuizAutocorrigida prova={prova} valores={valores} resultados={resultados} testando={testando} aoMudar={mudarCampo} aoTestar={testarItem} />
       ) : ehMista(prova) ? (
         <QuizMista
           prova={prova}

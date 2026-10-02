@@ -1,5 +1,6 @@
+import { conferirItem } from "../src/lib/correcaoProva.js";
 import { respostaAceita, verificarCodigo } from "../src/lib/correcaoTexto.js";
-import type { ProvaInterativa, ProvaParaAluno } from "../src/types/quiz.js";
+import type { CampoProva, EntradaCampo, ProvaAutocorrigida, ProvaInterativa, ProvaParaAluno } from "../src/types/quiz.js";
 import { REGISTRO_PROVAS } from "./provas.gerado.js";
 
 export async function acharProva(id: string): Promise<ProvaInterativa | null> {
@@ -9,8 +10,25 @@ export async function acharProva(id: string): Promise<ProvaInterativa | null> {
 }
 
 /** Tira o gabarito: é isto que vai para o navegador do aluno. */
+function entradaDe(campo: CampoProva): EntradaCampo {
+  const { regra } = campo;
+  if (regra.tipo === "selecao") return { tipo: "selecao", opcoes: regra.opcoes };
+  if (regra.tipo === "multipla_escolha" || regra.tipo === "marcar") return { tipo: regra.tipo, opcoes: regra.opcoes };
+  if (regra.tipo === "numero") return { tipo: "numero" };
+  return { tipo: regra.tipo === "codigo" ? "codigo" : "texto" };
+}
+
 export function semGabarito(prova: ProvaInterativa): ProvaParaAluno {
   if (prova.tipo === "descritiva" || prova.tipo === "pratica") return prova;
+  if (prova.tipo === "autocorrigida") {
+    return {
+      ...prova,
+      itens: prova.itens.map(({ mensagemCerta: _certa, mensagemErrada: _errada, campos, ...item }) => ({
+        ...item,
+        campos: campos.map(({ regra: _regra, mensagemCerta: _c, mensagemErrada: _e, ...campo }) => ({ ...campo, entrada: entradaDe({ ...campo, regra: _regra }) })),
+      })),
+    };
+  }
   if (prova.tipo === "mista") {
     return {
       ...prova,
@@ -34,6 +52,12 @@ export function tipoDe(prova: ProvaInterativa) {
  */
 export function validarRespostas(prova: ProvaInterativa, respostas: unknown): { ok: true; respostas: (number | string | null)[] } | { ok: false; erro: string } {
   if (prova.tipo === "pratica") return { ok: true, respostas: [] };
+  if (prova.tipo === "autocorrigida") {
+    if (!Array.isArray(respostas) || respostas.length !== prova.itens.length) {
+      return { ok: false, erro: "As respostas não batem com o número de questões da prova." };
+    }
+    return { ok: true, respostas: respostas.map((r, i) => JSON.stringify(valoresDoItem(prova.itens[i], r))) };
+  }
   if (!Array.isArray(respostas) || respostas.length !== prova.perguntas.length) {
     return { ok: false, erro: "As respostas não batem com o número de questões da prova." };
   }
@@ -60,8 +84,27 @@ export function validarRespostas(prova: ProvaInterativa, respostas: unknown): { 
   return { ok: true, respostas: escolhas };
 }
 
+/** Aceita o objeto do item (ou o texto JSON dele) e guarda só os campos que a questão tem. */
+export function valoresDoItem(item: ProvaAutocorrigida["itens"][number], bruto: unknown): Record<string, string> {
+  let objeto: unknown = bruto;
+  if (typeof bruto === "string") {
+    try {
+      objeto = JSON.parse(bruto);
+    } catch {
+      objeto = null;
+    }
+  }
+  const origem = objeto && typeof objeto === "object" ? (objeto as Record<string, unknown>) : {};
+  return Object.fromEntries(item.campos.map((campo) => [campo.id, typeof origem[campo.id] === "string" ? (origem[campo.id] as string).slice(0, 20_000) : ""]));
+}
+
 export function corrigir(prova: ProvaInterativa, respostas: (number | string | null)[]) {
   if (prova.tipo === "pratica" || prova.tipo === "descritiva") return null;
+  if (prova.tipo === "autocorrigida") {
+    const acertos = prova.itens.reduce((soma, item, i) => (conferirItem(item, valoresDoItem(item, respostas[i])).certo ? soma + 1 : soma), 0);
+    const total = prova.itens.length;
+    return { acertos, total, nota: Math.round((acertos / total) * 100) / 10 };
+  }
   if (prova.tipo === "mista") {
     let acertos = 0;
     let aRevisar = 0;

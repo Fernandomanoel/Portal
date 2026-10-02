@@ -416,3 +416,178 @@ legend.enunciado {
 .material:hover {
   background: var(--surface-soft);
 }
+
+/* Prova autocorrigida: cada questão pode ser testada quantas vezes o aluno quiser. */
+.introducao {
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-5);
+}
+
+.itemCerto {
+  border-color: color-mix(in srgb, var(--success) 45%, transparent);
+}
+
+.itemErrado {
+  border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+}
+
+.textoItem {
+  color: var(--ink-soft);
+  margin-bottom: var(--space-4);
+}
+
+.referencia {
+  background: var(--brand-tint);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+}
+
+.exemploCodigo {
+  margin-bottom: var(--space-4);
+}
+
+.exemploRotulo {
+  font-size: var(--text-xs);
+  color: var(--ink-faint);
+  margin-bottom: var(--space-2);
+}
+
+.exemploCodigo pre {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  overflow-x: auto;
+}
+
+.camposItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.campoItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.rotuloCampo {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+.selecao,
+.campoCurto {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+}
+
+.selecao:focus-visible,
+.campoCurto:focus-visible {
+  border-color: var(--brand);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.retornoCerto,
+.retornoErrado {
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.retornoCerto {
+  background: var(--success-tint);
+  color: var(--success);
+}
+
+.retornoErrado {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.retornoTexto {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.testes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.testes li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.testeOk {
+  color: var(--success);
+}
+
+.testeFalha {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.testar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.botaoTestar {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--brand);
+  background: var(--surface);
+  color: var(--brand-deep);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.botaoTestar:hover:not(:disabled) {
+  background: var(--brand-tint);
+}
+
+.botaoTestar:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.veredictoCerto,
+.veredictoErrado {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.veredictoCerto {
+  color: var(--success);
+}
+
+.veredictoErrado {
+  color: var(--danger);
+}

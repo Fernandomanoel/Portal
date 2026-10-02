@@ -135,7 +135,7 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tipo: "quiz",
       rotulo: "Google Ads e Marketing de Busca",
       caminho: "Google Adwords/avaliacao-google-ads-marketing-busca",
-      tamanho: "20 questões",
+      tamanho: "10 módulos",
     },
     {
       tipo: "quiz",
@@ -155,7 +155,7 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tipo: "quiz",
       rotulo: "Engenharia de Prompts e LLMs",
       caminho: "Inteligência Artificial/avaliacao-ia-engenharia-prompts-llms",
-      tamanho: "19 questões",
+      tamanho: "10 módulos",
     },
   ],
   "Javascript": [

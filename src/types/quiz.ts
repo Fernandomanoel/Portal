@@ -104,7 +104,89 @@ export interface ProvaMista extends RegrasProva {
   perguntas: PerguntaMista[];
 }
 
-export type ProvaInterativa = ProvaMultiplaEscolha | ProvaDescritiva | ProvaPratica | ProvaMista;
+/**
+ * Como cada campo de uma questão é corrigido. Fica no servidor: o aluno recebe
+ * só o tipo de entrada (`EntradaCampo`), nunca o gabarito.
+ *
+ * Os valores digitados/escolhidos viajam sempre como texto: `selecao` guarda o
+ * `valor` da opção, `multipla_escolha` o índice, `marcar` os índices separados
+ * por vírgula ("0,2").
+ */
+export type RegraCampoProva =
+  | { tipo: "selecao"; opcoes: { valor: string; texto: string }[]; esperado: string }
+  | { tipo: "multipla_escolha"; opcoes: string[]; correta: number }
+  | { tipo: "marcar"; opcoes: string[]; corretas: number[] }
+  | { tipo: "numero"; esperado: number; tolerancia?: number }
+  | {
+      tipo: "texto";
+      minPalavras?: number;
+      minCaracteres?: number;
+      /** Fonte da RegExp (sem as barras, testada sem diferenciar maiúsculas): a resposta precisa casar. */
+      palavrasChave?: string;
+      /** Mensagem quando o texto é válido mas não casa com `palavrasChave`. */
+      mensagemSemPalavraChave?: string;
+    }
+  | { tipo: "codigo"; verificacoes: VerificacaoCodigo[] };
+
+export interface CampoProva {
+  id: string;
+  /** Texto da linha do campo ("Objetivo: ...", "O limite de texto é definido pela sua ___"). */
+  rotulo?: string;
+  placeholder?: string;
+  regra: RegraCampoProva;
+  mensagemCerta?: string;
+  mensagemErrada?: string;
+}
+
+/**
+ * Uma questão da prova autocorrigida: 1+ campos, e ela só conta como certa se
+ * todos os campos estiverem certos — o mesmo molde das atividades do portal.
+ */
+export interface ItemProva {
+  titulo: string;
+  enunciado?: string;
+  /** Caixa de apoio com fórmulas ou dados do cenário. */
+  referencia?: string;
+  /** Exemplo de saída ou de chamada, em fonte monoespaçada. */
+  exemplo?: { rotulo: string; conteudo: string };
+  campos: CampoProva[];
+  mensagemCerta?: string;
+  mensagemErrada?: string;
+}
+
+/**
+ * Prova com teste na hora: o aluno responde, clica em "Testar resposta" e vê
+ * onde errou, quantas vezes quiser; o envio final é corrigido de novo pelo
+ * servidor. Como não sai da tela (a trava de aba vale como em qualquer prova
+ * que não seja prática), o professor acompanha as saídas no envio.
+ */
+export interface ProvaAutocorrigida extends RegrasProva {
+  tipo: "autocorrigida";
+  titulo: string;
+  introducao?: string;
+  itens: ItemProva[];
+}
+
+export type ProvaInterativa = ProvaMultiplaEscolha | ProvaDescritiva | ProvaPratica | ProvaMista | ProvaAutocorrigida;
+
+export type EntradaCampo =
+  | { tipo: "selecao"; opcoes: { valor: string; texto: string }[] }
+  | { tipo: "multipla_escolha"; opcoes: string[] }
+  | { tipo: "marcar"; opcoes: string[] }
+  | { tipo: "numero" }
+  | { tipo: "texto" }
+  | { tipo: "codigo" };
+
+export type CampoProvaAluno = Omit<CampoProva, "regra" | "mensagemCerta" | "mensagemErrada"> & { entrada: EntradaCampo };
+export type ItemProvaAluno = Omit<ItemProva, "campos" | "mensagemCerta" | "mensagemErrada"> & { campos: CampoProvaAluno[] };
+export type ProvaAutocorrigidaAluno = Omit<ProvaAutocorrigida, "itens"> & { itens: ItemProvaAluno[] };
+
+/** Resposta do servidor a um "Testar resposta". */
+export interface ResultadoItem {
+  certo: boolean;
+  mensagem?: string;
+  campos: Record<string, { certo: boolean; mensagem?: string; detalhes?: { descricao: string; ok: boolean }[] }>;
+}
 
 /**
  * A prova como chega ao navegador do aluno: igual, menos o gabarito. Quem
@@ -115,7 +197,7 @@ export type ProvaMultiplaEscolhaAluno = Omit<ProvaMultiplaEscolha, "perguntas"> 
 };
 export type PerguntaMistaAluno = Omit<PerguntaMultiplaEscolha, "correta"> | Omit<PerguntaDissertativaAuto, "respostasAceitas" | "verificacoes">;
 export type ProvaMistaAluno = Omit<ProvaMista, "perguntas"> & { perguntas: PerguntaMistaAluno[] };
-export type ProvaParaAluno = ProvaMultiplaEscolhaAluno | ProvaDescritiva | ProvaPratica | ProvaMistaAluno;
+export type ProvaParaAluno = ProvaMultiplaEscolhaAluno | ProvaDescritiva | ProvaPratica | ProvaMistaAluno | ProvaAutocorrigidaAluno;
 
 export const NOTA_APROVACAO = 7;
 
@@ -131,10 +213,15 @@ export function ehMista(prova: ProvaParaAluno): prova is ProvaMistaAluno {
   return prova.tipo === "mista";
 }
 
-export function tipoDaProva(prova: ProvaParaAluno): "multipla_escolha" | "descritiva" | "pratica" | "mista" {
+export function ehAutocorrigida(prova: ProvaParaAluno): prova is ProvaAutocorrigidaAluno {
+  return prova.tipo === "autocorrigida";
+}
+
+export function tipoDaProva(prova: ProvaParaAluno): "multipla_escolha" | "descritiva" | "pratica" | "mista" | "autocorrigida" {
   return prova.tipo ?? "multipla_escolha";
 }
 
 export function totalDeQuestoes(prova: ProvaParaAluno): number {
-  return ehPratica(prova) ? 0 : prova.perguntas.length;
+  if (ehPratica(prova)) return 0;
+  return ehAutocorrigida(prova) ? prova.itens.length : prova.perguntas.length;
 }

@@ -1,5 +1,5 @@
 import type { Envio, LancarNotaInput, Professor, ReciboEnvio } from "@/types/envio";
-import type { ProvaInterativa, ProvaParaAluno } from "@/types/quiz";
+import type { ProvaInterativa, ProvaParaAluno, ResultadoItem } from "@/types/quiz";
 
 /** Erro da API com a mensagem já pronta para mostrar na tela. */
 export class ErroApi extends Error {
@@ -46,6 +46,10 @@ export interface DadosEnvio {
 }
 
 export const obterProva = (id: string) => chamar<ProvaParaAluno>(`provas/${id.split("/").map(encodeURIComponent).join("/")}`);
+
+/** "Testar resposta": o servidor confere a questão e devolve onde errou. */
+export const verificarItem = (provaId: string, item: number, valores: Record<string, string>) =>
+  chamar<ResultadoItem>(`provas/${provaId.split("/").map(encodeURIComponent).join("/")}/verificar`, comJson("POST", { item, valores }));
 
 export function enviarProva(dados: DadosEnvio, arquivo: File | null) {
   const formulario = new FormData();

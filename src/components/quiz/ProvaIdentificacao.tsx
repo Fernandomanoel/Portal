@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 
 import { Icone } from "@/components/Icone";
-import { ehPratica, totalDeQuestoes, type ProvaParaAluno } from "@/types/quiz";
+import { ehAutocorrigida, ehPratica, totalDeQuestoes, type ProvaParaAluno } from "@/types/quiz";
 import estilos from "./ProvaAplicada.module.css";
 
 interface Props {
@@ -34,6 +34,12 @@ export function ProvaIdentificacao({ prova, travada, aoComecar, aoVoltar }: Prop
             <Icone nome="prova" tamanho={18} />
             {ehPratica(prova) ? "Prova prática: siga as instruções e envie o arquivo" : `${questoes} ${questoes === 1 ? "questão" : "questões"}`}
           </li>
+          {ehAutocorrigida(prova) && (
+            <li>
+              <Icone nome="check" tamanho={18} />
+              Cada questão tem o botão “Testar resposta”: ele mostra onde você errou e você pode tentar quantas vezes quiser.
+            </li>
+          )}
           {prova.envioArquivo && (
             <li>
               <Icone nome="doc" tamanho={18} />
@@ -49,7 +55,7 @@ export function ProvaIdentificacao({ prova, travada, aoComecar, aoVoltar }: Prop
           </li>
           <li>
             <Icone nome="check" tamanho={18} />
-            O envio é único: depois de enviar não dá para refazer.
+            {ehAutocorrigida(prova) ? "O envio é único e corrige de novo as suas respostas: o que não estiver certo nessa hora vale zero." : "O envio é único: depois de enviar não dá para refazer."}
           </li>
         </ul>
       </div>
