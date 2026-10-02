@@ -168,6 +168,14 @@ resultado por linha (`rotulo`, `mensagemCerta`, `mensagemErrada`) valem por camp
 e por item. O gabarito (`regra`, mensagens) fica no servidor: o navegador só
 recebe o tipo de entrada de cada campo.
 
+Cada item aceita também uma **figura** (`imagem: { url, alt, legenda }`, arquivo em
+`public/provas/<curso>/`, como as notas fiscais de Contabilidade e o fluxograma de
+Lógica) e um **vídeo** (`video: { titulo, url, legenda }` com um mp4/webm em
+`public/provas/<curso>/`, ou `video: { titulo, youtube: "<id>" }` com o id do
+YouTube, a parte depois de `v=`). O aluno vê a figura ou o vídeo antes de responder.
+Ilustrações novas saem do kit: `npm run ilustracoes -- <filtro>` (ver
+`scripts/ilustracoes/README.md`; use `saida` para gravar em `public/`).
+
 Para portar uma página interativa de Portal-Atividades, mantenha os mesmos
 módulos, ordem, gabarito, mensagens e palavras-chave — só o suporte muda.
 Exemplos: `JavaScript/prova-javascript-testes-automatizados`,

@@ -153,6 +153,12 @@ export interface ItemProva {
   exemplo?: { rotulo: string; conteudo: string };
   /** Figura da questão (um fluxograma, por exemplo). `url` é um caminho em `public/`. */
   imagem?: { url: string; alt: string; legenda?: string };
+  /**
+   * Vídeo da questão (uma situação para o aluno analisar). Um arquivo em
+   * `public/` (`url`, mp4/webm) ou um vídeo do YouTube (`youtube`: só o id,
+   * a parte depois de `v=`). O aluno vê o vídeo antes de responder.
+   */
+  video?: { titulo: string; url?: string; youtube?: string; legenda?: string };
   campos: CampoProva[];
   mensagemCerta?: string;
   mensagemErrada?: string;

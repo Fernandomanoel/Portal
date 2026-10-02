@@ -626,3 +626,13 @@ legend.enunciado {
   color: var(--ink-faint);
   margin-top: var(--space-2);
 }
+
+.video {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #000;
+}

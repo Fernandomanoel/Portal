@@ -145,6 +145,26 @@ export function QuizAutocorrigida({ prova, valores, resultados, testando, aoMuda
             </h2>
             {item.enunciado && <p className={estilos.textoItem}>{item.enunciado}</p>}
             {item.referencia && <p className={estilos.referencia}>{item.referencia}</p>}
+            {item.video && (
+              <figure className={estilos.figuraItem}>
+                {item.video.youtube && /^[\w-]{6,20}$/.test(item.video.youtube) ? (
+                  <iframe
+                    className={estilos.video}
+                    src={`https://www.youtube-nocookie.com/embed/${item.video.youtube}`}
+                    title={item.video.titulo}
+                    allow="encrypted-media; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  item.video.url && (
+                    <video className={estilos.video} controls preload="metadata" src={item.video.url} aria-label={item.video.titulo}>
+                      Seu navegador não consegue tocar este vídeo.
+                    </video>
+                  )
+                )}
+                <figcaption>{item.video.legenda ?? item.video.titulo}</figcaption>
+              </figure>
+            )}
             {item.imagem && (
               <figure className={estilos.figuraItem}>
                 <img src={item.imagem.url} alt={item.imagem.alt} />

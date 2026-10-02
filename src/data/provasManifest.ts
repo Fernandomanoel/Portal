@@ -214,6 +214,66 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "8 questões de código",
     },
   ],
+  "Matemática Financeira": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação A — nível normal",
+      caminho: "Matemática Financeira/avaliacao-a",
+      tamanho: "10 questões",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação B — nível básico",
+      caminho: "Matemática Financeira/avaliacao-b",
+      tamanho: "10 questões",
+    },
+  ],
+  "Educação Financeira": [
+    {
+      tipo: "quiz",
+      rotulo: "Meu Orçamento — prática",
+      caminho: "Educação Financeira/avaliacao-pratica-meu-orcamento",
+      tamanho: "6 passos",
+    },
+  ],
+  "Assistente de Administração Financeira": [
+    {
+      tipo: "quiz",
+      rotulo: "Rotinas do Setor Financeiro",
+      caminho: "Assistente de Administração Financeira/avaliacao-rotinas-financeiras",
+      tamanho: "10 situações",
+    },
+  ],
+  "Contabilidade": [
+    {
+      tipo: "quiz",
+      rotulo: "Notas Fiscais e Lançamentos",
+      caminho: "Contabilidade/avaliacao-notas-fiscais",
+      tamanho: "10 questões",
+    },
+  ],
+  "Segurança do Trabalho": [
+    {
+      tipo: "quiz",
+      rotulo: "Situações do Dia a Dia",
+      caminho: "Segurança do Trabalho/avaliacao-pratica-situacoes",
+      tamanho: "10 situações",
+    },
+  ],
+  "PowerPoint": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação A — tema livre",
+      caminho: "PowerPoint/avaliacao-a",
+      tamanho: "10 passos",
+    },
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação B — apresentação simples",
+      caminho: "PowerPoint/avaliacao-b",
+      tamanho: "6 passos",
+    },
+  ],
   "Administração": [
     {
       tipo: "quiz",
