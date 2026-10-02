@@ -90,3 +90,24 @@
   background: var(--brand-deepest);
   border-color: var(--brand-deepest);
 }
+
+.plana {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  overflow: visible;
+}
+
+.plana .item {
+  padding-inline: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 0;
+}
+
+.plana .acao {
+  padding-block: var(--space-2);
+}
+
+.plana .item:first-child {
+  border-top: 0;
+}

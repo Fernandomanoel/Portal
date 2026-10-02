@@ -1,4 +1,5 @@
 .sair {
+  margin-left: auto;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
   border: 1px solid var(--line-strong);
@@ -25,6 +26,8 @@
 }
 
 .busca {
+  flex: 1 1 220px;
+  max-width: 320px;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -48,7 +51,7 @@
   background: none;
   outline: none;
   padding: var(--space-2) 0;
-  width: 220px;
+  width: 100%;
   color: var(--ink);
 }
 
@@ -57,6 +60,7 @@
 }
 
 .filtros {
+  flex-basis: 100%;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
@@ -92,5 +96,56 @@
 .grade {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  align-items: start;
   gap: var(--space-4);
+}
+
+.grupos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.grupoCabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+}
+
+.grupoTitulo {
+  font-size: var(--text-lg);
+}
+
+.grupoMeta {
+  color: var(--ink-faint);
+  font-size: var(--text-sm);
+}
+
+@media (max-width: 640px) {
+  .busca {
+    max-width: none;
+  }
+
+  .sair {
+    margin-left: 0;
+  }
+
+  .filtros {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: var(--space-2);
+    scrollbar-width: thin;
+  }
+
+  .filtro {
+    flex: none;
+    white-space: nowrap;
+  }
 }

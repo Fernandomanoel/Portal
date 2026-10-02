@@ -16,6 +16,9 @@ const ICONE_CATEGORIA: Record<CategoriaAtividade, NomeIcone> = {
   administrativa: "administrativa",
   programacao: "programacao",
   design: "design",
+  marketing: "megafone",
+  saude: "saude",
+  comportamental: "bussola",
 };
 
 function ehCategoria(valor: string | null): valor is CategoriaAtividade {

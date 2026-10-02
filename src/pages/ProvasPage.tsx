@@ -27,13 +27,17 @@ export function ProvasPage() {
     [],
   );
 
-  const filtrados = useMemo(() => {
+  const grupos = useMemo(() => {
     const termo = normalizar(busca);
-    return cursos.filter((entrada) => {
-      if (categoria && entrada.categoria !== categoria) return false;
-      if (!termo) return true;
-      return normalizar(entrada.curso).includes(termo);
-    });
+    return PROVAS_CATEGORIAS.filter((grupo) => !categoria || grupo.nome === categoria)
+      .map((grupo) => ({
+        nome: grupo.nome,
+        cursos: cursos.filter(
+          (entrada) =>
+            entrada.categoria === grupo.nome && (!termo || normalizar(entrada.curso).includes(termo)),
+        ),
+      }))
+      .filter((grupo) => grupo.cursos.length > 0);
   }, [cursos, busca, categoria]);
 
   if (!liberada) {
@@ -45,15 +49,6 @@ export function ProvasPage() {
       <CabecalhoPagina
         titulo="Provas"
         texto="Provas dos cursos, por categoria."
-        acoes={
-          <button
-            type="button"
-            className={estilos.sair}
-            onClick={() => definirLiberada(false)}
-          >
-            Sair da área de provas
-          </button>
-        }
       />
 
       <div className={estilos.ferramentas}>
@@ -67,6 +62,10 @@ export function ProvasPage() {
             aria-label="Buscar curso nas provas"
           />
         </form>
+
+        <button type="button" className={estilos.sair} onClick={() => definirLiberada(false)}>
+          Sair da área de provas
+        </button>
 
         <div className={estilos.filtros} role="group" aria-label="Filtrar por categoria">
           <button
@@ -91,16 +90,33 @@ export function ProvasPage() {
         </div>
       </div>
 
-      {filtrados.length > 0 ? (
-        <div className={estilos.grade}>
-          {filtrados.map((entrada) => (
-            <ProvaCard
-              key={`${entrada.categoria}-${entrada.curso}`}
-              titulo={entrada.curso}
-              categoria={entrada.categoria}
-              arquivos={entrada.arquivos}
-            />
-          ))}
+      {grupos.length > 0 ? (
+        <div className={estilos.grupos}>
+          {grupos.map((grupo) => {
+            const comProva = grupo.cursos.filter((entrada) => entrada.arquivos.length > 0).length;
+            return (
+              <section key={grupo.nome} className={estilos.grupo} aria-labelledby={`grupo-${grupo.nome}`}>
+                <div className={estilos.grupoCabecalho}>
+                  <h2 id={`grupo-${grupo.nome}`} className={estilos.grupoTitulo}>
+                    {grupo.nome}
+                  </h2>
+                  <p className={`${estilos.grupoMeta} tabular`}>
+                    {comProva} de {grupo.cursos.length} com prova
+                  </p>
+                </div>
+                <div className={estilos.grade}>
+                  {grupo.cursos.map((entrada) => (
+                    <ProvaCard
+                      key={entrada.curso}
+                      titulo={entrada.curso}
+                      categoria={entrada.categoria}
+                      arquivos={entrada.arquivos}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </div>
       ) : (
         <EstadoVazio

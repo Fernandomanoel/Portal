@@ -201,36 +201,14 @@ const atividade: AtividadeAutocorrigida = {
       titulo: "Passo a Passo: Aplicando o Design — Deixando tudo consistente",
       blocos: [
         {
-          tipo: "texto",
-          texto: "1",
-        },
-        {
-          tipo: "texto",
-          texto: "Apresentação em branco",
-        },
-        {
-          tipo: "texto",
-          texto: "2",
-        },
-        {
-          tipo: "texto",
-          texto: "Design",
-        },
-        {
-          tipo: "texto",
-          texto: "3",
-        },
-        {
-          tipo: "texto",
-          texto: "Novo Slide",
-        },
-        {
-          tipo: "texto",
-          texto: "4",
-        },
-        {
-          tipo: "texto",
-          texto: "Inserir → Imagens",
+          tipo: "lista",
+          numerada: true,
+          itens: [
+            "Abra o PowerPoint e crie uma Apresentação em branco.",
+            "Vá na aba Design e escolha um tema que combine com o seu assunto.",
+            "Use Novo Slide (aba Página Inicial) para adicionar cada slide da sua estrutura.",
+            "Insira imagens em Inserir → Imagens para ilustrar os slides de conteúdo.",
+          ],
         },
       ],
     },
@@ -239,8 +217,15 @@ const atividade: AtividadeAutocorrigida = {
       titulo: "Checklist Antes de Entregar",
       blocos: [
         {
-          tipo: "texto",
-          texto: "☐ Pelo menos 6 slides ☐ Slide de capa e slide de encerramento ☐ Tema/design aplicado a todos os slides ☐ Cores e fontes consistentes ☐ Pelo menos uma imagem inserida ☐ Textos curtos e diretos (regra 6x6)",
+          tipo: "lista",
+          itens: [
+            "☐ Pelo menos 6 slides",
+            "☐ Slide de capa e slide de encerramento",
+            "☐ Tema/design aplicado a todos os slides",
+            "☐ Cores e fontes consistentes",
+            "☐ Pelo menos uma imagem inserida",
+            "☐ Textos curtos e diretos (regra 6x6)",
+          ],
         },
         {
           tipo: "texto",

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#e5e7eb"/>
+  <rect x="14" y="8" width="612" height="384" fill="#ffffff" stroke="#111827" stroke-width="1.6"/>
+  <text x="24" y="28" font-size="12" fill="#1f2937" font-weight="700">NOTA FISCAL (DANFE) — modelo ilustrativo</text>
+  <text text-anchor="end" x="616" y="28" font-size="10.5" fill="#6b7280">Nº 000.123  ·  Emissão: 05/03/2026</text>
+  <rect x="24" y="38" width="296" height="62" fill="#ffffff" stroke="#374151" stroke-width="1"/>
+  <text x="30" y="51" font-size="8.5" fill="#6b7280">EMITENTE</text>
+  <text x="30" y="67" font-size="11" fill="#1f2937" font-weight="700">Distribuidora Alfa Ltda</text>
+  <text x="30" y="82" font-size="11" fill="#1f2937">CNPJ 12.345.678/0001-90</text>
+  <text x="30" y="97" font-size="11" fill="#1f2937">Rua das Indústrias, 100 — Manaus/AM</text>
+  <rect x="328" y="38" width="288" height="62" fill="#ffffff" stroke="#374151" stroke-width="1"/>
+  <text x="334" y="51" font-size="8.5" fill="#6b7280">DESTINATÁRIO</text>
+  <text x="334" y="67" font-size="11" fill="#1f2937" font-weight="700">Mercado Bom Preço Ltda</text>
+  <text x="334" y="82" font-size="11" fill="#1f2937">CNPJ 98.765.432/0001-10</text>
+  <text x="334" y="97" font-size="11" fill="#1f2937">Av. Central, 500 — Manaus/AM</text>
+  <text x="24" y="118" font-size="9.5" fill="#6b7280" font-weight="700">DADOS DOS PRODUTOS</text>
+  <rect x="24" y="124" width="592" height="20" fill="#e5e7eb" stroke="#374151"/>
+  <text x="30" y="138" font-size="9.5" fill="#1f2937" font-weight="700">Cód.</text>
+  <text x="80" y="138" font-size="9.5" fill="#1f2937" font-weight="700">Descrição</text>
+  <text x="290" y="138" font-size="9.5" fill="#1f2937" font-weight="700">Un.</text>
+  <text text-anchor="end" x="388" y="138" font-size="9.5" fill="#1f2937" font-weight="700">Qtd.</text>
+  <text text-anchor="end" x="498" y="138" font-size="9.5" fill="#1f2937" font-weight="700">Valor unit. (R$)</text>
+  <text text-anchor="end" x="610" y="138" font-size="9.5" fill="#1f2937" font-weight="700">Valor total (R$)</text>
+  <rect x="24" y="144" width="592" height="22" fill="#ffffff" stroke="#374151" stroke-width="0.8"/>
+  <text x="30" y="159" font-size="11" fill="#1f2937">001</text>
+  <text x="80" y="159" font-size="11" fill="#1f2937">Arroz tipo 1 — pacote 5 kg</text>
+  <text x="290" y="159" font-size="11" fill="#1f2937">UN</text>
+  <text x="388" y="159" font-size="11" fill="#1f2937" text-anchor="end">20</text>
+  <text x="498" y="159" font-size="11" fill="#1f2937" text-anchor="end">18,00</text>
+  <text x="610" y="159" font-size="11" fill="#1f2937" text-anchor="end">360,00</text>
+  <rect x="24" y="166" width="592" height="22" fill="#ffffff" stroke="#374151" stroke-width="0.8"/>
+  <text x="30" y="181" font-size="11" fill="#1f2937">002</text>
+  <text x="80" y="181" font-size="11" fill="#1f2937">Feijão carioca — pacote 1 kg</text>
+  <text x="290" y="181" font-size="11" fill="#1f2937">UN</text>
+  <text x="388" y="181" font-size="11" fill="#1f2937" text-anchor="end">30</text>
+  <text x="498" y="181" font-size="11" fill="#1f2937" text-anchor="end">7,50</text>
+  <text x="610" y="181" font-size="11" fill="#1f2937" text-anchor="end">225,00</text>
+  <rect x="24" y="188" width="592" height="22" fill="#ffffff" stroke="#374151" stroke-width="0.8"/>
+  <text x="30" y="203" font-size="11" fill="#1f2937">003</text>
+  <text x="80" y="203" font-size="11" fill="#1f2937">Óleo de soja — garrafa 900 ml</text>
+  <text x="290" y="203" font-size="11" fill="#1f2937">UN</text>
+  <text x="388" y="203" font-size="11" fill="#1f2937" text-anchor="end">40</text>
+  <text x="498" y="203" font-size="11" fill="#1f2937" text-anchor="end">6,00</text>
+  <text x="610" y="203" font-size="11" fill="#1f2937" text-anchor="end">240,00</text>
+  <text x="24" y="236" font-size="9.5" fill="#6b7280" font-weight="700">CÁLCULO DO TOTAL</text>
+  <rect x="24" y="242" width="190" height="46" fill="#ffffff" stroke="#374151" stroke-width="1"/>
+  <text x="30" y="255" font-size="8.5" fill="#6b7280">VALOR TOTAL DOS PRODUTOS (calcule)</text>
+  <text x="30" y="271" font-size="11" fill="#1f2937" font-weight="700">R$ ________</text>
+  <rect x="220" y="242" width="190" height="46" fill="#ffffff" stroke="#374151" stroke-width="1"/>
+  <text x="226" y="255" font-size="8.5" fill="#6b7280">VALOR DO FRETE</text>
+  <text x="226" y="271" font-size="11" fill="#1f2937" font-weight="700">R$ 25,00</text>
+  <rect x="416" y="242" width="200" height="46" fill="#ffffff" stroke="#374151" stroke-width="1"/>
+  <text x="422" y="255" font-size="8.5" fill="#6b7280">VALOR TOTAL DA NOTA (calcule)</text>
+  <text x="422" y="271" font-size="11" fill="#1f2937" font-weight="700">R$ ________</text>
+  <text x="24" y="308" font-size="9.5" fill="#6b7280" font-weight="700">FATURA / PAGAMENTO</text>
+  <rect x="24" y="314" width="592" height="62" fill="#ffffff" stroke="#374151" stroke-width="1"/>
+  <text x="30" y="327" font-size="8.5" fill="#6b7280">CONDIÇÕES</text>
+  <text x="30" y="343" font-size="11" fill="#1f2937" font-weight="700">Pagamento a prazo: 30 dias após a emissão</text>
+  <text x="30" y="358" font-size="11" fill="#1f2937">Compra de mercadorias para revenda</text>
+</svg>

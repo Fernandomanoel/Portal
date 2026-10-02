@@ -1,0 +1,60 @@
+Sub CadastroDeAlunos()
+    Dim ws As Worksheet
+    Dim ultimaLinha As Long
+    Dim nome As String
+    Dim nota1 As Double, nota2 As Double, nota3 As Double
+    Dim media As Double
+    Dim status As String
+
+    ' Verifica se a planilha já existe, se não cria uma nova
+    On Error Resume Next
+    Set ws = Worksheets("Alunos")
+    On Error GoTo 0
+    If ws Is Nothing Then
+        Set ws = ThisWorkbook.Sheets.Add
+        ws.Name = "Alunos"
+
+        ' Cria cabeçalhos
+        ws.Range("A1").Value = "Nome"
+        ws.Range("B1").Value = "Nota 1"
+        ws.Range("C1").Value = "Nota 2"
+        ws.Range("D1").Value = "Nota 3"
+        ws.Range("E1").Value = "Média"
+        ws.Range("F1").Value = "Status"
+        ws.Rows(1).Font.Bold = True
+    End If
+
+    ' Solicita informações ao usuário
+    nome = InputBox("Digite o nome do aluno:")
+    If nome = "" Then Exit Sub ' Sai se o nome estiver vazio
+
+    nota1 = InputBox("Digite a Nota 1:")
+    nota2 = InputBox("Digite a Nota 2:")
+    nota3 = InputBox("Digite a Nota 3:")
+
+    ' Calcula a média
+    media = (nota1 + nota2 + nota3) / 3
+
+    ' Determina o status
+    If media >= 7 Then
+        status = "Aprovado"
+    Else
+        status = "Reprovado"
+    End If
+
+    ' Encontra a última linha disponível
+    ultimaLinha = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row + 1
+
+    ' Insere os dados na tabela
+    ws.Cells(ultimaLinha, 1).Value = nome
+    ws.Cells(ultimaLinha, 2).Value = nota1
+    ws.Cells(ultimaLinha, 3).Value = nota2
+    ws.Cells(ultimaLinha, 4).Value = nota3
+    ws.Cells(ultimaLinha, 5).Value = Round(media, 2)
+    ws.Cells(ultimaLinha, 6).Value = status
+
+    ' Formata as colunas automaticamente
+    ws.Columns("A:F").AutoFit
+
+    MsgBox "Dados do aluno inseridos com sucesso!", vbInformation
+End Sub

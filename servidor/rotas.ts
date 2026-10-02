@@ -1,9 +1,11 @@
 import { randomUUID } from "node:crypto";
 
 import type { ArquivoEnviado, Envio, LancarNotaInput, Professor, ReciboEnvio, SaidaProva } from "../src/types/envio.js";
+import { TENTATIVAS_POR_QUESTAO } from "../src/types/quiz.js";
 import { DIAS_GUARDADOS, LIMITE_ARQUIVO_MB } from "../src/types/envio.js";
 import type { Armazenamento } from "./armazenamento.js";
-import { acharProva, corrigir, semGabarito, tipoDe, validarRespostas } from "./provas.js";
+import { conferirItem } from "../src/lib/correcaoProva.js";
+import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
 import {
   COOKIE_SESSAO,
   autenticar,
@@ -24,11 +26,19 @@ import {
 
 const DIA_MS = 24 * 60 * 60 * 1000;
 
+/** Testes já feitos numa prova autocorrigida: por questão, quantos, a última resposta testada e se acertou. */
+interface RegistroTentativas {
+  itens: Record<string, { usadas: number; ultima: Record<string, string>; certo: boolean }>;
+}
+
+const chaveValida = (chave: unknown): chave is string => typeof chave === "string" && /^[a-zA-Z0-9-]{8,64}$/.test(chave);
+
 type CodigoErro =
   | "VALIDATION_ERROR"
   | "NAO_AUTENTICADO"
   | "CREDENCIAIS_INVALIDAS"
   | "LIMITE_TENTATIVAS"
+  | "TENTATIVAS_ESGOTADAS"
   | "NAO_ENCONTRADO"
   | "SEM_PERMISSAO"
   | "ERRO_INTERNO";
@@ -137,7 +147,7 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
     return erro(422, "VALIDATION_ERROR", "Envio malformado.");
   }
 
-  const chave = typeof dados.chave === "string" && /^[a-zA-Z0-9-]{8,64}$/.test(dados.chave) ? dados.chave : null;
+  const chave = chaveValida(dados.chave) ? dados.chave : null;
   if (!chave) return erro(422, "VALIDATION_ERROR", "Envio sem chave.");
 
   const agora = new Date();
@@ -157,6 +167,21 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
 
   const validacao = validarRespostas(prova, dados.respostas);
   if (!validacao.ok) return erro(422, "VALIDATION_ERROR", validacao.erro);
+
+  // Prova autocorrigida: cada questão vale pela última resposta que o aluno
+  // testou — editar depois de gastar as tentativas não adianta. Questão que
+  // nunca foi testada vale pela resposta do envio.
+  let tentativasUsadas: number[] | undefined;
+  if (prova.tipo === "autocorrigida") {
+    const registro = await armazenamento.lerJson<RegistroTentativas>(`tentativas/${chave}.json`);
+    tentativasUsadas = prova.itens.map((_, i) => registro?.itens[i]?.usadas ?? 0);
+    if (registro) {
+      validacao.respostas = validacao.respostas.map((resposta, i) => {
+        const testada = registro.itens[i];
+        return testada ? JSON.stringify(valoresDoItem(prova.itens[i], testada.ultima)) : resposta;
+      });
+    }
+  }
 
   const arquivoRecebido = formulario.get("arquivo");
   const temArquivo = arquivoRecebido instanceof File && arquivoRecebido.size > 0;
@@ -191,7 +216,10 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
     iniciadaEm,
     enviadaEm: agora.toISOString(),
     respostas: validacao.respostas,
-    ...(correcao ? { correcao: { acertos: correcao.acertos, total: correcao.total } } : {}),
+    ...(tentativasUsadas ? { tentativas: tentativasUsadas } : {}),
+    ...(correcao
+      ? { correcao: { acertos: correcao.acertos, total: correcao.total, ...("aRevisar" in correcao && correcao.aRevisar ? { aRevisar: correcao.aRevisar } : {}) } }
+      : {}),
     // Múltipla escolha com arquivo anexo ainda sai com a nota automática; o
     // professor pode sobrescrever na área dele.
     nota: correcao ? correcao.nota : null,
@@ -218,7 +246,7 @@ function recibo(envio: Envio): ReciboEnvio {
 /** Apaga envios e arquivos com mais de DIAS_GUARDADOS dias. Devolve quantos envios saíram. */
 export async function limpar(armazenamento: Armazenamento, agora = new Date()) {
   const corte = dia(new Date(agora.getTime() - DIAS_GUARDADOS * DIA_MS));
-  const itens = [...(await armazenamento.listar("envios/")), ...(await armazenamento.listar("arquivos/"))];
+  const itens = [...(await armazenamento.listar("envios/")), ...(await armazenamento.listar("arquivos/")), ...(await armazenamento.listar("tentativas/"))];
   const velhos = itens.filter((item) => {
     const data = item.caminho.split("/")[1] ?? "";
     // Data no caminho manda; sem ela (arquivo estranho na pasta), vale a data de criação.
@@ -337,8 +365,58 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     return prova ? json(semGabarito(prova)) : erro(404, "NAO_ENCONTRADO", "Essa prova não existe.");
   }
 
+  // Público: "Testar resposta" de uma questão da prova autocorrigida. O
+  // servidor confere e devolve onde errou, sem revelar o gabarito; vale
+  // tentar quantas vezes quiser — o que conta é o envio final.
+  if (partes[0] === "provas" && partes.length > 2 && partes[partes.length - 1] === "verificar" && metodo === "POST") {
+    const prova = await acharProva(partes.slice(1, -1).map(decodeURIComponent).join("/"));
+    if (!prova || prova.tipo !== "autocorrigida") return erro(404, "NAO_ENCONTRADO", "Essa prova não existe.");
+    const corpo = await lerCorpoJson(requisicao);
+    const indice = Number(corpo?.item);
+    const item = prova.itens[indice];
+    if (!item) return erro(422, "VALIDATION_ERROR", "Questão inexistente.");
+    if (!chaveValida(corpo?.chave)) return erro(422, "VALIDATION_ERROR", "Teste sem chave da prova.");
+
+    // O limite vale no servidor: recarregar a página ou chamar a rota direto não dá tentativa a mais.
+    const caminho = `tentativas/${corpo.chave}.json`;
+    const registro = (await armazenamento.lerJson<RegistroTentativas>(caminho)) ?? { itens: {} };
+    const atual = registro.itens[indice] ?? { usadas: 0, ultima: {}, certo: false };
+    if (atual.certo) return erro(422, "VALIDATION_ERROR", "Essa questão já foi respondida certo e está travada.");
+    if (atual.usadas >= TENTATIVAS_POR_QUESTAO) {
+      return erro(422, "TENTATIVAS_ESGOTADAS", `As ${TENTATIVAS_POR_QUESTAO} tentativas dessa questão acabaram. Vale a última resposta testada.`);
+    }
+
+    const valores = valoresDoItem(item, corpo?.valores);
+    const resultado = conferirItem(item, valores);
+    registro.itens[indice] = { usadas: atual.usadas + 1, ultima: valores, certo: resultado.certo };
+    await armazenamento.salvarJson(caminho, registro);
+    return json({ ...resultado, tentativas: { usadas: atual.usadas + 1, maximo: TENTATIVAS_POR_QUESTAO } });
+  }
+
   // Público: o aluno envia a prova.
   if (partes[0] === "envios" && partes.length === 1 && metodo === "POST") return enviar(requisicao, armazenamento);
+
+  // Público: o aluno aceita a nota provisória de uma prova mista (dissertativa
+  // pendente vira errada) em vez de esperar o professor revisar. Só funciona
+  // enquanto a nota estiver mesmo pendente — nem antes, nem depois de lançada.
+  if (partes[0] === "envios" && partes.length === 3 && partes[2] === "aceitar" && metodo === "POST") {
+    const id = partes[1] ?? "";
+    if (!idValido(id)) return erro(404, "NAO_ENCONTRADO", "Envio não encontrado.");
+    const envio = await armazenamento.lerJson<Envio>(caminhoEnvio(id));
+    if (!envio) return erro(404, "NAO_ENCONTRADO", "Envio não encontrado.");
+    if (envio.nota !== null || !envio.correcao?.aRevisar) {
+      return erro(422, "VALIDATION_ERROR", "Este envio não tem nota provisória pendente.");
+    }
+    const notaProvisoria = Math.round((envio.correcao.acertos / envio.correcao.total) * 100) / 10;
+    const atualizado: Envio = {
+      ...envio,
+      nota: notaProvisoria,
+      corrigidaEm: new Date().toISOString(),
+      corrigidaPor: "Aluno (resultado provisório aceito)",
+    };
+    await armazenamento.salvarJson(caminhoEnvio(id), atualizado);
+    return json(recibo(atualizado));
+  }
 
   // Público: o professor libera, na máquina do aluno, a prova que travou.
   if (partes[0] === "liberacoes" && metodo === "POST") {

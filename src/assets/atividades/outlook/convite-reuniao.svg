@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="14" y="10" width="612" height="380" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M14 20 a10 10 0 0 1 10 -10 h592 a10 10 0 0 1 10 10 v26 h-612 z" fill="#0f6cbd"/>
+  <text x="32" y="33" font-size="12.5" fill="#ffffff" font-weight="700">Outlook</text>
+  <text x="320" y="33" font-size="11" fill="#dbeafe" text-anchor="middle">Nova reunião — Calendário do Outlook</text>
+  <rect x="14" y="46" width="612" height="32" rx="0" fill="#f3f4f6"/>
+  <rect x="26" y="52" width="66" height="22" rx="4" fill="#0f6cbd"/>
+  <text x="59" y="67" font-size="10.5" fill="#ffffff" font-weight="700" text-anchor="middle">Enviar</text>
+  <text x="106" y="67" font-size="10" fill="#374151">Reunião do Teams     Repetir     Lembrete</text>
+  <text x="30" y="104" font-size="10" fill="#6b7280">Título</text>
+  <rect x="112" y="90" width="330" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="120" y="106" font-size="10.5" fill="#1f2937">Alinhamento do fechamento mensal</text>
+  <text x="30" y="136" font-size="10" fill="#6b7280">Participantes</text>
+  <rect x="112" y="122" width="330" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="120" y="138" font-size="10.5" fill="#1f2937">joana.mendes@…; carlos.lima@…; financeiro@…</text>
+  <text x="30" y="168" font-size="10" fill="#6b7280">Início</text>
+  <rect x="112" y="154" width="120" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="120" y="170" font-size="10.5" fill="#1f2937">Seg 09/03/2026</text>
+  <rect x="238" y="154" width="70" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="246" y="170" font-size="10.5" fill="#1f2937">09:00</text>
+  <text x="318" y="168" font-size="10" fill="#6b7280">Término</text>
+  <rect x="370" y="154" width="72" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="378" y="170" font-size="10.5" fill="#1f2937">09:30</text>
+  <text x="30" y="200" font-size="10" fill="#6b7280">Local</text>
+  <rect x="112" y="186" width="330" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="120" y="202" font-size="10.5" fill="#1f2937">Sala 2 — ou — Reunião online do Teams</text>
+  <rect x="26" y="222" width="416" height="120" rx="4" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="36" y="240" font-size="10.5" fill="#1f2937" font-weight="700">Pauta (3 itens):</text>
+  <text x="36" y="258" font-size="10" fill="#1f2937">1. Conferir lançamentos do mês</text>
+  <text x="36" y="274" font-size="10" fill="#1f2937">2. Pendências de notas fiscais</text>
+  <text x="36" y="290" font-size="10" fill="#1f2937">3. Definir responsáveis pelas próximas entregas</text>
+  <text x="36" y="316" font-size="10" fill="#6b7280">Peço que respondam ao convite até sexta-feira.</text>
+  <text x="36" y="332" font-size="10" fill="#6b7280">Aceitar, Recusar ou Propor novo horário.</text>
+  <rect x="456" y="90" width="168" height="44" rx="6" fill="#ffffff" stroke="#0f6cbd"/>
+  <text x="465" y="107" font-size="10.5" fill="#0f6cbd" font-weight="700">Título claro</text>
+  <text x="465" y="123" font-size="9.5" fill="#1f2937">Diz o assunto da reunião.</text>
+  <rect x="456" y="138" width="168" height="59" rx="6" fill="#ffffff" stroke="#0f6cbd"/>
+  <text x="465" y="155" font-size="10.5" fill="#0f6cbd" font-weight="700">Participantes</text>
+  <text x="465" y="171" font-size="9.5" fill="#1f2937">Obrigatórios e opcionais.</text>
+  <text x="465" y="186" font-size="9.5" fill="#1f2937">Confira os endereços.</text>
+  <rect x="456" y="200" width="168" height="59" rx="6" fill="#ffffff" stroke="#0f6cbd"/>
+  <text x="465" y="217" font-size="10.5" fill="#0f6cbd" font-weight="700">Data, hora e local</text>
+  <text x="465" y="233" font-size="9.5" fill="#1f2937">Presencial ou Teams.</text>
+  <text x="465" y="248" font-size="9.5" fill="#1f2937">Defina a duração.</text>
+  <rect x="456" y="262" width="168" height="59" rx="6" fill="#ffffff" stroke="#16a34a"/>
+  <text x="465" y="279" font-size="10.5" fill="#16a34a" font-weight="700">Pauta no corpo</text>
+  <text x="465" y="295" font-size="9.5" fill="#1f2937">Objetivo e itens: evita</text>
+  <text x="465" y="310" font-size="9.5" fill="#1f2937">reunião sem rumo.</text>
+  <rect x="456" y="326" width="168" height="59" rx="6" fill="#ffffff" stroke="#16a34a"/>
+  <text x="465" y="343" font-size="10.5" fill="#16a34a" font-weight="700">Responder o convite</text>
+  <text x="465" y="359" font-size="9.5" fill="#1f2937">Aceitar, Recusar ou</text>
+  <text x="465" y="374" font-size="9.5" fill="#1f2937">Propor novo horário.</text>
+</svg>

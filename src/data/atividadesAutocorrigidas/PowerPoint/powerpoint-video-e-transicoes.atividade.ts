@@ -61,36 +61,14 @@ const atividade: AtividadeAutocorrigida = {
       titulo: "Passo a Passo: Inserindo o Vídeo — Colocando o vídeo dentro de um slide",
       blocos: [
         {
-          tipo: "texto",
-          texto: "1",
-        },
-        {
-          tipo: "texto",
-          texto: "Selecione o slide onde o vídeo vai aparecer.",
-        },
-        {
-          tipo: "texto",
-          texto: "2",
-        },
-        {
-          tipo: "texto",
-          texto: "Inserir → Vídeo → Este Dispositivo",
-        },
-        {
-          tipo: "texto",
-          texto: "3",
-        },
-        {
-          tipo: "texto",
-          texto: "Selecione o arquivo de vídeo que você baixou (ou o seu próprio).",
-        },
-        {
-          tipo: "texto",
-          texto: "4",
-        },
-        {
-          tipo: "texto",
-          texto: "ajustar o tamanho",
+          tipo: "lista",
+          numerada: true,
+          itens: [
+            "Selecione o slide onde o vídeo vai aparecer.",
+            "Vá em Inserir → Vídeo → Este Dispositivo.",
+            "Selecione o arquivo de vídeo que você baixou (ou o seu próprio).",
+            "Arraste as bordas do vídeo no slide para ajustar o tamanho.",
+          ],
         },
       ],
     },
@@ -133,36 +111,14 @@ const atividade: AtividadeAutocorrigida = {
       titulo: "Passo a Passo: Transições — O efeito ao trocar de slide",
       blocos: [
         {
-          tipo: "texto",
-          texto: "1",
-        },
-        {
-          tipo: "texto",
-          texto: "Transições",
-        },
-        {
-          tipo: "texto",
-          texto: "2",
-        },
-        {
-          tipo: "texto",
-          texto: "Escolha um efeito na galeria (ex: Desvanecer, Empurrar, Revelar).",
-        },
-        {
-          tipo: "texto",
-          texto: "3",
-        },
-        {
-          tipo: "texto",
-          texto: "Duração",
-        },
-        {
-          tipo: "texto",
-          texto: "4",
-        },
-        {
-          tipo: "texto",
-          texto: "Aplicar a Tudo",
+          tipo: "lista",
+          numerada: true,
+          itens: [
+            "Clique no slide desejado e vá na aba Transições.",
+            "Escolha um efeito na galeria (ex: Desvanecer, Empurrar, Revelar).",
+            "Ajuste a Duração do efeito (geralmente entre 0.5s e 1.5s fica bom).",
+            "Clique em Aplicar a Tudo para usar a mesma transição em todos os slides.",
+          ],
         },
       ],
     },
@@ -189,8 +145,14 @@ const atividade: AtividadeAutocorrigida = {
       titulo: "Checklist Antes de Entregar",
       blocos: [
         {
-          tipo: "texto",
-          texto: "☐ Vídeo inserido em pelo menos 1 slide ☐ Vídeo cortado ou com opção de início configurada ☐ Fade de entrada/saída aplicado ao vídeo ☐ Transição aplicada entre os slides ☐ Mesma transição usada em toda a apresentação",
+          tipo: "lista",
+          itens: [
+            "☐ Vídeo inserido em pelo menos 1 slide",
+            "☐ Vídeo cortado ou com opção de início configurada",
+            "☐ Fade de entrada/saída aplicado ao vídeo",
+            "☐ Transição aplicada entre os slides",
+            "☐ Mesma transição usada em toda a apresentação",
+          ],
         },
         {
           tipo: "texto",

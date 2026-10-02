@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#dfe8f5"/>
+  <g filter="url(#sombra)"><rect x="14" y="10" width="612" height="380" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M14 20 a10 10 0 0 1 10 -10 h592 a10 10 0 0 1 10 10 v26 h-612 z" fill="#0f6cbd"/>
+  <text x="32" y="33" font-size="12.5" fill="#ffffff" font-weight="700">Outlook</text>
+  <text x="320" y="33" font-size="11" fill="#dbeafe" text-anchor="middle">Regras — Outlook</text>
+  <text x="40" y="74" font-size="14" fill="#1f2937" font-weight="700">Criar uma regra</text>
+  <text x="40" y="94" font-size="10" fill="#6b7280">Organize os e-mails automaticamente, assim que chegam.</text>
+  <text x="40" y="118" font-size="10.5" fill="#1f2937" font-weight="700">1. Nome da regra</text>
+  <rect x="40" y="124" width="270" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="48" y="140" font-size="10.5" fill="#1f2937">Notas fiscais do financeiro</text>
+  <text x="40" y="166" font-size="10.5" fill="#1f2937" font-weight="700">2. Condição: quando a mensagem chegar…</text>
+  <rect x="40" y="172" width="130" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="48" y="188" font-size="10.5" fill="#1f2937">De</text>
+  <rect x="176" y="172" width="190" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="184" y="188" font-size="10.5" fill="#1f2937">financeiro@fornecedor.com.br</text>
+  <text x="40" y="220" font-size="10.5" fill="#1f2937" font-weight="700">3. Ação: então…</text>
+  <rect x="40" y="226" width="130" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="48" y="242" font-size="10.5" fill="#1f2937">Mover para</text>
+  <rect x="176" y="226" width="190" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="184" y="242" font-size="10.5" fill="#1f2937">Pasta  ›  Financeiro</text>
+  <rect x="40" y="268" width="13" height="13" rx="2" fill="#0f6cbd"/>
+  <path d="M43 274 l3 3 l5 -6" fill="none" stroke="#fff" stroke-width="1.8"/>
+  <text x="60" y="279" font-size="9.5" fill="#1f2937">Parar de processar mais regras</text>
+  <rect x="40" y="300" width="66.8" height="24" rx="5" fill="#0067c0"/>
+  <text x="73.4" y="316" font-size="10.5" fill="#ffffff" text-anchor="middle">Salvar</text>
+  <rect x="112" y="300" width="80.4" height="24" rx="5" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="152.2" y="316" font-size="10.5" fill="#1f2937" text-anchor="middle">Cancelar</text>
+  <rect x="400" y="66" width="210" height="300" rx="6" fill="#faf9f8" stroke="#e5e7eb"/>
+  <text x="412" y="88" font-size="10.5" fill="#0f6cbd" font-weight="700">Resultado</text>
+  <text x="412" y="112" font-size="10" fill="#1f2937">Caixa de Entrada</text>
+  <text x="412" y="130" font-size="9.5" fill="#6b7280">  Escala de férias</text>
+  <text x="412" y="146" font-size="9.5" fill="#6b7280">  Reunião de segunda</text>
+  <rect x="406" y="166" width="198" height="24" rx="4" fill="#e6f0fa"/>
+  <rect x="414" y="173" width="11" height="9" rx="2" fill="#0f6cbd"/>
+  <text x="431" y="182" font-size="10" fill="#0f6cbd" font-weight="700">Financeiro   (2 novas)</text>
+  <text x="412" y="204" font-size="9.5" fill="#6b7280">  NF 000.123 — Distribuidora</text>
+  <text x="412" y="220" font-size="9.5" fill="#6b7280">  Boleto de março — vence 10</text>
+  <text x="412" y="246" font-size="10" fill="#1f2937">Recursos Humanos</text>
+  <rect x="406" y="268" width="198" height="82" rx="6" fill="#fff" stroke="#d1d5db"/>
+  <text x="414" y="286" font-size="10" fill="#1f2937" font-weight="700">Dica</text>
+  <text x="414" y="302" font-size="9.5" fill="#1f2937">Crie uma regra para cada remetente</text>
+  <text x="414" y="317" font-size="9.5" fill="#1f2937">ou assunto que se repete. Revise a</text>
+  <text x="414" y="332" font-size="9.5" fill="#1f2937">pasta uma vez por dia.</text>
+  <path d="M368 190 L392 190 L392 190" fill="none"/>
+  <line x1="368" y1="184" x2="400" y2="178" stroke="#16a34a" stroke-width="1.6"/><circle cx="368" cy="184" r="3" fill="#16a34a"/>
+</svg>

@@ -5,9 +5,11 @@ import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { ErroApi, apagarEnvio, lancarNota, obterEnvio, urlArquivo } from "@/lib/apiProvas";
+import { conferirItem } from "@/lib/correcaoProva";
+import { respostaAceita, verificarCodigo } from "@/lib/correcaoTexto";
 import { rotas } from "@/lib/rotas";
 import type { Envio, SaidaProva } from "@/types/envio";
-import type { ProvaInterativa } from "@/types/quiz";
+import { TENTATIVAS_POR_QUESTAO, type ProvaInterativa } from "@/types/quiz";
 import { dataHora, duracao, hora, nota, situacaoDaNota, tamanhoLegivel } from "./formato";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorEnvioPage.module.css";
@@ -96,6 +98,7 @@ function DetalheEnvio({ envio, prova, aoAtualizar, aoSessaoVencida }: DetalhePro
                 <dt>Acertos</dt>
                 <dd className="tabular">
                   {envio.correcao.acertos} de {envio.correcao.total}
+                  {!!envio.correcao.aRevisar && ` (${envio.correcao.aRevisar} a revisar)`}
                 </dd>
               </div>
             )}
@@ -179,18 +182,109 @@ function Respostas({ envio, prova }: { envio: Envio; prova: ProvaInterativa | nu
       {!prova && <p className={estilos.suave}>A prova saiu do portal depois do envio: as respostas aparecem sem o enunciado.</p>}
       <ol className={estilos.respostas}>
         {envio.respostas.map((resposta, i) => {
-          if (prova?.tipo === "descritiva" || typeof resposta === "string") {
-            const enunciado = prova?.tipo === "descritiva" ? prova.perguntas[i] : null;
+          if (prova?.tipo === "descritiva") {
             return (
               <li key={i} className={estilos.resposta}>
-                {enunciado && <p className={estilos.enunciado}>{enunciado}</p>}
+                <p className={estilos.enunciado}>{prova.perguntas[i]}</p>
                 <p className={estilos.texto}>{String(resposta ?? "")}</p>
               </li>
             );
           }
 
+          if (prova?.tipo === "autocorrigida") {
+            const item = prova.itens[i];
+            let valores: Record<string, string> = {};
+            try {
+              valores = JSON.parse(String(resposta ?? "{}"));
+            } catch {
+              valores = {};
+            }
+            const resultado = conferirItem(item, valores);
+            return (
+              <li key={i} className={estilos.resposta}>
+                <p className={estilos.enunciado}>{item.titulo}</p>
+                <p className={resultado.certo ? estilos.certa : estilos.errada}>
+                  <Icone nome={resultado.certo ? "check" : "x"} tamanho={16} />
+                  {resultado.certo ? "Questão certa" : "Questão errada"}
+                  {envio.tentativas ? ` · ${envio.tentativas[i]} de ${TENTATIVAS_POR_QUESTAO} tentativas` : ""}
+                </p>
+                {item.campos.map((campo) => {
+                  const campoResultado = resultado.campos[campo.id];
+                  const valor = valores[campo.id] ?? "";
+                  return (
+                    <div key={campo.id}>
+                      {campo.rotulo && <p className={estilos.gabarito}>{campo.rotulo}</p>}
+                      <pre className={estilos.texto}>{valor || "sem resposta"}</pre>
+                      <p className={campoResultado.certo ? estilos.certa : estilos.errada}>
+                        <Icone nome={campoResultado.certo ? "check" : "x"} tamanho={16} />
+                        {campoResultado.certo ? "Campo certo" : (campoResultado.mensagem ?? "Campo errado")}
+                      </p>
+                      {campoResultado.detalhes && (
+                        <ul className={estilos.gabarito}>
+                          {campoResultado.detalhes.map((detalhe) => (
+                            <li key={detalhe.descricao}>
+                              {detalhe.ok ? "✓" : "✗"} {detalhe.descricao}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  );
+                })}
+              </li>
+            );
+          }
+
           const pergunta = prova && prova.tipo !== "pratica" ? prova.perguntas[i] : undefined;
-          if (!pergunta || typeof pergunta === "string") {
+
+          if (pergunta && pergunta.tipo === "dissertativa" && pergunta.verificacoes) {
+            const texto = String(resposta ?? "");
+            const testes = verificarCodigo(texto, pergunta.verificacoes);
+            const passou = testes.every((teste) => teste.ok);
+            return (
+              <li key={i} className={estilos.resposta}>
+                <p className={estilos.enunciado}>{pergunta.pergunta}</p>
+                <p className={passou ? estilos.certa : estilos.errada}>
+                  <Icone nome={passou ? "check" : "alerta"} tamanho={16} />
+                  {passou ? "Passou em todas as verificações" : "Não passou em todas as verificações"}
+                </p>
+                <pre className={estilos.texto}>{texto || "sem resposta"}</pre>
+                <ul className={estilos.gabarito}>
+                  {testes.map((teste) => (
+                    <li key={teste.descricao}>
+                      {teste.ok ? "✓" : "✗"} {teste.descricao}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            );
+          }
+
+          if (pergunta && pergunta.tipo === "dissertativa") {
+            const texto = String(resposta ?? "");
+            const bateu = respostaAceita(texto, pergunta.respostasAceitas);
+            return (
+              <li key={i} className={estilos.resposta}>
+                <p className={estilos.enunciado}>{pergunta.pergunta}</p>
+                <p className={bateu ? estilos.certa : estilos.revisar}>
+                  <Icone nome={bateu ? "check" : "alerta"} tamanho={16} />
+                  {bateu ? "Bateu com a correção automática: " : "A revisar: "}
+                  {texto || "sem resposta"}
+                </p>
+                <p className={estilos.gabarito}>Respostas aceitas: {pergunta.respostasAceitas.join(", ")}</p>
+              </li>
+            );
+          }
+
+          if (typeof resposta === "string") {
+            return (
+              <li key={i} className={estilos.resposta}>
+                <p className={estilos.texto}>{resposta}</p>
+              </li>
+            );
+          }
+
+          if (!pergunta) {
             return (
               <li key={i} className={estilos.resposta}>
                 <p>Opção {typeof resposta === "number" ? resposta + 1 : "—"}</p>
@@ -261,9 +355,11 @@ function FormularioNota({ envio, aoAtualizar, aoSessaoVencida }: { envio: Envio;
         <p className={estilos.notaSituacao}>
           {envio.corrigidaPor
             ? `Lançada por ${envio.corrigidaPor} em ${dataHora(envio.corrigidaEm ?? envio.enviadaEm)}`
-            : envio.correcao
-              ? "Nota automática da múltipla escolha"
-              : "A corrigir"}
+            : envio.correcao && envio.nota !== null
+              ? "Nota automática"
+              : envio.correcao?.aRevisar
+                ? `A revisar: ${envio.correcao.aRevisar} dissertativa${envio.correcao.aRevisar === 1 ? "" : "s"} sem correspondência automática`
+                : "A corrigir"}
         </p>
       </div>
 

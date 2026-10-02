@@ -23,7 +23,7 @@ Depois de criar ou renomear um `.prova.ts`, rode `npm run dev` ou
 `npm run build`: os dois regeneram `servidor/provas.gerado.ts`, a lista de
 provas que o servidor conhece.
 
-## Os três tipos
+## Os cinco tipos
 
 ### Múltipla escolha — corrigida na hora
 
@@ -71,6 +71,115 @@ const prova: ProvaInterativa = {
   envioArquivo: { obrigatorio: true, extensoes: [".xlsx"], rotulo: "Envie a planilha com as fórmulas" },
 };
 ```
+
+### Mista — múltipla escolha + dissertativa autocorrigida, no mesmo formulário
+
+Pensada para provas que hoje são só múltipla escolha ficarem mais ricas sem
+virar 100% manual: cada `pergunta` do array escolhe seu próprio formato.
+Continua **toda autocorrigida** — a diferença é que uma dissertativa sem
+correspondência não vira "errada" na hora, ela fica **a revisar** até o
+professor conferir (ver `src/lib/correcaoTexto.ts`: a comparação ignora
+maiúsculas, acentos e espaço extra, e conta como certa se a resposta do
+aluno **contiver** alguma das `respostasAceitas`).
+
+```ts
+const prova: ProvaInterativa = {
+  tipo: "mista",
+  titulo: "Custos — Prova final",
+  perguntas: [
+    {
+      pergunta: "O que é custo fixo?",
+      opcoes: ["Varia com a produção", "Não varia com a produção", "É sempre imposto"],
+      correta: 1,
+    },
+    {
+      tipo: "dissertativa",
+      pergunta: "Dê um exemplo de custo fixo numa fábrica.",
+      // Várias formas aceitas da mesma resposta certa — nunca só uma.
+      respostasAceitas: ["aluguel", "salário", "depreciação"],
+    },
+  ],
+};
+```
+
+Se nenhuma dissertativa ficar "a revisar" no envio, a nota sai automática na
+hora, igual à múltipla escolha pura. Se alguma ficar, a nota do envio some
+(`null`) até o professor lançar — o aluno vê uma mensagem avisando que o
+professor vai conferir e pode ajustar a nota.
+
+Nesse caso o aluno também vê a nota provisória (contando a(s) dissertativa(s)
+pendente(s) como errada) e pode **aceitar esse resultado na hora**, em vez de
+esperar o professor: `POST /api/envios/<id>/aceitar`, público, mas só funciona
+enquanto a nota estiver mesmo pendente (nota `null` e `aRevisar > 0`) —
+tentar de novo depois de já lançada dá erro. A tela pede confirmação em dois
+passos antes de mandar, porque é definitivo: uma vez aceito, essa parte não
+volta a ficar disponível para o professor revisar. **`respostasAceitas` é
+gabarito**: nunca vaza pro navegador do aluno (o servidor tira antes de
+entregar a prova), só a área do professor vê a lista completa.
+
+### Autocorrigida — "Testar resposta", com 3 tentativas por questão
+
+Para provas que vieram de página interativa (IA, Google Ads, JavaScript): cada
+**item** é uma questão com 1+ **campos**, e ele só conta como certo se todos os
+campos estiverem certos. O aluno clica em "Testar resposta", o servidor confere
+e mostra onde errou; ele ajusta e testa de novo, mas só tem
+`TENTATIVAS_POR_QUESTAO` (3) testes por questão — o servidor conta, então
+recarregar a página não dá tentativa a mais. Acertou ou gastou as tentativas, a
+resposta trava. No envio, cada questão vale pela **última resposta testada**
+(a que não foi testada vale pela resposta escrita) e a nota é
+`acertos ÷ questões × 10`. A área do professor mostra quantas tentativas cada
+questão gastou. A prova é travada como qualquer outra que não seja
+prática: ao entrar, o aluno não sai da tela.
+
+```ts
+const prova: ProvaInterativa = {
+  tipo: "autocorrigida",
+  titulo: "Prova de JavaScript",
+  introducao: "Escreva o código e use “Testar resposta”.",
+  itens: [
+    {
+      titulo: "Questão 1: Soma",
+      enunciado: "Crie uma função calcular(a, b) que retorne a soma.",
+      exemplo: { rotulo: "Exemplo de chamada", conteudo: "calcular(5, 3); // 8" },
+      campos: [
+        {
+          id: "codigo",
+          rotulo: "Escreva seu código:",
+          regra: {
+            tipo: "codigo",
+            verificacoes: [{ descricao: "Função calcular com 2 parâmetros", padrao: String.raw`function\s+calcular\s*\(\s*\w+\s*,\s*\w+\s*\)` }],
+          },
+        },
+      ],
+      mensagemCerta: "Excelente!",
+      mensagemErrada: "Use function com return e +",
+    },
+  ],
+};
+```
+
+Tipos de `regra` de cada campo: `selecao` (lista suspensa, `esperado` é o
+`valor` da opção), `multipla_escolha` (`correta` é o índice), `marcar`
+(caixas; `corretas` são os índices), `numero` (`esperado` e `tolerancia`),
+`texto` (`minPalavras`, `minCaracteres`, `palavrasChave` como fonte de RegExp) e
+`codigo` (`verificacoes`: expressões regulares aplicadas ao código **sem
+comentários**; o código do aluno nunca é executado). Os campos que mostram
+resultado por linha (`rotulo`, `mensagemCerta`, `mensagemErrada`) valem por campo
+e por item. O gabarito (`regra`, mensagens) fica no servidor: o navegador só
+recebe o tipo de entrada de cada campo.
+
+Cada item aceita também uma **figura** (`imagem: { url, alt, legenda }`, arquivo em
+`public/provas/<curso>/`, como as notas fiscais de Contabilidade e o fluxograma de
+Lógica) e um **vídeo** (`video: { titulo, url, legenda }` com um mp4/webm em
+`public/provas/<curso>/`, ou `video: { titulo, youtube: "<id>" }` com o id do
+YouTube, a parte depois de `v=`). O aluno vê a figura ou o vídeo antes de responder.
+Ilustrações novas saem do kit: `npm run ilustracoes -- <filtro>` (ver
+`scripts/ilustracoes/README.md`; use `saida` para gravar em `public/`).
+
+Para portar uma página interativa de Portal-Atividades, mantenha os mesmos
+módulos, ordem, gabarito, mensagens e palavras-chave — só o suporte muda.
+Exemplos: `JavaScript/prova-javascript-testes-automatizados`,
+`Inteligência Artificial/avaliacao-ia-engenharia-prompts-llms`.
 
 ## Regras que valem para qualquer tipo
 

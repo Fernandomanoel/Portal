@@ -1,3 +1,6 @@
+import imagemCapa from "@/assets/atividades/word/abnt-capa.svg";
+import imagemFolhaRosto from "@/assets/atividades/word/abnt-folha-rosto.svg";
+import imagemMargens from "@/assets/atividades/word/abnt-margens.svg";
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
 
 // Conteúdo de Portal-Atividades/atividades/paginas/word-normas-abnt.html, sem cortes.
@@ -59,6 +62,11 @@ const atividade: AtividadeAutocorrigida = {
           numerada: true,
         },
       ],
+      imagem: {
+        url: imagemMargens,
+        alt: "Diagrama de uma folha com as margens marcadas: 3 cm em cima e à esquerda, 2 cm embaixo e à direita.",
+        legenda: "É essa a régua de medidas que você vai preencher na caixa de Margens Personalizadas.",
+      },
     },
     {
       id: "fonte-e-texto-principal",
@@ -125,6 +133,11 @@ const atividade: AtividadeAutocorrigida = {
           numerada: true,
         },
       ],
+      imagem: {
+        url: imagemCapa,
+        alt: "Capa de trabalho acadêmico no padrão ABNT: nome da instituição e curso no topo, nome do aluno no meio, título em negrito mais abaixo e cidade/ano no rodapé, tudo centralizado.",
+        legenda: "É a este resultado que a sua capa precisa chegar — repare no espaço bem aberto entre os blocos.",
+      },
     },
     {
       id: "folha-de-rosto-contracapa",
@@ -156,6 +169,11 @@ const atividade: AtividadeAutocorrigida = {
           numerada: true,
         },
       ],
+      imagem: {
+        url: imagemFolhaRosto,
+        alt: "Folha de rosto ABNT: nome do aluno e título repetidos no topo, e um parágrafo pequeno recuado à direita explicando a natureza do trabalho.",
+        legenda: "Só esse parágrafo de natureza do trabalho fica recuado e menor — o resto da página segue igual à capa.",
+      },
     },
     {
       id: "sumario-o-mapa",

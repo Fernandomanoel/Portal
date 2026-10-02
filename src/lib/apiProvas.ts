@@ -1,5 +1,5 @@
 import type { Envio, LancarNotaInput, Professor, ReciboEnvio } from "@/types/envio";
-import type { ProvaInterativa, ProvaParaAluno } from "@/types/quiz";
+import type { ProvaInterativa, ProvaParaAluno, ResultadoItem } from "@/types/quiz";
 
 /** Erro da API com a mensagem já pronta para mostrar na tela. */
 export class ErroApi extends Error {
@@ -47,6 +47,10 @@ export interface DadosEnvio {
 
 export const obterProva = (id: string) => chamar<ProvaParaAluno>(`provas/${id.split("/").map(encodeURIComponent).join("/")}`);
 
+/** "Testar resposta": o servidor confere a questão e devolve onde errou. */
+export const verificarItem = (provaId: string, chave: string, item: number, valores: Record<string, string>) =>
+  chamar<ResultadoItem>(`provas/${provaId.split("/").map(encodeURIComponent).join("/")}/verificar`, comJson("POST", { chave, item, valores }));
+
 export function enviarProva(dados: DadosEnvio, arquivo: File | null) {
   const formulario = new FormData();
   formulario.set("dados", JSON.stringify(dados));
@@ -57,6 +61,10 @@ export function enviarProva(dados: DadosEnvio, arquivo: File | null) {
 export function liberarProva(usuario: string, senha: string) {
   return chamar<{ nome: string }>("liberacoes", comJson("POST", { usuario, senha }));
 }
+
+/** Só existe enquanto a nota está pendente (`correcao.aRevisar > 0`): fecha a
+ *  nota provisória ali mesmo, sem esperar o professor revisar. */
+export const aceitarResultadoProvisorio = (id: string) => chamar<ReciboEnvio>(`envios/${encodeURIComponent(id)}/aceitar`, { method: "POST" });
 
 // --------------------------------------------------------------- professor
 

@@ -8,15 +8,16 @@ import estilos from "./ListaProvas.module.css";
 interface Props {
   arquivos: ArquivoProva[];
   categoria: string;
+  plana?: boolean;
 }
 
-export function ListaProvas({ arquivos, categoria }: Props) {
+export function ListaProvas({ arquivos, categoria, plana = false }: Props) {
   if (arquivos.length === 0) {
     return <p className={estilos.vazio}>Em breve.</p>;
   }
 
   return (
-    <ul className={estilos.lista}>
+    <ul className={plana ? `${estilos.lista} ${estilos.plana}` : estilos.lista}>
       {arquivos.map((arquivo) => (
         <li key={arquivo.caminho} className={estilos.item}>
           <div className={estilos.cabecalho}>

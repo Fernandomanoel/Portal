@@ -1,3 +1,6 @@
+import { useEffect, useId, useRef, useState } from "react";
+
+import { Icone } from "@/components/Icone";
 import { ListaProvas } from "@/components/provas/ListaProvas";
 import type { ArquivoProva } from "@/types/prova";
 import estilos from "./ProvaCard.module.css";
@@ -9,11 +12,69 @@ interface Props {
 }
 
 export function ProvaCard({ titulo, categoria, arquivos }: Props) {
+  const [aberto, definirAberto] = useState(false);
+  const idLista = useId();
+  const raiz = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!aberto) return;
+    function fora(evento: PointerEvent) {
+      if (!raiz.current?.contains(evento.target as Node)) definirAberto(false);
+    }
+    function tecla(evento: KeyboardEvent) {
+      if (evento.key !== "Escape") return;
+      definirAberto(false);
+      raiz.current?.querySelector("button")?.focus();
+    }
+    document.addEventListener("pointerdown", fora);
+    document.addEventListener("keydown", tecla);
+    return () => {
+      document.removeEventListener("pointerdown", fora);
+      document.removeEventListener("keydown", tecla);
+    };
+  }, [aberto]);
+
+  if (arquivos.length === 0) {
+    return (
+      <article className={`${estilos.card} ${estilos.cardVazio}`}>
+        <h3 className={estilos.tituloVazio}>{titulo}</h3>
+        <p className={estilos.emBreve}>Em breve</p>
+      </article>
+    );
+  }
+
+  const contagem = arquivos.length === 1 ? "1 prova" : `${arquivos.length} provas`;
+
   return (
-    <article className={estilos.card}>
-      <p className={estilos.categoria}>{categoria}</p>
-      <h3 className={estilos.titulo}>{titulo}</h3>
-      <ListaProvas arquivos={arquivos} categoria={categoria} />
+    <article ref={raiz} className={aberto ? `${estilos.card} ${estilos.cardAberto}` : estilos.card}>
+      <h3 className={estilos.cabecalho}>
+        <button
+          type="button"
+          className={estilos.alternar}
+          aria-expanded={aberto}
+          aria-controls={idLista}
+          onClick={() => definirAberto((valor) => !valor)}
+        >
+          <span className={estilos.selo}>
+            <Icone nome="prova" tamanho={18} />
+          </span>
+          <span className={estilos.alternarTexto}>
+            <span className={estilos.titulo}>{titulo}</span>
+            <span className={`${estilos.contagem} tabular`}>{contagem}</span>
+          </span>
+          <span className={aberto ? `${estilos.seta} ${estilos.setaAberta}` : estilos.seta}>
+            <Icone nome="seta-baixo" tamanho={18} />
+          </span>
+        </button>
+      </h3>
+
+      <div id={idLista} className={aberto ? `${estilos.corpo} ${estilos.corpoAberto}` : estilos.corpo}>
+        <div className={estilos.corpoInterno} inert={!aberto}>
+          <div className={estilos.lista}>
+            <ListaProvas arquivos={arquivos} categoria={categoria} plana />
+          </div>
+        </div>
+      </div>
     </article>
   );
 }

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#fde8e8"/>
+  <g filter="url(#sombra)"><rect x="14" y="10" width="612" height="380" rx="10" fill="#ffffff" stroke="#cbd5e1"/></g>
+  <path d="M14 20 a10 10 0 0 1 10 -10 h592 a10 10 0 0 1 10 10 v26 h-612 z" fill="#0f6cbd"/>
+  <text x="32" y="33" font-size="12.5" fill="#ffffff" font-weight="700">Outlook</text>
+  <text x="320" y="33" font-size="11" fill="#dbeafe" text-anchor="middle">E-mail suspeito — Outlook</text>
+  <rect x="30" y="58" width="340" height="316" rx="6" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="44" y="80" font-size="12" fill="#1f2937" font-weight="700">URGENTE!!! Sua conta será bloqueada</text>
+  <text x="44" y="100" font-size="9.5" fill="#6b7280">De: Suporte Banco &lt;atendimento@banc0-seguro.xyz&gt;</text>
+  <text x="44" y="114" font-size="9.5" fill="#6b7280">Para: você</text>
+  <line x1="36" y1="124" x2="364" y2="124" stroke="#e5e7eb"/>
+  <text x="44" y="146" font-size="10.5" fill="#1f2937">Prezado cliente,</text>
+  <text x="44" y="164" font-size="10.5" fill="#1f2937">Detectamos atividade estranha na sua conta. Voce</text>
+  <text x="44" y="180" font-size="10.5" fill="#1f2937">tem 24 horas para confirmar seus dados ou ela</text>
+  <text x="44" y="196" font-size="10.5" fill="#1f2937">sera cancelada para sempre.</text>
+  <rect x="44" y="212" width="210" height="28" rx="5" fill="#2563eb"/>
+  <text x="149" y="230" font-size="10.5" fill="#ffffff" font-weight="700" text-anchor="middle">Confirmar meus dados agora</text>
+  <text x="44" y="260" font-size="10" fill="#2563eb">bit.ly/confirma-conta-12x</text>
+  <rect x="44" y="278" width="200" height="26" rx="4" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="54" y="295" font-size="9.5" fill="#1f2937">Formulario_Cadastro.exe</text>
+  <text x="44" y="330" font-size="10.5" fill="#1f2937">Equipe de Segurança</text>
+  <circle cx="394" cy="74" r="10" fill="#dc2626"/>
+  <text x="394" y="78" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">1</text>
+  <text x="410" y="78" font-size="10" fill="#dc2626" font-weight="700">Remetente estranho</text>
+  <text x="410" y="92" font-size="9" fill="#374151">Endereço com "0" no lugar de "o".</text>
+  <circle cx="394" cy="126" r="10" fill="#dc2626"/>
+  <text x="394" y="130" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">2</text>
+  <text x="410" y="130" font-size="10" fill="#dc2626" font-weight="700">Urgência e ameaça</text>
+  <text x="410" y="144" font-size="9" fill="#374151">Pressa e medo para você não pensar.</text>
+  <circle cx="394" cy="178" r="10" fill="#dc2626"/>
+  <text x="394" y="182" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">3</text>
+  <text x="410" y="182" font-size="10" fill="#dc2626" font-weight="700">Saudação genérica</text>
+  <text x="410" y="196" font-size="9" fill="#374151">"Prezado cliente", sem o seu nome.</text>
+  <circle cx="394" cy="230" r="10" fill="#dc2626"/>
+  <text x="394" y="234" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">4</text>
+  <text x="410" y="234" font-size="10" fill="#dc2626" font-weight="700">Erros de português</text>
+  <text x="410" y="248" font-size="9" fill="#374151">Falta de acentos e frases estranhas.</text>
+  <circle cx="394" cy="282" r="10" fill="#dc2626"/>
+  <text x="394" y="286" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">5</text>
+  <text x="410" y="286" font-size="10" fill="#dc2626" font-weight="700">Link encurtado</text>
+  <text x="410" y="300" font-size="9" fill="#374151">Passe o mouse e veja o destino real.</text>
+  <circle cx="394" cy="334" r="10" fill="#dc2626"/>
+  <text x="394" y="338" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">6</text>
+  <text x="410" y="338" font-size="10" fill="#dc2626" font-weight="700">Anexo perigoso</text>
+  <text x="410" y="352" font-size="9" fill="#374151">Arquivo .exe nunca deve ser aberto.</text>
+</svg>

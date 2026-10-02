@@ -13,6 +13,9 @@ const ICONE: Record<CategoriaAtividade, NomeIcone> = {
   administrativa: "administrativa",
   programacao: "programacao",
   design: "design",
+  marketing: "megafone",
+  saude: "saude",
+  comportamental: "bussola",
 };
 
 function contar(n: number, singular: string, plural: string) {

@@ -6,6 +6,7 @@ export type NomeIcone =
   | "lua"
   | "seta-direita"
   | "seta-esquerda"
+  | "seta-baixo"
   | "cadeado"
   | "pdf"
   | "doc"
@@ -46,7 +47,9 @@ export type NomeIcone =
   | "relogio"
   | "sair"
   | "usuario"
-  | "video";
+  | "video"
+  | "saude"
+  | "bussola";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -65,6 +68,7 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
   lua: <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2Z" />,
   "seta-direita": <path d="M4 12h15m-6-6 6 6-6 6" />,
   "seta-esquerda": <path d="M20 12H5m6 6-6-6 6-6" />,
+  "seta-baixo": <path d="m6 9 6 6 6-6" />,
   cadeado: (
     <>
       <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" />
@@ -287,6 +291,18 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     <>
       <rect x="3" y="5.5" width="14" height="13" rx="2" />
       <path d="m17 10 4-2.7v9.4L17 14" />
+    </>
+  ),
+  saude: (
+    <>
+      <path d="M12 20.5C6.5 16.8 3.5 13.4 3.5 9.8a4.8 4.8 0 0 1 8.5-3 4.8 4.8 0 0 1 8.5 3c0 3.6-3 7-8.5 10.7Z" />
+      <path d="M9.5 11.5h2l1-2.2 1.5 4.4 1-2.2h1.5" />
+    </>
+  ),
+  bussola: (
+    <>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m14.8 9.2-1.3 4-4 1.3 1.3-4Z" />
     </>
   ),
 };

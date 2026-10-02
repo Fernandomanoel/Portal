@@ -1,3 +1,4 @@
+import imagemCampos from "@/assets/atividades/word/mala-direta-campos.svg";
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
 
 // Conteúdo de Portal-Atividades/atividades/paginas/word-mala-direta.html, sem cortes.
@@ -107,6 +108,11 @@ const atividade: AtividadeAutocorrigida = {
           ],
         },
       ],
+      imagem: {
+        url: imagemCampos,
+        alt: "Menu Inserir Campo de Mesclagem aberto sobre uma carta, listando Nome, Endereço, Cidade, Estado e CEP; a carta mostra esses campos já inseridos entre aspas angulares.",
+        legenda: "Cada campo cinza («Nome», «Endereço»...) é trocado pelo valor daquela linha da planilha quando a carta é gerada.",
+      },
     },
     {
       id: "finalizando-a-mala-direta",

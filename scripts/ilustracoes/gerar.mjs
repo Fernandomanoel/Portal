@@ -8,13 +8,16 @@ const filtro = process.argv[2] ?? '';
 let total = 0;
 
 for (const arquivo of readdirSync(new URL('./telas/', import.meta.url)).filter((f) => f.endsWith('.mjs'))) {
-  const { destino, telas } = await import(`./telas/${arquivo}`);
-  const pasta = new URL(`src/assets/atividades/${destino}/`, raiz);
+  const { destino, saida, telas } = await import(`./telas/${arquivo}`);
+  // `saida` (opcional): pasta relativa à raiz do projeto, para imagens que
+  // precisam ficar em public/ (provas: o .prova.ts é carregado pelo servidor).
+  const base = saida ?? `src/assets/atividades/${destino}`;
+  const pasta = new URL(`${base}/`, raiz);
   mkdirSync(pasta, { recursive: true });
   for (const [nome, conteudo] of Object.entries(telas)) {
     if (!nome.includes(filtro)) continue;
     writeFileSync(new URL(`${nome}.svg`, pasta), conteudo);
-    console.log(`src/assets/atividades/${destino}/${nome}.svg`);
+    console.log(`${base}/${nome}.svg`);
     total++;
   }
 }
