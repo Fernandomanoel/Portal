@@ -117,14 +117,18 @@ volta a ficar disponível para o professor revisar. **`respostasAceitas` é
 gabarito**: nunca vaza pro navegador do aluno (o servidor tira antes de
 entregar a prova), só a área do professor vê a lista completa.
 
-### Autocorrigida — "Testar resposta" quantas vezes quiser
+### Autocorrigida — "Testar resposta", com 3 tentativas por questão
 
 Para provas que vieram de página interativa (IA, Google Ads, JavaScript): cada
 **item** é uma questão com 1+ **campos**, e ele só conta como certo se todos os
 campos estiverem certos. O aluno clica em "Testar resposta", o servidor confere
-e mostra onde errou; ele ajusta e testa de novo, sem limite. No envio, o
-servidor corrige tudo outra vez (o que não estiver certo vale zero) e a nota é
-`acertos ÷ questões × 10`. A prova é travada como qualquer outra que não seja
+e mostra onde errou; ele ajusta e testa de novo, mas só tem
+`TENTATIVAS_POR_QUESTAO` (3) testes por questão — o servidor conta, então
+recarregar a página não dá tentativa a mais. Acertou ou gastou as tentativas, a
+resposta trava. No envio, cada questão vale pela **última resposta testada**
+(a que não foi testada vale pela resposta escrita) e a nota é
+`acertos ÷ questões × 10`. A área do professor mostra quantas tentativas cada
+questão gastou. A prova é travada como qualquer outra que não seja
 prática: ao entrar, o aluno não sai da tela.
 
 ```ts

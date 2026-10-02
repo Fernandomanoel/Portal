@@ -120,7 +120,7 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
   const completa = (ehAutocorrigida(prova) || respondidas === totalQuestoes) && !faltaArquivo && !problemaArquivo;
 
   const pendencia = useMemo(() => {
-    if (ehAutocorrigida(prova)) return `${respondidas} de ${totalQuestoes} questões testadas e certas. Questão sem acerto vale zero no envio.`;
+    if (ehAutocorrigida(prova)) return `${respondidas} de ${totalQuestoes} questões certas. A nota vale a última resposta testada de cada questão.`;
     if (respondidas < totalQuestoes) return `Responda todas as questões (${respondidas} de ${totalQuestoes}).`;
     if (faltaArquivo) return "Anexe o arquivo da prova.";
     if (problemaArquivo) return problemaArquivo;
@@ -163,8 +163,6 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
 
   function mudarCampo(item: number, campo: string, valor: string) {
     definirValores((atual) => atual.map((v, i) => (i === item ? { ...v, [campo]: valor } : v)));
-    // A resposta mudou: o resultado antigo não vale mais, só um novo teste confirma.
-    definirResultados((atual) => atual.map((r, i) => (i === item ? undefined : r)));
   }
 
   async function testarItem(item: number) {
@@ -172,7 +170,7 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
     definirTestando(item);
     definirErroEnvio(null);
     try {
-      const resultado = await verificarItem(provaId, item, valores[item] ?? {});
+      const resultado = await verificarItem(provaId, chave, item, valores[item] ?? {});
       definirResultados((atual) => {
         const proximo = [...atual];
         proximo[item] = resultado;

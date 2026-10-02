@@ -32,6 +32,8 @@ export interface Envio {
   /** Múltipla escolha: índice escolhido por questão. Descritiva: o texto.
    *  Mista: mistura os dois, na ordem das perguntas da prova. */
   respostas: (number | string | null)[];
+  /** Prova autocorrigida: quantos testes cada questão gastou. */
+  tentativas?: number[];
   /** Múltipla escolha e mista, corrigida pelo servidor no envio. `aRevisar`
    *  só existe na mista: quantas dissertativas não bateram com nenhuma
    *  resposta aceita (a nota fica pendente até o professor conferir). */

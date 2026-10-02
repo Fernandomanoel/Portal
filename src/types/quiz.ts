@@ -33,6 +33,8 @@ export interface VerificacaoCodigo {
   descricao: string;
   /** Fonte da RegExp, sem as barras. Roda sobre o código sem comentários. */
   padrao: string;
+  /** Flags da RegExp ("i" para HTML e CSS, que não diferenciam maiúsculas). */
+  flags?: string;
 }
 
 export type PerguntaMista = PerguntaMultiplaEscolha | PerguntaDissertativaAuto;
@@ -181,10 +183,15 @@ export type CampoProvaAluno = Omit<CampoProva, "regra" | "mensagemCerta" | "mens
 export type ItemProvaAluno = Omit<ItemProva, "campos" | "mensagemCerta" | "mensagemErrada"> & { campos: CampoProvaAluno[] };
 export type ProvaAutocorrigidaAluno = Omit<ProvaAutocorrigida, "itens"> & { itens: ItemProvaAluno[] };
 
+/** Quantas vezes o aluno pode testar cada questão da prova autocorrigida. */
+export const TENTATIVAS_POR_QUESTAO = 3;
+
 /** Resposta do servidor a um "Testar resposta". */
 export interface ResultadoItem {
   certo: boolean;
   mensagem?: string;
+  /** Quantos testes a questão já gastou (de `maximo`). */
+  tentativas: { usadas: number; maximo: number };
   campos: Record<string, { certo: boolean; mensagem?: string; detalhes?: { descricao: string; ok: boolean }[] }>;
 }
 

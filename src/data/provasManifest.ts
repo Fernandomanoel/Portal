@@ -174,6 +174,22 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "10 questões",
     },
   ],
+  "HTML": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação Prática de HTML",
+      caminho: "HTML/avaliacao-pratica-html",
+      tamanho: "10 questões de código",
+    },
+  ],
+  "CSS": [
+    {
+      tipo: "quiz",
+      rotulo: "Avaliação Prática de CSS",
+      caminho: "CSS/avaliacao-pratica-css",
+      tamanho: "10 questões de código",
+    },
+  ],
   "Administração": [
     {
       tipo: "quiz",

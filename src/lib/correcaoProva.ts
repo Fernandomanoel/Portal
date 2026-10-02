@@ -68,7 +68,7 @@ export function conferirCampo(campo: CampoProva, valor: string): ResultadoCampo 
 }
 
 /** O item só é certo se todos os campos forem certos. */
-export function conferirItem(item: ItemProva, valores: Record<string, string>): ResultadoItem {
+export function conferirItem(item: ItemProva, valores: Record<string, string>): Omit<ResultadoItem, "tentativas"> {
   const campos = Object.fromEntries(item.campos.map((campo) => [campo.id, conferirCampo(campo, valores[campo.id] ?? "")]));
   const certo = Object.values(campos).every((c) => c.certo);
   const mensagem = certo ? item.mensagemCerta : item.mensagemErrada;

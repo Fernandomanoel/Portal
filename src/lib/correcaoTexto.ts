@@ -23,11 +23,11 @@ export function respostaAceita(resposta: string, aceitas: string[]): boolean {
 
 /** Tira comentários para o aluno não passar numa verificação só escrevendo a resposta num `//`. */
 function semComentarios(codigo: string): string {
-  return codigo.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/.*$/gm, "$1");
+  return codigo.replace(/<!--[\s\S]*?-->/g, " ").replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/.*$/gm, "$1");
 }
 
 /** Resultado de cada verificação do código, na ordem em que foram declaradas. */
-export function verificarCodigo(codigo: string, verificacoes: { descricao: string; padrao: string }[]): { descricao: string; ok: boolean }[] {
+export function verificarCodigo(codigo: string, verificacoes: { descricao: string; padrao: string; flags?: string }[]): { descricao: string; ok: boolean }[] {
   const limpo = semComentarios(codigo);
-  return verificacoes.map(({ descricao, padrao }) => ({ descricao, ok: new RegExp(padrao).test(limpo) }));
+  return verificacoes.map(({ descricao, padrao, flags }) => ({ descricao, ok: new RegExp(padrao, flags).test(limpo) }));
 }

@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 
 import { Icone } from "@/components/Icone";
-import { ehAutocorrigida, ehPratica, totalDeQuestoes, type ProvaParaAluno } from "@/types/quiz";
+import { TENTATIVAS_POR_QUESTAO, ehAutocorrigida, ehPratica, totalDeQuestoes, type ProvaParaAluno } from "@/types/quiz";
 import estilos from "./ProvaAplicada.module.css";
 
 interface Props {
@@ -37,7 +37,7 @@ export function ProvaIdentificacao({ prova, travada, aoComecar, aoVoltar }: Prop
           {ehAutocorrigida(prova) && (
             <li>
               <Icone nome="check" tamanho={18} />
-              Cada questão tem o botão “Testar resposta”: ele mostra onde você errou e você pode tentar quantas vezes quiser.
+              Cada questão tem o botão “Testar resposta”, que mostra onde você errou. Você tem só {TENTATIVAS_POR_QUESTAO} tentativas por questão.
             </li>
           )}
           {prova.envioArquivo && (
@@ -55,7 +55,7 @@ export function ProvaIdentificacao({ prova, travada, aoComecar, aoVoltar }: Prop
           </li>
           <li>
             <Icone nome="check" tamanho={18} />
-            {ehAutocorrigida(prova) ? "O envio é único e corrige de novo as suas respostas: o que não estiver certo nessa hora vale zero." : "O envio é único: depois de enviar não dá para refazer."}
+            {ehAutocorrigida(prova) ? "O envio é único: cada questão vale pela última resposta que você testou." : "O envio é único: depois de enviar não dá para refazer."}
           </li>
         </ul>
       </div>

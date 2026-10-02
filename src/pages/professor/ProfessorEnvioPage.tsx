@@ -9,7 +9,7 @@ import { conferirItem } from "@/lib/correcaoProva";
 import { respostaAceita, verificarCodigo } from "@/lib/correcaoTexto";
 import { rotas } from "@/lib/rotas";
 import type { Envio, SaidaProva } from "@/types/envio";
-import type { ProvaInterativa } from "@/types/quiz";
+import { TENTATIVAS_POR_QUESTAO, type ProvaInterativa } from "@/types/quiz";
 import { dataHora, duracao, hora, nota, situacaoDaNota, tamanhoLegivel } from "./formato";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorEnvioPage.module.css";
@@ -206,6 +206,7 @@ function Respostas({ envio, prova }: { envio: Envio; prova: ProvaInterativa | nu
                 <p className={resultado.certo ? estilos.certa : estilos.errada}>
                   <Icone nome={resultado.certo ? "check" : "x"} tamanho={16} />
                   {resultado.certo ? "Questão certa" : "Questão errada"}
+                  {envio.tentativas ? ` · ${envio.tentativas[i]} de ${TENTATIVAS_POR_QUESTAO} tentativas` : ""}
                 </p>
                 {item.campos.map((campo) => {
                   const campoResultado = resultado.campos[campo.id];

@@ -48,8 +48,8 @@ export interface DadosEnvio {
 export const obterProva = (id: string) => chamar<ProvaParaAluno>(`provas/${id.split("/").map(encodeURIComponent).join("/")}`);
 
 /** "Testar resposta": o servidor confere a questão e devolve onde errou. */
-export const verificarItem = (provaId: string, item: number, valores: Record<string, string>) =>
-  chamar<ResultadoItem>(`provas/${provaId.split("/").map(encodeURIComponent).join("/")}/verificar`, comJson("POST", { item, valores }));
+export const verificarItem = (provaId: string, chave: string, item: number, valores: Record<string, string>) =>
+  chamar<ResultadoItem>(`provas/${provaId.split("/").map(encodeURIComponent).join("/")}/verificar`, comJson("POST", { chave, item, valores }));
 
 export function enviarProva(dados: DadosEnvio, arquivo: File | null) {
   const formulario = new FormData();

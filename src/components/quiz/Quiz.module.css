@@ -591,3 +591,20 @@ legend.enunciado {
 .veredictoErrado {
   color: var(--danger);
 }
+
+.regraTentativas {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  background: var(--warning-tint);
+  color: var(--warning);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-5);
+}
+
+.contagem {
+  font-size: var(--text-sm);
+  color: var(--ink-faint);
+}
