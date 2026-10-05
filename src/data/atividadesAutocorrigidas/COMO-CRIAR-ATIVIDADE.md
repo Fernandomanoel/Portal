@@ -107,3 +107,12 @@ Para conferir um trecho de código de uma linha (`<img src="…" alt="…">`, `<
 regra `padrao` com uma expressão regular que aceite as variações (ordem dos atributos, aspas simples
 ou duplas). **Não use a regra `texto`**: o filtro de "digitação aleatória" dela reprova código
 (`html` não tem vogais, um link não tem espaços). Exemplo: `HTML/html-pagina-completa-semantica`.
+
+## Atalho para questões repetidas (`ajudantes.ts`)
+
+Para atividades feitas de várias perguntas do mesmo tipo (apostilas de Custos,
+Matemática Financeira, Google Ads...), `src/data/atividadesAutocorrigidas/ajudantes.ts`
+tem montadores que devolvem o mesmo `ItemAtividade`, sem repetir `campos`/`regra`/mensagens:
+`escolha` (múltipla escolha), `calculo` e `calculos` (resposta numérica; vírgula decimal aceita),
+`associar` (um seletor por linha) e `resposta` (texto livre, com `chave` opcional para exigir os
+pontos principais). Exemplo em `Custos/custos-centros-e-abc.atividade.ts`.

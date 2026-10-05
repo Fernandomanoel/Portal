@@ -1200,6 +1200,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "IR",
     cor: "#0ea5e9",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Internet — A Evolução da Internet e os Tipos de Acesso",
+        descricao: "De onde a internet veio, qual a diferença entre internet e web e como cada tipo de conexão chega até você.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-evolucao-e-acesso",
+      },
+      {
+        titulo: "Atividade Prática: Internet — A Internet e a Segurança da Informação",
+        descricao: "Golpes, senhas fracas e links falsos são as principais portas de entrada de problemas.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-seguranca-da-informacao",
+      },
+      {
+        titulo: "Atividade Prática: Internet — O Poder do seu E-mail",
+        descricao: "O e-mail é a ferramenta de comunicação formal do trabalho.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-email-profissional",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Criando Formulários e Gerenciando Dados",
+        descricao: "Formulários on-line coletam informações de muita gente de uma vez e as organizam em planilha.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-formularios-e-dados",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Tarefas, Reuniões e Videoconferências",
+        descricao: "Organizar tarefas e conduzir reuniões on-line são rotinas do trabalho moderno.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-tarefas-reunioes-videoconferencia",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Ferramentas na Nuvem e Compartilhamento de Arquivos",
+        descricao: "Documentos, planilhas e apresentações podem viver na nuvem e ser editados por várias pessoas ao mesmo tempo.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-nuvem-produtividade-e-arquivos",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Aplicativos para Dispositivos Móveis",
+        descricao: "O celular virou ferramenta de trabalho.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-aplicativos-moveis",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Redes Sociais, Marketing Social Digital e Estratégia",
+        descricao: "Redes sociais são canais de relacionamento e vendas.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-redes-sociais-marketing-digital",
+      },
+    ],
   },
   {
     slug: "internet-outlook",
@@ -1326,6 +1368,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "AF",
     cor: "#15803d",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Administração Financeira — História e o Papel do Assistente Financeiro",
+        descricao: "Como a administração financeira nasceu e mudou, o que ela faz dentro de uma empresa e onde o assistente financeiro se encaixa.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-papel-e-evolucao",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Construindo Planilhas Orçamentárias",
+        descricao: "O orçamento é a previsão de receitas e despesas de um período.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-planilhas-orcamentarias",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Calculando Porcentagem",
+        descricao: "A porcentagem aparece em descontos, comissões, impostos e margens.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-porcentagem",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Juros e Sistemas de Capitalização",
+        descricao: "Juros são o preço do dinheiro no tempo.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-juros-capitalizacao",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Contas a Pagar e a Receber",
+        descricao: "O dia a dia do assistente financeiro gira em torno do que a empresa deve pagar e do que tem a receber.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-contas-pagar-receber",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Conciliação Bancária e Fatura de Cartão",
+        descricao: "Conciliar é conferir se o controle interno da empresa bate com o extrato do banco e com a fatura do cartão.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-conciliacao-bancaria-cartao",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Antecipação de Recebíveis, Factoring e Banco",
+        descricao: "Antecipar recebíveis transforma uma venda a prazo em dinheiro hoje, mas com um custo.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-antecipacao-recebiveis",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Empréstimos, Financiamentos e Segurança da Informação",
+        descricao: "Entenda a diferença entre empréstimo e financiamento, calcule as primeiras parcelas de um financiamento pelo sistema SAC e veja os cuidados de segurança em operações financeiras.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-emprestimos-seguranca",
+      },
+    ],
   },
   {
     slug: "comunicacao-oratoria",
@@ -1344,6 +1428,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "CU",
     cor: "#92400e",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Custos — Noções sobre a Contabilidade de Custos",
+        descricao: "Antes de calcular, é preciso falar a mesma língua: gasto, custo, despesa, investimento e perda não são sinônimos.",
+        caminho: "Custos/custos-nocoes-contabilidade",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Comportamento dos Custos de Produção",
+        descricao: "Alguns custos não mudam quando a produção cresce; outros crescem junto.",
+        caminho: "Custos/custos-comportamento-fixos-variaveis",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Rateio dos Custos de Produção",
+        descricao: "Custos indiretos servem a vários produtos ao mesmo tempo.",
+        caminho: "Custos/custos-rateio-custos-de-producao",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Sistemas de Custeio Padrão e Ideal",
+        descricao: "O custo padrão é a meta de quanto cada unidade deveria custar.",
+        caminho: "Custos/custos-padrao-e-ideal",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Sistemas por Centros de Custos e Custeio ABC",
+        descricao: "Os centros de custos agrupam gastos por departamento.",
+        caminho: "Custos/custos-centros-e-abc",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Alavancagem Operacional e Financeira",
+        descricao: "Alavancagem mostra o quanto uma variação nas vendas é ampliada no lucro.",
+        caminho: "Custos/custos-alavancagem-operacional-financeira",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Análise Custo, Volume e Lucro e Avaliação de Estoques com Inflação",
+        descricao: "Descubra quantas unidades é preciso vender para não ter prejuízo e veja como o método de avaliar estoques muda o custo e o lucro quando os preços sobem.",
+        caminho: "Custos/custos-volume-lucro-e-estoques",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Preço de Venda por Markup e Demonstração de Resultados",
+        descricao: "Formar o preço de venda é cobrir o custo, os tributos, as comissões e ainda deixar o lucro desejado.",
+        caminho: "Custos/custos-preco-de-venda-markup-resultados",
+      },
+    ],
   },
   {
     slug: "marketing-pessoal",
@@ -1434,6 +1560,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "MF",
     cor: "#4338ca",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Proporcionalidade e Grandezas Proporcionais",
+        descricao: "Regra de três e divisão proporcional estão por trás de preços, cotações e rateio de lucros.",
+        caminho: "Matemática Financeira/matematica-financeira-proporcionalidade",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Porcentagem e Potenciação",
+        descricao: "Porcentagens sucessivas e potências são a ponte para os juros compostos.",
+        caminho: "Matemática Financeira/matematica-financeira-porcentagem-potenciacao",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Operações Mercantis",
+        descricao: "Comprar e vender gera lucro ou prejuízo.",
+        caminho: "Matemática Financeira/matematica-financeira-operacoes-mercantis",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Juros Simples",
+        descricao: "No regime de juros simples, a taxa incide sempre sobre o capital inicial.",
+        caminho: "Matemática Financeira/matematica-financeira-juros-simples",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Juros Compostos",
+        descricao: "Nos juros compostos, os juros de cada período entram na base do período seguinte.",
+        caminho: "Matemática Financeira/matematica-financeira-juros-compostos",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Taxas de Juros Efetivas e Equivalentes",
+        descricao: "Taxas anunciadas em um período podem não ser as taxas reais de outro.",
+        caminho: "Matemática Financeira/matematica-financeira-taxas-efetivas-equivalentes",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Taxas de Inflação e Correção Monetária",
+        descricao: "A inflação reduz o poder de compra do dinheiro.",
+        caminho: "Matemática Financeira/matematica-financeira-inflacao-correcao-monetaria",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Investimentos, Fluxo de Caixa, VPL, TIR e Payback",
+        descricao: "Para decidir se um investimento vale a pena, a empresa projeta o fluxo de caixa e o traz a valor presente.",
+        caminho: "Matemática Financeira/matematica-financeira-investimentos-fluxo-de-caixa",
+      },
+    ],
   },
   {
     slug: "empreendedorismo",
@@ -1452,6 +1620,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "GA",
     cor: "#34a853",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Google Ads — Entrando no Mundo do AdWords: Estrutura e Planejamento",
+        descricao: "O Google Ads (antigo AdWords) coloca anúncios diante de quem está procurando o que você vende.",
+        caminho: "Google Adwords/adwords-estrutura-e-planejamento",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Iniciando a Primeira Campanha",
+        descricao: "Criar a primeira campanha é decidir o objetivo, a rede, o local, o orçamento e como o lance será feito.",
+        caminho: "Google Adwords/adwords-primeira-campanha",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Cliques Qualificados e Análise das Métricas",
+        descricao: "Não basta ter cliques: é preciso ter cliques de quem realmente pode comprar.",
+        caminho: "Google Adwords/adwords-metricas-e-cliques-qualificados",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Locais, Palavras-chave e Investimento",
+        descricao: "Melhorar o desempenho é mostrar o anúncio ao público certo, com as palavras certas, ajustando o dinheiro para onde ele dá mais resultado.",
+        caminho: "Google Adwords/adwords-locais-palavras-chave-investimento",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Grupos de Anúncios, Status e Tipos de Correspondência",
+        descricao: "Grupos de anúncios bem organizados, anúncios aprovados e o tipo de correspondência certo definem quem vê o seu anúncio e quanto isso custa.",
+        caminho: "Google Adwords/adwords-grupos-anuncios-correspondencia",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Extensões de Anúncio e Sitelinks",
+        descricao: "Extensões acrescentam informação ao anúncio — telefone, endereço, links extras — sem custo adicional por si só.",
+        caminho: "Google Adwords/adwords-extensoes-de-anuncio",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Trabalhando com a Rede de Display e as Intenções",
+        descricao: "A Rede de Display mostra anúncios visuais em milhões de sites e aplicativos.",
+        caminho: "Google Adwords/adwords-rede-de-display-e-intencoes",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Criando uma Campanha de Sucesso e Analisando os Resultados",
+        descricao: "Uma campanha de sucesso é a que traz retorno acima do investimento.",
+        caminho: "Google Adwords/adwords-campanha-de-sucesso-resultados",
+      },
+    ],
   },
 ];
 
