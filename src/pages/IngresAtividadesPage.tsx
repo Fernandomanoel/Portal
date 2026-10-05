@@ -29,6 +29,7 @@ function iconeDaAtividade(atividade: AtividadeIngles): NomeIcone {
     const canal = conteudo.conversas[0]?.canal;
     return canal === "email" ? "email" : canal === "presencial" ? "pessoas" : "celular";
   }
+  if (conteudo.tipo === "redacao") return "lapis";
   if (conteudo.vocabulario) return "imagem";
   return conteudo.exercicios.every((e) => e.tipo === "ordenar") ? "blocos" : "som";
 }
@@ -61,7 +62,7 @@ function itensDaTrilha(trilha: Trilha): Item[] {
   }));
 }
 
-const NIVEIS: (NivelIngles | null)[] = [null, "Básico", "Intermediário"];
+const NIVEIS: (NivelIngles | null)[] = [null, "Básico", "Intermediário", "Avançado"];
 
 export function IngresAtividadesPage() {
   const [busca, definirBusca] = useState("");
