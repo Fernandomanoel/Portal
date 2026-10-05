@@ -1,10 +1,19 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const PRODUTOS = [
+  ["Mesa", 120, 28000, 400],
+  ["Cadeira", 200, 31000, 500],
+  ["Armário", 80, 22000, 100],
+];
+const TOTAL_HORAS = somar(PRODUTOS.map((l) => l[1] as number));
+const TAXA = 48000 / TOTAL_HORAS;
+const RATEIO = PRODUTOS.map((l) => (l[1] as number) * TAXA);
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Custos — Rateio dos Custos de Produção",
   introducao:
-    "Custos indiretos servem a vários produtos ao mesmo tempo. O rateio distribui esses custos por um critério justo para que cada produto tenha o seu custo real.",
+    "Custos indiretos servem a vários produtos ao mesmo tempo. O rateio distribui esses custos por um critério justo para que cada produto tenha o seu custo real. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "por-que",
@@ -18,15 +27,6 @@ const atividade: AtividadeAutocorrigida = {
       ],
       correta: 1,
       explicacao: "Sem rateio, o custo dos produtos ficaria incompleto e o preço de venda, subestimado.",
-    }),
-    escolha({
-      id: "criterio",
-      titulo: "Escolhendo o critério",
-      cenario: "Uma indústria produz dois produtos em máquinas, e o produto B usa muito mais tempo de máquina que o A. O custo a ratear é a energia elétrica das máquinas.",
-      instrucao: "Qual é o critério de rateio mais adequado?",
-      opcoes: ["Horas-máquina de cada produto.", "Nome dos produtos.", "Número de funcionários do RH.", "Cor das embalagens."],
-      correta: 0,
-      explicacao: "O critério deve refletir a causa do custo: a energia é consumida pelo tempo que as máquinas trabalham.",
     }),
     calculos({
       id: "rateio-horas",
@@ -57,6 +57,31 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Seu critério",
       placeholder: "Metros quadrados ocupados por cada linha, porque o aluguel depende do espaço usado...",
       chave: /(metro|[aá]rea|espa[cç]o|m²|ocup)/i,
+    }),
+    planilha({
+      id: "rateio-fabrica",
+      titulo: "Planilha: rateio dos custos indiretos entre três produtos",
+      cenario: "Os custos indiretos de fabricação do mês somam R$ 48.000,00 e serão rateados pelas horas-máquina de cada produto. Cole a planilha no Excel e crie as colunas Rateio e Custo por unidade.",
+      colunas: ["Produto", "Horas-máquina", "Custos diretos (R$)", "Unidades produzidas"],
+      linhas: PRODUTOS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "taxa", rotulo: "Custo indireto por hora-máquina (R$)", valor: TAXA, explicacao: "48.000 ÷ 400 horas = 120." },
+        { id: "rateio-cadeira", rotulo: "Custo indireto atribuído à Cadeira (R$)", valor: RATEIO[1], explicacao: "200 horas × 120 = 24.000." },
+        { id: "unitario-cadeira", rotulo: "Custo por unidade da Cadeira (R$)", valor: (31000 + RATEIO[1]) / 500, explicacao: "(31.000 + 24.000) ÷ 500 = 110." },
+        { id: "unitario-armario", rotulo: "Custo por unidade do Armário (R$)", valor: (22000 + RATEIO[2]) / 100, explicacao: "(22.000 + 9.600) ÷ 100 = 316." },
+      ],
+    }),
+    dissertativa({
+      id: "critico-do-criterio",
+      titulo: "O critério de rateio é justo?",
+      instrucao: "Discuta o critério de rateio por horas-máquina usado na planilha.",
+      deve: [
+        "Explique por que as horas-máquina são um critério razoável aqui.",
+        "Mostre como o custo unitário do Armário muda se o rateio fosse feito por número de unidades (1.000 unidades no total) em vez de horas-máquina.",
+        "Diga qual critério seria melhor para ratear o aluguel do galpão e por quê.",
+      ],
+      chave: /(hora|m[aá]quina|unidade|crit[eé]rio|aluguel|[aá]rea|m²|justo|rateio)/i,
     }),
   ],
 };

@@ -116,3 +116,12 @@ tem montadores que devolvem o mesmo `ItemAtividade`, sem repetir `campos`/`regra
 `escolha` (múltipla escolha), `calculo` e `calculos` (resposta numérica; vírgula decimal aceita),
 `associar` (um seletor por linha) e `resposta` (texto livre, com `chave` opcional para exigir os
 pontos principais). Exemplo em `Custos/custos-centros-e-abc.atividade.ts`.
+
+### Planilha e dissertativa dentro da atividade
+
+`planilha(...)` põe a tabela de dados **dentro do item** (com o botão «Copiar planilha para colar no
+Excel») e pede os resultados em campos numéricos; os valores esperados são calculados no próprio arquivo
+a partir das mesmas `linhas` (use `somar`/`arredondar`), então a conferência nunca destoa da tabela.
+`dissertativa(...)` lista o que a resposta precisa trazer e exige texto de verdade com os pontos-chave
+(`chave`). Modelo completo: `Custos/custos-centros-e-abc.atividade.ts`. O material nunca fica fora da
+atividade: nada de planilha em `public/` com link para baixar.

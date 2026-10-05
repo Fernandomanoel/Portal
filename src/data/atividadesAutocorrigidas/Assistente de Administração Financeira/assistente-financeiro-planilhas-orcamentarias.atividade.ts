@@ -1,5 +1,17 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { calculo, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculo, calculos, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const ORCAMENTO = [
+  ["Aluguel", 3500, 3500],
+  ["Salários e encargos", 7200, 7480],
+  ["Energia e água", 650, 790],
+  ["Marketing", 1200, 1450],
+  ["Material de escritório", 300, 260],
+  ["Manutenção", 450, 980],
+  ["Outras despesas", 500, 440],
+];
+const ORCADO = somar(ORCAMENTO.map((l) => l[1] as number));
+const REALIZADO = somar(ORCAMENTO.map((l) => l[2] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Administração Financeira — Construindo Planilhas Orçamentárias",
@@ -41,15 +53,6 @@ const atividade: AtividadeAutocorrigida = {
         { id: "margem", rotulo: "Margem sobre a receita (%)", esperado: 25, explicacao: "4.500 ÷ 18.000 = 0,25, ou seja, 25%." },
       ],
     }),
-    escolha({
-      id: "formula-soma",
-      titulo: "Fórmula de soma na planilha",
-      cenario: "As despesas estão nas células B3 até B7 e o total deve aparecer em B8.",
-      instrucao: "Qual fórmula calcula o total corretamente?",
-      opcoes: ["=B3+B7", "=SOMA(B3:B7)", "=SOMA(B3;B7;B8)", "=TOTAL(B3-B7)"],
-      correta: 1,
-      explicacao: "SOMA(B3:B7) soma todas as células do intervalo de B3 até B7. As outras opções somam só as pontas ou não existem.",
-    }),
     calculo({
       id: "variacao",
       titulo: "Orçado x realizado",
@@ -66,6 +69,42 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Sua explicação",
       placeholder: "Ex.: Para descobrir desvios cedo, entender a causa e corrigir o rumo...",
       chave: /(desvio|diferen|varia|corrig|ajust|control|planej)/i,
+    }),
+    planilha({
+      id: "orcado-realizado",
+      titulo: "Planilha: orçado x realizado de janeiro",
+      cenario: "O controle do mês traz o valor previsto e o valor gasto de cada despesa. Cole a planilha no Excel e use as fórmulas SOMA e a variação percentual.",
+      colunas: ["Despesa", "Orçado (R$)", "Realizado (R$)"],
+      linhas: ORCAMENTO,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "orcado", rotulo: "Total orçado (R$)", valor: ORCADO, explicacao: "Soma da coluna Orçado." },
+        { id: "realizado", rotulo: "Total realizado (R$)", valor: REALIZADO, explicacao: "Soma da coluna Realizado." },
+        { id: "variacao-total", rotulo: "Variação do total (%, positivo se gastou mais)", valor: ((REALIZADO - ORCADO) / ORCADO) * 100, explicacao: "(Realizado − Orçado) ÷ Orçado × 100." },
+        { id: "variacao-manutencao", rotulo: "Variação da Manutenção (%)", valor: ((980 - 450) / 450) * 100, explicacao: "(980 − 450) ÷ 450 × 100: o maior estouro percentual da tabela." },
+      ],
+    }),
+    dissertativa({
+      id: "analise-desvios",
+      titulo: "Análise dos desvios",
+      instrucao: "Com base na planilha, escreva a análise que o assistente financeiro entregaria sobre o mês.",
+      deve: [
+        "Diga se o mês fechou acima ou abaixo do orçado e de quanto.",
+        "Aponte as duas despesas que mais pesaram no desvio e levante uma causa provável para cada uma.",
+        "Sugira uma providência para o mês seguinte.",
+      ],
+      chave: /(acima|abaixo|desvio|manuten|energia|causa|provid|orç)/i,
+    }),
+    dissertativa({
+      id: "montar-orcamento",
+      titulo: "Planeje o orçamento de uma empresa",
+      instrucao: "Escolha uma empresa que você conhece (padaria, loja, escritório) e descreva como montaria a planilha orçamentária do ano.",
+      deve: [
+        "Liste as principais receitas e despesas que entrariam na planilha.",
+        "Explique de onde tiraria os valores previstos (histórico, contratos, estimativas).",
+        "Diga com que frequência compararia o previsto com o realizado.",
+      ],
+      chave: /(receita|despesa|hist[oó]rico|previs|mensal|compar|estim)/i,
     }),
   ],
 };

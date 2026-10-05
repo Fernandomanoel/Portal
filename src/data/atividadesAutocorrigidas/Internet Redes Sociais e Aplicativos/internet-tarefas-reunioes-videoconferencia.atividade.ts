@@ -1,10 +1,19 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const REUNIOES = [
+  ["Alinhamento semanal", 60, 8],
+  ["Revisão de orçamento", 90, 5],
+  ["Treinamento do sistema", 120, 12],
+  ["Reunião com fornecedor", 45, 3],
+  ["Planejamento de campanha", 75, 6],
+];
+const HORAS_PESSOA = REUNIOES.map((l) => ((l[1] as number) / 60) * (l[2] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Internet — Tarefas, Reuniões e Videoconferências",
   introducao:
-    "Organizar tarefas e conduzir reuniões on-line são rotinas do trabalho moderno. Veja como agendar, preparar e se portar em uma videoconferência.",
+    "Organizar tarefas e conduzir reuniões on-line são rotinas do trabalho moderno. Veja como agendar, preparar e se portar em uma videoconferência. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "pauta",
@@ -42,19 +51,6 @@ const atividade: AtividadeAutocorrigida = {
       ],
       explicacao: "Postura profissional on-line é a mesma da reunião presencial: atenção, pontualidade e respeito ao tempo de todos.",
     }),
-    escolha({
-      id: "ata",
-      titulo: "Ata e encaminhamentos",
-      instrucao: "O que a ata da reunião deve registrar de mais importante?",
-      opcoes: [
-        "Cada piada contada.",
-        "As decisões tomadas, os responsáveis e os prazos.",
-        "O nome de quem chegou atrasado.",
-        "A cor da camisa dos participantes.",
-      ],
-      correta: 1,
-      explicacao: "Decisão, responsável e prazo transformam a conversa em ação e permitem cobrar o combinado.",
-    }),
     resposta({
       id: "convite",
       titulo: "Escreva o convite",
@@ -63,7 +59,32 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Texto do convite",
       placeholder: "Reunião: escala de férias. Terça, às 14h, duração de 30 minutos. Objetivo: ...",
       chave: /(f[eé]rias|escala)/i,
-      minPalavras: 10,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "agenda-semana",
+      titulo: "Planilha: reuniões da semana",
+      cenario: "A agenda da equipe tem cinco reuniões. Cole a planilha no Excel e crie a coluna horas-pessoa (=duração ÷ 60 × participantes).",
+      colunas: ["Reunião", "Duração (min)", "Participantes"],
+      linhas: REUNIOES,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "total-horas", rotulo: "Tempo total de reuniões na semana (horas)", valor: somar(REUNIOES.map((l) => l[1] as number)) / 60, explicacao: "390 minutos ÷ 60 = 6,5 horas." },
+        { id: "horas-pessoa", rotulo: "Total de horas-pessoa gastas (h)", valor: somar(HORAS_PESSOA), explicacao: "Soma de duração × participantes de cada reunião." },
+        { id: "mais-cara", rotulo: "Horas-pessoa da reunião mais cara (h)", valor: Math.max(...HORAS_PESSOA), explicacao: "O treinamento: 2 h × 12 pessoas = 24 h-pessoa." },
+        { id: "media", rotulo: "Duração média das reuniões (min)", valor: somar(REUNIOES.map((l) => l[1] as number)) / REUNIOES.length, explicacao: "390 ÷ 5 = 78 minutos." },
+      ],
+    }),
+    dissertativa({
+      id: "reduzir-reunioes",
+      titulo: "Reuniões mais eficientes",
+      instrucao: "Escreva uma proposta para reduzir o tempo gasto em reuniões sem perder resultado.",
+      deve: [
+        "Use os números da planilha para mostrar onde há mais custo de tempo.",
+        "Proponha mudanças: pauta, tempo-limite, quem precisa participar, ata com responsáveis e prazos.",
+        "Explique quando uma reunião pode virar um e-mail ou uma tarefa.",
+      ],
+      chave: /(pauta|ata|hora|tempo|particip|prazo|respons[aá]vel|e-?mail|tarefa)/i,
     }),
   ],
 };

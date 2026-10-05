@@ -1,10 +1,20 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculo, calculos, escolha } from "../ajudantes";
+import { escolha, calculo, calculos, associar, planilha, dissertativa, somar } from "../ajudantes";
+
+const VENDAS = [
+  ["Fone de ouvido", 60, 90],
+  ["Carregador", 25, 40],
+  ["Capa de celular", 12, 30],
+  ["Cabo USB", 8, 15],
+  ["Película (liquidação)", 10, 8],
+];
+const LUCROS = VENDAS.map((l) => (l[2] as number) - (l[1] as number));
+const TOTAL_VENDA = somar(VENDAS.map((l) => l[2] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Matemática Financeira — Operações Mercantis",
   introducao:
-    "Comprar e vender gera lucro ou prejuízo. Calcule o resultado sobre o custo e sobre a venda e forme preços a partir da margem desejada.",
+    "Comprar e vender gera lucro ou prejuízo. Calcule o resultado sobre o custo e sobre a venda e forme preços a partir da margem desejada. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     calculos({
       id: "lucro",
@@ -70,6 +80,31 @@ const atividade: AtividadeAutocorrigida = {
       ],
       correta: 1,
       explicacao: "A base muda o percentual: 20 de lucro é 25% de 80 (custo), mas só 20% de 100 (venda).",
+    }),
+    planilha({
+      id: "resultado-das-vendas",
+      titulo: "Planilha: resultado de cinco produtos vendidos",
+      cenario: "Uma loja de acessórios registrou o custo e o preço de venda de cada item. Lucro = venda − custo (negativo é prejuízo). Cole a planilha no Excel e crie as colunas Lucro, Lucro sobre o custo (%) e Lucro sobre a venda (%).",
+      colunas: ["Produto", "Preço de custo (R$)", "Preço de venda (R$)"],
+      linhas: VENDAS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "lucro-custo-fone", rotulo: "Lucro do Fone de ouvido sobre o custo (%)", valor: (LUCROS[0] / 60) * 100, explicacao: "30 ÷ 60 × 100 = 50%." },
+        { id: "lucro-venda-capa", rotulo: "Lucro da Capa sobre a venda (%)", valor: (LUCROS[2] / 30) * 100, explicacao: "18 ÷ 30 × 100 = 60%." },
+        { id: "resultado-total", rotulo: "Resultado total dos cinco produtos (R$)", valor: somar(LUCROS), explicacao: "Soma dos lucros; a Película deu prejuízo de R$ 2,00." },
+        { id: "margem-total", rotulo: "Margem total sobre as vendas (%)", valor: (somar(LUCROS) / TOTAL_VENDA) * 100, explicacao: "Resultado total ÷ vendas totais × 100." },
+      ],
+    }),
+    dissertativa({
+      id: "politica-de-precos",
+      titulo: "Política de preços da loja",
+      instrucao: "A partir da planilha, escreva uma avaliação da política de preços da loja.",
+      deve: [
+        "Explique a diferença entre lucro sobre o custo e lucro sobre a venda, usando dois produtos.",
+        "Comente o prejuízo da Película e quando uma liquidação com prejuízo pode fazer sentido.",
+        "Proponha uma margem mínima para novos produtos e como a calcularia.",
+      ],
+      chave: /(custo|venda|margem|lucro|preju[ií]zo|liquida[cç][aã]o|pre[cç]o|markup)/i,
     }),
   ],
 };

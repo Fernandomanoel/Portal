@@ -1,10 +1,17 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculo, escolha, resposta } from "../ajudantes";
+import { escolha, calculo, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const CAMPANHA = [
+  ["Boas-vindas", 1200, 840, 252, 6],
+  ["Promoção de março", 1500, 600, 180, 22],
+  ["Pesquisa de satisfação", 900, 450, 90, 4],
+  ["Lembrete de reunião", 300, 285, 40, 0],
+];
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Internet — O Poder do seu E-mail",
   introducao:
-    "O e-mail é a ferramenta de comunicação formal do trabalho. Aprenda a usar os campos corretos, anexar arquivos dentro do limite e escrever mensagens claras.",
+    "O e-mail é a ferramenta de comunicação formal do trabalho. Aprenda a usar os campos corretos, anexar arquivos dentro do limite e escrever mensagens claras. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     associar({
       id: "campos",
@@ -36,32 +43,6 @@ const atividade: AtividadeAutocorrigida = {
       tolerancia: 0,
       explicacao: "3 × 9 = 27 MB, acima de 25 MB. Compacte os arquivos ou envie um link de pasta na nuvem.",
     }),
-    escolha({
-      id: "responder-todos",
-      titulo: "Responder a todos",
-      instrucao: "Quando é correto usar «Responder a todos»?",
-      opcoes: [
-        "Sempre, para ninguém ficar de fora.",
-        "Só quando a resposta interessa a todos os destinatários da conversa.",
-        "Nunca.",
-        "Apenas em e-mails de chefes.",
-      ],
-      correta: 1,
-      explicacao: "Respostas desnecessárias a todos lotam caixas de entrada e podem expor informações a quem não precisa vê-las.",
-    }),
-    escolha({
-      id: "assinatura",
-      titulo: "Assinatura profissional",
-      instrucao: "O que deve constar em uma assinatura de e-mail corporativo?",
-      opcoes: [
-        "Frase de humor e foto pessoal.",
-        "Nome, cargo, empresa e meios de contato.",
-        "Somente o primeiro nome.",
-        "A senha do e-mail.",
-      ],
-      correta: 1,
-      explicacao: "A assinatura identifica quem escreve e como entrar em contato, de forma curta e padronizada.",
-    }),
     resposta({
       id: "escrever",
       titulo: "Escreva a mensagem",
@@ -70,7 +51,32 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Corpo do e-mail",
       placeholder: "Prezados, ... Solicito cotação de 10 cadeiras ... até quinta-feira. Atenciosamente, ...",
       chave: /(cota[cç][aã]o|cadeira)/i,
-      minPalavras: 12,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "campanha-email",
+      titulo: "Planilha: resultados de quatro e-mails enviados",
+      cenario: "A empresa enviou quatro comunicados para a lista de clientes. Cole a planilha no Excel e calcule as taxas (abertura = abertos ÷ enviados).",
+      colunas: ["Mensagem", "Enviados", "Abertos", "Cliques", "Descadastros"],
+      linhas: CAMPANHA,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "abertura-boas-vindas", rotulo: "Taxa de abertura do e-mail de boas-vindas (%)", valor: (840 / 1200) * 100, explicacao: "840 ÷ 1.200 × 100 = 70%." },
+        { id: "abertura-geral", rotulo: "Taxa de abertura geral dos quatro e-mails (%)", valor: (somar(CAMPANHA.map((l) => l[2] as number)) / somar(CAMPANHA.map((l) => l[1] as number))) * 100, explicacao: "Total de abertos ÷ total de enviados × 100." },
+        { id: "cliques-abertos", rotulo: "Cliques ÷ abertos no e-mail de promoção (%)", valor: (180 / 600) * 100, explicacao: "180 ÷ 600 × 100 = 30%." },
+        { id: "descadastro", rotulo: "Taxa de descadastro da promoção (% dos enviados)", valor: (22 / 1500) * 100, explicacao: "22 ÷ 1.500 × 100 ≈ 1,47%." },
+      ],
+    }),
+    dissertativa({
+      id: "analisar-envios",
+      titulo: "O que os números dizem",
+      instrucao: "Escreva uma análise dos quatro envios e proponha melhorias.",
+      deve: [
+        "Diga qual e-mail teve melhor e pior desempenho e uma hipótese para cada um (assunto, público, horário).",
+        "Comente o número de descadastros da promoção.",
+        "Proponha duas melhorias para o próximo envio (assunto, segmentação, chamada para ação).",
+      ],
+      chave: /(assunto|abertura|clique|descadastro|segment|hor[aá]rio|melhor|pior)/i,
     }),
   ],
 };

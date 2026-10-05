@@ -1,10 +1,19 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const PALAVRAS = [
+  ["revisão de bicicleta", 4000, 5, 1.2],
+  ["conserto de bicicleta", 2500, 4, 0.9],
+  ["bicicleta elétrica preço", 6000, 2, 2.4],
+  ["oficina de bike perto de mim", 1800, 8, 0.8],
+];
+const CLIQUES = PALAVRAS.map((l) => ((l[1] as number) * (l[2] as number)) / 100);
+const CUSTOS = PALAVRAS.map((l, i) => CLIQUES[i] * (l[3] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Google Ads — Iniciando a Primeira Campanha",
   introducao:
-    "Criar a primeira campanha é decidir o objetivo, a rede, o local, o orçamento e como o lance será feito. Pratique o raciocínio da criação e estime o resultado em números.",
+    "Criar a primeira campanha é decidir o objetivo, a rede, o local, o orçamento e como o lance será feito. Pratique o raciocínio da criação e estime o resultado em números. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "passos",
@@ -19,20 +28,6 @@ const atividade: AtividadeAutocorrigida = {
       correta: 0,
       explicacao: "Esses cinco pontos determinam onde, para quem e a que custo o anúncio será exibido.",
     }),
-    escolha({
-      id: "leilao",
-      titulo: "O leilão de anúncios",
-      cenario: "Toda vez que alguém faz uma busca, o Google realiza um leilão para decidir quais anúncios aparecem e em qual posição.",
-      instrucao: "O que decide a posição do anúncio no leilão?",
-      opcoes: [
-        "Só o valor do lance: quem paga mais sempre fica em primeiro.",
-        "O lance combinado com a qualidade do anúncio (relevância, taxa de cliques esperada e experiência na página de destino).",
-        "A ordem em que os anunciantes se cadastraram.",
-        "Sorteio.",
-      ],
-      correta: 1,
-      explicacao: "Anúncios relevantes e uma boa página podem superar quem apenas paga mais caro, e ainda reduzem o custo por clique.",
-    }),
     calculos({
       id: "estimativa",
       titulo: "Estimando resultados",
@@ -43,20 +38,6 @@ const atividade: AtividadeAutocorrigida = {
         { id: "custo", rotulo: "Custo da semana (R$)", esperado: 180, explicacao: "150 × 1,20 = 180." },
       ],
     }),
-    escolha({
-      id: "local",
-      titulo: "Escolhendo onde anunciar",
-      cenario: "Uma pizzaria atende apenas em um bairro e arredores.",
-      instrucao: "Como deve ser a segmentação geográfica da campanha?",
-      opcoes: [
-        "O país inteiro, para aparecer para todos.",
-        "Um raio em torno do bairro, onde a entrega é possível.",
-        "Somente outros países.",
-        "Nenhuma segmentação.",
-      ],
-      correta: 1,
-      explicacao: "Mostrar o anúncio a quem não pode ser atendido desperdiça cliques e orçamento.",
-    }),
     resposta({
       id: "titulo-anuncio",
       titulo: "Escreva um anúncio de pesquisa",
@@ -65,7 +46,32 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Título e descrição",
       placeholder: "Título: Revisão de Bicicleta | Descrição: Agende hoje a revisão completa por preço fixo...",
       chave: /(revis[aã]o|bicicleta|agende|ligue|or[cç]amento|compre)/i,
-      minPalavras: 8,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "simulacao-palavras",
+      titulo: "Planilha: simulação da primeira campanha",
+      cenario: "Antes de lançar, o gestor simulou o resultado de quatro palavras-chave: a quantidade de buscas por mês, a taxa de cliques (CTR) esperada e o custo por clique (CPC). Supondo que o anúncio apareça em todas as buscas, cole a planilha no Excel e resolva (cliques = buscas × CTR).",
+      colunas: ["Palavra-chave", "Buscas por mês", "CTR esperado (%)", "CPC (R$)"],
+      linhas: PALAVRAS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "cliques-revisao", rotulo: "Cliques esperados para «revisão de bicicleta»", valor: CLIQUES[0], explicacao: "4.000 × 5% = 200.", tolerancia: 0 },
+        { id: "custo-oficina", rotulo: "Custo de «oficina de bike perto de mim» (R$)", valor: CUSTOS[3], explicacao: "144 cliques × R$ 0,80 = 115,20." },
+        { id: "cliques-total", rotulo: "Total de cliques esperados nas quatro palavras", valor: somar(CLIQUES), explicacao: "Soma dos cliques de cada palavra.", tolerancia: 0 },
+        { id: "custo-total", rotulo: "Custo total do mês (R$)", valor: somar(CUSTOS), explicacao: "Soma de cliques × CPC de cada palavra." },
+      ],
+    }),
+    dissertativa({
+      id: "escolher-palavras",
+      titulo: "Quais palavras manter",
+      instrucao: "Com base na simulação, escreva sua decisão sobre quais palavras-chave manteria na primeira campanha e por quê.",
+      deve: [
+        "Compare o custo por clique e a taxa de cliques das palavras.",
+        "Explique qual palavra mostra mais intenção de compra e qual é mais cara para o que entrega.",
+        "Diga o que você testaria nas duas primeiras semanas antes de aumentar o orçamento.",
+      ],
+      chave: /(cpc|ctr|custo|clique|inten[cç][aã]o|compra|testar|orçamento|or[cç]amento)/i,
     }),
   ],
 };

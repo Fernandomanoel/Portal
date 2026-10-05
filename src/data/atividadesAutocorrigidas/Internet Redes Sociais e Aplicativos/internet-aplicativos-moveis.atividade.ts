@@ -1,10 +1,20 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const APPS = [
+  ["Vídeos curtos", 6.4],
+  ["Mensagens", 1.1],
+  ["Mapas e entregas", 0.9],
+  ["Streaming de música", 2.8],
+  ["Redes sociais", 4.6],
+  ["Banco e pagamentos", 0.2],
+];
+const SEMANA = somar(APPS.map((l) => l[1] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Internet — Aplicativos para Dispositivos Móveis",
   introducao:
-    "O celular virou ferramenta de trabalho. Veja como escolher aplicativos com segurança, controlar o consumo de dados e usar apps de produtividade.",
+    "O celular virou ferramenta de trabalho. Veja como escolher aplicativos com segurança, controlar o consumo de dados e usar apps de produtividade. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "loja-oficial",
@@ -42,38 +52,37 @@ const atividade: AtividadeAutocorrigida = {
         { id: "sobra", rotulo: "Sobra no mês (GB)", esperado: 0, tolerancia: 0, explicacao: "10 − 10 = 0: o pacote termina junto com o mês, sem folga." },
       ],
     }),
-    escolha({
-      id: "wifi",
-      titulo: "Economizando dados",
-      instrucao: "Qual hábito mais reduz o consumo do plano de dados móveis?",
-      opcoes: [
-        "Atualizar apps e baixar vídeos usando só a rede Wi-Fi.",
-        "Deixar o vídeo em qualidade máxima o tempo todo.",
-        "Manter a reprodução automática de vídeos ligada.",
-        "Fazer backup de fotos pelo plano de dados.",
-      ],
-      correta: 0,
-      explicacao: "Atualizações, downloads e backups pesados devem ocorrer no Wi-Fi.",
-    }),
-    escolha({
-      id: "atualizar",
-      titulo: "Manter tudo atualizado",
-      instrucao: "Por que atualizar o sistema e os aplicativos do celular?",
-      opcoes: [
-        "Só para mudar a aparência.",
-        "Para corrigir falhas de segurança e ganhar melhorias.",
-        "Para gastar mais bateria.",
-        "Não há motivo.",
-      ],
-      correta: 1,
-      explicacao: "Muitas atualizações corrigem vulnerabilidades já exploradas por golpistas.",
-    }),
     resposta({
       id: "app-trabalho",
       titulo: "Aplicativos no trabalho",
       instrucao: "Cite dois tipos de aplicativo móvel úteis na rotina de trabalho e diga para que cada um serve.",
       rotulo: "Sua resposta",
       placeholder: "Ex.: Aplicativo de mensagens corporativas para falar com a equipe; aplicativo de agenda para...",
+    }),
+    planilha({
+      id: "consumo-dados",
+      titulo: "Planilha: consumo de dados móveis por aplicativo na semana",
+      cenario: "A equipe de vendas externa usa o celular da empresa, que tem plano de 25 GB por mês. O consumo médio de uma semana está abaixo. Cole a planilha no Excel e resolva (considere 4 semanas por mês).",
+      colunas: ["Aplicativo", "Consumo semanal (GB)"],
+      linhas: APPS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "semana", rotulo: "Consumo total na semana (GB)", valor: SEMANA, explicacao: "Soma da coluna Consumo semanal." },
+        { id: "mes", rotulo: "Projeção do consumo em 4 semanas (GB)", valor: SEMANA * 4, explicacao: "Consumo semanal × 4." },
+        { id: "excesso", rotulo: "Quantos GB passam do plano de 25 GB no mês", valor: SEMANA * 4 - 25, explicacao: "Projeção mensal menos 25 GB." },
+        { id: "peso-videos", rotulo: "Participação dos vídeos curtos no consumo (%)", valor: (6.4 / SEMANA) * 100, explicacao: "6,4 ÷ consumo semanal total × 100." },
+      ],
+    }),
+    dissertativa({
+      id: "politica-moveis",
+      titulo: "Política de uso do celular corporativo",
+      instrucao: "Escreva regras de uso do celular corporativo que resolvam o excesso de consumo e protejam a empresa.",
+      deve: [
+        "Proponha como reduzir o consumo sem prejudicar o trabalho (Wi-Fi, qualidade de vídeo, downloads).",
+        "Inclua regras de segurança: loja oficial, permissões, atualizações, bloqueio de tela.",
+        "Diga como acompanharia o consumo mês a mês.",
+      ],
+      chave: /(wi-?fi|dados|loja oficial|permiss|atualiz|bloqueio|senha|acompanh|consumo)/i,
     }),
   ],
 };

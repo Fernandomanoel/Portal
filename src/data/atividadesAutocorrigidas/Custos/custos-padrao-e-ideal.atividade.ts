@@ -1,10 +1,18 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const FICHA = [
+  ["Madeira (kg)", 4, 12, 4.3, 12.5],
+  ["Tecido (m)", 2, 30, 2, 33],
+  ["Mão de obra (h)", 3, 25, 3.2, 24],
+];
+const PADRAO_UNIT = somar(FICHA.map((l) => (l[1] as number) * (l[2] as number)));
+const REAL_UNIT = somar(FICHA.map((l) => (l[3] as number) * (l[4] as number)));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Custos — Sistemas de Custeio Padrão e Ideal",
   introducao:
-    "O custo padrão é a meta de quanto cada unidade deveria custar. Comparando com o custo real, a empresa descobre onde gastou mais ou menos do que o planejado.",
+    "O custo padrão é a meta de quanto cada unidade deveria custar. Comparando com o custo real, a empresa descobre onde gastou mais ou menos do que o planejado. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     associar({
       id: "conceitos",
@@ -40,19 +48,6 @@ const atividade: AtividadeAutocorrigida = {
       correta: 1,
       explicacao: "Gastar mais que o padrão reduz o lucro: variação desfavorável. Gastar menos seria favorável.",
     }),
-    escolha({
-      id: "analise",
-      titulo: "Descobrindo a causa",
-      instrucao: "Uma variação de custo de material pode vir de duas causas principais. Quais são?",
-      opcoes: [
-        "Mudança de preço do material (preço) e consumo diferente do previsto (quantidade).",
-        "A cor da embalagem e o nome do cliente.",
-        "O horário do café e o tamanho da sala.",
-        "Apenas erro de digitação.",
-      ],
-      correta: 0,
-      explicacao: "Separar preço e quantidade mostra se o problema está em comprar caro ou em desperdiçar.",
-    }),
     resposta({
       id: "medida",
       titulo: "O que fazer com a variação",
@@ -60,6 +55,31 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Sua resposta",
       placeholder: "Verificar desperdício, revisar o processo, treinar a equipe, checar a qualidade do material...",
       chave: /(desperd|treina|process|revis|qualidade|m[aá]quina|perda|controle)/i,
+    }),
+    planilha({
+      id: "ficha-padrao",
+      titulo: "Planilha: ficha de custo padrão x real de uma poltrona",
+      cenario: "A ficha mostra a quantidade e o preço padrão de cada insumo por poltrona, e o que de fato foi consumido e pago. Foram produzidas 1.000 poltronas no mês. Cole a planilha no Excel e resolva (variação de preço = (preço real − preço padrão) × quantidade real × produção; variação de quantidade = (quantidade real − quantidade padrão) × preço padrão × produção).",
+      colunas: ["Insumo", "Qtd padrão", "Preço padrão (R$)", "Qtd real", "Preço real (R$)"],
+      linhas: FICHA,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "padrao-unit", rotulo: "Custo padrão por poltrona (R$)", valor: PADRAO_UNIT, explicacao: "4×12 + 2×30 + 3×25 = 48 + 60 + 75 = 183." },
+        { id: "real-unit", rotulo: "Custo real por poltrona (R$)", valor: REAL_UNIT, explicacao: "4,3×12,5 + 2×33 + 3,2×24 = 53,75 + 66 + 76,80 = 196,55." },
+        { id: "var-preco-madeira", rotulo: "Variação de preço da madeira no mês (R$)", valor: (12.5 - 12) * 4.3 * 1000, explicacao: "0,50 × 4,3 × 1.000 = 2.150, desfavorável." },
+        { id: "var-qtd-madeira", rotulo: "Variação de quantidade da madeira no mês (R$)", valor: (4.3 - 4) * 12 * 1000, explicacao: "0,3 × 12 × 1.000 = 3.600, desfavorável." },
+      ],
+    }),
+    dissertativa({
+      id: "causas-variacoes",
+      titulo: "Causas e providências",
+      instrucao: "Escreva o relatório de variações do mês para a gerência de produção.",
+      deve: [
+        "Resuma a variação total e diga quais insumos foram favoráveis e desfavoráveis (note que a mão de obra teve preço real menor que o padrão).",
+        "Levante uma causa provável para o consumo maior de madeira e uma para o preço maior do tecido.",
+        "Proponha duas providências e como você verificaria se funcionaram.",
+      ],
+      chave: /(vari[aá]ç|desfavor|favor|madeira|tecido|causa|desperd|prov[ie]d|compra|padr[aã]o)/i,
     }),
   ],
 };

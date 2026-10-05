@@ -1,10 +1,18 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { calculo, calculos, escolha } from "../ajudantes";
+import { escolha, calculo, calculos, planilha, dissertativa } from "../ajudantes";
+
+const OPERACOES = [
+  ["Aplicação em CDB", 12000, 14.4, 90],
+  ["Empréstimo ao fornecedor", 8000, 24, 150],
+  ["Desconto de duplicata", 15000, 30, 60],
+  ["Aplicação de curto prazo", 5000, 12, 45],
+];
+const J = (l: (string | number)[]) => ((l[1] as number) * (l[2] as number) * (l[3] as number)) / 36000;
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Matemática Financeira — Juros Simples",
   introducao:
-    "No regime de juros simples, a taxa incide sempre sobre o capital inicial. Calcule juros, montantes, taxas e prazos e converta taxas em dias.",
+    "No regime de juros simples, a taxa incide sempre sobre o capital inicial. Calcule juros, montantes, taxas e prazos e converta taxas em dias. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "formula",
@@ -65,6 +73,31 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Taxa ao mês (%)",
       esperado: 2,
       explicacao: "24% ÷ 12 meses = 2% ao mês.",
+    }),
+    planilha({
+      id: "operacoes-juros-simples",
+      titulo: "Planilha: quatro operações em juros simples",
+      cenario: "Uma empresa tem quatro operações financeiras em juros simples, com taxa ao ano e prazo em dias (ano comercial de 360 dias). Juros = capital × taxa × dias ÷ 360. Cole a planilha no Excel e resolva.",
+      colunas: ["Operação", "Capital (R$)", "Taxa ao ano (%)", "Prazo (dias)"],
+      linhas: OPERACOES,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "juros-cdb", rotulo: "Juros da aplicação em CDB (R$)", valor: J(OPERACOES[0]), explicacao: "12.000 × 14,4% × 90 ÷ 360 = 432." },
+        { id: "juros-fornecedor", rotulo: "Juros do empréstimo ao fornecedor (R$)", valor: J(OPERACOES[1]), explicacao: "8.000 × 24% × 150 ÷ 360 = 800." },
+        { id: "montante-duplicata", rotulo: "Montante da operação de desconto de duplicata (R$)", valor: 15000 + J(OPERACOES[2]), explicacao: "15.000 + 15.000 × 30% × 60 ÷ 360 = 15.750." },
+        { id: "taxa-mensal", rotulo: "Taxa mensal proporcional do empréstimo ao fornecedor (%)", valor: 24 / 12, explicacao: "24% ao ano ÷ 12 = 2% ao mês." },
+      ],
+    }),
+    dissertativa({
+      id: "juros-simples-na-pratica",
+      titulo: "Onde os juros simples aparecem",
+      instrucao: "Explique em que situações do dia a dia de uma empresa os juros simples são usados e quais são seus limites.",
+      deve: [
+        "Dê dois exemplos de uso de juros simples (como desconto de duplicatas e juros de mora proporcionais).",
+        "Explique a conversão entre taxa ao ano, ao mês e ao dia, e a diferença entre ano comercial e ano civil.",
+        "Diga por que, em prazos longos, os juros simples deixam de representar bem o que acontece com o dinheiro.",
+      ],
+      chave: /(simples|desconto|mora|proporcional|ano comercial|360|prazo|composto|dias)/i,
     }),
   ],
 };

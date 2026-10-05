@@ -1,10 +1,18 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const POSTS = [
+  ["Bastidores da padaria", 4200, 310, 42, 18, 95],
+  ["Promoção do pão de queijo", 9800, 520, 88, 140, 410],
+  ["Dica de receita", 6100, 480, 73, 66, 150],
+  ["Enquete: qual sabor?", 3300, 150, 190, 12, 60],
+];
+const INTERACOES = POSTS.map((l) => (l[2] as number) + (l[3] as number) + (l[4] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Internet — Redes Sociais, Marketing Social Digital e Estratégia",
   introducao:
-    "Redes sociais são canais de relacionamento e vendas. Entenda a diferença entre rede e mídia social, monte uma estratégia e meça resultados com números.",
+    "Redes sociais são canais de relacionamento e vendas. Entenda a diferença entre rede e mídia social, monte uma estratégia e meça resultados com números. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "rede-midia",
@@ -31,19 +39,6 @@ const atividade: AtividadeAutocorrigida = {
       ],
       explicacao: "Cada plataforma tem público e formato próprios: a estratégia deve se adaptar a eles.",
     }),
-    escolha({
-      id: "publico",
-      titulo: "O primeiro passo da estratégia",
-      instrucao: "Antes de publicar, o que a empresa deve definir primeiro?",
-      opcoes: [
-        "O horário do café da equipe.",
-        "O objetivo e o público-alvo.",
-        "A cor do logotipo do concorrente.",
-        "O número de hashtags por post.",
-      ],
-      correta: 1,
-      explicacao: "Sem objetivo e público definidos, o conteúdo fica solto e os resultados não podem ser medidos.",
-    }),
     calculos({
       id: "metricas",
       titulo: "Medindo resultados",
@@ -55,19 +50,6 @@ const atividade: AtividadeAutocorrigida = {
         { id: "ctr", rotulo: "CTR (%)", esperado: 3, explicacao: "150 ÷ 5.000 = 0,03, ou 3%." },
       ],
     }),
-    escolha({
-      id: "conteudo",
-      titulo: "Conteúdo que gera relacionamento",
-      instrucao: "Qual prática ajuda mais a construir uma relação com o público?",
-      opcoes: [
-        "Publicar só ofertas de venda, todos os dias.",
-        "Misturar conteúdo útil, bastidores e ofertas, respondendo comentários e mensagens.",
-        "Nunca responder ninguém.",
-        "Copiar publicações de concorrentes.",
-      ],
-      correta: 1,
-      explicacao: "Quem só vende cansa o público. Valor, constância e conversa constroem confiança.",
-    }),
     resposta({
       id: "plano",
       titulo: "Plano de publicações",
@@ -76,7 +58,32 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Seu plano",
       placeholder: "Objetivo: ... Público: ... Posts: 1) ... 2) ... 3) ...",
       chave: /(objetivo|p[uú]blico|post|foto|v[ií]deo|promo)/i,
-      minPalavras: 12,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "desempenho-posts",
+      titulo: "Planilha: desempenho de quatro publicações",
+      cenario: "Uma padaria acompanha as publicações da semana. Interações = curtidas + comentários + compartilhamentos; engajamento = interações ÷ alcance. Cole a planilha no Excel e resolva.",
+      colunas: ["Publicação", "Alcance", "Curtidas", "Comentários", "Compartilhamentos", "Cliques no link"],
+      linhas: POSTS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "interacoes-promo", rotulo: "Interações da publicação de promoção", valor: INTERACOES[1], explicacao: "520 + 88 + 140 = 748.", tolerancia: 0 },
+        { id: "engajamento-enquete", rotulo: "Engajamento da enquete (%)", valor: (INTERACOES[3] / 3300) * 100, explicacao: "(150 + 190 + 12) ÷ 3.300 × 100." },
+        { id: "engajamento-geral", rotulo: "Engajamento geral das quatro publicações (%)", valor: (somar(INTERACOES) / somar(POSTS.map((l) => l[1] as number))) * 100, explicacao: "Total de interações ÷ alcance total × 100." },
+        { id: "ctr-promo", rotulo: "Cliques ÷ alcance da promoção (%)", valor: (410 / 9800) * 100, explicacao: "410 ÷ 9.800 × 100 ≈ 4,18%." },
+      ],
+    }),
+    dissertativa({
+      id: "calendario-semana",
+      titulo: "Plano de conteúdo da próxima semana",
+      instrucao: "Com base nos números, escreva o plano de publicações da próxima semana para a padaria.",
+      deve: [
+        "Diga qual tipo de publicação rendeu mais alcance, mais engajamento e mais cliques, e por quê.",
+        "Proponha três publicações para a semana, com objetivo e público de cada uma.",
+        "Defina duas métricas que acompanharia para saber se o plano funcionou.",
+      ],
+      chave: /(alcance|engaj|clique|objetivo|p[uú]blico|m[eé]trica|promo|conte[uú]do)/i,
     }),
   ],
 };

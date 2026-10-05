@@ -1,10 +1,15 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa } from "../ajudantes";
+
+const ANTES_DEPOIS = [
+  ["Antes das extensões", 40000, 800, 960, 40],
+  ["Depois das extensões", 40000, 1080, 1188, 63],
+];
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Google Ads — Extensões de Anúncio e Sitelinks",
   introducao:
-    "Extensões acrescentam informação ao anúncio — telefone, endereço, links extras — sem custo adicional por si só. Veja quais usar e como medir o ganho.",
+    "Extensões acrescentam informação ao anúncio — telefone, endereço, links extras — sem custo adicional por si só. Veja quais usar e como medir o ganho. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "por-que",
@@ -43,19 +48,6 @@ const atividade: AtividadeAutocorrigida = {
         { id: "aumento", rotulo: "Aumento relativo (%)", esperado: 30, explicacao: "(2,6 − 2,0) ÷ 2,0 = 0,30, ou 30% a mais." },
       ],
     }),
-    escolha({
-      id: "sitelink-boa-pratica",
-      titulo: "Boa prática com sitelinks",
-      instrucao: "Qual é a melhor prática ao criar sitelinks?",
-      opcoes: [
-        "Usar textos curtos e claros, levando a páginas diferentes e relevantes.",
-        "Repetir o mesmo link quatro vezes.",
-        "Levar todos os links para a página inicial.",
-        "Usar textos longos e vagos, como «clique aqui».",
-      ],
-      correta: 0,
-      explicacao: "Cada sitelink deve oferecer um caminho útil e específico.",
-    }),
     resposta({
       id: "escolher-extensoes",
       titulo: "Escolha as extensões",
@@ -64,7 +56,33 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Sua escolha",
       placeholder: "Chamada: telefone de pedidos. Local: endereço do salão. Sitelinks: cardápio, promoções...",
       chave: /(chamada|telefone|local|endere[cç]o|sitelink|cardápio|card[aá]pio|frase)/i,
-      minPalavras: 8,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "antes-depois",
+      titulo: "Planilha: o efeito das extensões de anúncio",
+      cenario: "Uma loja comparou o mês anterior, sem extensões, com o mês seguinte, depois de acrescentar sitelinks, chamada e local. Cole a planilha no Excel e resolva.",
+      colunas: ["Período", "Impressões", "Cliques", "Custo (R$)", "Conversões"],
+      linhas: ANTES_DEPOIS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "ctr-antes", rotulo: "CTR antes (%)", valor: (800 / 40000) * 100, explicacao: "800 ÷ 40.000 × 100 = 2%." },
+        { id: "ctr-depois", rotulo: "CTR depois (%)", valor: (1080 / 40000) * 100, explicacao: "1.080 ÷ 40.000 × 100 = 2,7%." },
+        { id: "ganho-ctr", rotulo: "Aumento relativo do CTR (%)", valor: ((1080 / 40000 - 800 / 40000) / (800 / 40000)) * 100, explicacao: "(2,7 − 2,0) ÷ 2,0 × 100 = 35%." },
+        { id: "cpa-antes-depois", rotulo: "Redução do CPA (R$, antes menos depois)", valor: 960 / 40 - 1188 / 63, explicacao: "CPA antes = 960 ÷ 40 = 24; depois = 1.188 ÷ 63 ≈ 18,86." },
+      ],
+    }),
+    dissertativa({
+      id: "extensoes-loja",
+      titulo: "Planeje as extensões",
+      cenario: "Uma loja de eletrodomésticos com entrega rápida e retirada na loja quer melhorar os anúncios de pesquisa.",
+      instrucao: "Escreva o plano de extensões para essa loja.",
+      deve: [
+        "Escolha ao menos quatro extensões e diga o que colocaria em cada uma (links, telefone, endereço, destaques).",
+        "Explique como cada extensão ajuda o cliente a decidir.",
+        "Diga como compararia o antes e o depois, usando CTR e CPA.",
+      ],
+      chave: /(sitelink|chamada|telefone|local|endere[cç]o|destaque|ctr|cpa|extens)/i,
     }),
   ],
 };

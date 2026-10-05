@@ -1,10 +1,21 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculo, escolha, resposta } from "../ajudantes";
+import { escolha, calculo, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const CONTAS = [
+  ["E-mail corporativo", 420, "Não", "Sim"],
+  ["Internet banking", 35, "Sim", "Não"],
+  ["Sistema de vendas", 210, "Não", "Não"],
+  ["Redes sociais da empresa", 600, "Não", "Sim"],
+  ["Nuvem de arquivos", 90, "Sim", "Não"],
+  ["Site de fornecedor", 365, "Não", "Sim"],
+  ["Plataforma de anúncios", 150, "Sim", "Não"],
+  ["Folha de pagamento", 28, "Sim", "Não"],
+];
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Internet — A Internet e a Segurança da Informação",
   introducao:
-    "Golpes, senhas fracas e links falsos são as principais portas de entrada de problemas. Aprenda a reconhecer riscos e a se proteger.",
+    "Golpes, senhas fracas e links falsos são as principais portas de entrada de problemas. Aprenda a reconhecer riscos e a se proteger. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "phishing",
@@ -32,14 +43,6 @@ const atividade: AtividadeAutocorrigida = {
       ],
       explicacao: "Conhecer o tipo da ameaça ajuda a escolher a defesa: atenção, antivírus atualizado e backup.",
     }),
-    escolha({
-      id: "senha-forte",
-      titulo: "Senha forte",
-      instrucao: "Qual senha é a mais segura?",
-      opcoes: ["123456", "maria1990", "Ceu#Azul!Cafe_47", "senha"],
-      correta: 2,
-      explicacao: "Senhas longas, com letras maiúsculas e minúsculas, números e símbolos, sem dados pessoais, são difíceis de adivinhar.",
-    }),
     calculo({
       id: "combinacoes",
       titulo: "Por que senha curta é fraca",
@@ -50,19 +53,6 @@ const atividade: AtividadeAutocorrigida = {
       tolerancia: 0,
       explicacao: "10 possibilidades para cada um dos 4 dígitos: 10⁴ = 10.000. Cada caractere a mais multiplica esse número.",
     }),
-    escolha({
-      id: "https",
-      titulo: "Site seguro",
-      instrucao: "O que o cadeado e o «https://» no endereço indicam?",
-      opcoes: [
-        "Que o site é sempre confiável e livre de golpes.",
-        "Que a conexão com o site é criptografada, mas o site ainda precisa ser conferido.",
-        "Que o site é do governo.",
-        "Que o site não usa cookies.",
-      ],
-      correta: 1,
-      explicacao: "O https protege o trajeto dos dados. Um site falso também pode ter cadeado: confira sempre o endereço.",
-    }),
     resposta({
       id: "backup-lgpd",
       titulo: "Backup e proteção de dados",
@@ -70,6 +60,31 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Sua explicação",
       placeholder: "Ex.: O backup permite recuperar arquivos após falha ou sequestro, e a LGPD exige proteger dados pessoais...",
       chave: /(backup|c[oó]pia|recuper|perda|lgpd|dados pessoais|privacidade|vazamento|prote)/i,
+    }),
+    planilha({
+      id: "auditoria-contas",
+      titulo: "Planilha: auditoria das contas da empresa",
+      cenario: "O responsável pela segurança levantou o estado das contas on-line da empresa. Cole a planilha no Excel e use CONT.SE e MÉDIA para resolver.",
+      colunas: ["Conta", "Dias desde a última troca de senha", "Verificação em duas etapas", "Senha repetida em outro serviço"],
+      linhas: CONTAS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "sem-2fa", rotulo: "Quantidade de contas SEM verificação em duas etapas", valor: CONTAS.filter((l) => l[2] === "Não").length, explicacao: "Conte as linhas com Não na coluna de verificação em duas etapas.", tolerancia: 0 },
+        { id: "media-dias", rotulo: "Média de dias desde a troca de senha", valor: somar(CONTAS.map((l) => l[1] as number)) / CONTAS.length, explicacao: "Soma dos dias ÷ 8 contas." },
+        { id: "repetidas", rotulo: "Percentual de contas com senha repetida (%)", valor: (CONTAS.filter((l) => l[3] === "Sim").length / CONTAS.length) * 100, explicacao: "4 contas com senha repetida ÷ 8 × 100 = 50%." },
+        { id: "criticas", rotulo: "Contas sem verificação em duas etapas E com senha repetida", valor: CONTAS.filter((l) => l[2] === "Não" && l[3] === "Sim").length, explicacao: "Essas são as mais expostas: nenhuma segunda barreira e uma senha que pode ter vazado em outro lugar.", tolerancia: 0 },
+      ],
+    }),
+    dissertativa({
+      id: "plano-de-correcao",
+      titulo: "Plano de correção",
+      instrucao: "Escreva o plano que você apresentaria à diretoria para corrigir os problemas encontrados na auditoria.",
+      deve: [
+        "Diga quais contas corrigiria primeiro e por quê.",
+        "Explique as medidas: senhas únicas e fortes, gerenciador de senhas, verificação em duas etapas.",
+        "Descreva como treinaria a equipe a reconhecer um e-mail de phishing.",
+      ],
+      chave: /(senha|duas etapas|2fa|phishing|treina|prioridade|banc|gerenciador)/i,
     }),
   ],
 };

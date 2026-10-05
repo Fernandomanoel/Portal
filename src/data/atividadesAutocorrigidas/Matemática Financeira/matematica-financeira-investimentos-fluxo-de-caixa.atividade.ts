@@ -1,10 +1,20 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const FLUXO = [
+  [0, -50000, -50000],
+  [1, 15000, 28000],
+  [2, 18000, 22000],
+  [3, 20000, 12000],
+  [4, 22000, 8000],
+];
+const TMA = 0.12;
+const vpl = (col: number) => somar(FLUXO.map((l) => (l[col] as number) / (1 + TMA) ** (l[0] as number)));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Matemática Financeira — Investimentos, Fluxo de Caixa, VPL, TIR e Payback",
   introducao:
-    "Para decidir se um investimento vale a pena, a empresa projeta o fluxo de caixa e o traz a valor presente. Calcule o saldo de caixa, o VPL e o payback e interprete a TIR.",
+    "Para decidir se um investimento vale a pena, a empresa projeta o fluxo de caixa e o traz a valor presente. Calcule o saldo de caixa, o VPL e o payback e interprete a TIR. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     calculos({
       id: "fluxo-caixa",
@@ -34,20 +44,6 @@ const atividade: AtividadeAutocorrigida = {
       opcoes: ["Aceitar o projeto, pois ele cria valor acima do exigido.", "Rejeitar o projeto.", "Esperar sem fazer nada.", "O VPL não serve para decidir."],
       correta: 0,
       explicacao: "VPL positivo: o projeto rende mais do que a taxa mínima exigida; VPL negativo: rende menos.",
-    }),
-    escolha({
-      id: "tir",
-      titulo: "Interpretando a TIR",
-      cenario: "No projeto anterior o VPL a 10% ao ano é positivo.",
-      instrucao: "O que isso diz sobre a taxa interna de retorno (TIR)?",
-      opcoes: [
-        "A TIR é menor que 10%.",
-        "A TIR é maior que 10%: a taxa que zera o VPL fica acima da exigida.",
-        "A TIR é exatamente zero.",
-        "Não há relação.",
-      ],
-      correta: 1,
-      explicacao: "A TIR é a taxa que torna o VPL igual a zero. Se o VPL é positivo a 10%, a TIR passa de 10% (neste caso, cerca de 13%).",
     }),
     calculos({
       id: "payback",
@@ -82,6 +78,32 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Sua explicação",
       placeholder: "O payback simples ignora o valor do dinheiro no tempo e o que acontece depois de recuperado...",
       chave: /(tempo|valor|ignora|depois|taxa|lucro|futuro|desconta)/i,
+    }),
+    planilha({
+      id: "dois-projetos",
+      titulo: "Planilha: fluxo de caixa de dois projetos",
+      cenario: "Uma empresa tem dinheiro para um só dos dois projetos. O investimento inicial (ano 0) é o mesmo e a taxa mínima de atratividade é 12% ao ano. VPL = soma de cada fluxo ÷ (1,12)^ano. Cole a planilha no Excel e use a função VPL ou divida cada fluxo pelo fator do ano.",
+      colunas: ["Ano", "Projeto A (R$)", "Projeto B (R$)"],
+      linhas: FLUXO,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "vpl-a", rotulo: "VPL do projeto A (R$)", valor: vpl(1), explicacao: "Soma dos fluxos do projeto A trazidos a valor presente a 12% ao ano.", tolerancia: 1 },
+        { id: "vpl-b", rotulo: "VPL do projeto B (R$)", valor: vpl(2), explicacao: "Soma dos fluxos do projeto B trazidos a valor presente a 12% ao ano.", tolerancia: 1 },
+        { id: "payback-a", rotulo: "Payback simples do projeto A (anos, com decimais)", valor: 2 + (50000 - 33000) / 20000, explicacao: "Acumulado: 15.000, 33.000, 53.000. Falta 17.000 no ano 3: 2 + 17.000 ÷ 20.000 = 2,85.", tolerancia: 0.02 },
+        { id: "payback-b", rotulo: "Payback simples do projeto B (anos)", valor: 2, explicacao: "28.000 + 22.000 = 50.000 já no fim do ano 2.", tolerancia: 0.02 },
+      ],
+    }),
+    dissertativa({
+      id: "escolha-do-projeto",
+      titulo: "Qual projeto escolher",
+      instrucao: "Escreva o parecer que recomenda um dos projetos à diretoria.",
+      deve: [
+        "Compare o VPL e o payback dos dois projetos e diga se os indicadores apontam para o mesmo projeto.",
+        "Explique o que o payback não mostra (valor do dinheiro no tempo e o que vem depois da recuperação).",
+        "Cite um risco ou fator qualitativo que poderia mudar a decisão (incerteza das entradas, necessidade de caixa rápido).",
+      ],
+      chave: /(vpl|payback|tir|projeto|valor presente|risco|caixa|taxa|decis)/i,
+      minPalavras: 35,
     }),
   ],
 };

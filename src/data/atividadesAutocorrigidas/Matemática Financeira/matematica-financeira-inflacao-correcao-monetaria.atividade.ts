@@ -1,10 +1,19 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculo, calculos, escolha } from "../ajudantes";
+import { escolha, calculo, calculos, associar, planilha, dissertativa } from "../ajudantes";
+
+const IPCA = [
+  ["Janeiro", 0.42], ["Fevereiro", 0.83], ["Março", 0.71], ["Abril", 0.38],
+  ["Maio", 0.44], ["Junho", 0.26], ["Julho", 0.3], ["Agosto", 0.19],
+  ["Setembro", 0.4], ["Outubro", 0.44], ["Novembro", 0.39], ["Dezembro", 0.45],
+];
+const acumular = (taxas: number[]) => (taxas.reduce((f, t) => f * (1 + t / 100), 1) - 1) * 100;
+const ANO = acumular(IPCA.map((l) => l[1] as number));
+const SEMESTRE = acumular(IPCA.slice(0, 6).map((l) => l[1] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Matemática Financeira — Taxas de Inflação e Correção Monetária",
   introducao:
-    "A inflação reduz o poder de compra do dinheiro. Calcule a inflação acumulada, corrija valores e descubra o ganho real de um investimento.",
+    "A inflação reduz o poder de compra do dinheiro. Calcule a inflação acumulada, corrija valores e descubra o ganho real de um investimento. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "conceito",
@@ -70,6 +79,31 @@ const atividade: AtividadeAutocorrigida = {
         { id: "inflacao", rotulo: "A variação média dos preços no período.", correta: 2 },
       ],
       explicacao: "Um investimento só aumenta o seu poder de compra se a taxa real for positiva.",
+    }),
+    planilha({
+      id: "inflacao-do-ano",
+      titulo: "Planilha: inflação mensal de um ano (dados ilustrativos)",
+      cenario: "A tabela traz a inflação mensal de um ano, em dados ilustrativos feitos para o treino. A inflação acumulada se calcula multiplicando os fatores (1 + taxa) de cada mês. Cole a planilha no Excel e resolva.",
+      colunas: ["Mês", "Inflação do mês (%)"],
+      linhas: IPCA,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "semestre", rotulo: "Inflação acumulada no primeiro semestre (%)", valor: SEMESTRE, explicacao: "Produto dos fatores de janeiro a junho, menos 1." },
+        { id: "ano", rotulo: "Inflação acumulada no ano (%)", valor: ANO, explicacao: "Produto dos 12 fatores, menos 1." },
+        { id: "aluguel", rotulo: "Novo valor de um aluguel de R$ 2.400,00 corrigido pela inflação do ano (R$)", valor: 2400 * (1 + ANO / 100), explicacao: "2.400 × (1 + inflação acumulada)." },
+        { id: "taxa-real", rotulo: "Ganho real de uma aplicação que rendeu 11% no ano (%)", valor: ((1.11 / (1 + ANO / 100)) - 1) * 100, explicacao: "1,11 ÷ (1 + inflação) − 1." },
+      ],
+    }),
+    dissertativa({
+      id: "inflacao-no-contrato",
+      titulo: "Inflação nos contratos e nas aplicações",
+      instrucao: "Explique como a inflação afeta a empresa e como ela se protege.",
+      deve: [
+        "Diga por que os contratos de aluguel e de serviços costumam ter cláusula de correção por índice.",
+        "Explique a diferença entre taxa nominal e taxa real e por que a segunda importa para quem aplica.",
+        "Dê um exemplo de como a inflação alta aperta o caixa de uma empresa e uma medida de proteção.",
+      ],
+      chave: /(infla|corre[cç][aã]o|[ií]ndice|real|nominal|poder de compra|contrato|caixa|aplica)/i,
     }),
   ],
 };

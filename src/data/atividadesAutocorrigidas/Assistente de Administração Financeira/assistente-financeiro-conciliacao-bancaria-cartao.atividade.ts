@@ -1,10 +1,22 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculo, calculos, escolha } from "../ajudantes";
+import { escolha, calculo, calculos, associar, planilha, dissertativa, somar } from "../ajudantes";
+
+const CONCILIACAO = [
+  ["02/03", "Recebimento cliente Alfa", 4200, 4200],
+  ["03/03", "Pagamento fornecedor Norte", -1850, -1850],
+  ["05/03", "Cheque 1048 — Papelaria", "", -1500],
+  ["07/03", "Depósito de caixa (em trânsito)", "", 2000],
+  ["09/03", "Tarifa de manutenção da conta", -80, ""],
+  ["12/03", "Rendimento da aplicação", 35, ""],
+  ["15/03", "Pagamento salários", -6200, -6200],
+];
+const EXTRATO = somar(CONCILIACAO.map((l) => (l[2] as number) || 0));
+const LIVRO = somar(CONCILIACAO.map((l) => (l[3] as number) || 0));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Administração Financeira — Conciliação Bancária e Fatura de Cartão",
   introducao:
-    "Conciliar é conferir se o controle interno da empresa bate com o extrato do banco e com a fatura do cartão. Monte a conciliação, classifique as diferenças e investigue o que não confere.",
+    "Conciliar é conferir se o controle interno da empresa bate com o extrato do banco e com a fatura do cartão. Monte a conciliação, classifique as diferenças e investigue o que não confere. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "conceito",
@@ -52,18 +64,40 @@ const atividade: AtividadeAutocorrigida = {
       esperado: 200,
       explicacao: "3.250 − 3.050 = 200. Há compras na fatura sem registro interno, ou valores lançados errado.",
     }),
-    escolha({
-      id: "compra-desconhecida",
-      titulo: "Compra que ninguém reconhece",
-      instrucao: "Na fatura aparece uma compra de R$ 200,00 que ninguém da empresa reconhece. Qual é a atitude correta?",
-      opcoes: [
-        "Pagar a fatura e esquecer o assunto.",
-        "Verificar com os portadores dos cartões e, se não for reconhecida, contestar com a administradora do cartão dentro do prazo.",
-        "Lançar o valor como despesa diversa sem investigar.",
-        "Cancelar todos os cartões imediatamente sem conferir nada.",
+    planilha({
+      id: "extrato-x-livro",
+      titulo: "Planilha: extrato bancário x controle da empresa",
+      cenario: "Compare o que o banco registrou (extrato) com o que a empresa lançou (livro). Células vazias significam que o lançamento não aparece naquele lado. Cole a planilha no Excel para somar as colunas.",
+      colunas: ["Data", "Descrição", "Extrato (R$)", "Livro (R$)"],
+      linhas: CONCILIACAO,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "total-extrato", rotulo: "Movimento líquido no extrato (R$)", valor: EXTRATO, explicacao: "Soma da coluna Extrato." },
+        { id: "total-livro", rotulo: "Movimento líquido no livro (R$)", valor: LIVRO, explicacao: "Soma da coluna Livro." },
+        { id: "diferenca", rotulo: "Diferença entre os dois lados (R$, extrato menos livro)", valor: EXTRATO - LIVRO, explicacao: "É o valor que a conciliação precisa explicar linha a linha." },
       ],
-      correta: 1,
-      explicacao: "Primeiro se confirma internamente; compra não reconhecida deve ser contestada com a administradora e pode indicar fraude.",
+    }),
+    dissertativa({
+      id: "explicar-diferencas",
+      titulo: "Explicando cada diferença",
+      instrucao: "Escreva a nota de conciliação que explica cada lançamento que não bate entre extrato e livro.",
+      deve: [
+        "Explique o cheque 1048 e o depósito em trânsito: de que lado aparecem e quando serão compensados.",
+        "Explique a tarifa e o rendimento: quem precisa lançar e em qual conta.",
+        "Diga como ficam os saldos depois dos ajustes e como comprovar que fecham.",
+      ],
+      chave: /(cheque|dep[oó]sito|tarifa|rendimento|lan[cç]ar|ajust|saldo|compens)/i,
+    }),
+    dissertativa({
+      id: "investigar-fatura",
+      titulo: "Fatura do cartão corporativo",
+      instrucao: "A fatura veio R$ 200,00 maior que o controle interno. Descreva como você investigaria e resolveria a diferença.",
+      deve: [
+        "Diga como compararia a fatura com os comprovantes e as notas de despesa.",
+        "Explique o que faria com uma compra não reconhecida (contestação, prazo, comunicação).",
+        "Cite a ação para evitar que a diferença se repita no próximo mês.",
+      ],
+      chave: /(compar|comprovante|contest|administradora|fraude|portador|lan[cç]amento|prazo)/i,
     }),
   ],
 };

@@ -1,10 +1,21 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { calculo, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculo, calculos, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const TITULOS = [
+  ["Cliente Alfa", 4200, 12],
+  ["Cliente Beta", 1800, 35],
+  ["Cliente Gama", 950, 5],
+  ["Cliente Delta", 6400, 48],
+  ["Cliente Épsilon", 2300, 22],
+  ["Cliente Zeta", 3100, 70],
+];
+const ATRASO = (l: (string | number)[]) => l[2] as number;
+const MULTA_JUROS = (l: (string | number)[]) => (l[1] as number) * (0.02 + (0.01 / 30) * ATRASO(l));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Administração Financeira — Contas a Pagar e a Receber",
   introducao:
-    "O dia a dia do assistente financeiro gira em torno do que a empresa deve pagar e do que tem a receber. Pratique o fluxo de pagamento, o cálculo de atraso e a leitura de uma carteira de recebíveis.",
+    "O dia a dia do assistente financeiro gira em torno do que a empresa deve pagar e do que tem a receber. Pratique o fluxo de pagamento, o cálculo de atraso e a leitura de uma carteira de recebíveis. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "fluxo-pagar",
@@ -50,27 +61,6 @@ const atividade: AtividadeAutocorrigida = {
       esperado: 5900,
       explicacao: "1.200 + 3.800 + 900 = 5.900. O Cliente A ainda está dentro do prazo.",
     }),
-    escolha({
-      id: "prioridade-cobranca",
-      titulo: "Quem cobrar primeiro",
-      instrucao: "Na tabela anterior, qual cliente merece a ação de cobrança mais urgente?",
-      opcoes: ["Cliente A, por ter o maior valor.", "Cliente B.", "Cliente C, pelo valor alto e pelo maior atraso.", "Cliente D."],
-      correta: 2,
-      explicacao: "Valor alto e 40 dias de atraso combinam risco e impacto no caixa: é o primeiro a ser contatado.",
-    }),
-    escolha({
-      id: "baixa",
-      titulo: "O que é dar baixa",
-      instrucao: "O que significa dar baixa em um título de contas a receber?",
-      opcoes: [
-        "Cancelar a venda.",
-        "Registrar que o título foi liquidado, retirando-o da lista de valores em aberto.",
-        "Reduzir o preço para o cliente.",
-        "Enviar o título para cobrança judicial.",
-      ],
-      correta: 1,
-      explicacao: "A baixa registra o recebimento e mantém o saldo de contas a receber correto.",
-    }),
     resposta({
       id: "conferir-antes",
       titulo: "Conferir antes de pagar",
@@ -78,6 +68,42 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Sua explicação",
       placeholder: "Ex.: Para não pagar algo que não foi entregue, valor diferente ou duplicado...",
       chave: /(confer|pedido|contrato|duplic|valor|entreg|fraude|erro)/i,
+    }),
+    planilha({
+      id: "aging",
+      titulo: "Planilha: títulos vencidos por cliente (aging)",
+      cenario: "O contas a receber lista os títulos já vencidos, com os dias de atraso. A política cobra multa de 2% e juros de 1% ao mês, proporcionais aos dias. Cole a planilha no Excel e resolva.",
+      colunas: ["Cliente", "Valor (R$)", "Dias de atraso"],
+      linhas: TITULOS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "total-vencido", rotulo: "Total vencido (R$)", valor: somar(TITULOS.map((l) => l[1] as number)), explicacao: "Soma da coluna Valor." },
+        { id: "mais-de-30", rotulo: "Total com mais de 30 dias de atraso (R$)", valor: somar(TITULOS.filter((l) => ATRASO(l) > 30).map((l) => l[1] as number)), explicacao: "Beta, Delta e Zeta passam de 30 dias." },
+        { id: "encargos-delta", rotulo: "Multa + juros devidos pelo Cliente Delta (R$)", valor: MULTA_JUROS(TITULOS[3]), explicacao: "6.400 × (2% + 1% ÷ 30 × 48 dias) = 6.400 × 0,036 = 230,40." },
+        { id: "percentual-critico", rotulo: "Percentual do total vencido que está há mais de 30 dias (%)", valor: (somar(TITULOS.filter((l) => ATRASO(l) > 30).map((l) => l[1] as number)) / somar(TITULOS.map((l) => l[1] as number))) * 100, explicacao: "Total acima de 30 dias ÷ total vencido × 100." },
+      ],
+    }),
+    dissertativa({
+      id: "plano-cobranca",
+      titulo: "Plano de cobrança",
+      instrucao: "Escreva o plano de cobrança da semana a partir da planilha.",
+      deve: [
+        "Diga a ordem em que contataria os clientes e justifique (valor e tempo de atraso).",
+        "Descreva o tom e o canal de cada contato (lembrete amigável, telefone, notificação).",
+        "Explique como registraria o combinado para dar baixa ou renegociar.",
+      ],
+      chave: /(ordem|prioridade|contato|cobran[cç]a|negoci|prazo|registr|cliente)/i,
+    }),
+    dissertativa({
+      id: "controle-pagamentos",
+      titulo: "Evitando pagamento indevido",
+      instrucao: "Descreva o passo a passo que você seguiria para pagar um fornecedor com segurança, da chegada do documento à baixa.",
+      deve: [
+        "Cite a conferência do documento com o pedido ou contrato.",
+        "Explique quem aprova e como o pagamento é agendado.",
+        "Diga como a baixa e o arquivo do comprovante evitam pagamento em duplicidade.",
+      ],
+      chave: /(confer|pedido|contrato|aprova|agend|baixa|comprovante|duplic)/i,
     }),
   ],
 };

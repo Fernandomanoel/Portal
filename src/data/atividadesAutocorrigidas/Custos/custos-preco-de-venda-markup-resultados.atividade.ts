@@ -1,10 +1,17 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, resposta, planilha, dissertativa } from "../ajudantes";
+
+const ITENS = [
+  ["Camiseta", 38, 22, 18],
+  ["Calça", 75, 20, 15],
+  ["Jaqueta", 120, 25, 20],
+];
+const preco = (l: (string | number)[]) => (l[1] as number) / (1 - ((l[2] as number) + (l[3] as number)) / 100);
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Custos — Preço de Venda por Markup e Demonstração de Resultados",
   introducao:
-    "Formar o preço de venda é cobrir o custo, os tributos, as comissões e ainda deixar o lucro desejado. Depois, a demonstração de resultados mostra se deu certo.",
+    "Formar o preço de venda é cobrir o custo, os tributos, as comissões e ainda deixar o lucro desejado. Depois, a demonstração de resultados mostra se deu certo. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "markup",
@@ -54,20 +61,6 @@ const atividade: AtividadeAutocorrigida = {
         { id: "margem", rotulo: "Margem do resultado (%)", esperado: 25, explicacao: "25.000 ÷ 100.000 = 25%." },
       ],
     }),
-    escolha({
-      id: "mercado",
-      titulo: "O preço também depende do mercado",
-      cenario: "O preço calculado pelo markup é maior que o preço que os concorrentes praticam.",
-      instrucao: "O que a empresa deve fazer?",
-      opcoes: [
-        "Cobrar mesmo assim, sem olhar o mercado.",
-        "Rever custos e despesas, o valor percebido e a margem, em vez de apenas copiar o preço do concorrente.",
-        "Baixar o preço para abaixo do custo.",
-        "Parar de vender.",
-      ],
-      correta: 1,
-      explicacao: "O markup mostra o preço necessário; o mercado mostra o preço possível. A diferença é o espaço para melhorar custos ou valor percebido.",
-    }),
     resposta({
       id: "ler-dre",
       titulo: "Interprete a DRE",
@@ -75,7 +68,33 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Sua conclusão",
       placeholder: "O negócio tem margem de 25%... Para melhorar, poderíamos...",
       chave: /(margem|lucro|resultado|custo|despesa|melhor|reduz|aument)/i,
-      minPalavras: 12,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "tabela-de-precos",
+      titulo: "Planilha: formação do preço de venda de três produtos",
+      cenario: "A loja forma o preço pelo markup divisor: preço = custo ÷ (1 − soma dos percentuais sobre o preço). As despesas variáveis (impostos, comissão, taxa de cartão) e o lucro desejado são percentuais do preço de venda. Cole a planilha no Excel e resolva.",
+      colunas: ["Produto", "Custo (R$)", "Despesas variáveis (% do preço)", "Lucro desejado (% do preço)"],
+      linhas: ITENS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "preco-camiseta", rotulo: "Preço de venda da Camiseta (R$)", valor: preco(ITENS[0]), explicacao: "38 ÷ (1 − 0,40) = 38 ÷ 0,60 ≈ 63,33." },
+        { id: "preco-calca", rotulo: "Preço de venda da Calça (R$)", valor: preco(ITENS[1]), explicacao: "75 ÷ 0,65 ≈ 115,38." },
+        { id: "preco-jaqueta", rotulo: "Preço de venda da Jaqueta (R$)", valor: preco(ITENS[2]), explicacao: "120 ÷ 0,55 ≈ 218,18." },
+        { id: "lucro-jaqueta", rotulo: "Lucro em reais por Jaqueta vendida (R$)", valor: preco(ITENS[2]) * 0.2, explicacao: "20% do preço de venda: 218,18 × 0,20 ≈ 43,64." },
+      ],
+    }),
+    dissertativa({
+      id: "preco-x-mercado",
+      titulo: "O preço calculado e o mercado",
+      cenario: "O concorrente vende uma jaqueta parecida por R$ 190,00.",
+      instrucao: "Escreva a decisão da gerência sobre o preço da Jaqueta.",
+      deve: [
+        "Mostre quanto o lucro cairia se a loja vendesse a R$ 190,00 com os mesmos custos e despesas.",
+        "Discuta alternativas para reduzir o custo ou aumentar o valor percebido, em vez de apenas baixar o preço.",
+        "Dê a sua decisão final e o critério que a justifica.",
+      ],
+      chave: /(lucro|margem|custo|pre[cç]o|concorrente|valor|decis|despesa)/i,
     }),
   ],
 };

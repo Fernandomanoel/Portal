@@ -1,10 +1,18 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const RELATORIO = [
+  ["Pesquisa — Serviços", 18000, 720, 648, 36],
+  ["Pesquisa — Marca", 6000, 540, 108, 54],
+  ["Display — Remarketing", 95000, 380, 190, 12],
+  ["Vídeo — Institucional", 120000, 240, 96, 2],
+];
+const col = (i: number) => somar(RELATORIO.map((l) => l[i] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Google Ads — Cliques Qualificados e Análise das Métricas",
   introducao:
-    "Não basta ter cliques: é preciso ter cliques de quem realmente pode comprar. Aprenda as métricas principais e calcule indicadores a partir de um relatório.",
+    "Não basta ter cliques: é preciso ter cliques de quem realmente pode comprar. Aprenda as métricas principais e calcule indicadores a partir de um relatório. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "qualificado",
@@ -49,20 +57,6 @@ const atividade: AtividadeAutocorrigida = {
         { id: "cpa", rotulo: "Custo por conversão (R$)", esperado: 18, explicacao: "540 ÷ 30 = 18." },
       ],
     }),
-    escolha({
-      id: "diagnostico",
-      titulo: "Diagnosticando o problema",
-      cenario: "Uma campanha tem CTR alto (6%), mas quase nenhuma conversão.",
-      instrucao: "Qual é a hipótese mais provável?",
-      opcoes: [
-        "O anúncio atrai cliques, mas a página de destino ou a oferta não convence quem chega.",
-        "O anúncio não aparece para ninguém.",
-        "O orçamento é infinito.",
-        "O Google bloqueou a conta.",
-      ],
-      correta: 0,
-      explicacao: "Quando o anúncio atrai, mas não converte, o problema costuma estar depois do clique: página, preço, formulário ou oferta.",
-    }),
     resposta({
       id: "acao",
       titulo: "Qual decisão tomar",
@@ -70,7 +64,32 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Sua análise",
       placeholder: "Preciso comparar o CPA com a margem de lucro do produto...",
       chave: /(lucro|margem|valor|pre[cç]o|venda|retorno|custo)/i,
-      minPalavras: 10,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "relatorio-mensal",
+      titulo: "Planilha: relatório mensal das campanhas",
+      cenario: "O relatório do mês traz as quatro campanhas da conta. Cole a planilha no Excel e crie as colunas CTR, CPC, taxa de conversão e CPA.",
+      colunas: ["Campanha", "Impressões", "Cliques", "Custo (R$)", "Conversões"],
+      linhas: RELATORIO,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "ctr-geral", rotulo: "CTR geral da conta (%)", valor: (col(2) / col(1)) * 100, explicacao: "Cliques totais ÷ impressões totais × 100." },
+        { id: "cpc-geral", rotulo: "CPC médio da conta (R$)", valor: col(3) / col(2), explicacao: "Custo total ÷ cliques totais." },
+        { id: "cpa-marca", rotulo: "CPA da campanha Pesquisa — Marca (R$)", valor: 108 / 54, explicacao: "Custo ÷ conversões = 108 ÷ 54 = 2,00." },
+        { id: "conversao-servicos", rotulo: "Taxa de conversão da Pesquisa — Serviços (%)", valor: (36 / 720) * 100, explicacao: "36 ÷ 720 × 100 = 5%." },
+      ],
+    }),
+    dissertativa({
+      id: "diagnostico-campanhas",
+      titulo: "Diagnóstico das campanhas",
+      instrucao: "Escreva o diagnóstico do mês para o gestor da loja.",
+      deve: [
+        "Diga qual campanha tem melhor e pior custo por conversão e comente por que a de marca costuma ser tão barata.",
+        "Explique por que display e vídeo têm CTR baixo e se isso é um problema.",
+        "Proponha uma realocação de verba e uma ação para melhorar a conversão da pior campanha.",
+      ],
+      chave: /(cpa|convers|ctr|marca|display|v[ií]deo|verba|realoca|melhor|pior)/i,
     }),
   ],
 };

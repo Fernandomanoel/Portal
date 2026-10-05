@@ -1,10 +1,21 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa } from "../ajudantes";
+
+const PROPOSTAS = [
+  ["Banco Aurora", 30000, 1.8, 12],
+  ["Banco Brasil Sul", 30000, 1.5, 18],
+  ["Cooperativa Vale", 30000, 1.65, 24],
+];
+const PARCELA = (l: (string | number)[]) => {
+  const [, pv, i, n] = l as [string, number, number, number];
+  const t = i / 100;
+  return (pv * t) / (1 - (1 + t) ** -n);
+};
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Administração Financeira — Empréstimos, Financiamentos e Segurança da Informação",
   introducao:
-    "Entenda a diferença entre empréstimo e financiamento, calcule as primeiras parcelas de um financiamento pelo sistema SAC e veja os cuidados de segurança em operações financeiras.",
+    "Entenda a diferença entre empréstimo e financiamento, calcule as primeiras parcelas de um financiamento pelo sistema SAC e veja os cuidados de segurança em operações financeiras. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "emprestimo-financiamento",
@@ -31,14 +42,6 @@ const atividade: AtividadeAutocorrigida = {
         { id: "parcela-2", rotulo: "2ª parcela (R$)", esperado: 3180, explicacao: "Saldo de 9.000; juros 2% = 180; 3.000 + 180 = 3.180. No SAC as parcelas diminuem." },
       ],
     }),
-    escolha({
-      id: "comparar-custo",
-      titulo: "Olhar o custo total",
-      instrucao: "Ao comparar propostas de crédito, qual indicador mostra o custo real, com juros, tarifas e seguros?",
-      opcoes: ["Só a taxa de juros mensal.", "O valor da primeira parcela.", "O Custo Efetivo Total (CET).", "O nome do banco."],
-      correta: 2,
-      explicacao: "O CET reúne juros, tarifas, tributos e seguros: é a forma justa de comparar propostas.",
-    }),
     associar({
       id: "seguranca",
       titulo: "Atitude segura ou arriscada",
@@ -59,6 +62,31 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Cuidados",
       placeholder: "Ex.: Não acessar de computador público e ativar a autenticação em dois fatores...",
       chave: /(senha|token|dois fatores|autentic|link|phishing|golpe|computador|rede|confirm|e-?mail)/i,
+    }),
+    planilha({
+      id: "propostas-credito",
+      titulo: "Planilha: três propostas de financiamento",
+      cenario: "A empresa recebeu três propostas para financiar R$ 30.000,00 pela tabela Price (parcelas iguais). Cole a planilha no Excel e use a função PGTO (=PGTO(taxa; meses; -valor)) para achar a parcela.",
+      colunas: ["Instituição", "Valor (R$)", "Taxa ao mês (%)", "Parcelas"],
+      linhas: PROPOSTAS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "parcela-aurora", rotulo: "Parcela do Banco Aurora (R$)", valor: PARCELA(PROPOSTAS[0]), explicacao: "PGTO com 1,8% ao mês, 12 parcelas e valor de 30.000.", tolerancia: 0.05 },
+        { id: "parcela-vale", rotulo: "Parcela da Cooperativa Vale (R$)", valor: PARCELA(PROPOSTAS[2]), explicacao: "PGTO com 1,65% ao mês, 24 parcelas e valor de 30.000.", tolerancia: 0.05 },
+        { id: "total-brasil-sul", rotulo: "Total pago ao Banco Brasil Sul (R$)", valor: PARCELA(PROPOSTAS[1]) * 18, explicacao: "Parcela × 18. O total mostra o custo real do crédito.", tolerancia: 0.05 },
+        { id: "juros-vale", rotulo: "Juros pagos na Cooperativa Vale (R$)", valor: PARCELA(PROPOSTAS[2]) * 24 - 30000, explicacao: "Total pago menos o valor financiado.", tolerancia: 0.05 },
+      ],
+    }),
+    dissertativa({
+      id: "escolher-proposta",
+      titulo: "Qual proposta escolher",
+      instrucao: "Escreva o parecer que recomenda uma das três propostas.",
+      deve: [
+        "Compare parcela, prazo e total pago, e não só a taxa.",
+        "Explique o que o fluxo de caixa mensal da empresa aguenta.",
+        "Cite o CET e pelo menos um cuidado de segurança ao assinar e pagar (conferir o contrato e os dados da instituição).",
+      ],
+      chave: /(parcela|prazo|total|taxa|cet|caixa|contrato|seguran)/i,
     }),
   ],
 };

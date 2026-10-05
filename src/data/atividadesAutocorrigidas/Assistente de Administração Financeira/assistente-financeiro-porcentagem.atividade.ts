@@ -1,10 +1,20 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { calculo, escolha } from "../ajudantes";
+import { escolha, calculo, planilha, dissertativa, somar } from "../ajudantes";
+
+const VENDAS = [
+  ["Ana", 18000, 3],
+  ["Bruno", 24500, 4],
+  ["Carla", 12800, 3],
+  ["Diego", 30200, 5],
+  ["Elisa", 9500, 2],
+];
+const TOTAL_VENDIDO = somar(VENDAS.map((l) => l[1] as number));
+const COMISSOES = VENDAS.map((l) => ((l[1] as number) * (l[2] as number)) / 100);
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Administração Financeira — Calculando Porcentagem",
   introducao:
-    "A porcentagem aparece em descontos, comissões, impostos e margens. Resolva os cálculos da rotina financeira sem calculadora de atalho: monte a conta e confira.",
+    "A porcentagem aparece em descontos, comissões, impostos e margens. Resolva os cálculos da rotina financeira sem calculadora de atalho: monte a conta e confira. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     calculo({
       id: "porcentagem-de",
@@ -68,6 +78,31 @@ const atividade: AtividadeAutocorrigida = {
       opcoes: ["=B2+15", "=B2*15%", "=B2/15", "=15%-B2"],
       correta: 1,
       explicacao: "Na planilha, 15% equivale a 0,15: =B2*15% devolve 360.",
+    }),
+    planilha({
+      id: "comissoes",
+      titulo: "Planilha: vendas e comissões do mês",
+      cenario: "A equipe comercial fechou o mês com as vendas abaixo, cada vendedor com um percentual de comissão. Cole a planilha no Excel e crie uma coluna Comissão (=B2*C2/100).",
+      colunas: ["Vendedor", "Vendas (R$)", "Comissão (%)"],
+      linhas: VENDAS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "comissao-diego", rotulo: "Comissão do Diego (R$)", valor: COMISSOES[3], explicacao: "30.200 × 5% = 1.510." },
+        { id: "total-comissoes", rotulo: "Total de comissões pagas (R$)", valor: somar(COMISSOES), explicacao: "Soma da comissão de cada vendedor." },
+        { id: "peso-bruno", rotulo: "Participação do Bruno nas vendas totais (%)", valor: (24500 / TOTAL_VENDIDO) * 100, explicacao: "Vendas do Bruno ÷ total vendido × 100." },
+        { id: "custo-comissao", rotulo: "Comissões como % do total vendido", valor: (somar(COMISSOES) / TOTAL_VENDIDO) * 100, explicacao: "Total de comissões ÷ total vendido × 100." },
+      ],
+    }),
+    dissertativa({
+      id: "politica-comissao",
+      titulo: "Avaliando a política de comissões",
+      instrucao: "Com os resultados da planilha, escreva uma avaliação para o gestor sobre a política de comissões.",
+      deve: [
+        "Diga quanto as comissões custam em relação ao total vendido.",
+        "Compare dois vendedores usando a venda e a comissão deles.",
+        "Dê uma opinião fundamentada: manter, mudar ou escalonar os percentuais.",
+      ],
+      chave: /(comiss|percent|%|vend|custo|manter|escalon|meta)/i,
     }),
   ],
 };

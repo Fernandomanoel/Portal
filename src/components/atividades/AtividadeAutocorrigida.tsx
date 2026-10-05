@@ -109,7 +109,7 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
             )}
 
             {item.tabelaReferencia && (
-              <Tabela colunas={item.tabelaReferencia.colunas} linhas={item.tabelaReferencia.linhas} />
+              <Tabela colunas={item.tabelaReferencia.colunas} linhas={item.tabelaReferencia.linhas} copiavel />
             )}
 
             {item.desafio && (
@@ -201,7 +201,21 @@ function ComLinks({ texto }: { texto: string }) {
   return <>{partes}</>;
 }
 
-function Tabela({ colunas, linhas }: { colunas: string[]; linhas: string[][] }) {
+function Tabela({ colunas, linhas, copiavel }: { colunas: string[]; linhas: string[][]; copiavel?: boolean }) {
+  const [copiada, definirCopiada] = useState(false);
+
+  async function copiar() {
+    // Separado por tabulação: o Excel e o Planilhas Google colam cada valor na sua célula.
+    const texto = [colunas, ...linhas].map((linha) => linha.join("\t")).join("\n");
+    try {
+      await navigator.clipboard.writeText(texto);
+      definirCopiada(true);
+      window.setTimeout(() => definirCopiada(false), 2500);
+    } catch {
+      definirCopiada(false);
+    }
+  }
+
   return (
     <div className={estilos.tabelaEnvoltorio}>
       <table className={estilos.tabela}>
@@ -222,6 +236,12 @@ function Tabela({ colunas, linhas }: { colunas: string[]; linhas: string[][] }) 
           ))}
         </tbody>
       </table>
+      {copiavel && (
+        <button type="button" className={estilos.copiarTabela} onClick={copiar}>
+          <Icone nome="doc" tamanho={16} />
+          {copiada ? "Copiado! Cole no Excel ou no Planilhas Google" : "Copiar planilha para colar no Excel"}
+        </button>
+      )}
     </div>
   );
 }

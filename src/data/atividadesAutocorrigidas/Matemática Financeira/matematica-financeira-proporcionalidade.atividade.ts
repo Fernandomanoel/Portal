@@ -1,10 +1,20 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { calculo, calculos, escolha, associar } from "../ajudantes";
+import { escolha, calculo, calculos, associar, planilha, dissertativa, somar } from "../ajudantes";
+
+const SOCIOS = [
+  ["Ana", 40000, 12],
+  ["Bruno", 25000, 8],
+  ["Carla", 15000, 6],
+];
+const LUCRO = 24000;
+const CAPITAL = somar(SOCIOS.map((l) => l[1] as number));
+const PESOS = SOCIOS.map((l) => (l[1] as number) * (l[2] as number));
+const PESO_TOTAL = somar(PESOS);
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Matemática Financeira — Proporcionalidade e Grandezas Proporcionais",
   introducao:
-    "Regra de três e divisão proporcional estão por trás de preços, cotações e rateio de lucros. Revise a ideia de proporção e resolva problemas do dia a dia.",
+    "Regra de três e divisão proporcional estão por trás de preços, cotações e rateio de lucros. Revise a ideia de proporção e resolva problemas do dia a dia. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     associar({
       id: "tipo-grandeza",
@@ -57,6 +67,31 @@ const atividade: AtividadeAutocorrigida = {
       opcoes: ["R$ 50,00", "R$ 250,00", "R$ 1.250,00", "R$ 2.500,00"],
       correta: 2,
       explicacao: "250 × 5 = 1.250 reais.",
+    }),
+    planilha({
+      id: "divisao-do-lucro",
+      titulo: "Planilha: divisão do lucro de uma sociedade",
+      cenario: "Três sócios abriram uma empresa e o lucro do ano foi R$ 24.000,00. A divisão pode ser proporcional só ao capital investido ou ao capital multiplicado pelo tempo de permanência na sociedade. Cole a planilha no Excel e resolva.",
+      colunas: ["Sócio", "Capital investido (R$)", "Meses na sociedade"],
+      linhas: SOCIOS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "ana-capital", rotulo: "Parte da Ana, proporcional só ao capital (R$)", valor: (LUCRO * 40000) / CAPITAL, explicacao: "40.000 ÷ 80.000 = 1/2 de 24.000 = 12.000." },
+        { id: "carla-capital", rotulo: "Parte da Carla, proporcional só ao capital (R$)", valor: (LUCRO * 15000) / CAPITAL, explicacao: "15.000 ÷ 80.000 × 24.000 = 4.500." },
+        { id: "ana-tempo", rotulo: "Parte da Ana, proporcional a capital × meses (R$)", valor: (LUCRO * PESOS[0]) / PESO_TOTAL, explicacao: "480.000 ÷ 770.000 × 24.000 ≈ 14.961,04." },
+        { id: "bruno-tempo", rotulo: "Parte do Bruno, proporcional a capital × meses (R$)", valor: (LUCRO * PESOS[1]) / PESO_TOTAL, explicacao: "200.000 ÷ 770.000 × 24.000 ≈ 6.233,77." },
+      ],
+    }),
+    dissertativa({
+      id: "criterio-de-divisao",
+      titulo: "Qual divisão é mais justa",
+      instrucao: "Compare as duas formas de dividir o lucro e escreva o que você proporia aos sócios.",
+      deve: [
+        "Mostre, com os números da planilha, como a parte de cada sócio muda de um critério para o outro.",
+        "Explique quem ganha e quem perde com a inclusão do tempo de permanência.",
+        "Diga que critério adotaria no contrato social e por quê.",
+      ],
+      chave: /(capital|tempo|meses|proporcional|justo|crit[eé]rio|contrato|s[oó]cio)/i,
     }),
   ],
 };

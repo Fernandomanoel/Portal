@@ -1,10 +1,21 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const GASTOS = [
+  ["Farinha, açúcar e ingredientes", 8400, "Custo direto"],
+  ["Salário dos padeiros", 6200, "Custo direto"],
+  ["Energia elétrica do forno", 1350, "Custo indireto"],
+  ["Aluguel do galpão de produção", 2800, "Custo indireto"],
+  ["Propaganda no rádio", 900, "Despesa"],
+  ["Salário do administrativo", 3100, "Despesa"],
+  ["Compra de um forno novo", 12000, "Investimento"],
+];
+const por = (tipo: string) => somar(GASTOS.filter((l) => l[2] === tipo).map((l) => l[1] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Custos — Noções sobre a Contabilidade de Custos",
   introducao:
-    "Antes de calcular, é preciso falar a mesma língua: gasto, custo, despesa, investimento e perda não são sinônimos. Classifique os termos e calcule o custo de produção de um lote.",
+    "Antes de calcular, é preciso falar a mesma língua: gasto, custo, despesa, investimento e perda não são sinônimos. Classifique os termos e calcule o custo de produção de um lote. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     associar({
       id: "termos",
@@ -61,7 +72,32 @@ const atividade: AtividadeAutocorrigida = {
       instrucao: "Pense em uma empresa que você conhece e dê um exemplo de custo direto, um de custo indireto e um de despesa.",
       rotulo: "Seus exemplos",
       placeholder: "Em uma padaria: custo direto: farinha; custo indireto: energia do forno; despesa: ...",
-      minPalavras: 10,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "gastos-da-padaria",
+      titulo: "Planilha: gastos do mês de uma padaria",
+      cenario: "O contador listou os gastos do mês e já os classificou. Foram produzidas 15.000 unidades (pães e salgados). Cole a planilha no Excel e use SOMASE para somar por classificação.",
+      colunas: ["Gasto", "Valor (R$)", "Classificação"],
+      linhas: GASTOS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "diretos", rotulo: "Total de custos diretos (R$)", valor: por("Custo direto"), explicacao: "Ingredientes + salário dos padeiros." },
+        { id: "indiretos", rotulo: "Total de custos indiretos (R$)", valor: por("Custo indireto"), explicacao: "Energia do forno + aluguel do galpão." },
+        { id: "custo-unitario", rotulo: "Custo de produção por unidade (R$)", valor: (por("Custo direto") + por("Custo indireto")) / 15000, explicacao: "(Diretos + indiretos) ÷ 15.000 unidades." },
+        { id: "despesas", rotulo: "Total de despesas do mês (R$)", valor: por("Despesa"), explicacao: "Propaganda + salário do administrativo. O forno novo é investimento, não entra no custo do mês." },
+      ],
+    }),
+    dissertativa({
+      id: "classificar-gastos",
+      titulo: "Justifique a classificação",
+      instrucao: "Explique por que cada tipo de gasto da planilha foi classificado do jeito indicado, e como a classificação muda o preço do pão.",
+      deve: [
+        "Diferencie custo direto, custo indireto, despesa e investimento usando exemplos da planilha.",
+        "Explique por que o forno novo não entra no custo do pão do mês.",
+        "Diga o que aconteceria com o preço de venda se a padaria esquecesse os custos indiretos.",
+      ],
+      chave: /(direto|indireto|despesa|investimento|forno|produ[cç][aã]o|pre[cç]o)/i,
     }),
   ],
 };

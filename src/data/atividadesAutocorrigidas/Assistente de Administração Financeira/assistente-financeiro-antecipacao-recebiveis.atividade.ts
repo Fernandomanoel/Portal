@@ -1,10 +1,20 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const BORDERO = [
+  ["Duplicata 101", 12000, 30],
+  ["Duplicata 102", 8500, 45],
+  ["Duplicata 103", 15000, 60],
+  ["Duplicata 104", 6200, 90],
+  ["Duplicata 105", 9800, 20],
+];
+const TAXA_MES = 0.025;
+const DESCONTO = (l: (string | number)[]) => (l[1] as number) * TAXA_MES * ((l[2] as number) / 30);
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Administração Financeira — Antecipação de Recebíveis, Factoring e Banco",
   introducao:
-    "Antecipar recebíveis transforma uma venda a prazo em dinheiro hoje, mas com um custo. Calcule o desconto, descubra a taxa real do período e compare as duas fontes de antecipação.",
+    "Antecipar recebíveis transforma uma venda a prazo em dinheiro hoje, mas com um custo. Calcule o desconto, descubra a taxa real do período e compare as duas fontes de antecipação. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "conceito",
@@ -36,28 +46,6 @@ const atividade: AtividadeAutocorrigida = {
       instrucao: "Qual foi a taxa efetiva do período, em % (custo ÷ valor recebido)?",
       campos: [{ id: "taxa", rotulo: "Taxa efetiva em 60 dias (%)", esperado: 6.38, explicacao: "600 ÷ 9.400 = 0,0638, ou 6,38% em dois meses, maior que os 6% da taxa «de desconto» nominal." }],
     }),
-    escolha({
-      id: "factoring-banco",
-      titulo: "Factoring e banco",
-      instrucao: "Qual afirmação descreve corretamente a diferença entre as duas opções?",
-      opcoes: [
-        "O factoring é um banco regulado pelo Banco Central.",
-        "O banco é uma instituição financeira regulada pelo Banco Central; a empresa de factoring faz fomento mercantil comprando créditos e não é instituição financeira.",
-        "Só o banco compra duplicatas.",
-        "Não há diferença nenhuma entre elas.",
-      ],
-      correta: 1,
-      explicacao: "Os dois antecipam recebíveis, mas o banco é instituição financeira; o factoring atua como fomento mercantil e presta serviços além do crédito.",
-    }),
-    escolha({
-      id: "comparar-taxa",
-      titulo: "Comparando propostas",
-      cenario: "A empresa recebeu duas propostas: uma cobra 3,0% ao mês e a outra 3,5% ao mês, mesma operação e prazo.",
-      instrucao: "Qual é a melhor escolha, considerando só o custo?",
-      opcoes: ["A de 3,5%, pois a taxa maior é mais segura.", "A de 3,0%, pois custa menos para o mesmo prazo.", "Tanto faz.", "Nenhuma das duas."],
-      correta: 1,
-      explicacao: "Com o mesmo prazo e as mesmas condições, a menor taxa significa menor custo para a empresa.",
-    }),
     resposta({
       id: "quando-vale",
       titulo: "Quando vale a pena antecipar",
@@ -65,6 +53,31 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Sua explicação",
       placeholder: "Ex.: Quando a taxa é menor que a das alternativas, como cheque especial, e o caixa faltaria...",
       chave: /(taxa|custo|caixa|alternativ|juros|empr[eé]stimo|cheque)/i,
+    }),
+    planilha({
+      id: "bordero",
+      titulo: "Planilha: borderô de duplicatas para antecipar",
+      cenario: "A empresa quer antecipar cinco duplicatas com o banco, que cobra desconto simples de 2,5% ao mês, proporcional aos dias até o vencimento (desconto = valor × 2,5% × dias ÷ 30). Cole a planilha no Excel e crie as colunas Desconto e Líquido.",
+      colunas: ["Título", "Valor (R$)", "Dias até o vencimento"],
+      linhas: BORDERO,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "desconto-103", rotulo: "Desconto da Duplicata 103 (R$)", valor: DESCONTO(BORDERO[2]), explicacao: "15.000 × 2,5% × 60 ÷ 30 = 750." },
+        { id: "desconto-total", rotulo: "Desconto total do borderô (R$)", valor: somar(BORDERO.map(DESCONTO)), explicacao: "Soma do desconto de cada título." },
+        { id: "liquido", rotulo: "Valor líquido que entra no caixa hoje (R$)", valor: somar(BORDERO.map((l) => l[1] as number)) - somar(BORDERO.map(DESCONTO)), explicacao: "Valor de face total menos o desconto total." },
+        { id: "custo-medio", rotulo: "Desconto total como % do valor de face", valor: (somar(BORDERO.map(DESCONTO)) / somar(BORDERO.map((l) => l[1] as number))) * 100, explicacao: "Desconto total ÷ valor de face total × 100." },
+      ],
+    }),
+    dissertativa({
+      id: "antecipar-ou-nao",
+      titulo: "Antecipar ou esperar?",
+      instrucao: "Escreva uma recomendação sobre antecipar o borderô, usando o custo calculado.",
+      deve: [
+        "Diga quanto custa antecipar e o que a empresa ganha em troca (caixa imediato).",
+        "Compare com outra fonte de dinheiro (cheque especial, empréstimo, esperar o vencimento).",
+        "Indique quais títulos você anteciparia primeiro e quais deixaria para vencer, e por quê.",
+      ],
+      chave: /(custo|taxa|caixa|compar|empr[eé]stimo|cheque|vencimento|anteci)/i,
     }),
   ],
 };

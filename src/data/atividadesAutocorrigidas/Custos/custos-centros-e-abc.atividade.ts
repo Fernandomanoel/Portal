@@ -1,10 +1,18 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const ATIVIDADES = [
+  ["Preparação de máquinas", 24000, "Nº de setups", 60, 10, 50],
+  ["Inspeção de qualidade", 18000, "Nº de inspeções", 360, 240, 120],
+  ["Compras de materiais", 9000, "Nº de pedidos", 90, 60, 30],
+];
+const TAXAS = ATIVIDADES.map((l) => (l[1] as number) / (l[3] as number));
+const custoProduto = (col: number) => somar(ATIVIDADES.map((l, i) => (l[col] as number) * TAXAS[i]));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Custos — Sistemas por Centros de Custos e Custeio ABC",
   introducao:
-    "Os centros de custos agrupam gastos por departamento. O custeio ABC vai além: distribui os custos pelas atividades realizadas, conforme o que realmente consome recursos.",
+    "Os centros de custos agrupam gastos por departamento. O custeio ABC vai além: distribui os custos pelas atividades realizadas, conforme o que realmente consome recursos. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "centro-custo",
@@ -32,19 +40,6 @@ const atividade: AtividadeAutocorrigida = {
       ],
       explicacao: "Os custos dos centros de apoio são depois distribuídos aos centros produtivos, que os levam aos produtos.",
     }),
-    escolha({
-      id: "abc-ideia",
-      titulo: "A ideia do ABC",
-      instrucao: "Qual é a ideia central do custeio baseado em atividades (ABC)?",
-      opcoes: [
-        "Os produtos consomem atividades, e as atividades consomem recursos; o custo segue esse caminho.",
-        "Ratear tudo igualmente entre todos os produtos.",
-        "Ignorar os custos indiretos.",
-        "Usar só horas de mão de obra.",
-      ],
-      correta: 0,
-      explicacao: "O ABC rastreia a causa do custo, com mais precisão que rateios simples, sobretudo com custos indiretos altos.",
-    }),
     calculos({
       id: "inspecao",
       titulo: "Custo por atividade: inspeção de qualidade",
@@ -56,27 +51,38 @@ const atividade: AtividadeAutocorrigida = {
         { id: "produto-b", rotulo: "Custo de inspeção do produto B (R$)", esperado: 15000, explicacao: "300 × 50 = 15.000." },
       ],
     }),
-    escolha({
-      id: "abc-vs-volume",
-      titulo: "ABC x rateio por volume",
-      cenario: "Se o rateio fosse feito por volume produzido e A e B tivessem a mesma quantidade, cada um receberia R$ 10.000,00 da inspeção.",
-      instrucao: "O que o ABC revela nesse caso?",
-      opcoes: [
-        "Que A recebia custo a mais e B, a menos; o produto B, que exige mais inspeções, estava subcustado.",
-        "Que A recebia custo a menos e B, a mais.",
-        "Que não há diferença.",
-        "Que o ABC é inútil.",
-      ],
-      correta: 0,
-      explicacao: "Pelo ABC, B consome 15.000 e A só 5.000: um preço calculado com o rateio por volume subestimaria o custo de B.",
-    }),
     resposta({
       id: "direcionador",
       titulo: "Escolha o direcionador",
       instrucao: "Dê um exemplo de atividade (como compra de materiais ou preparação de máquinas) e o direcionador de custo que você usaria para distribuí-la.",
       rotulo: "Atividade e direcionador",
       placeholder: "Atividade: preparação de máquinas. Direcionador: número de preparações...",
-      minPalavras: 8,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "abc-dois-produtos",
+      titulo: "Planilha: custeio ABC de dois produtos",
+      cenario: "A fábrica produz os produtos A e B. Os custos indiretos estão divididos em três atividades, cada uma com seu direcionador de custo. Cole a planilha no Excel, calcule o custo por unidade do direcionador (custo ÷ total) e multiplique pelo uso de cada produto.",
+      colunas: ["Atividade", "Custo no mês (R$)", "Direcionador", "Total do direcionador", "Uso do produto A", "Uso do produto B"],
+      linhas: ATIVIDADES,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "taxa-setup", rotulo: "Custo por setup (R$)", valor: TAXAS[0], explicacao: "24.000 ÷ 60 = 400." },
+        { id: "taxa-pedido", rotulo: "Custo por pedido de compra (R$)", valor: TAXAS[2], explicacao: "9.000 ÷ 90 = 100." },
+        { id: "custo-a", rotulo: "Custo indireto total do produto A (R$)", valor: custoProduto(4), explicacao: "10×400 + 240×50 + 60×100 = 22.000." },
+        { id: "custo-b", rotulo: "Custo indireto total do produto B (R$)", valor: custoProduto(5), explicacao: "50×400 + 120×50 + 30×100 = 29.000." },
+      ],
+    }),
+    dissertativa({
+      id: "abc-versus-volume",
+      titulo: "ABC x rateio por volume",
+      instrucao: "Se A e B tivessem a mesma quantidade produzida e o rateio fosse por volume, cada um receberia metade dos R$ 51.000,00 de custos indiretos. Compare com o resultado do ABC.",
+      deve: [
+        "Diga quanto cada produto receberia pelo rateio por volume e quanto recebe pelo ABC.",
+        "Explique qual produto estava sendo subcustado e o que isso faz com o preço de venda e o lucro real.",
+        "Descreva uma situação em que o ABC compensa o trabalho extra e uma em que um rateio simples basta.",
+      ],
+      chave: /(abc|volume|rateio|subcust|atividade|direcionador|pre[cç]o|lucro)/i,
     }),
   ],
 };

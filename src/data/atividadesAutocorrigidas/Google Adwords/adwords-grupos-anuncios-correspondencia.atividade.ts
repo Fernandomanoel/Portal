@@ -1,10 +1,18 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, escolha, resposta } from "../ajudantes";
+import { escolha, associar, resposta, planilha, dissertativa } from "../ajudantes";
+
+const TERMOS = [
+  ["Violão", "[aulas de violão]", "Exata", 3200, 224, 201.6],
+  ["Violão", "\"curso de violão\"", "Frase", 5400, 270, 270],
+  ["Violão", "violão iniciante", "Ampla", 12000, 240, 312],
+  ["Piano", "[aulas de piano]", "Exata", 2100, 126, 138.6],
+  ["Piano", "piano barato", "Ampla", 9000, 90, 135],
+];
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Google Ads — Grupos de Anúncios, Status e Tipos de Correspondência",
   introducao:
-    "Grupos de anúncios bem organizados, anúncios aprovados e o tipo de correspondência certo definem quem vê o seu anúncio e quanto isso custa.",
+    "Grupos de anúncios bem organizados, anúncios aprovados e o tipo de correspondência certo definem quem vê o seu anúncio e quanto isso custa. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     escolha({
       id: "grupos",
@@ -48,14 +56,6 @@ const atividade: AtividadeAutocorrigida = {
       ],
       explicacao: "Ampla alcança mais variações e exige atenção; frase e exata dão mais controle sobre o significado da busca.",
     }),
-    escolha({
-      id: "controle",
-      titulo: "Controle x alcance",
-      instrucao: "Para ter o máximo de controle sobre quem vê o anúncio, qual correspondência usar?",
-      opcoes: ["Ampla", "Exata", "Nenhuma", "Todas as palavras negativas"],
-      correta: 1,
-      explicacao: "A correspondência exata limita o anúncio a buscas muito próximas da palavra definida.",
-    }),
     resposta({
       id: "estrutura",
       titulo: "Estruture um grupo",
@@ -64,7 +64,32 @@ const atividade: AtividadeAutocorrigida = {
       rotulo: "Seu grupo",
       placeholder: "Grupo: Aulas de violão. Palavras: [aulas de violão], \"curso de violão\". Título: Aulas de Violão...",
       chave: /(violão|piano|bateria|aula|curso)/i,
-      minPalavras: 8,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "termos-de-pesquisa",
+      titulo: "Planilha: desempenho das palavras-chave por grupo",
+      cenario: "Uma escola de música tem dois grupos de anúncios. O relatório mostra cada palavra-chave com seu tipo de correspondência, impressões, cliques e custo. Cole a planilha no Excel e resolva.",
+      colunas: ["Grupo", "Palavra-chave", "Correspondência", "Impressões", "Cliques", "Custo (R$)"],
+      linhas: TERMOS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "ctr-exata", rotulo: "CTR de [aulas de violão] (%)", valor: (224 / 3200) * 100, explicacao: "224 ÷ 3.200 × 100 = 7%." },
+        { id: "ctr-ampla", rotulo: "CTR de violão iniciante (%)", valor: (240 / 12000) * 100, explicacao: "240 ÷ 12.000 × 100 = 2%." },
+        { id: "cpc-ampla", rotulo: "CPC de violão iniciante (R$)", valor: 312 / 240, explicacao: "312 ÷ 240 = 1,30." },
+        { id: "custo-grupo-violao", rotulo: "Custo total do grupo Violão (R$)", valor: 201.6 + 270 + 312, explicacao: "Soma do custo das três palavras do grupo Violão." },
+      ],
+    }),
+    dissertativa({
+      id: "correspondencia-decisao",
+      titulo: "Controlando a correspondência",
+      instrucao: "Escreva uma análise sobre o efeito do tipo de correspondência nos resultados e o que você mudaria.",
+      deve: [
+        "Compare o CTR e o CPC das palavras exatas, de frase e amplas.",
+        "Explique por que a correspondência ampla trouxe mais impressões, mas menos cliques proporcionais.",
+        "Proponha ao menos duas palavras negativas para o grupo Piano (por exemplo, termos de «barato» ou «grátis») e justifique.",
+      ],
+      chave: /(exata|frase|ampla|negativ|ctr|cpc|impress|grátis|gr[aá]tis|barato)/i,
     }),
   ],
 };

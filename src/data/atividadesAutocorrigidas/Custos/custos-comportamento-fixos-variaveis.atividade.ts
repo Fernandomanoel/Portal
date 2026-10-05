@@ -1,10 +1,20 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha } from "../ajudantes";
+import { escolha, calculos, associar, planilha, dissertativa } from "../ajudantes";
+
+const HISTORICO = [
+  ["Janeiro", 800, 14400],
+  ["Fevereiro", 1000, 16000],
+  ["Março", 1200, 17600],
+  ["Abril", 1500, 20000],
+  ["Maio", 900, 15200],
+];
+const CV_UNIT = (20000 - 14400) / (1500 - 800);
+const CF = 14400 - CV_UNIT * 800;
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Custos — Comportamento dos Custos de Produção",
   introducao:
-    "Alguns custos não mudam quando a produção cresce; outros crescem junto. Entender esse comportamento é a base para decidir preços e metas.",
+    "Alguns custos não mudam quando a produção cresce; outros crescem junto. Entender esse comportamento é a base para decidir preços e metas. A planilha vem dentro da própria atividade: use o botão para copiá-la, resolva no Excel ou nos Planilhas Google e digite os resultados. As questões dissertativas pedem argumentação com os seus números.",
   itens: [
     associar({
       id: "classificar",
@@ -48,14 +58,30 @@ const atividade: AtividadeAutocorrigida = {
       correta: 1,
       explicacao: "É o ganho de escala: mais unidades dividem o mesmo custo fixo, e o custo unitário cai.",
     }),
-    escolha({
-      id: "semivariavel",
-      titulo: "Custo semivariável",
-      cenario: "A conta de energia tem um valor mínimo mensal fixo e um valor que cresce com o consumo.",
-      instrucao: "Esse custo é chamado de...",
-      opcoes: ["Semivariável (misto).", "Direto.", "Perda.", "Investimento."],
-      correta: 0,
-      explicacao: "Custos mistos têm uma parte fixa e uma parte variável, e podem ser separados na análise.",
+    planilha({
+      id: "separar-custos",
+      titulo: "Planilha: histórico de produção e custo total",
+      cenario: "A fábrica de camisetas registrou a produção e o custo total de cinco meses. Pelo método do ponto alto-ponto baixo, o custo variável unitário é (custo do maior volume − custo do menor volume) ÷ (maior volume − menor volume), e o custo fixo é o que sobra. Cole a planilha no Excel e resolva.",
+      colunas: ["Mês", "Produção (unidades)", "Custo total (R$)"],
+      linhas: HISTORICO,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "cv", rotulo: "Custo variável por unidade (R$)", valor: CV_UNIT, explicacao: "(20.000 − 14.400) ÷ (1.500 − 800) = 8." },
+        { id: "cf", rotulo: "Custo fixo mensal (R$)", valor: CF, explicacao: "14.400 − 8 × 800 = 8.000." },
+        { id: "previsto", rotulo: "Custo total previsto para 1.800 unidades (R$)", valor: CF + CV_UNIT * 1800, explicacao: "8.000 + 8 × 1.800 = 22.400." },
+        { id: "unitario", rotulo: "Custo total por unidade em 1.800 unidades (R$)", valor: (CF + CV_UNIT * 1800) / 1800, explicacao: "22.400 ÷ 1.800 ≈ 12,44." },
+      ],
+    }),
+    dissertativa({
+      id: "escala-e-risco",
+      titulo: "Escala, diluição e risco",
+      instrucao: "Usando os números da planilha, explique o que acontece com o custo por unidade quando a produção cresce e quais riscos existem em ter muitos custos fixos.",
+      deve: [
+        "Compare o custo por unidade de janeiro com o de abril e explique a diluição do custo fixo.",
+        "Diga o que acontece se a produção cair abaixo do volume atual.",
+        "Cite uma forma de transformar parte dos custos fixos em variáveis e quando isso compensa.",
+      ],
+      chave: /(dilu|fixo|vari[aá]vel|escala|unidade|produ[cç][aã]o|risco|queda)/i,
     }),
   ],
 };

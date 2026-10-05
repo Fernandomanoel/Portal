@@ -1,5 +1,15 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
-import { associar, calculos, escolha, resposta } from "../ajudantes";
+import { escolha, calculos, associar, resposta, planilha, dissertativa, somar } from "../ajudantes";
+
+const PASTAS = [
+  ["Financeiro", 18.5],
+  ["Clientes e contratos", 24.2],
+  ["Marketing (fotos e vídeos)", 41.8],
+  ["Recursos Humanos", 6.3],
+  ["Backups antigos", 12.7],
+  ["Projetos concluídos", 9.5],
+];
+const USADO = somar(PASTAS.map((l) => l[1] as number));
 
 const atividade: AtividadeAutocorrigida = {
   titulo: "Atividade Prática: Internet — Ferramentas na Nuvem e Compartilhamento de Arquivos",
@@ -41,39 +51,38 @@ const atividade: AtividadeAutocorrigida = {
         { id: "sobra", rotulo: "Sobra após o envio (GB)", esperado: 1.6, explicacao: "5,4 − 3,8 = 1,6 GB." },
       ],
     }),
-    escolha({
-      id: "link-publico",
-      titulo: "Cuidado com o link",
-      instrucao: "Um arquivo com dados de clientes foi compartilhado como «Qualquer pessoa com o link pode editar». O que está errado?",
-      opcoes: [
-        "Nada: é a configuração mais segura.",
-        "Qualquer um que receba o link acessa e altera dados sensíveis; o certo é restringir a pessoas específicas.",
-        "O arquivo ficou lento.",
-        "O link não funciona.",
-      ],
-      correta: 1,
-      explicacao: "Dados sensíveis pedem acesso restrito a pessoas nomeadas, com a permissão mínima necessária.",
-    }),
-    escolha({
-      id: "versoes",
-      titulo: "Trabalho em conjunto",
-      instrucao: "Qual é a vantagem de editar um documento na nuvem em vez de enviar anexos por e-mail?",
-      opcoes: [
-        "Cada pessoa fica com uma versão diferente.",
-        "Todos trabalham na mesma versão, com histórico de alterações.",
-        "O documento fica sem proteção.",
-        "É preciso instalar mais programas.",
-      ],
-      correta: 1,
-      explicacao: "Uma única versão atualizada evita o clássico «relatório_final_v7_revisado_agora_vai.docx».",
-    }),
     resposta({
       id: "organizar",
       titulo: "Organize as pastas",
       instrucao: "Descreva como você organizaria as pastas na nuvem de um pequeno escritório (mínimo de 3 pastas e o que vai em cada uma).",
       rotulo: "Sua estrutura",
       placeholder: "Ex.: Financeiro (notas e contratos), Clientes (propostas), RH (documentos dos colaboradores)...",
-      minPalavras: 8,
+      minPalavras: 15,
+    }),
+    planilha({
+      id: "inventario",
+      titulo: "Planilha: inventário do armazenamento na nuvem",
+      cenario: "A empresa tem uma conta de nuvem com cota de 150 GB. O levantamento do espaço ocupado por pasta está abaixo. Cole a planilha no Excel e resolva.",
+      colunas: ["Pasta", "Tamanho (GB)"],
+      linhas: PASTAS,
+      instrucao: "Calcule:",
+      tarefas: [
+        { id: "usado", rotulo: "Espaço total usado (GB)", valor: USADO, explicacao: "Soma da coluna Tamanho." },
+        { id: "livre", rotulo: "Espaço livre da cota de 150 GB (GB)", valor: 150 - USADO, explicacao: "150 menos o espaço usado." },
+        { id: "percentual", rotulo: "Percentual da cota já ocupado (%)", valor: (USADO / 150) * 100, explicacao: "Usado ÷ 150 × 100." },
+        { id: "liberar", rotulo: "Quanto liberar para ficar com 60% da cota ocupada (GB)", valor: USADO - 150 * 0.6, explicacao: "60% de 150 = 90 GB; usado menos 90." },
+      ],
+    }),
+    dissertativa({
+      id: "organizar-nuvem",
+      titulo: "Plano de organização e permissões",
+      instrucao: "Escreva o plano para organizar a nuvem da empresa e liberar espaço, a partir do inventário.",
+      deve: [
+        "Diga quais pastas você revisaria primeiro para liberar espaço e o que faria com cada uma (arquivar, compactar, excluir).",
+        "Explique quem deve ter acesso a cada pasta e com qual permissão (leitor, comentarista, editor).",
+        "Cite uma regra de nomes ou de versões que evite arquivos duplicados.",
+      ],
+      chave: /(permiss|editor|leitor|arquiv|exclu|compact|backup|nome|vers[aã]o|acesso)/i,
     }),
   ],
 };
