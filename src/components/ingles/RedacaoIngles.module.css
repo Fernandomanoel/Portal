@@ -510,6 +510,12 @@
   outline-offset: 2px;
 }
 
+.editorBloqueado {
+  background: var(--surface-soft);
+  color: var(--ink-soft);
+  cursor: not-allowed;
+}
+
 .barraPalavras {
   height: 6px;
   margin-top: calc(var(--space-3) * -1);

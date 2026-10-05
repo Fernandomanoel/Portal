@@ -282,6 +282,22 @@ function lerRascunho(slug: string): string {
   }
 }
 
+function lerTempo(slug: string): number {
+  try {
+    return Number(window.localStorage.getItem(`${chaveRascunho(slug)}:tempo`)) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function salvarTempo(slug: string, segundos: number) {
+  try {
+    window.localStorage.setItem(`${chaveRascunho(slug)}:tempo`, String(segundos));
+  } catch {
+    // Sem armazenamento: o tempo só vale enquanto a tela estiver aberta.
+  }
+}
+
 function salvarRascunho(slug: string, texto: string) {
   try {
     window.localStorage.setItem(chaveRascunho(slug), texto);
@@ -305,6 +321,7 @@ function Editor({ redacao, texto, aoMudarTexto, segundos, rodando, aoAlternarCro
   const { proposta } = redacao;
   const analise = useMemo(() => analisarRedacao(texto), [texto]);
   const restante = proposta.minutos * 60 - segundos;
+  const esgotado = restante <= 0;
   const atingiu = analise.palavras >= proposta.minPalavras;
   const fracao = Math.min(1, analise.palavras / proposta.minPalavras);
 
@@ -317,10 +334,12 @@ function Editor({ redacao, texto, aoMudarTexto, segundos, rodando, aoAlternarCro
           <Icone nome="relogio" tamanho={18} />
           <span className="tabular">{restante > 0 ? formatarTempo(restante) : "Tempo esgotado"}</span>
         </div>
-        <button type="button" className={estilos.botaoSecundario} onClick={aoAlternarCronometro}>
+        <button type="button" className={estilos.botaoSecundario} onClick={aoAlternarCronometro} disabled={esgotado}>
           {rodando ? "Pausar" : segundos > 0 ? "Continuar cronômetro" : "Iniciar cronômetro"}
         </button>
-        <p className={estilos.editorAviso}>Corretor ortográfico desligado, como no exame.</p>
+        <p className={estilos.editorAviso}>
+          {esgotado ? "O tempo acabou: o texto está bloqueado. Revise as métricas e termine." : "Corretor ortográfico desligado, como no exame."}
+        </p>
       </div>
 
       <label className={estilos.rotuloEditor} htmlFor="texto-redacao">
@@ -328,8 +347,10 @@ function Editor({ redacao, texto, aoMudarTexto, segundos, rodando, aoAlternarCro
       </label>
       <textarea
         id="texto-redacao"
-        className={estilos.editor}
+        className={esgotado ? `${estilos.editor} ${estilos.editorBloqueado}` : estilos.editor}
         lang="en"
+        readOnly={esgotado}
+        aria-readonly={esgotado}
         spellCheck={false}
         autoCorrect="off"
         autoCapitalize="sentences"
@@ -471,16 +492,25 @@ export function RedacaoIngles({ atividade, redacao }: Props) {
   const [acertou, definirAcertou] = useState<boolean | null>(null);
   const [acertos, definirAcertos] = useState(0);
   const [texto, definirTexto] = useState(() => lerRascunho(atividade.slug));
-  const [segundos, definirSegundos] = useState(0);
-  const [rodando, definirRodando] = useState(false);
+  const [segundos, definirSegundos] = useState(() => lerTempo(atividade.slug));
+  // Recarregar a página não zera a prova: com tempo já gasto, o relógio volta a correr.
+  const [rodando, definirRodando] = useState(() => lerTempo(atividade.slug) > 0);
   const [marcados, definirMarcados] = useState<Set<string>>(() => new Set());
   const [copiado, definirCopiado] = useState(false);
 
+  const limite = proposta.minutos * 60;
+  const esgotou = segundos >= limite;
+  const ativo = rodando && !esgotou;
+
   useEffect(() => {
-    if (!rodando) return;
+    if (!ativo) return;
     const id = window.setInterval(() => definirSegundos((s) => s + 1), 1000);
     return () => window.clearInterval(id);
-  }, [rodando]);
+  }, [ativo]);
+
+  useEffect(() => {
+    salvarTempo(atividade.slug, segundos);
+  }, [atividade.slug, segundos]);
 
   const posicao = fase.tipo === "etapa" ? `etapa-${fase.etapa}` : fase.tipo === "treino" ? `treino-${fase.questao}` : fase.tipo;
   useEffect(() => {
@@ -488,6 +518,7 @@ export function RedacaoIngles({ atividade, redacao }: Props) {
   }, [posicao]);
 
   function mudarTexto(novo: string) {
+    if (esgotou) return;
     definirTexto(novo);
     salvarRascunho(atividade.slug, novo);
     // O cronômetro começa sozinho na primeira letra, como no exame.
@@ -749,7 +780,7 @@ export function RedacaoIngles({ atividade, redacao }: Props) {
         texto={texto}
         aoMudarTexto={mudarTexto}
         segundos={segundos}
-        rodando={rodando}
+        rodando={ativo}
         aoAlternarCronometro={() => definirRodando((r) => !r)}
         marcados={marcados}
         aoMarcar={marcar}
