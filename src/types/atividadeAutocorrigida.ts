@@ -71,7 +71,7 @@ export type BlocoConteudo =
   | { tipo: "subtitulo"; texto: string }
   | { tipo: "lista"; itens: string[]; numerada?: boolean }
   | { tipo: "codigo"; conteudo: string; rotulo?: string; terminal?: boolean }
-  | { tipo: "tabela"; colunas: string[]; linhas: string[][] }
+  | { tipo: "tabela"; colunas: string[]; linhas: string[][]; /** Mostra o botão «Copiar planilha» (dados para colar no Excel ou importar em um banco). */ copiavel?: boolean }
   | { tipo: "nota"; variante: "objetivo" | "desafio" | "aviso" | "dica"; rotulo?: string; texto: string; itens?: string[] };
 
 /**

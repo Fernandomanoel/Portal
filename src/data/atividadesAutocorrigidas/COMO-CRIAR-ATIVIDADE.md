@@ -125,3 +125,13 @@ a partir das mesmas `linhas` (use `somar`/`arredondar`), então a conferência n
 `dissertativa(...)` lista o que a resposta precisa trazer e exige texto de verdade com os pontos-chave
 (`chave`). Modelo completo: `Custos/custos-centros-e-abc.atividade.ts`. O material nunca fica fora da
 atividade: nada de planilha em `public/` com link para baixar.
+
+### «Dia de trabalho»: imersão com dados grandes e trabalho em outro sistema
+
+Para atividades em que o aluno executa a tarefa fora do portal (Excel, SQL, Python, Power BI, portal de
+notas), a atividade é uma sequência: `briefing(...)` (o e-mail do gestor, com o que entregar), uma ou mais
+`planilha(...)` ou `consulta(...)` com os dados e os resultados, e `dissertativa(...)` de entrega. O material
+vem sempre dentro da página: `dadosFicticios.ts` gera tabelas grandes de forma determinística (mesma semente,
+mesma tabela) e o gabarito é calculado no arquivo a partir delas. `consulta` mostra as tabelas com o botão de
+copiar (números sem separador de milhar, para importar em SQL/Python), confere o comando por `padrao` e o
+resultado por número. Modelos: `Escrita Fiscal/`, `Análise de Dados/` e `Inteligência Artificial II/`.

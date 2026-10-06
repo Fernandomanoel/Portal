@@ -1019,6 +1019,57 @@ export const ATIVIDADES: Curso[] = [
     ],
   },
   {
+    slug: "inteligencia-artificial-2",
+    titulo: "Inteligência Artificial II",
+    descricao: "IA aplicada ao trabalho: automação, análise de dados, prompts, segurança, vídeos, Canva e relatórios.",
+    categoria: "informatica",
+    sigla: "I2",
+    cor: "#4d9f3a",
+    materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Fundamentos e Aplicações Práticas da IA",
+        descricao: "Um dia de trabalho de consultor interno: mapear 20 tarefas de um escritório, estimar quanto tempo a IA poderia liberar e decidir por onde começar um piloto, sem esquecer o risco de cada tarefa.",
+        caminho: "Inteligência Artificial II/ia2-fundamentos-e-aplicacoes-praticas",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Automatizando Tarefas Repetitivas com IA e Realizando Tarefas Inéditas",
+        descricao: "Um dia de trabalho de projeto de automação: medir quanto uma IA acerta ao classificar e-mails de atendimento, calcular o tempo e o custo economizados, e desenhar o fluxo de automação com revisão humana.",
+        caminho: "Inteligência Artificial II/ia2-automatizando-tarefas-repetitivas",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Análise de Dados Potencializada com IA",
+        descricao: "Um dia de trabalho com o assistente de IA: pedir uma análise de dados, conferir cada afirmação dele contra os números reais e descobrir onde ele errou.",
+        caminho: "Inteligência Artificial II/ia2-analise-de-dados-potencializada-com-ia",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Tendências e Inovações",
+        descricao: "Um dia de trabalho de planejamento de inovação: priorizar 12 ideias de uso de IA por impacto, esforço e custo, escolher as que cabem no orçamento e escrever uma visão de tendências para a diretoria.",
+        caminho: "Inteligência Artificial II/ia2-tendencias-e-inovacoes",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Dominando a Técnica de Prompt",
+        descricao: "Um dia de trabalho de treinamento de equipe: avaliar 8 prompts com uma rubrica, entender o que separa um pedido vago de um bom prompt, e escrever e melhorar o seu próprio.",
+        caminho: "Inteligência Artificial II/ia2-tecnica-de-prompt",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Otimizando sua Rotina com IA: Segurança e Ética no Uso da IA",
+        descricao: "Um dia de trabalho de proteção de dados: classificar 20 informações do dia a dia pela sensibilidade, decidir o que pode e o que não pode ser colado em uma IA pública e escrever a política de uso responsável da empresa.",
+        caminho: "Inteligência Artificial II/ia2-seguranca-e-etica-no-uso-da-ia",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Vídeos com IA Generativa e Apresentações Interativas no Canva",
+        descricao: "Um dia de trabalho de comunicação: planejar um vídeo curto com cenas geradas por IA, calcular duração e uso de créditos, montar uma apresentação no Canva com hiperlinks, botões e animações e conferir o que ficou pronto.",
+        caminho: "Inteligência Artificial II/ia2-videos-e-apresentacoes-no-canva",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Relatórios com Auxílio de IA no Power BI e no Excel e Tabelas Vinculadas",
+        descricao: "Um dia de trabalho de analista de BI: ligar uma tabela de vendas a uma tabela de produtos pela chave, calcular receita, margem e categorias com PROCV/PROCX e medidas DAX e usar o assistente de IA para acelerar o relatório, sempre conferindo os números.",
+        caminho: "Inteligência Artificial II/ia2-relatorios-e-tabelas-vinculadas",
+      },
+    ],
+  },
+  {
     slug: "banco-dados-sql",
     titulo: "Banco de Dados | SQL",
     descricao: "Atividades de Banco de Dados",
@@ -1110,6 +1161,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "AN",
     cor: "#059669",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Análise de Dados — Introdução, Estrutura e Ciclo de Vida da Análise de Dados",
+        descricao: "Um dia de trabalho de analista júnior: receber uma base de pesquisa «suja», limpar, conferir e só então calcular.",
+        caminho: "Análise de Dados/dados-introducao-e-ciclo-de-vida",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Fundamentos Estatísticos para Análise de Dados",
+        descricao: "Um dia de trabalho de analista: descrever 30 dias de vendas com média, mediana, desvio padrão, quartis e valores atípicos, e explicar o que cada medida diz ao gestor.",
+        caminho: "Análise de Dados/dados-fundamentos-estatisticos",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Análise de Dados em SQL",
+        descricao: "Um dia de trabalho com banco de dados: responder perguntas do negócio com SELECT, WHERE, GROUP BY, JOIN e ORDER BY em duas tabelas, e informar o resultado que o banco devolveu.",
+        caminho: "Análise de Dados/dados-sql-analise-de-dados",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Limpeza de Dados em SQL",
+        descricao: "Um dia de trabalho de saneamento de base: usar SQL para contar nulos, achar duplicados e padronizar texto em uma tabela de cadastro de clientes bagunçada.",
+        caminho: "Análise de Dados/dados-sql-limpeza-de-dados",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Manipulação e Transformação de Dados em SQL",
+        descricao: "Um dia de trabalho de transformação de dados: juntar tabelas, criar colunas calculadas, classificar com CASE WHEN, agregar por período e comparar com a média usando subconsulta.",
+        caminho: "Análise de Dados/dados-sql-manipulacao-e-transformacao",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Clusterização de Dados e Métodos de Clusterização",
+        descricao: "Um dia de trabalho de segmentação de clientes: executar à mão uma rodada do algoritmo k-means em 14 clientes, calcular distâncias, atribuir grupos e recalcular centroides.",
+        caminho: "Análise de Dados/dados-clusterizacao-e-metodos",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Big Data e Análise Descritiva com Python",
+        descricao: "Um dia de trabalho com Python: entender os 5 Vs do Big Data e usar pandas para descrever uma base de vendas, com média, mediana, desvio padrão, receita total e agrupamento por região.",
+        caminho: "Análise de Dados/dados-big-data-e-python-descritiva",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Extração e Tratamento de Dados em Python e Gráficos com Matplotlib e Seaborn",
+        descricao: "Um dia de trabalho com Python: ler um arquivo CSV, tratar valores vazios, agrupar por filial e montar gráficos que contem a história dos dados.",
+        caminho: "Análise de Dados/dados-python-extracao-tratamento-e-graficos",
+      },
+    ],
   },
   {
     slug: "wordpress",
@@ -1314,6 +1407,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "EF",
     cor: "#0f766e",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Sistema Tributário Brasileiro e o Código Tributário Nacional",
+        descricao: "Um dia de trabalho no escritório de contabilidade: entender a natureza de cada tributo, localizar fato gerador, base de cálculo e alíquota e apurar o imposto de um mês inteiro de lançamentos.",
+        caminho: "Escrita Fiscal/escrita-fiscal-sistema-tributario-e-cnt",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Regimes Opcionais de Tributação",
+        descricao: "Um dia de trabalho de planejamento tributário: com o faturamento de 12 meses de uma empresa de serviços, comparar o Simples Nacional com o Lucro Presumido e recomendar o regime.",
+        caminho: "Escrita Fiscal/escrita-fiscal-regimes-de-tributacao",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Impostos Municipais (ISS e IPTU)",
+        descricao: "Um dia de trabalho com a rotina municipal: conferir as notas fiscais de serviço emitidas no mês, separar o ISS retido pelos clientes do ISS que a empresa recolhe e calcular o IPTU dos imóveis.",
+        caminho: "Escrita Fiscal/escrita-fiscal-impostos-municipais",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Impostos Estaduais (ICMS e IPVA)",
+        descricao: "Um dia de trabalho com o imposto estadual mais importante do comércio: apurar o ICMS do mês pela conta gráfica (débitos das vendas menos créditos das compras) e calcular o IPVA da frota.",
+        caminho: "Escrita Fiscal/escrita-fiscal-impostos-estaduais",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Impostos Federais (PIS, COFINS, IRPJ e CSLL)",
+        descricao: "Um dia de trabalho com a apuração federal de uma empresa no Lucro Real: PIS e COFINS não cumulativos do mês, com débito e crédito, e o IRPJ e a CSLL do ano.",
+        caminho: "Escrita Fiscal/escrita-fiscal-impostos-federais",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Nota Fiscal Eletrônica de Serviço e Conhecimento de Transporte Eletrônico (CT-e)",
+        descricao: "Um dia de trabalho com dois documentos eletrônicos: o CT-e de uma transportadora, com frete e ICMS por conhecimento, e a NFS-e de um prestador de serviços com retenções na fonte.",
+        caminho: "Escrita Fiscal/escrita-fiscal-nfse-e-cte",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Habilitando e Emitindo NF-e e Escrituração dos Livros Fiscais",
+        descricao: "Um dia de trabalho com a nota fiscal eletrônica: montar o total de uma NF-e de venda com descontos e frete e escriturar o Livro de Registro de Saídas, conferindo os totais por CFOP.",
+        caminho: "Escrita Fiscal/escrita-fiscal-nfe-e-livros-fiscais",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Fundamentos de Contabilidade, Escrituração, Obrigações Tributárias e Parcelamento de Débitos",
+        descricao: "Um dia de trabalho de fechamento: conferir um balancete de verificação, achar uma diferença de lançamento e simular o parcelamento de um débito tributário.",
+        caminho: "Escrita Fiscal/escrita-fiscal-contabilidade-e-parcelamento",
+      },
+    ],
   },
   {
     slug: "contabilidade",
@@ -1359,6 +1494,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "CE",
     cor: "#0369a1",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Conceitos de Estoque",
+        descricao: "Um dia de trabalho no almoxarifado: avaliar o estoque de 30 itens, achar quais já passaram do ponto de pedido e calcular quanto custa repô-los.",
+        caminho: "Compras e Estoque/compras-conceitos-de-estoque",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Gestão de Compras no Setor Privado",
+        descricao: "Um dia de trabalho no setor de compras de uma empresa privada: organizar as requisições do mês pela política de alçadas e entender como o ciclo de compras funciona.",
+        caminho: "Compras e Estoque/compras-gestao-setor-privado",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Gestão de Compras no Setor Público",
+        descricao: "Um dia de trabalho na área de licitações de um órgão público: conferir o resultado de um pregão com 12 itens, calcular a economia obtida e identificar lances acima do valor estimado.",
+        caminho: "Compras e Estoque/compras-gestao-setor-publico",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Cotação Profissional",
+        descricao: "Um dia de trabalho do comprador: montar o mapa de cotação de 12 itens com 4 fornecedores, somar o frete e decidir entre comprar tudo de um só fornecedor ou dividir o pedido.",
+        caminho: "Compras e Estoque/compras-cotacao-profissional",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Controle de Estoque",
+        descricao: "Um dia de trabalho de inventário: comparar o saldo do sistema com a contagem física de 28 itens, medir a acuracidade e valorizar as sobras e faltas.",
+        caminho: "Compras e Estoque/compras-controle-de-estoque",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Classificação ABC dos Materiais",
+        descricao: "Um dia de trabalho de priorização: classificar 30 materiais pela curva ABC, descobrir quais poucos itens concentram a maior parte do dinheiro e decidir onde colocar o esforço de controle.",
+        caminho: "Compras e Estoque/compras-curva-abc",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Movimentação de Materiais, Armazenagem e Recebimento",
+        descricao: "Um dia de trabalho na doca de recebimento: conferir a nota fiscal, o pedido e a contagem física de 18 itens, calcular o que pode ser aceito e planejar a ocupação das posições de armazenagem.",
+        caminho: "Compras e Estoque/compras-recebimento-e-armazenagem",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Separação de Materiais, Informática no Estoque e Introdução à Gestão da Qualidade",
+        descricao: "Um dia de trabalho de expedição: medir a produtividade da separação de 24 pedidos, calcular o indicador OTIF e a taxa de erro e propor melhorias com apoio do sistema de gestão de estoque.",
+        caminho: "Compras e Estoque/compras-separacao-informatica-e-qualidade",
+      },
+    ],
   },
   {
     slug: "assistente-administracao-financeira",

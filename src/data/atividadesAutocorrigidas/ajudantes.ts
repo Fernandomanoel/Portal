@@ -231,3 +231,77 @@ export function dissertativa(
     ],
   };
 }
+
+/** E-mail do gestor que abre o «dia de trabalho»: contexto real e a lista do que deve ser entregue. Não tem campo para responder. */
+export function briefing(
+  base: { id: string; titulo: string; remetente: string; assunto: string; paragrafos: string[]; entregas: string[] },
+): ItemAtividade {
+  const { id, titulo, remetente, assunto, paragrafos, entregas } = base;
+  return {
+    id,
+    titulo,
+    cenario: `De: ${remetente} · Assunto: ${assunto}`,
+    blocos: [
+      ...paragrafos.map((texto): BlocoConteudo => ({ tipo: "texto", texto })),
+      { tipo: "nota", variante: "objetivo", rotulo: "O que você deve entregar", texto: "", itens: entregas },
+    ],
+  };
+}
+
+/**
+ * Trabalho em outro sistema (SQL, Python, portal de notas...): as tabelas ficam no item,
+ * o aluno escreve o comando (conferido por `padrao`) e informa o resultado que o
+ * sistema devolveu, calculado aqui a partir das mesmas tabelas.
+ */
+export function consulta(
+  base: Base & {
+    instrucao: string;
+    tabelas: { nome: string; colunas: string[]; linhas: Celula[][] }[];
+    codigo?: { rotulo?: string; conteudo: string };
+    comandos: { id: string; rotulo: string; padrao: RegExp; placeholder?: string; dica: string }[];
+    resultados: { id: string; rotulo: string; valor: number; explicacao: string; tolerancia?: number }[];
+  },
+): ItemAtividade {
+  const { id, titulo, cenario, instrucao, tabelas, codigo, comandos, resultados } = base;
+  const blocos: BlocoConteudo[] = [];
+  if (codigo) blocos.push({ tipo: "codigo", conteudo: codigo.conteudo, rotulo: codigo.rotulo });
+  for (const t of tabelas) {
+    blocos.push({ tipo: "subtitulo", texto: t.nome });
+    blocos.push({
+      tipo: "tabela",
+      colunas: t.colunas,
+      // Sem separador de milhar e com ponto decimal: é o formato que SQL e Python aceitam ao importar.
+      linhas: t.linhas.map((l) => l.map((c) => String(c))),
+      copiavel: true,
+    });
+  }
+  return {
+    id,
+    titulo,
+    cenario,
+    instrucao,
+    blocos,
+    campos: [
+      ...comandos.map(
+        (c): Campo => ({
+          id: `${id}-${c.id}`,
+          rotulo: c.rotulo,
+          placeholder: c.placeholder ?? "Escreva o comando que você executou",
+          regra: { tipo: "padrao", padrao: c.padrao },
+          mensagemCerta: "Comando coerente com o pedido. Confira também o resultado abaixo.",
+          mensagemErrada: c.dica,
+        }),
+      ),
+      ...resultados.map(
+        (r): Campo => ({
+          id: `${id}-${r.id}`,
+          rotulo: r.rotulo,
+          placeholder: "Digite o resultado que o sistema devolveu",
+          regra: { tipo: "numero", esperado: arredondar(r.valor), tolerancia: r.tolerancia ?? 0.02 },
+          mensagemCerta: `Correto! ${r.explicacao}`,
+          mensagemErrada: `Confira o resultado. ${r.explicacao}`,
+        }),
+      ),
+    ],
+  };
+}

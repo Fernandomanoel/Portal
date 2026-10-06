@@ -280,7 +280,7 @@ function Bloco({ bloco }: { bloco: BlocoConteudo }) {
         </figure>
       );
     case "tabela":
-      return <Tabela colunas={bloco.colunas} linhas={bloco.linhas} />;
+      return <Tabela colunas={bloco.colunas} linhas={bloco.linhas} copiavel={bloco.copiavel} />;
     case "nota":
       return (
         <Nota tipo={bloco.variante} rotulo={bloco.rotulo ?? ROTULO_NOTA[bloco.variante]}>
