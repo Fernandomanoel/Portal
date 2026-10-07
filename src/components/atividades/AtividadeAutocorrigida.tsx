@@ -82,6 +82,20 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
 
             {item.blocos?.map((bloco, indiceBloco) => <Bloco key={indiceBloco} bloco={bloco} />)}
 
+            {item.download && (
+              <div className={estilos.download}>
+                <Icone nome="planilha" tamanho={28} className={estilos.downloadIcone} />
+                <div className={estilos.downloadTexto}>
+                  <strong>{item.download.nome}</strong>
+                  {item.download.descricao && <span>{item.download.descricao}</span>}
+                </div>
+                <a className={estilos.downloadBotao} href={item.download.url} download={item.download.nome}>
+                  <Icone nome="baixar" tamanho={16} />
+                  {item.download.rotulo}
+                </a>
+              </div>
+            )}
+
             {item.passos && item.passos.length > 0 && (
               <>
                 <h4 className={estilos.passosTitulo}>Tarefa</h4>

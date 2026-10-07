@@ -1545,6 +1545,16 @@ export const ATIVIDADES: Curso[] = [
         descricao: "Um dia de trabalho de expedição: medir a produtividade da separação de 24 pedidos, calcular o indicador OTIF e a taxa de erro e propor melhorias com apoio do sistema de gestão de estoque.",
         caminho: "Compras e Estoque/compras-separacao-informatica-e-qualidade",
       },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Configurando a Planilha de Controle de Estoque",
+        descricao: "Você monta a planilha que o almoxarifado vai usar: baixa o arquivo com 60 itens e configura valor em estoque, alerta de reposição, lista de tipos, formatação condicional, busca por código (PROCV), saldo com SOMASES e proteção.",
+        caminho: "Compras e Estoque/compras-planilha-estoque-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Preenchendo a Planilha de Estoque Já Configurada",
+        descricao: "Você baixa a planilha pronta e lança 89 documentos de setembro, com código errado, documento repetido, venda sem saldo e desconto acima da alçada, e fecha o mês: receita, descontos, perdas e estoque final.",
+        caminho: "Compras e Estoque/compras-planilha-estoque-preencher",
+      },
     ],
   },
   {

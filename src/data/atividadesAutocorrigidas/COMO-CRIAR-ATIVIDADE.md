@@ -146,3 +146,23 @@ partir dos mesmos dados da atividade e há uma pergunta de conferência para o a
 funciona. Antes de publicar, confira o gabarito rodando o código gerado de verdade (SQLite e pandas):
 diferenças de dialeto já mudaram resultados (UPPER do SQLite só trata ASCII; GROUP BY junta os NULL em um
 grupo). As imagens são do kit (`scripts/ilustracoes/telas/linguagens-colab-sql.mjs`), não prints.
+
+## Arquivo para baixar dentro da atividade
+
+Quando o aluno precisa trabalhar num arquivo de verdade (ex.: uma planilha
+`.xlsx`), coloque-o em `public/atividades/<slug>/` e use o campo `download`
+no item — o botão aparece no próprio item, sem sair da atividade:
+
+```ts
+download: {
+  url: "/atividades/compras-estoque/estoque-para-configurar.xlsx",
+  nome: "estoque-para-configurar.xlsx",
+  rotulo: "Baixar planilha",
+  descricao: "O que tem em cada aba.",
+},
+```
+
+As planilhas de estoque são geradas por `npm run planilhas`
+(`scripts/planilhas/`, precisa de Python com `openpyxl`) a partir de
+`dadosEstoque.ts`, para terem exatamente os números corrigidos pela
+atividade. Mudou os dados? Rode de novo.

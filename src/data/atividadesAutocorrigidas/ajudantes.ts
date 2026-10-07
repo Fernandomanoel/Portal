@@ -159,6 +159,7 @@ export function resposta(
 export type Celula = string | number;
 
 const FORMATO = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
+const PLANILHA = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2, useGrouping: false });
 
 export const somar = (valores: number[]) => valores.reduce((total, v) => total + v, 0);
 export const arredondar = (n: number, casas = 2) => Math.round(n * 10 ** casas) / 10 ** casas;
@@ -258,11 +259,13 @@ export function consulta(
     instrucao: string;
     tabelas: { nome: string; colunas: string[]; linhas: Celula[][] }[];
     codigo?: { rotulo?: string; conteudo: string };
+    /** "planilha": números com vírgula decimal (para colar no Excel em português); padrão: formato de banco/Python. */
+    formato?: "planilha" | "banco";
     comandos: { id: string; rotulo: string; padrao: RegExp; placeholder?: string; dica: string }[];
     resultados: { id: string; rotulo: string; valor: number; explicacao: string; tolerancia?: number }[];
   },
 ): ItemAtividade {
-  const { id, titulo, cenario, instrucao, tabelas, codigo, comandos, resultados } = base;
+  const { id, titulo, cenario, instrucao, tabelas, codigo, comandos, resultados, formato = "banco" } = base;
   const blocos: BlocoConteudo[] = [];
   if (codigo) blocos.push({ tipo: "codigo", conteudo: codigo.conteudo, rotulo: codigo.rotulo });
   for (const t of tabelas) {
@@ -271,7 +274,7 @@ export function consulta(
       tipo: "tabela",
       colunas: t.colunas,
       // Sem separador de milhar e com ponto decimal: é o formato que SQL e Python aceitam ao importar.
-      linhas: t.linhas.map((l) => l.map((c) => String(c))),
+      linhas: t.linhas.map((l) => l.map((c) => (typeof c === "number" && formato === "planilha" ? PLANILHA.format(c) : String(c)))),
       copiavel: true,
     });
   }

@@ -115,6 +115,9 @@ export interface ItemAtividade {
   campos?: Campo[];
   tabelaReferencia?: TabelaReferencia;
   imagem?: ImagemReferencia;
+  /** Arquivo que o aluno baixa dentro da própria atividade (ex.: a planilha
+   *  de trabalho). `url` aponta para `public/atividades/<slug>/...`. */
+  download?: { url: string; nome: string; rotulo: string; descricao?: string };
 }
 
 export interface AtividadeAutocorrigida {
