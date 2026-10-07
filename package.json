@@ -12,7 +12,7 @@
     "build:servidor": "rolldown servidor/local.ts --platform node --format esm --no-codeSplitting --file dist-servidor/servidor.mjs",
     "servidor": "node dist-servidor/servidor.mjs",
     "professor:senha": "node scripts/senha-professor.mjs",
-    "planilhas": "python3 scripts/planilhas/gerar_estoque.py \"$(node scripts/planilhas/exportar-estoque.mjs)\""
+    "planilhas": "python3 scripts/planilhas/gerar.py \"$(node scripts/planilhas/exportar.mjs)\""
   },
   "dependencies": {
     "@vercel/blob": "^2.8.0",

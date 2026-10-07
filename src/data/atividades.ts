@@ -133,6 +133,16 @@ export const ATIVIDADES: Curso[] = [
         descricao: "Novos cenários e formatos de interação para praticar rotinas de departamento pessoal.",
         caminho: "Departamento Pessoal/departamento-pessoal-novos-formatos-interacao",
       },
+      {
+        titulo: "Atividade Prática: Departamento Pessoal — Configurando a Planilha da Folha de Pagamento",
+        descricao: "Você baixa o cadastro de 40 funcionários e monta a folha: INSS progressivo, IRRF com desconto simplificado (PROCV aproximado), vale-transporte limitado a 6%, líquido, FGTS, validação, holerite por matrícula e proteção.",
+        caminho: "Departamento Pessoal/departamento-pessoal-planilha-folha-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Departamento Pessoal — Fechando a Folha na Planilha Já Configurada",
+        descricao: "Você baixa a folha pronta e lança as ocorrências de setembro (horas extras, domingo, faltas, atrasos e vales), com matrícula errada, repetição, atestado e hora extra acima do limite, e fecha os totais com DSR, INSS, IRRF e FGTS.",
+        caminho: "Departamento Pessoal/departamento-pessoal-planilha-folha-preencher",
+      },
     ],
   },
   {
@@ -164,6 +174,16 @@ export const ATIVIDADES: Curso[] = [
         titulo: "Atividade Prática: Gestão Financeira, Fluxo de Caixa e Controladoria",
         descricao: "Gestão financeira, controle de fluxo de caixa e rotinas de controladoria.",
         caminho: "Crédito e Cobrança/credito-cobranca-gestao-financeira-fluxo-caixa",
+      },
+      {
+        titulo: "Atividade Prática: Crédito e Cobrança — Configurando a Planilha de Contas a Receber",
+        descricao: "Você baixa a carteira de títulos e configura dias de atraso, faixas de vencimento (aging), multa e juros pro rata, resumo por faixa com SOMASES, alerta de cobrança e consulta por cliente.",
+        caminho: "Crédito e Cobrança/credito-cobranca-planilha-receber-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Crédito e Cobrança — Dando Baixa nos Recebimentos na Planilha Já Configurada",
+        descricao: "Você baixa a planilha pronta e lança o retorno do banco de setembro, com nota errada, crédito repetido, cliente que pagou duas vezes e pagamento sem juros, e fecha a carteira com o que vai para negativação.",
+        caminho: "Crédito e Cobrança/credito-cobranca-planilha-receber-preencher",
       },
     ],
   },
@@ -387,6 +407,16 @@ export const ATIVIDADES: Curso[] = [
         descricao:
           "Qualificação de leads entre Marketing e Vendas, prospecção via redes sociais, cadência de follow-up e cálculo de Win Rate.",
         caminho: "Vendas/vendas-social-selling-inside-sales",
+      },
+      {
+        titulo: "Atividade Prática: Vendas — Configurando a Planilha de Pedidos e Comissões",
+        descricao: "Você baixa a tabela de preços, as metas e os pedidos de agosto e configura preço por código, valor líquido, alerta de alçada de desconto, faturamento por vendedor, comissão escalonada e ranking.",
+        caminho: "Vendas/vendas-planilha-comissoes-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Vendas — Lançando os Pedidos na Planilha de Comissões Já Configurada",
+        descricao: "Você baixa a planilha pronta e lança os pedidos de setembro, com código errado, item repetido, pedido cancelado e desconto com e sem aprovação, e fecha faturamento e comissões do time.",
+        caminho: "Vendas/vendas-planilha-comissoes-preencher",
       },
     ],
   },
@@ -1605,6 +1635,16 @@ export const ATIVIDADES: Curso[] = [
         titulo: "Atividade Prática: Administração Financeira — Empréstimos, Financiamentos e Segurança da Informação",
         descricao: "Entenda a diferença entre empréstimo e financiamento, calcule as primeiras parcelas de um financiamento pelo sistema SAC e veja os cuidados de segurança em operações financeiras.",
         caminho: "Assistente de Administração Financeira/assistente-financeiro-emprestimos-seguranca",
+      },
+      {
+        titulo: "Atividade Prática: Assistente Financeiro — Configurando a Planilha de Fluxo de Caixa",
+        descricao: "Você baixa os recebimentos e pagamentos previstos para outubro e monta o saldo acumulado, o alerta de saldo negativo, a lista de categorias, os totais por categoria e os indicadores do pior momento do mês.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-planilha-fluxo-caixa-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Assistente Financeiro — Conciliação Bancária na Planilha Já Configurada",
+        descricao: "Você baixa a planilha pronta, lança o extrato de setembro e encontra tarifa não lançada, cheque não compensado, depósito em trânsito, valor digitado errado e lançamento em duplicidade até a conciliação fechar.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-planilha-conciliacao-preencher",
       },
     ],
   },

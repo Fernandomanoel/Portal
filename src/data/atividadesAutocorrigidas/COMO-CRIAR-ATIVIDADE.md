@@ -162,7 +162,21 @@ download: {
 },
 ```
 
-As planilhas de estoque são geradas por `npm run planilhas`
-(`scripts/planilhas/`, precisa de Python com `openpyxl`) a partir de
-`dadosEstoque.ts`, para terem exatamente os números corrigidos pela
-atividade. Mudou os dados? Rode de novo.
+As planilhas das atividades de «configurar» e «preencher» (Compras e Estoque,
+Departamento Pessoal, Crédito e Cobrança, Assistente de Administração
+Financeira e Vendas) são geradas por `npm run planilhas` a partir dos arquivos
+`dados*.ts` desta pasta (`dadosEstoque`, `dadosFolha`, `dadosCobranca`,
+`dadosCaixa`, `dadosVendas`), para terem exatamente os números corrigidos pela
+atividade. `scripts/planilhas/exportar.mjs` exporta os dados em JSON e cada
+área tem o seu gerador Python (`estoque.py`, `folha.py`, `cobranca.py`,
+`caixa.py`, `vendas.py`, com `openpyxl`). Mudou os dados? Rode de novo e depois
+confira as planilhas já configuradas:
+
+```sh
+python3 scripts/planilhas/conferir.py "$(node scripts/planilhas/exportar.mjs)"
+```
+
+O `conferir.py` preenche cada planilha configurada com os lançamentos certos,
+recalcula no LibreOffice (`soffice`, com o Calc instalado) e compara as
+fórmulas com os números da atividade — divergência é bug na planilha ou no
+`dados*.ts`, nunca «arredondamento».

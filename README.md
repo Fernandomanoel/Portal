@@ -26,6 +26,7 @@ O portal sobe em `http://localhost:5173`.
 | `npm run professor:senha` | Gera o login de um professor para `PROFESSORES` |
 | `npm run preview` | Serve o build de produção |
 | `npm run lint` | oxlint |
+| `npm run planilhas` | Gera as planilhas `.xlsx` baixadas nas atividades de «configurar» e «preencher» (precisa de Python com `openpyxl`); `scripts/planilhas/conferir.py` confere as fórmulas no LibreOffice |
 
 ## Estrutura
 

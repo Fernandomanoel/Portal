@@ -161,6 +161,8 @@ export type Celula = string | number;
 const FORMATO = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
 const PLANILHA = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2, useGrouping: false });
 
+const MOEDA = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+export const reais = (v: number) => MOEDA.format(v);
 export const somar = (valores: number[]) => valores.reduce((total, v) => total + v, 0);
 export const arredondar = (n: number, casas = 2) => Math.round(n * 10 ** casas) / 10 ** casas;
 
