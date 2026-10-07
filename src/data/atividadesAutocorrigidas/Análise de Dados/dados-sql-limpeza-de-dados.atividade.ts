@@ -1,9 +1,10 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
 import { briefing, consulta, dissertativa } from "../ajudantes";
+import { guiaSql } from "../guiasLinguagens";
 import { sorteio } from "../dadosFicticios";
 
 const r = sorteio(4404);
-const PESSOAS = ["Maria Silva", "João Santos", "Ana Costa", "Pedro Lima", "Carla Dias", "Rui Matos", "Bruna Reis", "Tiago Melo", "Lívia Faria", "Otávio Nunes", "Paula Rocha", "Sérgio Cunha"];
+const PESSOAS = ["Maria Silva", "Joao Santos", "Ana Costa", "Pedro Lima", "Carla Dias", "Rui Matos", "Bruna Reis", "Tiago Melo", "Livia Faria", "Otavio Nunes", "Paula Rocha", "Sergio Cunha"];
 const caixa = (s: string, modo: number) => (modo === 0 ? s : modo === 1 ? s.toUpperCase() : modo === 2 ? ` ${s.toLowerCase()} ` : `${s}  `);
 const ID = (n: number) => String(n);
 const LINHAS: (string | null)[][] = [];
@@ -47,6 +48,13 @@ const atividade: AtividadeAutocorrigida = {
         "Um plano de limpeza por escrito, com os riscos de apagar dados (etapa 6).",
       ],
     }),
+    ...guiaSql({
+      tabelas: [
+        { nome: "clientes_brutos", colunas: [{ nome: "id", tipo: "inteiro" }, { nome: "nome", tipo: "texto" }, { nome: "email", tipo: "texto" }, { nome: "telefone", tipo: "texto" }], linhas: LINHAS },
+      ],
+      consultaVerificacao: "SELECT COUNT(*) FROM clientes_brutos",
+      verificacao: { rotulo: "Resultado da consulta de exemplo: linhas da tabela", valor: LINHAS.length },
+    }),
     consulta({
       id: "nulos",
       titulo: "Etapa 2 — Verificação 1: e-mails em branco",
@@ -76,9 +84,9 @@ const atividade: AtividadeAutocorrigida = {
       id: "duplicados",
       titulo: "Etapa 4 — Verificação 3: e-mails que aparecem mais de uma vez",
       cenario: "Quais e-mails (padronizados) estão em mais de um cadastro?",
-      instrucao: "Use GROUP BY LOWER(TRIM(email)) e HAVING COUNT(*) > 1.",
+      instrucao: "Use GROUP BY LOWER(TRIM(email)) e HAVING COUNT(*) > 1. Atenção: os cadastros sem e-mail (NULL) formam um grupo próprio; ignore-os com WHERE email IS NOT NULL antes do GROUP BY, senão o resultado traz uma linha a mais.",
       tabelas: [],
-      comandos: [{ id: "sql", rotulo: "Seu comando SQL", padrao: /select[\s\S]+from\s+clientes_brutos[\s\S]+group\s+by[\s\S]+having\s+count\s*\(\s*\*\s*\)\s*>\s*1/i, dica: "Faltam o GROUP BY e o HAVING COUNT(*) > 1." }],
+      comandos: [{ id: "sql", rotulo: "Seu comando SQL", padrao: /select[\s\S]+from\s+clientes_brutos[\s\S]+group\s+by[\s\S]+having\s+count\s*\(\s*\*\s*\)\s*>\s*1/i, dica: "Faltam o GROUP BY e o HAVING COUNT(*) > 1 (e lembre de ignorar os e-mails NULL com WHERE)." }],
       resultados: [
         { id: "grupos", rotulo: "Resultado: quantidade de e-mails repetidos (linhas que o comando devolve)", valor: gruposDuplicados, explicacao: "Cada linha do resultado é um e-mail com mais de um cadastro.", tolerancia: 0 },
         { id: "a-mais", rotulo: "Cadastros a mais que seriam removidos mantendo um por e-mail", valor: emails.length - distintosNormalizados, explicacao: "E-mails preenchidos menos e-mails distintos padronizados.", tolerancia: 0 },

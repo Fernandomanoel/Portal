@@ -1,5 +1,6 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
 import { briefing, consulta, dissertativa, somar } from "../ajudantes";
+import { guiaSql } from "../guiasLinguagens";
 import { CIDADES, inteiro, sortear, sorteio } from "../dadosFicticios";
 
 const r = sorteio(4303);
@@ -40,6 +41,14 @@ const atividade: AtividadeAutocorrigida = {
         "Quatro consultas SQL e o resultado de cada uma (etapas 2 a 5).",
         "Uma interpretação por escrito dos resultados para o diretor (etapa 6).",
       ],
+    }),
+    ...guiaSql({
+      tabelas: [
+        { nome: "clientes", colunas: [{ nome: "id", tipo: "inteiro" }, { nome: "nome", tipo: "texto" }, { nome: "cidade", tipo: "texto" }], linhas: CLIENTES },
+        { nome: "pedidos", colunas: [{ nome: "id", tipo: "inteiro" }, { nome: "cliente_id", tipo: "inteiro" }, { nome: "data", tipo: "data" }, { nome: "valor", tipo: "decimal" }, { nome: "status", tipo: "texto" }], linhas: PEDIDOS },
+      ],
+      consultaVerificacao: "SELECT COUNT(*) FROM pedidos WHERE status = 'pago'",
+      verificacao: { rotulo: "Resultado da consulta de exemplo: pedidos pagos", valor: pagos.length },
     }),
     consulta({
       id: "faturamento-total",

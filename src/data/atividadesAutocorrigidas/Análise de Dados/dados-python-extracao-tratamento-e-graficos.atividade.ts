@@ -1,5 +1,6 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
 import { briefing, consulta, dissertativa, somar } from "../ajudantes";
+import { codigoCsv, guiaPython } from "../guiasLinguagens";
 import { decimal, sortear, sorteio } from "../dadosFicticios";
 
 const r = sorteio(4808);
@@ -41,6 +42,11 @@ const atividade: AtividadeAutocorrigida = {
         "Código dos dois gráficos (etapa 4).",
         "Uma explicação por escrito dos gráficos, escolhendo bem o tipo e as cores para quem decide (etapa 5).",
       ],
+    }),
+    ...guiaPython({
+      codigo: { rotulo: "Célula que cria o arquivo faturamento.csv (execute-a sozinha, como primeira linha da célula)", conteudo: codigoCsv("faturamento.csv", ["mes", "filial", "faturamento", "dias_uteis_com_promocao"], LINHAS) },
+      comandoVerificacao: "len(pd.read_csv(\"faturamento.csv\"))  (depois de import pandas as pd)",
+      verificacao: { rotulo: "Número de linhas de dados do arquivo (sem o cabeçalho)", valor: LINHAS.length },
     }),
     consulta({
       id: "leitura-e-tratamento",

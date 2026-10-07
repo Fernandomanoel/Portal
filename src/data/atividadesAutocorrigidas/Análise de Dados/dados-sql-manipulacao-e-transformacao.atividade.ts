@@ -1,5 +1,6 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
 import { briefing, consulta, dissertativa, somar } from "../ajudantes";
+import { guiaSql } from "../guiasLinguagens";
 import { decimal, inteiro, sorteio } from "../dadosFicticios";
 
 const r = sorteio(4505);
@@ -39,6 +40,14 @@ const atividade: AtividadeAutocorrigida = {
         "Quatro consultas e seus resultados (etapas 2 a 5).",
         "Um resumo gerencial por escrito (etapa 6).",
       ],
+    }),
+    ...guiaSql({
+      tabelas: [
+        { nome: "produtos", colunas: [{ nome: "id", tipo: "inteiro" }, { nome: "nome", tipo: "texto" }, { nome: "categoria", tipo: "texto" }, { nome: "preco", tipo: "decimal" }], linhas: PRODUTOS },
+        { nome: "vendas", colunas: [{ nome: "id", tipo: "inteiro" }, { nome: "produto_id", tipo: "inteiro" }, { nome: "quantidade", tipo: "inteiro" }, { nome: "data", tipo: "data" }], linhas: VENDAS },
+      ],
+      consultaVerificacao: "SELECT COUNT(*) FROM vendas",
+      verificacao: { rotulo: "Resultado da consulta de exemplo: linhas da tabela vendas", valor: VENDAS.length },
     }),
     consulta({
       id: "receita-por-categoria",

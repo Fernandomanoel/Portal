@@ -901,6 +901,11 @@ export const ATIVIDADES: Curso[] = [
     materiais: [],
     atividades: [
       {
+        titulo: "Guia para iniciantes: preparando o ambiente do Python",
+        descricao: "Passo a passo ilustrado: abrir o Google Colab, executar o primeiro código, carregar dados e entender os erros, com o porquê de cada passo.",
+        caminho: "Python/python-guia-para-iniciantes",
+      },
+      {
         titulo: "Fazendo o Primeiro Código",
         descricao: "Primeiro contato com Python: print(), comentários e tipos de dados básicos (texto, inteiro, decimal), com exercícios progressivos.",
         caminho: "Python/python-primeiro-codigo",
@@ -1091,6 +1096,11 @@ export const ATIVIDADES: Curso[] = [
       },
     ],
     atividades: [
+      {
+        titulo: "Guia para iniciantes: preparando o ambiente de SQL",
+        descricao: "Passo a passo ilustrado: criar o banco e as tabelas (Google Colab com SQLite ou XAMPP e MySQL Workbench), fazer a primeira consulta e entender os erros.",
+        caminho: "Banco de Dados SQL/sql-guia-para-iniciantes",
+      },
       {
         titulo: "Apostila — Banco de Dados SQL",
         descricao: "Introdução ao banco de dados.",

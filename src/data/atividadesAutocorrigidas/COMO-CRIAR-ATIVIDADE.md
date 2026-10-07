@@ -135,3 +135,14 @@ vem sempre dentro da página: `dadosFicticios.ts` gera tabelas grandes de forma 
 mesma tabela) e o gabarito é calculado no arquivo a partir delas. `consulta` mostra as tabelas com o botão de
 copiar (números sem separador de milhar, para importar em SQL/Python), confere o comando por `padrao` e o
 resultado por número. Modelos: `Escrita Fiscal/`, `Análise de Dados/` e `Inteligência Artificial II/`.
+
+### Atividades de Python e de SQL: guia de ambiente para iniciantes
+
+Atividade que exige executar código abre com o guia ilustrado de `guiasLinguagens.ts`: `guiaPython(...)`
+(Google Colab) ou `guiaSql(...)` (SQLite no Colab, ou XAMPP + MySQL Workbench), espalhado no começo de
+`itens` (`...guiaSql({...})`) logo depois do `briefing`. Cada passo traz imagem, o que clicar e um quadro
+«Por quê?». O código de preparação (tabelas com CREATE/INSERT, DataFrame ou CSV com `%%writefile`) é gerado a
+partir dos mesmos dados da atividade e há uma pergunta de conferência para o aluno provar que o ambiente
+funciona. Antes de publicar, confira o gabarito rodando o código gerado de verdade (SQLite e pandas):
+diferenças de dialeto já mudaram resultados (UPPER do SQLite só trata ASCII; GROUP BY junta os NULL em um
+grupo). As imagens são do kit (`scripts/ilustracoes/telas/linguagens-colab-sql.mjs`), não prints.

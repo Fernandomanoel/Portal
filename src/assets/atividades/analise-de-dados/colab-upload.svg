@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#cbd5e1"/>
+  <rect x="10" y="8" width="620" height="384" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="10" y="8" width="620" height="30" rx="10" fill="#e2e8f0"/>
+  <rect x="24" y="14" width="150" height="24" rx="8" fill="#ffffff"/>
+  <text x="36" y="30" font-size="10.5" fill="#1f2937">Google Colab</text>
+  <rect x="10" y="38" width="620" height="30" rx="0" fill="#f1f5f9"/>
+  <rect x="56" y="43" width="460" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="70" y="57" font-size="11" fill="#1f2937">colab.research.google.com/drive/…</text>
+  <circle cx="30" cy="53" r="5" fill="#cbd5e1"/><circle cx="46" cy="53" r="5" fill="#cbd5e1"/>
+  <circle cx="596" cy="53" r="11" fill="#7c3aed"/>  <text x="596" y="57" font-size="12" fill="#ffffff" font-weight="700" text-anchor="middle">A</text>
+  <rect x="10" y="68" width="250" height="280" rx="0" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="24" y="92" font-size="12" fill="#1f2937" font-weight="700">Arquivos</text>
+  <rect x="24" y="102" width="24" height="22" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+  <path d="M36 120 v-12 M31 113 l5 -5 l5 5" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="20" y="98" width="32" height="30" rx="6" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <rect x="20" y="98" width="32" height="30" rx="6" fill="none" stroke="#ea580c" stroke-width="5"/>
+  <rect x="56" y="102" width="24" height="22" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <path d="M74 110 a6 6 0 1 0 2 5" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round"/>
+  <path d="M24 140 h8 l2 3 h10 v11 h-20 z" fill="#f59e0b"/>  <text x="52" y="150" font-size="11" fill="#1f2937">..</text>  <path d="M24 168 h8 l2 3 h10 v11 h-20 z" fill="#f59e0b"/>  <text x="52" y="175" font-size="11" fill="#1f2937">sample_data</text>
+  <rect x="18" y="182" width="232" height="22" rx="4" fill="#e0f2fe"/>
+  <rect x="26" y="187" width="11" height="13" rx="2" fill="#ffffff" stroke="#64748b"/>  <text x="44" y="197" font-size="11" fill="#1f2937" font-weight="700">faturamento.csv</text>
+  <rect x="24" y="238" width="222" height="76" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="1"/>
+  <text x="32" y="258" font-size="10.5" fill="#1f2937">O arquivo fica guardado só</text>
+  <text x="32" y="274" font-size="10.5" fill="#1f2937">enquanto a sessão estiver aberta.</text>
+  <text x="32" y="292" font-size="10.5" fill="#1f2937" font-weight="700">Fechou? Envie de novo.</text>
+  <rect x="276" y="100" width="340" height="70" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="288" y="128" font-size="12" fill="#1f2937" font-family="Consolas, Menlo, monospace" xml:space="preserve">import pandas as pd</text>
+  <text x="288" y="148" font-size="12" fill="#1f2937" font-family="Consolas, Menlo, monospace" xml:space="preserve">df = pd.read_csv("faturamento.csv")</text>
+  <rect x="276" y="182" width="340" height="46" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="288" y="210" font-size="12" fill="#047857" font-family="Consolas, Menlo, monospace" xml:space="preserve">df.shape   →   (24, 4)</text>
+  <text x="276" y="262" font-size="10.5" fill="#1f2937" font-weight="700">O nome entre aspas precisa ser IGUAL ao do arquivo</text>
+  <text x="276" y="278" font-size="10.5" fill="#1f2937">(maiúsculas, acentos e .csv no fim).</text>
+  <rect x="20" y="338" width="600" height="50" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="1"/>
+  <circle cx="34" cy="353" r="10" fill="#b45309"/>
+  <text x="34" y="357" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">1</text>
+  <text x="50" y="357" font-size="10.5" fill="#1f2937">No painel Arquivos, clique no ícone de enviar</text>
+  <circle cx="334" cy="353" r="10" fill="#b45309"/>
+  <text x="334" y="357" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">2</text>
+  <text x="350" y="357" font-size="10.5" fill="#1f2937">Escolha o arquivo .csv no seu computador</text>
+  <circle cx="34" cy="371" r="10" fill="#b45309"/>
+  <text x="34" y="375" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">3</text>
+  <text x="50" y="375" font-size="10.5" fill="#1f2937">Use o mesmo nome no código</text>
+</svg>

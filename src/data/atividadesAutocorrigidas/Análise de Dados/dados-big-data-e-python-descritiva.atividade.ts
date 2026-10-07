@@ -1,5 +1,6 @@
 import type { AtividadeAutocorrigida } from "@/types/atividadeAutocorrigida";
 import { associar, briefing, consulta, dissertativa, somar } from "../ajudantes";
+import { codigoDataFrame, guiaPython } from "../guiasLinguagens";
 import { decimal, inteiro, sortear, sorteio } from "../dadosFicticios";
 
 const r = sorteio(4707);
@@ -41,6 +42,11 @@ const atividade: AtividadeAutocorrigida = {
         "Quatro comandos em pandas com os resultados (etapas 2 e 3).",
         "Um parágrafo sobre os 5 Vs e sobre os limites de uma amostra pequena (etapa 5).",
       ],
+    }),
+    ...guiaPython({
+      codigo: { rotulo: "Código pronto: cria o DataFrame df com as 20 vendas", conteudo: codigoDataFrame(["id", "produto", "regiao", "quantidade", "preco"], DF.map((l) => [Number(l[0]), l[1], l[2], l[3], l[4]])) },
+      comandoVerificacao: "df.shape",
+      verificacao: { rotulo: "Número de linhas do df (primeiro número de df.shape)", valor: DF.length },
     }),
     associar({
       id: "cinco-vs",
