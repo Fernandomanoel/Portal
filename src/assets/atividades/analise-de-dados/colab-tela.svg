@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#cbd5e1"/>
+  <rect x="10" y="8" width="620" height="384" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="10" y="8" width="620" height="30" rx="10" fill="#e2e8f0"/>
+  <rect x="24" y="14" width="150" height="24" rx="8" fill="#ffffff"/>
+  <text x="36" y="30" font-size="10.5" fill="#1f2937">Google Colab</text>
+  <rect x="10" y="38" width="620" height="30" rx="0" fill="#f1f5f9"/>
+  <rect x="56" y="43" width="460" height="20" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="70" y="57" font-size="11" fill="#1f2937">colab.research.google.com/drive/…</text>
+  <circle cx="30" cy="53" r="5" fill="#cbd5e1"/><circle cx="46" cy="53" r="5" fill="#cbd5e1"/>
+  <circle cx="596" cy="53" r="11" fill="#7c3aed"/>  <text x="596" y="57" font-size="12" fill="#ffffff" font-weight="700" text-anchor="middle">A</text>
+  <g><rect x="22" y="74" width="26" height="22" rx="6" fill="#f9ab00"/>  <text x="35" y="90" font-size="11" fill="#ffffff" font-weight="700" text-anchor="middle">CO</text></g>
+  <text x="56" y="90" font-size="12" fill="#1f2937" font-weight="700">Sem título0.ipynb</text>
+  <rect x="48" y="76" width="134" height="20" rx="4" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="540" y="76" width="78" height="22" rx="11" fill="#1d4ed8"/>
+  <text x="579" y="91" font-size="10" fill="#ffffff" font-weight="700" text-anchor="middle">Compartilhar</text>
+  <text x="76" y="116" font-size="10.5" fill="#1f2937">Arquivo</text>
+  <text x="134.7" y="116" font-size="10.5" fill="#1f2937">Editar</text>
+  <text x="187.29999999999998" y="116" font-size="10.5" fill="#1f2937">Ver</text>
+  <text x="221.59999999999997" y="116" font-size="10.5" fill="#1f2937">Inserir</text>
+  <text x="280.29999999999995" y="116" font-size="10.5" fill="#1f2937">Ambiente de execução</text>
+  <text x="418.29999999999995" y="116" font-size="10.5" fill="#1f2937">Ferramentas</text>
+  <text x="501.4" y="116" font-size="10.5" fill="#1f2937">Ajuda</text>
+  <rect x="10" y="124" width="620" height="1" rx="0" fill="#e2e8f0"/>
+  <rect x="62" y="130" width="74" height="22" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="99" y="145" font-size="10.5" fill="#1f2937" font-weight="700" text-anchor="middle">+ Código</text>
+  <rect x="142" y="130" width="74" height="22" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="179" y="145" font-size="10.5" fill="#1f2937" text-anchor="middle">+ Texto</text>
+  <rect x="10" y="124" width="40" height="224" rx="0" fill="#f8fafc"/>
+  <text x="30" y="150" font-size="10" fill="#6b7280" text-anchor="middle">{x}</text>
+  <rect x="18" y="168" width="24" height="22" rx="4" fill="#fde68a"/>
+  <path d="M22 176 h7 l2 3 h9 v10 h-18 z" fill="#f59e0b"/>
+  <circle cx="80" cy="190" r="14" fill="#475569"/><path d="M75.8 183.7 L87 190 L75.8 196.3 Z" fill="#ffffff"/>
+  <rect x="100" y="164" width="512" height="52" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="112" y="195" font-size="13" fill="#1f2937" font-family="Consolas, Menlo, monospace" xml:space="preserve">print("Olá, mundo!")</text>
+  <rect x="100" y="228" width="512" height="44" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="112" y="255" font-size="13" fill="#047857" font-family="Consolas, Menlo, monospace" xml:space="preserve">Olá, mundo!</text>
+  <circle cx="190" cy="90" r="10" fill="#b45309"/>
+  <text x="190" y="94" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">1</text>
+  <circle cx="99" cy="126" r="10" fill="#b45309"/>
+  <text x="99" y="130" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">2</text>
+  <circle cx="80" cy="164" r="10" fill="#b45309"/>
+  <text x="80" y="168" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">3</text>
+  <circle cx="612" cy="160" r="10" fill="#b45309"/>
+  <text x="612" y="164" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">4</text>
+  <circle cx="612" cy="224" r="10" fill="#b45309"/>
+  <text x="612" y="228" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">5</text>
+  <circle cx="30" cy="160" r="10" fill="#b45309"/>
+  <text x="30" y="164" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">6</text>
+  <rect x="20" y="320" width="600" height="68" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="1"/>
+  <circle cx="34" cy="335" r="10" fill="#b45309"/>
+  <text x="34" y="339" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">1</text>
+  <text x="50" y="339" font-size="10.5" fill="#1f2937">Nome do notebook (clique para trocar)</text>
+  <circle cx="334" cy="335" r="10" fill="#b45309"/>
+  <text x="334" y="339" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">2</text>
+  <text x="350" y="339" font-size="10.5" fill="#1f2937">Adiciona uma célula de código</text>
+  <circle cx="34" cy="353" r="10" fill="#b45309"/>
+  <text x="34" y="357" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">3</text>
+  <text x="50" y="357" font-size="10.5" fill="#1f2937">Botão executar a célula</text>
+  <circle cx="334" cy="353" r="10" fill="#b45309"/>
+  <text x="334" y="357" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">4</text>
+  <text x="350" y="357" font-size="10.5" fill="#1f2937">Célula: onde você escreve</text>
+  <circle cx="34" cy="371" r="10" fill="#b45309"/>
+  <text x="34" y="375" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">5</text>
+  <text x="50" y="375" font-size="10.5" fill="#1f2937">Saída: o resultado aparece aqui</text>
+  <circle cx="334" cy="371" r="10" fill="#b45309"/>
+  <text x="334" y="375" font-size="11" text-anchor="middle" fill="#ffffff" font-weight="700">6</text>
+  <text x="350" y="375" font-size="10.5" fill="#1f2937">Painel Arquivos (pasta)</text>
+</svg>

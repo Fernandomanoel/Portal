@@ -1,6 +1,7 @@
 import type { AtividadeIngles } from "@/types/ingles";
 import { ConversasReaisIngles } from "./ConversasReaisIngles";
 import { DialogosIngles } from "./DialogosIngles";
+import { RedacaoIngles } from "./RedacaoIngles";
 import { ExerciciosIngles } from "./ExerciciosIngles";
 import { TextosFaladosIngles } from "./TextosFaladosIngles";
 
@@ -16,5 +17,7 @@ export function PraticaIngles({ atividade }: { atividade: AtividadeIngles }) {
       return <TextosFaladosIngles key={atividade.slug} atividade={atividade} textos={conteudo.textos} />;
     case "conversas":
       return <ConversasReaisIngles key={atividade.slug} atividade={atividade} conversas={conteudo.conversas} />;
+    case "redacao":
+      return <RedacaoIngles key={atividade.slug} atividade={atividade} redacao={conteudo.redacao} />;
   }
 }

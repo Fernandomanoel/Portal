@@ -100,13 +100,90 @@ export interface ConversaReal {
   perguntas: PerguntaCompreensao[];
 }
 
+/** Bloco de explicação da redação: o texto é em português; `exemplos` traz frases-modelo em inglês. */
+export type BlocoRedacao =
+  | { tipo: "texto"; texto: string }
+  | { tipo: "lista"; itens: string[]; numerada?: boolean }
+  | { tipo: "exemplos"; titulo?: string; itens: { en: string; pt?: string }[] }
+  | { tipo: "tabela"; colunas: string[]; linhas: string[][] }
+  | { tipo: "dica"; texto: string }
+  | { tipo: "atencao"; texto: string };
+
+export interface SecaoRedacao {
+  titulo: string;
+  blocos: BlocoRedacao[];
+}
+
+/** Um critério oficial de correção (as "métricas" do exame) e como ele vira autoavaliação. */
+export interface CriterioRedacao {
+  /** Nome oficial, em inglês ("Task Response"). */
+  nome: string;
+  traducao: string;
+  /** Peso na nota da redação ("25%"). */
+  peso: string;
+  /** O que o examinador observa. */
+  avalia: string;
+  /** Como é uma redação de nota alta nesse critério. */
+  notaAlta: string;
+  /** O que mais tira ponto. */
+  tiraPonto: string;
+  /** Itens que o aluno confere na própria redação antes de terminar. */
+  checklist: string[];
+}
+
+export interface ParagrafoModelo {
+  /** Função do parágrafo ("Introdução", "Desenvolvimento 1"). */
+  papel: string;
+  en: string;
+  pt: string;
+  /** Por que esse parágrafo funciona, ligado aos critérios. */
+  comentario: string;
+}
+
+/** O enunciado da redação, como aparece no exame. */
+export interface PropostaRedacao {
+  exame: "IELTS" | "TOEFL";
+  /** Nome da tarefa no exame ("Writing Task 2"). */
+  tarefa: string;
+  minutos: number;
+  /** Mínimo de palavras exigido ou recomendado. */
+  minPalavras: number;
+  /** Enunciado em inglês, um parágrafo por item. */
+  enunciado: string[];
+  /** O que o enunciado pede, explicado em português. */
+  enunciadoPt: string;
+  /** Dados da tarefa (tabela do IELTS Task 1). */
+  tabela?: { titulo: string; colunas: string[]; linhas: string[][] };
+  /** Fórum da tarefa Academic Discussion do TOEFL: a pergunta do professor e as respostas dos colegas. */
+  discussao?: { professor: { nome: string; texto: string }; colegas: { nome: string; texto: string }[] };
+  /** Tópicos que o texto precisa cobrir (o e-mail do TOEFL). */
+  topicos?: string[];
+}
+
+/** Pergunta do treino: múltipla escolha com explicação, ou montar a frase (como o "Build a Sentence" do TOEFL). */
+export type QuestaoTreinoRedacao =
+  | ({ tipo?: "multipla" } & PerguntaCompreensao)
+  | { tipo: "ordenar"; pergunta: string; palavras: string[]; extras?: string[]; explicacao: string };
+
+export interface Redacao {
+  proposta: PropostaRedacao;
+  /** "Como é a tarefa": formato, estrutura, planejamento, frases-modelo e erros comuns. */
+  guia: SecaoRedacao[];
+  /** Escala de notas do exame, das faixas mais altas às mais baixas. */
+  escala: { titulo: string; nota?: string; faixas: { nota: string; descricao: string }[] };
+  criterios: CriterioRedacao[];
+  modelo: { titulo: string; nota: string; paragrafos: ParagrafoModelo[] };
+  treino: QuestaoTreinoRedacao[];
+}
+
 export type ConteudoIngles =
   | { tipo: "exercicios"; exercicios: ExercicioIngles[]; vocabulario?: ItemVocabulario[] }
   | { tipo: "dialogos"; dialogos: Dialogo[] }
   | { tipo: "textos"; textos: TextoFalado[] }
-  | { tipo: "conversas"; conversas: ConversaReal[] };
+  | { tipo: "conversas"; conversas: ConversaReal[] }
+  | { tipo: "redacao"; redacao: Redacao };
 
-export type TrilhaIngles = "vocabulario" | "ouvir-ler" | "frases" | "gabi" | "vida-real" | "textos";
+export type TrilhaIngles = "vocabulario" | "ouvir-ler" | "frases" | "gabi" | "vida-real" | "textos" | "redacao";
 
 /** Inglês é uma trilha própria: tem atividades e provas separadas do fluxo geral. */
 export interface AtividadeIngles {
@@ -121,7 +198,7 @@ export interface AtividadeIngles {
   conteudo: ConteudoIngles;
 }
 
-export type NivelIngles = "Básico" | "Intermediário";
+export type NivelIngles = "Básico" | "Intermediário" | "Avançado";
 
 /** Atividade de inglês que mora em outra seção (ex.: jogo de digitação) e aparece na trilha como atalho. */
 export interface AtalhoIngles {

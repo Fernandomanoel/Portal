@@ -11,6 +11,11 @@ import frasesPerguntas from "./inglesAtividades/frases-perguntas";
 import frasesRotina from "./inglesAtividades/frases-rotina";
 import oucaELeia1 from "./inglesAtividades/ouca-e-leia-1";
 import oucaELeia2 from "./inglesAtividades/ouca-e-leia-2";
+import redacaoIeltsDiscussao from "./inglesAtividades/redacao-ielts-discussao";
+import redacaoIeltsOpiniao from "./inglesAtividades/redacao-ielts-opiniao";
+import redacaoIeltsTabela from "./inglesAtividades/redacao-ielts-tabela";
+import redacaoToeflDiscussao from "./inglesAtividades/redacao-toefl-discussao";
+import redacaoToeflEmail from "./inglesAtividades/redacao-toefl-email";
 import textosApresentacoes from "./inglesAtividades/textos-apresentacoes";
 import textosAvisos from "./inglesAtividades/textos-avisos";
 import textosDiscursos from "./inglesAtividades/textos-discursos";
@@ -40,6 +45,11 @@ export const ATIVIDADES_INGLES: AtividadeIngles[] = [
   textosApresentacoes,
   textosDiscursos,
   textosAvisos,
+  redacaoIeltsOpiniao,
+  redacaoIeltsDiscussao,
+  redacaoIeltsTabela,
+  redacaoToeflDiscussao,
+  redacaoToeflEmail,
 ];
 
 export interface Trilha {
@@ -64,6 +74,13 @@ export const TRILHAS_INGLES: Trilha[] = [
     cor: "#0f766e",
   },
   { id: "textos", titulo: "Discursos e avisos", descricao: "Textos mais longos para ouvir e ler, com perguntas de compreensão.", icone: "megafone", cor: "#4338ca" },
+  {
+    id: "redacao",
+    titulo: "Redação para exames (TOEFL e IELTS)",
+    descricao: "Nível avançado: como cada redação é montada, os critérios que dão a nota, um modelo comentado, treino e a sua redação com cronômetro e métricas.",
+    icone: "lapis",
+    cor: "#9f1239",
+  },
   { id: "jogos", titulo: "Jogos", descricao: "Inglês fora das práticas, em outras seções do portal.", icone: "musica", cor: "#be123c" },
 ];
 
@@ -94,6 +111,8 @@ export function totalDeTarefas(atividade: AtividadeIngles): number {
       return conteudo.textos.reduce((soma, texto) => soma + texto.perguntas.length, 0);
     case "conversas":
       return conteudo.conversas.reduce((soma, conversa) => soma + conversa.perguntas.length, 0);
+    case "redacao":
+      return conteudo.redacao.treino.length;
   }
 }
 
@@ -111,5 +130,9 @@ export function resumoDaAtividade(atividade: AtividadeIngles): string {
       return `${conteudo.textos.length} textos · ${totalDeTarefas(atividade)} perguntas`;
     case "conversas":
       return `${conteudo.conversas.length} conversas · ${conteudo.conversas.reduce((soma, c) => soma + c.expressoes.length, 0)} expressões`;
+    case "redacao": {
+      const { proposta, treino } = conteudo.redacao;
+      return `${proposta.exame} · ${proposta.minutos} min · ${proposta.minPalavras}+ palavras · ${treino.length} questões de treino`;
+    }
   }
 }

@@ -133,6 +133,16 @@ export const ATIVIDADES: Curso[] = [
         descricao: "Novos cenários e formatos de interação para praticar rotinas de departamento pessoal.",
         caminho: "Departamento Pessoal/departamento-pessoal-novos-formatos-interacao",
       },
+      {
+        titulo: "Atividade Prática: Departamento Pessoal — Configurando a Planilha da Folha de Pagamento",
+        descricao: "Você baixa o cadastro de 40 funcionários e monta a folha: INSS progressivo, IRRF com desconto simplificado (PROCV aproximado), vale-transporte limitado a 6%, líquido, FGTS, validação, holerite por matrícula e proteção.",
+        caminho: "Departamento Pessoal/departamento-pessoal-planilha-folha-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Departamento Pessoal — Fechando a Folha na Planilha Já Configurada",
+        descricao: "Você baixa a folha pronta e lança as ocorrências de setembro (horas extras, domingo, faltas, atrasos e vales), com matrícula errada, repetição, atestado e hora extra acima do limite, e fecha os totais com DSR, INSS, IRRF e FGTS.",
+        caminho: "Departamento Pessoal/departamento-pessoal-planilha-folha-preencher",
+      },
     ],
   },
   {
@@ -164,6 +174,16 @@ export const ATIVIDADES: Curso[] = [
         titulo: "Atividade Prática: Gestão Financeira, Fluxo de Caixa e Controladoria",
         descricao: "Gestão financeira, controle de fluxo de caixa e rotinas de controladoria.",
         caminho: "Crédito e Cobrança/credito-cobranca-gestao-financeira-fluxo-caixa",
+      },
+      {
+        titulo: "Atividade Prática: Crédito e Cobrança — Configurando a Planilha de Contas a Receber",
+        descricao: "Você baixa a carteira de títulos e configura dias de atraso, faixas de vencimento (aging), multa e juros pro rata, resumo por faixa com SOMASES, alerta de cobrança e consulta por cliente.",
+        caminho: "Crédito e Cobrança/credito-cobranca-planilha-receber-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Crédito e Cobrança — Dando Baixa nos Recebimentos na Planilha Já Configurada",
+        descricao: "Você baixa a planilha pronta e lança o retorno do banco de setembro, com nota errada, crédito repetido, cliente que pagou duas vezes e pagamento sem juros, e fecha a carteira com o que vai para negativação.",
+        caminho: "Crédito e Cobrança/credito-cobranca-planilha-receber-preencher",
       },
     ],
   },
@@ -387,6 +407,16 @@ export const ATIVIDADES: Curso[] = [
         descricao:
           "Qualificação de leads entre Marketing e Vendas, prospecção via redes sociais, cadência de follow-up e cálculo de Win Rate.",
         caminho: "Vendas/vendas-social-selling-inside-sales",
+      },
+      {
+        titulo: "Atividade Prática: Vendas — Configurando a Planilha de Pedidos e Comissões",
+        descricao: "Você baixa a tabela de preços, as metas e os pedidos de agosto e configura preço por código, valor líquido, alerta de alçada de desconto, faturamento por vendedor, comissão escalonada e ranking.",
+        caminho: "Vendas/vendas-planilha-comissoes-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Vendas — Lançando os Pedidos na Planilha de Comissões Já Configurada",
+        descricao: "Você baixa a planilha pronta e lança os pedidos de setembro, com código errado, item repetido, pedido cancelado e desconto com e sem aprovação, e fecha faturamento e comissões do time.",
+        caminho: "Vendas/vendas-planilha-comissoes-preencher",
       },
     ],
   },
@@ -901,6 +931,11 @@ export const ATIVIDADES: Curso[] = [
     materiais: [],
     atividades: [
       {
+        titulo: "Guia para iniciantes: preparando o ambiente do Python",
+        descricao: "Passo a passo ilustrado: abrir o Google Colab, executar o primeiro código, carregar dados e entender os erros, com o porquê de cada passo.",
+        caminho: "Python/python-guia-para-iniciantes",
+      },
+      {
         titulo: "Fazendo o Primeiro Código",
         descricao: "Primeiro contato com Python: print(), comentários e tipos de dados básicos (texto, inteiro, decimal), com exercícios progressivos.",
         caminho: "Python/python-primeiro-codigo",
@@ -1019,6 +1054,57 @@ export const ATIVIDADES: Curso[] = [
     ],
   },
   {
+    slug: "inteligencia-artificial-2",
+    titulo: "Inteligência Artificial II",
+    descricao: "IA aplicada ao trabalho: automação, análise de dados, prompts, segurança, vídeos, Canva e relatórios.",
+    categoria: "informatica",
+    sigla: "I2",
+    cor: "#4d9f3a",
+    materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Fundamentos e Aplicações Práticas da IA",
+        descricao: "Um dia de trabalho de consultor interno: mapear 20 tarefas de um escritório, estimar quanto tempo a IA poderia liberar e decidir por onde começar um piloto, sem esquecer o risco de cada tarefa.",
+        caminho: "Inteligência Artificial II/ia2-fundamentos-e-aplicacoes-praticas",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Automatizando Tarefas Repetitivas com IA e Realizando Tarefas Inéditas",
+        descricao: "Um dia de trabalho de projeto de automação: medir quanto uma IA acerta ao classificar e-mails de atendimento, calcular o tempo e o custo economizados, e desenhar o fluxo de automação com revisão humana.",
+        caminho: "Inteligência Artificial II/ia2-automatizando-tarefas-repetitivas",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Análise de Dados Potencializada com IA",
+        descricao: "Um dia de trabalho com o assistente de IA: pedir uma análise de dados, conferir cada afirmação dele contra os números reais e descobrir onde ele errou.",
+        caminho: "Inteligência Artificial II/ia2-analise-de-dados-potencializada-com-ia",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Tendências e Inovações",
+        descricao: "Um dia de trabalho de planejamento de inovação: priorizar 12 ideias de uso de IA por impacto, esforço e custo, escolher as que cabem no orçamento e escrever uma visão de tendências para a diretoria.",
+        caminho: "Inteligência Artificial II/ia2-tendencias-e-inovacoes",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Dominando a Técnica de Prompt",
+        descricao: "Um dia de trabalho de treinamento de equipe: avaliar 8 prompts com uma rubrica, entender o que separa um pedido vago de um bom prompt, e escrever e melhorar o seu próprio.",
+        caminho: "Inteligência Artificial II/ia2-tecnica-de-prompt",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Otimizando sua Rotina com IA: Segurança e Ética no Uso da IA",
+        descricao: "Um dia de trabalho de proteção de dados: classificar 20 informações do dia a dia pela sensibilidade, decidir o que pode e o que não pode ser colado em uma IA pública e escrever a política de uso responsável da empresa.",
+        caminho: "Inteligência Artificial II/ia2-seguranca-e-etica-no-uso-da-ia",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Vídeos com IA Generativa e Apresentações Interativas no Canva",
+        descricao: "Um dia de trabalho de comunicação: planejar um vídeo curto com cenas geradas por IA, calcular duração e uso de créditos, montar uma apresentação no Canva com hiperlinks, botões e animações e conferir o que ficou pronto.",
+        caminho: "Inteligência Artificial II/ia2-videos-e-apresentacoes-no-canva",
+      },
+      {
+        titulo: "Atividade Prática: Inteligência Artificial II — Relatórios com Auxílio de IA no Power BI e no Excel e Tabelas Vinculadas",
+        descricao: "Um dia de trabalho de analista de BI: ligar uma tabela de vendas a uma tabela de produtos pela chave, calcular receita, margem e categorias com PROCV/PROCX e medidas DAX e usar o assistente de IA para acelerar o relatório, sempre conferindo os números.",
+        caminho: "Inteligência Artificial II/ia2-relatorios-e-tabelas-vinculadas",
+      },
+    ],
+  },
+  {
     slug: "banco-dados-sql",
     titulo: "Banco de Dados | SQL",
     descricao: "Atividades de Banco de Dados",
@@ -1040,6 +1126,11 @@ export const ATIVIDADES: Curso[] = [
       },
     ],
     atividades: [
+      {
+        titulo: "Guia para iniciantes: preparando o ambiente de SQL",
+        descricao: "Passo a passo ilustrado: criar o banco e as tabelas (Google Colab com SQLite ou XAMPP e MySQL Workbench), fazer a primeira consulta e entender os erros.",
+        caminho: "Banco de Dados SQL/sql-guia-para-iniciantes",
+      },
       {
         titulo: "Apostila — Banco de Dados SQL",
         descricao: "Introdução ao banco de dados.",
@@ -1110,6 +1201,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "AN",
     cor: "#059669",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Análise de Dados — Introdução, Estrutura e Ciclo de Vida da Análise de Dados",
+        descricao: "Um dia de trabalho de analista júnior: receber uma base de pesquisa «suja», limpar, conferir e só então calcular.",
+        caminho: "Análise de Dados/dados-introducao-e-ciclo-de-vida",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Fundamentos Estatísticos para Análise de Dados",
+        descricao: "Um dia de trabalho de analista: descrever 30 dias de vendas com média, mediana, desvio padrão, quartis e valores atípicos, e explicar o que cada medida diz ao gestor.",
+        caminho: "Análise de Dados/dados-fundamentos-estatisticos",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Análise de Dados em SQL",
+        descricao: "Um dia de trabalho com banco de dados: responder perguntas do negócio com SELECT, WHERE, GROUP BY, JOIN e ORDER BY em duas tabelas, e informar o resultado que o banco devolveu.",
+        caminho: "Análise de Dados/dados-sql-analise-de-dados",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Limpeza de Dados em SQL",
+        descricao: "Um dia de trabalho de saneamento de base: usar SQL para contar nulos, achar duplicados e padronizar texto em uma tabela de cadastro de clientes bagunçada.",
+        caminho: "Análise de Dados/dados-sql-limpeza-de-dados",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Manipulação e Transformação de Dados em SQL",
+        descricao: "Um dia de trabalho de transformação de dados: juntar tabelas, criar colunas calculadas, classificar com CASE WHEN, agregar por período e comparar com a média usando subconsulta.",
+        caminho: "Análise de Dados/dados-sql-manipulacao-e-transformacao",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Clusterização de Dados e Métodos de Clusterização",
+        descricao: "Um dia de trabalho de segmentação de clientes: executar à mão uma rodada do algoritmo k-means em 14 clientes, calcular distâncias, atribuir grupos e recalcular centroides.",
+        caminho: "Análise de Dados/dados-clusterizacao-e-metodos",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Big Data e Análise Descritiva com Python",
+        descricao: "Um dia de trabalho com Python: entender os 5 Vs do Big Data e usar pandas para descrever uma base de vendas, com média, mediana, desvio padrão, receita total e agrupamento por região.",
+        caminho: "Análise de Dados/dados-big-data-e-python-descritiva",
+      },
+      {
+        titulo: "Atividade Prática: Análise de Dados — Extração e Tratamento de Dados em Python e Gráficos com Matplotlib e Seaborn",
+        descricao: "Um dia de trabalho com Python: ler um arquivo CSV, tratar valores vazios, agrupar por filial e montar gráficos que contem a história dos dados.",
+        caminho: "Análise de Dados/dados-python-extracao-tratamento-e-graficos",
+      },
+    ],
   },
   {
     slug: "wordpress",
@@ -1128,6 +1261,33 @@ export const ATIVIDADES: Curso[] = [
     sigla: "HT",
     cor: "#e34c26",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Meu Primeiro HTML",
+        descricao: "O que é HTML, a estrutura básica de uma página, as tags h1, p e img, e como abrir o arquivo no navegador.",
+        caminho: "HTML/html-meu-primeiro-html",
+      },
+      {
+        titulo: "Textos, Listas e Links em HTML",
+        descricao: "Títulos, parágrafos, ênfase, listas com marcadores e numeradas, e links para sites, páginas e e-mail.",
+        caminho: "HTML/html-textos-listas-e-links",
+      },
+      {
+        titulo: "Imagens e Tabelas em HTML",
+        descricao: "Imagens com src, alt e tamanho, e tabelas com cabeçalho, linhas e células.",
+        caminho: "HTML/html-imagens-e-tabelas",
+      },
+      {
+        titulo: "Formulários em HTML",
+        descricao: "Campos de texto, e-mail, lista, escolha e envio, com labels ligados corretamente e validação básica.",
+        caminho: "HTML/html-formularios",
+      },
+      {
+        titulo: "Projeto Final: Minha Página Completa em HTML Semântico",
+        descricao: "Junte tudo em uma página com header, nav, main, section, article e footer, com lista, tabela, imagem, links e formulário.",
+        caminho: "HTML/html-pagina-completa-semantica",
+      },
+    ],
   },
   {
     slug: "css",
@@ -1173,6 +1333,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "IR",
     cor: "#0ea5e9",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Internet — A Evolução da Internet e os Tipos de Acesso",
+        descricao: "De onde a internet veio, qual a diferença entre internet e web e como cada tipo de conexão chega até você.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-evolucao-e-acesso",
+      },
+      {
+        titulo: "Atividade Prática: Internet — A Internet e a Segurança da Informação",
+        descricao: "Golpes, senhas fracas e links falsos são as principais portas de entrada de problemas.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-seguranca-da-informacao",
+      },
+      {
+        titulo: "Atividade Prática: Internet — O Poder do seu E-mail",
+        descricao: "O e-mail é a ferramenta de comunicação formal do trabalho.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-email-profissional",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Criando Formulários e Gerenciando Dados",
+        descricao: "Formulários on-line coletam informações de muita gente de uma vez e as organizam em planilha.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-formularios-e-dados",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Tarefas, Reuniões e Videoconferências",
+        descricao: "Organizar tarefas e conduzir reuniões on-line são rotinas do trabalho moderno.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-tarefas-reunioes-videoconferencia",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Ferramentas na Nuvem e Compartilhamento de Arquivos",
+        descricao: "Documentos, planilhas e apresentações podem viver na nuvem e ser editados por várias pessoas ao mesmo tempo.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-nuvem-produtividade-e-arquivos",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Aplicativos para Dispositivos Móveis",
+        descricao: "O celular virou ferramenta de trabalho.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-aplicativos-moveis",
+      },
+      {
+        titulo: "Atividade Prática: Internet — Redes Sociais, Marketing Social Digital e Estratégia",
+        descricao: "Redes sociais são canais de relacionamento e vendas.",
+        caminho: "Internet Redes Sociais e Aplicativos/internet-redes-sociais-marketing-digital",
+      },
+    ],
   },
   {
     slug: "internet-outlook",
@@ -1245,6 +1447,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "EF",
     cor: "#0f766e",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Sistema Tributário Brasileiro e o Código Tributário Nacional",
+        descricao: "Um dia de trabalho no escritório de contabilidade: entender a natureza de cada tributo, localizar fato gerador, base de cálculo e alíquota e apurar o imposto de um mês inteiro de lançamentos.",
+        caminho: "Escrita Fiscal/escrita-fiscal-sistema-tributario-e-cnt",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Regimes Opcionais de Tributação",
+        descricao: "Um dia de trabalho de planejamento tributário: com o faturamento de 12 meses de uma empresa de serviços, comparar o Simples Nacional com o Lucro Presumido e recomendar o regime.",
+        caminho: "Escrita Fiscal/escrita-fiscal-regimes-de-tributacao",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Impostos Municipais (ISS e IPTU)",
+        descricao: "Um dia de trabalho com a rotina municipal: conferir as notas fiscais de serviço emitidas no mês, separar o ISS retido pelos clientes do ISS que a empresa recolhe e calcular o IPTU dos imóveis.",
+        caminho: "Escrita Fiscal/escrita-fiscal-impostos-municipais",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Impostos Estaduais (ICMS e IPVA)",
+        descricao: "Um dia de trabalho com o imposto estadual mais importante do comércio: apurar o ICMS do mês pela conta gráfica (débitos das vendas menos créditos das compras) e calcular o IPVA da frota.",
+        caminho: "Escrita Fiscal/escrita-fiscal-impostos-estaduais",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Impostos Federais (PIS, COFINS, IRPJ e CSLL)",
+        descricao: "Um dia de trabalho com a apuração federal de uma empresa no Lucro Real: PIS e COFINS não cumulativos do mês, com débito e crédito, e o IRPJ e a CSLL do ano.",
+        caminho: "Escrita Fiscal/escrita-fiscal-impostos-federais",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Nota Fiscal Eletrônica de Serviço e Conhecimento de Transporte Eletrônico (CT-e)",
+        descricao: "Um dia de trabalho com dois documentos eletrônicos: o CT-e de uma transportadora, com frete e ICMS por conhecimento, e a NFS-e de um prestador de serviços com retenções na fonte.",
+        caminho: "Escrita Fiscal/escrita-fiscal-nfse-e-cte",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Habilitando e Emitindo NF-e e Escrituração dos Livros Fiscais",
+        descricao: "Um dia de trabalho com a nota fiscal eletrônica: montar o total de uma NF-e de venda com descontos e frete e escriturar o Livro de Registro de Saídas, conferindo os totais por CFOP.",
+        caminho: "Escrita Fiscal/escrita-fiscal-nfe-e-livros-fiscais",
+      },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Fundamentos de Contabilidade, Escrituração, Obrigações Tributárias e Parcelamento de Débitos",
+        descricao: "Um dia de trabalho de fechamento: conferir um balancete de verificação, achar uma diferença de lançamento e simular o parcelamento de um débito tributário.",
+        caminho: "Escrita Fiscal/escrita-fiscal-contabilidade-e-parcelamento",
+      },
+    ],
   },
   {
     slug: "contabilidade",
@@ -1290,6 +1534,58 @@ export const ATIVIDADES: Curso[] = [
     sigla: "CE",
     cor: "#0369a1",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Conceitos de Estoque",
+        descricao: "Um dia de trabalho no almoxarifado: avaliar o estoque de 30 itens, achar quais já passaram do ponto de pedido e calcular quanto custa repô-los.",
+        caminho: "Compras e Estoque/compras-conceitos-de-estoque",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Gestão de Compras no Setor Privado",
+        descricao: "Um dia de trabalho no setor de compras de uma empresa privada: organizar as requisições do mês pela política de alçadas e entender como o ciclo de compras funciona.",
+        caminho: "Compras e Estoque/compras-gestao-setor-privado",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Gestão de Compras no Setor Público",
+        descricao: "Um dia de trabalho na área de licitações de um órgão público: conferir o resultado de um pregão com 12 itens, calcular a economia obtida e identificar lances acima do valor estimado.",
+        caminho: "Compras e Estoque/compras-gestao-setor-publico",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Cotação Profissional",
+        descricao: "Um dia de trabalho do comprador: montar o mapa de cotação de 12 itens com 4 fornecedores, somar o frete e decidir entre comprar tudo de um só fornecedor ou dividir o pedido.",
+        caminho: "Compras e Estoque/compras-cotacao-profissional",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Controle de Estoque",
+        descricao: "Um dia de trabalho de inventário: comparar o saldo do sistema com a contagem física de 28 itens, medir a acuracidade e valorizar as sobras e faltas.",
+        caminho: "Compras e Estoque/compras-controle-de-estoque",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Classificação ABC dos Materiais",
+        descricao: "Um dia de trabalho de priorização: classificar 30 materiais pela curva ABC, descobrir quais poucos itens concentram a maior parte do dinheiro e decidir onde colocar o esforço de controle.",
+        caminho: "Compras e Estoque/compras-curva-abc",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Movimentação de Materiais, Armazenagem e Recebimento",
+        descricao: "Um dia de trabalho na doca de recebimento: conferir a nota fiscal, o pedido e a contagem física de 18 itens, calcular o que pode ser aceito e planejar a ocupação das posições de armazenagem.",
+        caminho: "Compras e Estoque/compras-recebimento-e-armazenagem",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Separação de Materiais, Informática no Estoque e Introdução à Gestão da Qualidade",
+        descricao: "Um dia de trabalho de expedição: medir a produtividade da separação de 24 pedidos, calcular o indicador OTIF e a taxa de erro e propor melhorias com apoio do sistema de gestão de estoque.",
+        caminho: "Compras e Estoque/compras-separacao-informatica-e-qualidade",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Configurando a Planilha de Controle de Estoque",
+        descricao: "Você monta a planilha que o almoxarifado vai usar: baixa o arquivo com 60 itens e configura valor em estoque, alerta de reposição, lista de tipos, formatação condicional, busca por código (PROCV), saldo com SOMASES e proteção.",
+        caminho: "Compras e Estoque/compras-planilha-estoque-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Compras e Estoque — Preenchendo a Planilha de Estoque Já Configurada",
+        descricao: "Você baixa a planilha pronta e lança 89 documentos de setembro, com código errado, documento repetido, venda sem saldo e desconto acima da alçada, e fecha o mês: receita, descontos, perdas e estoque final.",
+        caminho: "Compras e Estoque/compras-planilha-estoque-preencher",
+      },
+    ],
   },
   {
     slug: "assistente-administracao-financeira",
@@ -1299,6 +1595,58 @@ export const ATIVIDADES: Curso[] = [
     sigla: "AF",
     cor: "#15803d",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Administração Financeira — História e o Papel do Assistente Financeiro",
+        descricao: "Como a administração financeira nasceu e mudou, o que ela faz dentro de uma empresa e onde o assistente financeiro se encaixa.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-papel-e-evolucao",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Construindo Planilhas Orçamentárias",
+        descricao: "O orçamento é a previsão de receitas e despesas de um período.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-planilhas-orcamentarias",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Calculando Porcentagem",
+        descricao: "A porcentagem aparece em descontos, comissões, impostos e margens.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-porcentagem",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Juros e Sistemas de Capitalização",
+        descricao: "Juros são o preço do dinheiro no tempo.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-juros-capitalizacao",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Contas a Pagar e a Receber",
+        descricao: "O dia a dia do assistente financeiro gira em torno do que a empresa deve pagar e do que tem a receber.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-contas-pagar-receber",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Conciliação Bancária e Fatura de Cartão",
+        descricao: "Conciliar é conferir se o controle interno da empresa bate com o extrato do banco e com a fatura do cartão.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-conciliacao-bancaria-cartao",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Antecipação de Recebíveis, Factoring e Banco",
+        descricao: "Antecipar recebíveis transforma uma venda a prazo em dinheiro hoje, mas com um custo.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-antecipacao-recebiveis",
+      },
+      {
+        titulo: "Atividade Prática: Administração Financeira — Empréstimos, Financiamentos e Segurança da Informação",
+        descricao: "Entenda a diferença entre empréstimo e financiamento, calcule as primeiras parcelas de um financiamento pelo sistema SAC e veja os cuidados de segurança em operações financeiras.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-emprestimos-seguranca",
+      },
+      {
+        titulo: "Atividade Prática: Assistente Financeiro — Configurando a Planilha de Fluxo de Caixa",
+        descricao: "Você baixa os recebimentos e pagamentos previstos para outubro e monta o saldo acumulado, o alerta de saldo negativo, a lista de categorias, os totais por categoria e os indicadores do pior momento do mês.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-planilha-fluxo-caixa-configurar",
+      },
+      {
+        titulo: "Atividade Prática: Assistente Financeiro — Conciliação Bancária na Planilha Já Configurada",
+        descricao: "Você baixa a planilha pronta, lança o extrato de setembro e encontra tarifa não lançada, cheque não compensado, depósito em trânsito, valor digitado errado e lançamento em duplicidade até a conciliação fechar.",
+        caminho: "Assistente de Administração Financeira/assistente-financeiro-planilha-conciliacao-preencher",
+      },
+    ],
   },
   {
     slug: "comunicacao-oratoria",
@@ -1317,6 +1665,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "CU",
     cor: "#92400e",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Custos — Noções sobre a Contabilidade de Custos",
+        descricao: "Antes de calcular, é preciso falar a mesma língua: gasto, custo, despesa, investimento e perda não são sinônimos.",
+        caminho: "Custos/custos-nocoes-contabilidade",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Comportamento dos Custos de Produção",
+        descricao: "Alguns custos não mudam quando a produção cresce; outros crescem junto.",
+        caminho: "Custos/custos-comportamento-fixos-variaveis",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Rateio dos Custos de Produção",
+        descricao: "Custos indiretos servem a vários produtos ao mesmo tempo.",
+        caminho: "Custos/custos-rateio-custos-de-producao",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Sistemas de Custeio Padrão e Ideal",
+        descricao: "O custo padrão é a meta de quanto cada unidade deveria custar.",
+        caminho: "Custos/custos-padrao-e-ideal",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Sistemas por Centros de Custos e Custeio ABC",
+        descricao: "Os centros de custos agrupam gastos por departamento.",
+        caminho: "Custos/custos-centros-e-abc",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Alavancagem Operacional e Financeira",
+        descricao: "Alavancagem mostra o quanto uma variação nas vendas é ampliada no lucro.",
+        caminho: "Custos/custos-alavancagem-operacional-financeira",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Análise Custo, Volume e Lucro e Avaliação de Estoques com Inflação",
+        descricao: "Descubra quantas unidades é preciso vender para não ter prejuízo e veja como o método de avaliar estoques muda o custo e o lucro quando os preços sobem.",
+        caminho: "Custos/custos-volume-lucro-e-estoques",
+      },
+      {
+        titulo: "Atividade Prática: Custos — Preço de Venda por Markup e Demonstração de Resultados",
+        descricao: "Formar o preço de venda é cobrir o custo, os tributos, as comissões e ainda deixar o lucro desejado.",
+        caminho: "Custos/custos-preco-de-venda-markup-resultados",
+      },
+    ],
   },
   {
     slug: "marketing-pessoal",
@@ -1407,6 +1797,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "MF",
     cor: "#4338ca",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Proporcionalidade e Grandezas Proporcionais",
+        descricao: "Regra de três e divisão proporcional estão por trás de preços, cotações e rateio de lucros.",
+        caminho: "Matemática Financeira/matematica-financeira-proporcionalidade",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Porcentagem e Potenciação",
+        descricao: "Porcentagens sucessivas e potências são a ponte para os juros compostos.",
+        caminho: "Matemática Financeira/matematica-financeira-porcentagem-potenciacao",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Operações Mercantis",
+        descricao: "Comprar e vender gera lucro ou prejuízo.",
+        caminho: "Matemática Financeira/matematica-financeira-operacoes-mercantis",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Juros Simples",
+        descricao: "No regime de juros simples, a taxa incide sempre sobre o capital inicial.",
+        caminho: "Matemática Financeira/matematica-financeira-juros-simples",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Juros Compostos",
+        descricao: "Nos juros compostos, os juros de cada período entram na base do período seguinte.",
+        caminho: "Matemática Financeira/matematica-financeira-juros-compostos",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Taxas de Juros Efetivas e Equivalentes",
+        descricao: "Taxas anunciadas em um período podem não ser as taxas reais de outro.",
+        caminho: "Matemática Financeira/matematica-financeira-taxas-efetivas-equivalentes",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Taxas de Inflação e Correção Monetária",
+        descricao: "A inflação reduz o poder de compra do dinheiro.",
+        caminho: "Matemática Financeira/matematica-financeira-inflacao-correcao-monetaria",
+      },
+      {
+        titulo: "Atividade Prática: Matemática Financeira — Investimentos, Fluxo de Caixa, VPL, TIR e Payback",
+        descricao: "Para decidir se um investimento vale a pena, a empresa projeta o fluxo de caixa e o traz a valor presente.",
+        caminho: "Matemática Financeira/matematica-financeira-investimentos-fluxo-de-caixa",
+      },
+    ],
   },
   {
     slug: "empreendedorismo",
@@ -1425,6 +1857,48 @@ export const ATIVIDADES: Curso[] = [
     sigla: "GA",
     cor: "#34a853",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Google Ads — Entrando no Mundo do AdWords: Estrutura e Planejamento",
+        descricao: "O Google Ads (antigo AdWords) coloca anúncios diante de quem está procurando o que você vende.",
+        caminho: "Google Adwords/adwords-estrutura-e-planejamento",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Iniciando a Primeira Campanha",
+        descricao: "Criar a primeira campanha é decidir o objetivo, a rede, o local, o orçamento e como o lance será feito.",
+        caminho: "Google Adwords/adwords-primeira-campanha",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Cliques Qualificados e Análise das Métricas",
+        descricao: "Não basta ter cliques: é preciso ter cliques de quem realmente pode comprar.",
+        caminho: "Google Adwords/adwords-metricas-e-cliques-qualificados",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Locais, Palavras-chave e Investimento",
+        descricao: "Melhorar o desempenho é mostrar o anúncio ao público certo, com as palavras certas, ajustando o dinheiro para onde ele dá mais resultado.",
+        caminho: "Google Adwords/adwords-locais-palavras-chave-investimento",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Grupos de Anúncios, Status e Tipos de Correspondência",
+        descricao: "Grupos de anúncios bem organizados, anúncios aprovados e o tipo de correspondência certo definem quem vê o seu anúncio e quanto isso custa.",
+        caminho: "Google Adwords/adwords-grupos-anuncios-correspondencia",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Extensões de Anúncio e Sitelinks",
+        descricao: "Extensões acrescentam informação ao anúncio — telefone, endereço, links extras — sem custo adicional por si só.",
+        caminho: "Google Adwords/adwords-extensoes-de-anuncio",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Trabalhando com a Rede de Display e as Intenções",
+        descricao: "A Rede de Display mostra anúncios visuais em milhões de sites e aplicativos.",
+        caminho: "Google Adwords/adwords-rede-de-display-e-intencoes",
+      },
+      {
+        titulo: "Atividade Prática: Google Ads — Criando uma Campanha de Sucesso e Analisando os Resultados",
+        descricao: "Uma campanha de sucesso é a que traz retorno acima do investimento.",
+        caminho: "Google Adwords/adwords-campanha-de-sucesso-resultados",
+      },
+    ],
   },
 ];
 

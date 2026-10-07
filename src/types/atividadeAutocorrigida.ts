@@ -71,7 +71,7 @@ export type BlocoConteudo =
   | { tipo: "subtitulo"; texto: string }
   | { tipo: "lista"; itens: string[]; numerada?: boolean }
   | { tipo: "codigo"; conteudo: string; rotulo?: string; terminal?: boolean }
-  | { tipo: "tabela"; colunas: string[]; linhas: string[][] }
+  | { tipo: "tabela"; colunas: string[]; linhas: string[][]; /** Mostra o botão «Copiar planilha» (dados para colar no Excel ou importar em um banco). */ copiavel?: boolean }
   | { tipo: "nota"; variante: "objetivo" | "desafio" | "aviso" | "dica"; rotulo?: string; texto: string; itens?: string[] };
 
 /**
@@ -115,6 +115,9 @@ export interface ItemAtividade {
   campos?: Campo[];
   tabelaReferencia?: TabelaReferencia;
   imagem?: ImagemReferencia;
+  /** Arquivo que o aluno baixa dentro da própria atividade (ex.: a planilha
+   *  de trabalho). `url` aponta para `public/atividades/<slug>/...`. */
+  download?: { url: string; nome: string; rotulo: string; descricao?: string };
 }
 
 export interface AtividadeAutocorrigida {

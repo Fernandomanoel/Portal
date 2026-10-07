@@ -100,3 +100,83 @@ pergunta em `campos` — atividade só com exercícios práticos não mostra o b
   partir do zero.
 - Não use prints de filmes, séries ou memes, nem imagens de sites de terceiros.
 - Sem emoji no texto: ícones do portal vêm de `src/components/Icone.tsx`.
+
+## Campo em que o aluno escreve código (HTML, CSS...)
+
+Para conferir um trecho de código de uma linha (`<img src="…" alt="…">`, `<!DOCTYPE html>`), use a
+regra `padrao` com uma expressão regular que aceite as variações (ordem dos atributos, aspas simples
+ou duplas). **Não use a regra `texto`**: o filtro de "digitação aleatória" dela reprova código
+(`html` não tem vogais, um link não tem espaços). Exemplo: `HTML/html-pagina-completa-semantica`.
+
+## Atalho para questões repetidas (`ajudantes.ts`)
+
+Para atividades feitas de várias perguntas do mesmo tipo (apostilas de Custos,
+Matemática Financeira, Google Ads...), `src/data/atividadesAutocorrigidas/ajudantes.ts`
+tem montadores que devolvem o mesmo `ItemAtividade`, sem repetir `campos`/`regra`/mensagens:
+`escolha` (múltipla escolha), `calculo` e `calculos` (resposta numérica; vírgula decimal aceita),
+`associar` (um seletor por linha) e `resposta` (texto livre, com `chave` opcional para exigir os
+pontos principais). Exemplo em `Custos/custos-centros-e-abc.atividade.ts`.
+
+### Planilha e dissertativa dentro da atividade
+
+`planilha(...)` põe a tabela de dados **dentro do item** (com o botão «Copiar planilha para colar no
+Excel») e pede os resultados em campos numéricos; os valores esperados são calculados no próprio arquivo
+a partir das mesmas `linhas` (use `somar`/`arredondar`), então a conferência nunca destoa da tabela.
+`dissertativa(...)` lista o que a resposta precisa trazer e exige texto de verdade com os pontos-chave
+(`chave`). Modelo completo: `Custos/custos-centros-e-abc.atividade.ts`. O material nunca fica fora da
+atividade: nada de planilha em `public/` com link para baixar.
+
+### «Dia de trabalho»: imersão com dados grandes e trabalho em outro sistema
+
+Para atividades em que o aluno executa a tarefa fora do portal (Excel, SQL, Python, Power BI, portal de
+notas), a atividade é uma sequência: `briefing(...)` (o e-mail do gestor, com o que entregar), uma ou mais
+`planilha(...)` ou `consulta(...)` com os dados e os resultados, e `dissertativa(...)` de entrega. O material
+vem sempre dentro da página: `dadosFicticios.ts` gera tabelas grandes de forma determinística (mesma semente,
+mesma tabela) e o gabarito é calculado no arquivo a partir delas. `consulta` mostra as tabelas com o botão de
+copiar (números sem separador de milhar, para importar em SQL/Python), confere o comando por `padrao` e o
+resultado por número. Modelos: `Escrita Fiscal/`, `Análise de Dados/` e `Inteligência Artificial II/`.
+
+### Atividades de Python e de SQL: guia de ambiente para iniciantes
+
+Atividade que exige executar código abre com o guia ilustrado de `guiasLinguagens.ts`: `guiaPython(...)`
+(Google Colab) ou `guiaSql(...)` (SQLite no Colab, ou XAMPP + MySQL Workbench), espalhado no começo de
+`itens` (`...guiaSql({...})`) logo depois do `briefing`. Cada passo traz imagem, o que clicar e um quadro
+«Por quê?». O código de preparação (tabelas com CREATE/INSERT, DataFrame ou CSV com `%%writefile`) é gerado a
+partir dos mesmos dados da atividade e há uma pergunta de conferência para o aluno provar que o ambiente
+funciona. Antes de publicar, confira o gabarito rodando o código gerado de verdade (SQLite e pandas):
+diferenças de dialeto já mudaram resultados (UPPER do SQLite só trata ASCII; GROUP BY junta os NULL em um
+grupo). As imagens são do kit (`scripts/ilustracoes/telas/linguagens-colab-sql.mjs`), não prints.
+
+## Arquivo para baixar dentro da atividade
+
+Quando o aluno precisa trabalhar num arquivo de verdade (ex.: uma planilha
+`.xlsx`), coloque-o em `public/atividades/<slug>/` e use o campo `download`
+no item — o botão aparece no próprio item, sem sair da atividade:
+
+```ts
+download: {
+  url: "/atividades/compras-estoque/estoque-para-configurar.xlsx",
+  nome: "estoque-para-configurar.xlsx",
+  rotulo: "Baixar planilha",
+  descricao: "O que tem em cada aba.",
+},
+```
+
+As planilhas das atividades de «configurar» e «preencher» (Compras e Estoque,
+Departamento Pessoal, Crédito e Cobrança, Assistente de Administração
+Financeira e Vendas) são geradas por `npm run planilhas` a partir dos arquivos
+`dados*.ts` desta pasta (`dadosEstoque`, `dadosFolha`, `dadosCobranca`,
+`dadosCaixa`, `dadosVendas`), para terem exatamente os números corrigidos pela
+atividade. `scripts/planilhas/exportar.mjs` exporta os dados em JSON e cada
+área tem o seu gerador Python (`estoque.py`, `folha.py`, `cobranca.py`,
+`caixa.py`, `vendas.py`, com `openpyxl`). Mudou os dados? Rode de novo e depois
+confira as planilhas já configuradas:
+
+```sh
+python3 scripts/planilhas/conferir.py "$(node scripts/planilhas/exportar.mjs)"
+```
+
+O `conferir.py` preenche cada planilha configurada com os lançamentos certos,
+recalcula no LibreOffice (`soffice`, com o Calc instalado) e compara as
+fórmulas com os números da atividade — divergência é bug na planilha ou no
+`dados*.ts`, nunca «arredondamento».

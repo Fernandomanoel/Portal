@@ -82,6 +82,20 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
 
             {item.blocos?.map((bloco, indiceBloco) => <Bloco key={indiceBloco} bloco={bloco} />)}
 
+            {item.download && (
+              <div className={estilos.download}>
+                <Icone nome="planilha" tamanho={28} className={estilos.downloadIcone} />
+                <div className={estilos.downloadTexto}>
+                  <strong>{item.download.nome}</strong>
+                  {item.download.descricao && <span>{item.download.descricao}</span>}
+                </div>
+                <a className={estilos.downloadBotao} href={item.download.url} download={item.download.nome}>
+                  <Icone nome="baixar" tamanho={16} />
+                  {item.download.rotulo}
+                </a>
+              </div>
+            )}
+
             {item.passos && item.passos.length > 0 && (
               <>
                 <h4 className={estilos.passosTitulo}>Tarefa</h4>
@@ -109,7 +123,7 @@ export function AtividadeAutocorrigidaVisao({ atividade }: Props) {
             )}
 
             {item.tabelaReferencia && (
-              <Tabela colunas={item.tabelaReferencia.colunas} linhas={item.tabelaReferencia.linhas} />
+              <Tabela colunas={item.tabelaReferencia.colunas} linhas={item.tabelaReferencia.linhas} copiavel />
             )}
 
             {item.desafio && (
@@ -201,7 +215,21 @@ function ComLinks({ texto }: { texto: string }) {
   return <>{partes}</>;
 }
 
-function Tabela({ colunas, linhas }: { colunas: string[]; linhas: string[][] }) {
+function Tabela({ colunas, linhas, copiavel }: { colunas: string[]; linhas: string[][]; copiavel?: boolean }) {
+  const [copiada, definirCopiada] = useState(false);
+
+  async function copiar() {
+    // Separado por tabulação: o Excel e o Planilhas Google colam cada valor na sua célula.
+    const texto = [colunas, ...linhas].map((linha) => linha.join("\t")).join("\n");
+    try {
+      await navigator.clipboard.writeText(texto);
+      definirCopiada(true);
+      window.setTimeout(() => definirCopiada(false), 2500);
+    } catch {
+      definirCopiada(false);
+    }
+  }
+
   return (
     <div className={estilos.tabelaEnvoltorio}>
       <table className={estilos.tabela}>
@@ -222,6 +250,12 @@ function Tabela({ colunas, linhas }: { colunas: string[]; linhas: string[][] }) 
           ))}
         </tbody>
       </table>
+      {copiavel && (
+        <button type="button" className={estilos.copiarTabela} onClick={copiar}>
+          <Icone nome="doc" tamanho={16} />
+          {copiada ? "Copiado! Cole no Excel ou no Planilhas Google" : "Copiar planilha para colar no Excel"}
+        </button>
+      )}
     </div>
   );
 }
@@ -260,7 +294,7 @@ function Bloco({ bloco }: { bloco: BlocoConteudo }) {
         </figure>
       );
     case "tabela":
-      return <Tabela colunas={bloco.colunas} linhas={bloco.linhas} />;
+      return <Tabela colunas={bloco.colunas} linhas={bloco.linhas} copiavel={bloco.copiavel} />;
     case "nota":
       return (
         <Nota tipo={bloco.variante} rotulo={bloco.rotulo ?? ROTULO_NOTA[bloco.variante]}>

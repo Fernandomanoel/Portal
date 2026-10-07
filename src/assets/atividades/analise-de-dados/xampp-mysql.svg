@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#cbd5e1"/>
+  <rect x="24" y="20" width="592" height="360" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+  <rect x="24" y="20" width="592" height="28" rx="8" fill="#ea580c"/>
+  <text x="40" y="39" font-size="12" fill="#ffffff" font-weight="700">XAMPP Control Panel v3</text>
+  <text x="40" y="76" font-size="11" fill="#6b7280" font-weight="700">Modules</text>
+  <text x="120" y="76" font-size="11" fill="#6b7280" font-weight="700">Module</text>
+  <text x="204" y="76" font-size="11" fill="#6b7280" font-weight="700">PID(s)</text>
+  <text x="266" y="76" font-size="11" fill="#6b7280" font-weight="700">Port(s)</text>
+  <text x="366" y="76" font-size="11" fill="#6b7280" font-weight="700">Actions</text>
+  <rect x="34" y="90" width="572" height="34" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="128" y="112" font-size="12" fill="#1f2937">Apache</text>
+
+  <rect x="366" y="95" width="54" height="24" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+  <text x="393" y="111" font-size="11" fill="#1f2937" text-anchor="middle">Start</text>
+  <rect x="428" y="95" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="454" y="111" font-size="10.5" fill="#1f2937" text-anchor="middle">Admin</text>
+  <rect x="486" y="95" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="512" y="111" font-size="10.5" fill="#1f2937" text-anchor="middle">Config</text>
+  <rect x="544" y="95" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="570" y="111" font-size="10.5" fill="#1f2937" text-anchor="middle">Logs</text>
+  <rect x="34" y="130" width="572" height="34" rx="4" fill="#ecfdf5" stroke="#e2e8f0" stroke-width="1"/>
+  <rect x="122" y="136" width="70" height="22" rx="4" fill="#86efac"/>
+  <text x="128" y="152" font-size="12" fill="#1f2937" font-weight="700">MySQL</text>
+  <text x="204" y="152" font-size="11" fill="#1f2937">4528</text>  <text x="266" y="152" font-size="11" fill="#1f2937">3306</text>
+  <rect x="366" y="135" width="54" height="24" rx="4" fill="#fde68a" stroke="#94a3b8" stroke-width="1"/>
+  <text x="393" y="151" font-size="11" fill="#1f2937" font-weight="700" text-anchor="middle">Stop</text>
+  <rect x="428" y="135" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="454" y="151" font-size="10.5" fill="#1f2937" text-anchor="middle">Admin</text>
+  <rect x="486" y="135" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="512" y="151" font-size="10.5" fill="#1f2937" text-anchor="middle">Config</text>
+  <rect x="544" y="135" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="570" y="151" font-size="10.5" fill="#1f2937" text-anchor="middle">Logs</text>
+  <rect x="34" y="170" width="572" height="34" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="128" y="192" font-size="12" fill="#1f2937">FileZilla</text>
+
+  <rect x="366" y="175" width="54" height="24" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+  <text x="393" y="191" font-size="11" fill="#1f2937" text-anchor="middle">Start</text>
+  <rect x="428" y="175" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="454" y="191" font-size="10.5" fill="#1f2937" text-anchor="middle">Admin</text>
+  <rect x="486" y="175" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="512" y="191" font-size="10.5" fill="#1f2937" text-anchor="middle">Config</text>
+  <rect x="544" y="175" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="570" y="191" font-size="10.5" fill="#1f2937" text-anchor="middle">Logs</text>
+  <rect x="34" y="210" width="572" height="34" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="128" y="232" font-size="12" fill="#1f2937">Mercury</text>
+
+  <rect x="366" y="215" width="54" height="24" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+  <text x="393" y="231" font-size="11" fill="#1f2937" text-anchor="middle">Start</text>
+  <rect x="428" y="215" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="454" y="231" font-size="10.5" fill="#1f2937" text-anchor="middle">Admin</text>
+  <rect x="486" y="215" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="512" y="231" font-size="10.5" fill="#1f2937" text-anchor="middle">Config</text>
+  <rect x="544" y="215" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="570" y="231" font-size="10.5" fill="#1f2937" text-anchor="middle">Logs</text>
+  <rect x="34" y="250" width="572" height="34" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+
+  <text x="128" y="272" font-size="12" fill="#1f2937">Tomcat</text>
+
+  <rect x="366" y="255" width="54" height="24" rx="4" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+  <text x="393" y="271" font-size="11" fill="#1f2937" text-anchor="middle">Start</text>
+  <rect x="428" y="255" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="454" y="271" font-size="10.5" fill="#1f2937" text-anchor="middle">Admin</text>
+  <rect x="486" y="255" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="512" y="271" font-size="10.5" fill="#1f2937" text-anchor="middle">Config</text>
+  <rect x="544" y="255" width="52" height="24" rx="4" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>  <text x="570" y="271" font-size="10.5" fill="#1f2937" text-anchor="middle">Logs</text>
+  <rect x="361" y="130" width="64" height="34" rx="6" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <rect x="361" y="130" width="64" height="34" rx="6" fill="none" stroke="#ea580c" stroke-width="5"/>
+  <rect x="34" y="296" width="572" height="62" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="1"/>
+  <text x="46" y="316" font-size="10.5" fill="#1f2937">Clique em Start na linha do MySQL (não precisa do Apache). Quando o nome do módulo</text>
+  <text x="46" y="332" font-size="10.5" fill="#1f2937">ficar verde e aparecer a porta 3306, o banco está ligado: o botão passa a ser «Stop».</text>
+  <text x="46" y="348" font-size="10.5" fill="#1f2937">Ao terminar o trabalho, clique em Stop para desligar.</text>
+</svg>

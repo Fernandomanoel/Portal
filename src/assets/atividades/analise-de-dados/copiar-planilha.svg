@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#cbd5e1"/>
+  <rect x="14" y="14" width="612" height="372" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="34" y="44" font-size="13" fill="#1f2937" font-weight="700">Na atividade, abaixo da tabela de dados:</text>
+  <rect x="34" y="60" width="572" height="24" rx="0" fill="#0b2a6b"/>
+  <text x="46" y="77" font-size="10.5" fill="#ffffff" font-weight="700">mes</text>
+  <text x="176" y="77" font-size="10.5" fill="#ffffff" font-weight="700">filial</text>
+  <text x="306" y="77" font-size="10.5" fill="#ffffff" font-weight="700">faturamento</text>
+  <text x="436" y="77" font-size="10.5" fill="#ffffff" font-weight="700">dias_uteis_com_promocao</text>
+  <rect x="34" y="84" width="572" height="24" rx="0" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>  <text x="46" y="100" font-size="10.5" fill="#1f2937">jan/2025</text>
+  <text x="176" y="100" font-size="10.5" fill="#1f2937">Centro</text>
+  <text x="306" y="100" font-size="10.5" fill="#1f2937">43120.5</text>
+  <text x="436" y="100" font-size="10.5" fill="#1f2937">6</text>
+  <rect x="34" y="108" width="572" height="24" rx="0" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>  <text x="46" y="124" font-size="10.5" fill="#1f2937">jan/2025</text>
+  <text x="176" y="124" font-size="10.5" fill="#1f2937">Shopping</text>
+  <text x="306" y="124" font-size="10.5" fill="#1f2937">51480</text>
+  <text x="436" y="124" font-size="10.5" fill="#1f2937">5</text>
+  <rect x="34" y="132" width="572" height="24" rx="0" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>  <text x="46" y="148" font-size="10.5" fill="#1f2937">fev/2025</text>
+  <text x="176" y="148" font-size="10.5" fill="#1f2937">Centro</text>
+  <text x="306" y="148" font-size="10.5" fill="#1f2937">(vazio)</text>
+  <text x="436" y="148" font-size="10.5" fill="#1f2937">8</text>
+  <rect x="34" y="164" width="250" height="28" rx="6" fill="#ffffff" stroke="#94a3b8" stroke-width="1"/>
+  <text x="46" y="182" font-size="10.5" fill="#1f2937" font-weight="700">Copiar planilha para colar no Excel</text>
+  <rect x="30" y="160" width="258" height="36" rx="8" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <rect x="30" y="160" width="258" height="36" rx="8" fill="none" stroke="#ea580c" stroke-width="5"/>
+  <text x="34" y="228" font-size="12" fill="#1f2937" font-weight="700">Depois do clique:</text>
+  <text x="34" y="252" font-size="11" fill="#1f2937">1.  O portal copia a tabela inteira (cada coluna separada por tabulação).</text>
+  <text x="34" y="272" font-size="11" fill="#1f2937">2.  Abra o Excel (ou os Planilhas Google), clique na célula A1 e aperte Ctrl + V.</text>
+  <text x="34" y="292" font-size="11" fill="#1f2937">3.  Para o Python/SQL: Arquivo &gt; Salvar como &gt; «CSV UTF-8 (delimitado por vírgulas)».</text>
+  <text x="34" y="320" font-size="11" fill="#047857" font-weight="700">Mais simples: use o «código pronto» do guia, que já cria a tabela sozinho.</text>
+  <rect x="34" y="336" width="216.20000000000002" height="34" rx="17" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="142.10000000000002" y="359" font-size="16" font-weight="700" fill="#7c2d12" text-anchor="middle">Ctrl + V cola na A1</text>
+</svg>
