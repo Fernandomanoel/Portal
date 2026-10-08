@@ -39,6 +39,8 @@ export interface LinhaLista {
   valores: Record<string, ValorCelula>;
   cor?: CorLinha;
   negrito?: boolean;
+  /** Linha de título de bloco (turma, horário): uma célula só, mesclada em todas as colunas. Sem `valores`. */
+  titulo?: string;
 }
 
 export interface ListaAcompanhamento {

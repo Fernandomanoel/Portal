@@ -515,3 +515,82 @@
     opacity: 1;
   }
 }
+
+/* ---------- Título de bloco (turma, horário): uma célula mesclada ---------- */
+
+.linhaTitulo {
+  --fundo-linha: var(--brand-tint);
+}
+
+.linhaTitulo th,
+.linhaTitulo td {
+  height: 46px;
+  border-top: 2px solid var(--brand);
+}
+
+.linhaTitulo .alcaBotao {
+  height: 46px;
+  color: var(--brand-deep);
+}
+
+.celulaTitulo {
+  padding: 0;
+}
+
+/* O texto fica preso à esquerda: ao rolar a grade para o lado o nome do bloco continua à vista. */
+.titulo {
+  position: sticky;
+  left: 56px;
+  display: block;
+  width: min(100%, 560px);
+  height: 44px;
+  padding: 0 var(--space-3);
+  border: 0;
+  background: transparent;
+  color: var(--brand-deepest);
+  font: inherit;
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.titulo::placeholder {
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+.titulo:focus {
+  outline: 2px solid var(--brand);
+  outline-offset: -2px;
+  background: var(--surface);
+}
+
+:global([data-theme="dark"]) .titulo {
+  color: var(--ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme="light"])) .titulo {
+    color: var(--ink);
+  }
+}
+
+/* ---------- Subtotal no fim de cada bloco ---------- */
+
+.subtotal th,
+.subtotal td {
+  height: 30px;
+  background: var(--surface-soft);
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+}
+
+.subtotal + .linhaTitulo th,
+.subtotal + .linhaTitulo td {
+  border-top-width: 2px;
+}
+
+.rotuloTotal {
+  padding: 0 var(--space-3);
+  font-weight: 600;
+}

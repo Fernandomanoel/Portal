@@ -29,6 +29,50 @@ export function definirValor(lista: Lista, linhaId: string, colunaId: string, va
   };
 }
 
+export function inserirTitulo(lista: Lista, posicao = lista.linhas.length, titulo = ""): Lista {
+  const linhas = [...lista.linhas];
+  linhas.splice(posicao, 0, { id: novoId("l"), valores: {}, titulo });
+  return { ...lista, linhas };
+}
+
+export function definirTitulo(lista: Lista, linhaId: string, titulo: string): Lista {
+  return { ...lista, linhas: lista.linhas.map((l) => (l.id === linhaId ? { ...l, titulo } : l)) };
+}
+
+/** Linha comum vira título (o texto da primeira célula de texto vira o título) e vice-versa. */
+export function alternarTitulo(lista: Lista, linhaId: string): Lista {
+  return {
+    ...lista,
+    linhas: lista.linhas.map((l) => {
+      if (l.id !== linhaId) return l;
+      if (l.titulo !== undefined) {
+        const comum = { ...l, valores: {} as LinhaLista["valores"] };
+        delete comum.titulo;
+        const primeiraTexto = lista.colunas.find((c) => c.tipo === "texto");
+        if (primeiraTexto && l.titulo) comum.valores[primeiraTexto.id] = l.titulo;
+        return comum;
+      }
+      const texto = Object.values(l.valores).find((v): v is string => typeof v === "string") ?? "";
+      return { ...l, valores: {}, titulo: texto };
+    }),
+  };
+}
+
+/** Faixas [inicio, fim) de linhas comuns entre títulos; só quando a lista tem algum título. */
+export function blocos(lista: Lista) {
+  if (!lista.linhas.some((l) => l.titulo !== undefined)) return [];
+  const faixas: { titulo: string | null; inicio: number; fim: number }[] = [];
+  let atual: { titulo: string | null; inicio: number; fim: number } | null = null;
+  lista.linhas.forEach((l, i) => {
+    if (l.titulo !== undefined) {
+      if (atual) faixas.push({ ...atual, fim: i });
+      atual = { titulo: l.titulo, inicio: i + 1, fim: i + 1 };
+    } else if (!atual) atual = { titulo: null, inicio: i, fim: i };
+  });
+  if (atual) faixas.push({ ...(atual as { titulo: string | null; inicio: number; fim: number }), fim: lista.linhas.length });
+  return faixas;
+}
+
 export function inserirLinha(lista: Lista, posicao = lista.linhas.length): Lista {
   const linhas = [...lista.linhas];
   linhas.splice(posicao, 0, linhaVazia());
@@ -131,13 +175,14 @@ export function apagarColuna(lista: Lista, colunaId: string): Lista {
 }
 
 /** Contagem do rodapé, só para colunas de marca e Sim/Não. */
-export function contagem(lista: Lista, coluna: ColunaLista) {
-  const total = lista.linhas.length;
-  if (coluna.tipo === "marca") return { marcadas: lista.linhas.filter((l) => l.valores[coluna.id] === true).length, total };
+export function contagem(lista: Lista, coluna: ColunaLista, inicio = 0, fim = lista.linhas.length) {
+  const linhas = lista.linhas.slice(inicio, fim).filter((l) => l.titulo === undefined);
+  const total = linhas.length;
+  if (coluna.tipo === "marca") return { marcadas: linhas.filter((l) => l.valores[coluna.id] === true).length, total };
   if (coluna.tipo === "simnao") {
     return {
-      sim: lista.linhas.filter((l) => l.valores[coluna.id] === "sim").length,
-      nao: lista.linhas.filter((l) => l.valores[coluna.id] === "nao").length,
+      sim: linhas.filter((l) => l.valores[coluna.id] === "sim").length,
+      nao: linhas.filter((l) => l.valores[coluna.id] === "nao").length,
       total,
     };
   }
@@ -191,7 +236,7 @@ export function mesclar(base: Lista, minha: Lista, deles: Lista): Lista | null {
       else valores[chave] = meu;
     }
     const nova = { ...delesLinha, valores };
-    for (const campo of ["cor", "negrito"] as const) {
+    for (const campo of ["cor", "negrito", "titulo"] as const) {
       if (minhaLinha[campo] === original[campo]) continue;
       if (delesLinha[campo] !== original[campo] && delesLinha[campo] !== minhaLinha[campo]) return null;
       if (minhaLinha[campo] === undefined) delete nova[campo];

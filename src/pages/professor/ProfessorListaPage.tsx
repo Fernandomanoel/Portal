@@ -8,7 +8,7 @@ import { ICONE_TIPO } from "@/components/listas/iconesTipo";
 import { MenuSuspenso } from "@/components/listas/MenuSuspenso";
 import { gravarLista, obterLista } from "@/lib/apiListas";
 import { ErroApi } from "@/lib/apiProvas";
-import { formatarLinha, inserirColuna, inserirLinha, mesclar } from "@/lib/editarLista";
+import { formatarLinha, inserirColuna, inserirLinha, inserirTitulo, mesclar } from "@/lib/editarLista";
 import { rotas } from "@/lib/rotas";
 import { CORES_LINHA, LIMITES_LISTA, TIPOS_COLUNA, type ListaAcompanhamento } from "@/types/lista";
 import { dataHora, hora } from "./formato";
@@ -245,7 +245,7 @@ export function ProfessorListaPage() {
           />
           <p className={estilos.meta}>
             <span className="tabular">
-              {lista.linhas.length} {lista.linhas.length === 1 ? "linha" : "linhas"} · {lista.colunas.length} {lista.colunas.length === 1 ? "coluna" : "colunas"}
+              {lista.linhas.filter((l) => l.titulo === undefined).length} {lista.linhas.filter((l) => l.titulo === undefined).length === 1 ? "linha" : "linhas"} · {lista.colunas.length} {lista.colunas.length === 1 ? "coluna" : "colunas"}
             </span>
             <span>
               Alterada por {lista.alteradaPor}, <span className="tabular">{dataHora(lista.alteradaEm)}</span>
@@ -338,6 +338,20 @@ export function ProfessorListaPage() {
             <Icone nome="mais" tamanho={16} />
             Linha
           </button>
+          <button
+            type="button"
+            className={estilos.botao}
+            disabled={cheiaDeLinhas}
+            title="Linha mesclada no fim da lista, para separar turmas e horários"
+            onClick={() => {
+              const indice = lista.linhas.length;
+              alterar((l) => inserirTitulo(l, indice));
+              requestAnimationFrame(() => document.querySelector<HTMLInputElement>(`[data-l="${indice}"] input`)?.focus());
+            }}
+          >
+            <Icone nome="tabela" tamanho={16} />
+            Título de bloco
+          </button>
           <MenuSuspenso
             rotulo="Adicionar coluna"
             classeGatilho={estilos.botao}
@@ -380,7 +394,7 @@ export function ProfessorListaPage() {
         <div className={estilos.grupo} role="group" aria-label={linhaSelecionada ? "Formatar a linha selecionada" : "Selecione uma linha para formatar"}>
           <span className={estilos.rotuloGrupo}>
             <Icone nome="pincel" tamanho={15} />
-            {linhaSelecionada ? `Linha ${lista.linhas.indexOf(linhaSelecionada) + 1}` : "Formatar linha"}
+            {linhaSelecionada ? (linhaSelecionada.titulo !== undefined ? "Título" : "Linha selecionada") : "Formatar linha"}
           </span>
           <button
             type="button"

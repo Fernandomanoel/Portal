@@ -1,4 +1,5 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 import estilos from "./MenuSuspenso.module.css";
 
@@ -46,7 +47,7 @@ export function MenuSuspenso({ gatilho, rotulo, classeGatilho, alinhar = "inicio
     window.addEventListener("scroll", rolou, true);
     window.addEventListener("resize", rolou);
     const fora = (evento: PointerEvent) => {
-      if (!raiz.current?.contains(evento.target as Node)) definirAberto(false);
+      if (!raiz.current?.contains(evento.target as Node) && !painel.current?.contains(evento.target as Node)) definirAberto(false);
     };
     const tecla = (evento: KeyboardEvent) => {
       if (evento.key === "Escape") {
@@ -85,13 +86,16 @@ export function MenuSuspenso({ gatilho, rotulo, classeGatilho, alinhar = "inicio
       >
         {gatilho}
       </button>
-      {aberto && (
-        <div id={id} ref={painel} role="dialog" aria-label={rotulo} className={estilos.painel}
+      {aberto &&
+        // No body: dentro da grade (coluna fixa, barra fixa) o painel ficaria preso por baixo de outros elementos.
+        createPortal(
+          <div id={id} ref={painel} role="dialog" aria-label={rotulo} className={estilos.painel}
           style={posicao ? { top: posicao.top, left: posicao.left } : { visibility: "hidden" }}
         >
           {children(fechar)}
-        </div>
-      )}
+        </div>,
+          document.body,
+        )}
     </div>
   );
 }

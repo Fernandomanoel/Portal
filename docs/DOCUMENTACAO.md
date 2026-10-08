@@ -169,6 +169,14 @@ substituir as listas do SharePoint (que derrubava a sessão a toda hora).
   alargar.
 - **Linhas:** «Nova linha» ou Enter na última célula. O número da linha abre
   o menu (inserir acima/abaixo, duplicar, mover, apagar).
+- **Blocos por turma e horário:** «Título de bloco» cria, no fim da lista,
+  uma linha mesclada em todas as colunas (ex.: «Turma A — Seg e Qua, 08h às
+  10h»). As linhas abaixo dela, até o próximo título, formam o bloco: a
+  numeração recomeça em cada bloco e no fim de cada um aparece o subtotal das
+  colunas de marca e Sim/Não; o rodapé mostra o total geral. No menu da linha
+  dá para inserir um título acima, transformar uma linha em título (e
+  voltar), mover e apagar — apagar um título não apaga os alunos. No .xlsx o
+  título sai como célula mesclada, em negrito.
 - **Formatar:** com uma linha selecionada, escolha a cor (azul, verde,
   amarelo, vermelho) e o negrito na barra.
 - **Salvar:** é automático a cada alteração (ou Ctrl+S). O selo no topo mostra

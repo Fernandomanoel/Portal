@@ -31,19 +31,28 @@ function estilo(cor: CorLinha | undefined, negrito: boolean, centro: boolean) {
   return 2 + CORES.indexOf(cor ?? null) * 4 + (negrito ? 2 : 0) + (centro ? 1 : 0);
 }
 
+const ESTILO_TITULO = 2 + CORES.length * 4;
+const estiloTitulo = (cor: CorLinha | undefined) => (cor ? ESTILO_TITULO + CORES.indexOf(cor) : ESTILO_TITULO);
+
 function stylesXml() {
   const fills = ['<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>', '<fill><patternFill patternType="solid"><fgColor rgb="FFE5E7EB"/></patternFill></fill>'];
   for (const cor of CORES.slice(1)) fills.push(`<fill><patternFill patternType="solid"><fgColor rgb="FF${FUNDOS[cor!]}"/></patternFill></fill>`);
   const borda = '<border><left style="thin"><color rgb="FFD1D5DB"/></left><right style="thin"><color rgb="FFD1D5DB"/></right><top style="thin"><color rgb="FFD1D5DB"/></top><bottom style="thin"><color rgb="FFD1D5DB"/></bottom><diagonal/></border>';
   const xfs = ['<xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>', '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>'];
+  const xfTitulo = (fillId: number) =>
+    `<xf numFmtId="0" fontId="2" fillId="${fillId}" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>`;
   CORES.forEach((_, i) => {
     const fillId = i === 0 ? 0 : i + 2;
     for (const negrito of [false, true])
       for (const centro of [false, true])
         xfs.push(`<xf numFmtId="0" fontId="${negrito ? 1 : 0}" fillId="${fillId}" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"${centro ? ' horizontal="center"' : ""}/></xf>`);
   });
+  // Títulos de bloco: um estilo por cor de linha, mais o padrão (fundo azul-claro).
+  fills.push('<fill><patternFill patternType="solid"><fgColor rgb="FFDBE6FF"/></patternFill></fill>');
+  xfs.push(xfTitulo(fills.length - 1));
+  CORES.slice(1).forEach((_, i) => xfs.push(xfTitulo(i + 3)));
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="${fills.length}">${fills.join("")}</fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${borda}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length}">${xfs.join("")}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="12"/><color rgb="FF1E3A8A"/><name val="Calibri"/></font></fonts><fills count="${fills.length}">${fills.join("")}</fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${borda}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length}">${xfs.join("")}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
 }
 
 function textoDaCelula(valor: ValorCelula | undefined, tipo: string) {
@@ -57,9 +66,17 @@ function planilhaXml(lista: ListaAcompanhamento) {
   const { colunas, linhas } = lista;
   const cols = colunas.map((c, i) => `<col min="${i + 1}" max="${i + 1}" width="${Math.max(6, Math.round(c.largura / 7))}" customWidth="1"/>`).join("");
   const cabecalho = colunas.map((c, i) => `<c r="${letraColuna(i)}1" s="1" t="inlineStr"><is><t xml:space="preserve">${escapar(c.titulo)}</t></is></c>`).join("");
+  const mescladas: string[] = [];
+  const ultima = letraColuna(Math.max(0, colunas.length - 1));
   const corpo = linhas
     .map((linha, l) => {
       const r = l + 2;
+      if (linha.titulo !== undefined) {
+        const s = estiloTitulo(linha.cor);
+        if (colunas.length > 1) mescladas.push(`A${r}:${ultima}${r}`);
+        const resto = colunas.slice(1).map((_, i) => `<c r="${letraColuna(i + 1)}${r}" s="${s}"/>`).join("");
+        return `<row r="${r}" ht="24" customHeight="1"><c r="A${r}" s="${s}" t="inlineStr"><is><t xml:space="preserve">${escapar(linha.titulo)}</t></is></c>${resto}</row>`;
+      }
       const celulas = colunas
         .map((c, i) => {
           const s = estilo(linha.cor, !!linha.negrito, c.tipo === "marca" || c.tipo === "simnao");
@@ -75,7 +92,7 @@ function planilhaXml(lista: ListaAcompanhamento) {
     ? '<pane xSplit="1" ySplit="1" topLeftCell="B2" activePane="bottomRight" state="frozen"/><selection pane="bottomRight" activeCell="B2" sqref="B2"/>'
     : '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>';
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0">${congelar}</sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ""}<sheetData><row r="1" ht="22" customHeight="1">${cabecalho}</row>${corpo}</sheetData></worksheet>`;
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0">${congelar}</sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ""}<sheetData><row r="1" ht="22" customHeight="1">${cabecalho}</row>${corpo}</sheetData>${mescladas.length ? `<mergeCells count="${mescladas.length}">${mescladas.map((m) => `<mergeCell ref="${m}"/>`).join("")}</mergeCells>` : ""}</worksheet>`;
 }
 
 const nomeDaAba = (titulo: string) => titulo.replace(/[[\]:*?/\\]/g, " ").trim().slice(0, 31) || "Lista";

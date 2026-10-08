@@ -33,7 +33,7 @@ const texto = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, m
 
 export function resumir(lista: ListaAcompanhamento): ResumoLista {
   const { id, titulo, colunas, linhas, alteradaPor, alteradaEm } = lista;
-  return { id, titulo, colunas: colunas.length, linhas: linhas.length, alteradaPor, alteradaEm };
+  return { id, titulo, colunas: colunas.length, linhas: linhas.filter((l) => l.titulo === undefined).length, alteradaPor, alteradaEm };
 }
 
 export function novaLista(professor: Professor, origem?: ListaAcompanhamento): ListaAcompanhamento {
@@ -101,7 +101,9 @@ export function validarLista(corpo: Record<string, unknown> | null): { lista: Pi
       else if (coluna.tipo === "texto" && typeof valor === "string" && valor !== "") valores[colunaId] = valor.slice(0, LIMITES_LISTA.texto);
       else if (coluna.tipo === "opcoes" && typeof valor === "string" && coluna.opcoes?.includes(valor)) valores[colunaId] = valor;
     }
-    const linha: LinhaLista = { id: bruta.id, valores };
+    const ehTitulo = typeof bruta.titulo === "string";
+    const linha: LinhaLista = { id: bruta.id, valores: ehTitulo ? {} : valores };
+    if (ehTitulo) linha.titulo = texto(bruta.titulo, LIMITES_LISTA.titulo);
     if (typeof bruta.cor === "string" && CORES.has(bruta.cor as never)) linha.cor = bruta.cor as LinhaLista["cor"];
     if (bruta.negrito === true) linha.negrito = true;
     linhas.push(linha);

@@ -3,12 +3,16 @@ import { useRef, useState, type KeyboardEvent, type PointerEvent as EventoPontei
 import { Icone, type NomeIcone } from "@/components/Icone";
 import {
   alterarColuna,
+  alternarTitulo,
   apagarColuna,
   apagarLinha,
+  blocos,
   contagem,
+  definirTitulo,
   definirValor,
   duplicarLinha,
   inserirLinha,
+  inserirTitulo,
   moverColuna,
   moverLinha,
 } from "@/lib/editarLista";
@@ -31,7 +35,10 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
   const corpo = useRef<HTMLTableSectionElement>(null);
 
   function focarCelula(linha: number, coluna: number) {
-    const alvo = corpo.current?.querySelector<HTMLElement>(`[data-l="${linha}"][data-c="${coluna}"]`);
+    // Na linha de título só existe uma célula: as setas param nela, seja qual for a coluna.
+    const alvo =
+      corpo.current?.querySelector<HTMLElement>(`[data-l="${linha}"][data-c="${coluna}"]`) ??
+      corpo.current?.querySelector<HTMLElement>(`[data-l="${linha}"]`);
     alvo?.querySelector<HTMLElement>("input, select, button")?.focus();
   }
 
@@ -69,8 +76,31 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
     }
   }
 
-  const largura = LARGURA_ALCA + lista.colunas.reduce((s, c) => s + c.largura, 0);
   const temRodape = lista.colunas.some((c) => c.tipo === "marca" || c.tipo === "simnao");
+  type ItemGrade =
+    | { tipo: "linha"; linha: LinhaLista; posicao: number; exibido: number; rotulo: string }
+    | { tipo: "subtotal"; titulo: string | null; inicio: number; fim: number };
+  const faixas = blocos(lista);
+  const linhasDaGrade: ItemGrade[] = [];
+  let numero = 0;
+  let nBloco = 0;
+  let blocoAtual: string | null = null;
+  lista.linhas.forEach((linha, i) => {
+    if (linha.titulo !== undefined) {
+      numero = 0;
+      nBloco += 1;
+      blocoAtual = linha.titulo || `bloco ${nBloco}`;
+      linhasDaGrade.push({ tipo: "linha", linha, posicao: i + 1, exibido: nBloco, rotulo: blocoAtual });
+    } else {
+      numero += 1;
+      linhasDaGrade.push({ tipo: "linha", linha, posicao: i + 1, exibido: numero, rotulo: blocoAtual ? `${blocoAtual}, linha ${numero}` : `linha ${numero}` });
+    }
+    const faixa = faixas.find((f) => f.fim === i + 1 && f.fim > f.inicio);
+    const proximaEhTitulo = lista.linhas[i + 1]?.titulo !== undefined || i + 1 === lista.linhas.length;
+    if (faixa && proximaEhTitulo && temRodape) linhasDaGrade.push({ tipo: "subtotal", titulo: faixa.titulo, inicio: faixa.inicio, fim: faixa.fim });
+  });
+
+  const largura = LARGURA_ALCA + lista.colunas.reduce((s, c) => s + c.largura, 0);
 
   return (
     <div className={estilos.rolagem}>
@@ -92,27 +122,59 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
           </tr>
         </thead>
         <tbody ref={corpo} onKeyDown={navegar}>
-          {lista.linhas.map((linha, l) => (
-            <tr
-              key={linha.id}
-              className={[estilos.linha, linha.cor ? estilos[`cor-${linha.cor}`] : "", linha.negrito ? estilos.negrito : "", linhaAtiva === linha.id ? estilos.ativa : ""].join(" ")}
-              onFocus={() => definirLinhaAtiva(linha.id)}
-            >
-              <th scope="row" className={estilos.alca}>
-                <MenuLinha linha={linha} numero={l + 1} total={lista.linhas.length} alterar={alterar} />
-              </th>
-              {lista.colunas.map((coluna, c) => (
-                <td key={coluna.id} data-l={l} data-c={c} className={c === 0 ? estilos.fixa : undefined}>
-                  <Celula
-                    coluna={coluna}
-                    linha={linha}
-                    numero={l + 1}
-                    aoMudar={(valor) => alterar((atual) => definirValor(atual, linha.id, coluna.id, valor))}
-                  />
-                </td>
-              ))}
-            </tr>
-          ))}
+          {linhasDaGrade.map((item) =>
+            item.tipo === "subtotal" ? (
+              <tr key={`subtotal-${item.inicio}`} className={estilos.subtotal}>
+                <th scope="row" className={estilos.alca}>
+                  <span className="sr-only">Subtotal {item.titulo ?? "sem bloco"}</span>
+                </th>
+                {lista.colunas.map((coluna, c) => (
+                  <td key={coluna.id} className={c === 0 ? estilos.fixa : undefined}>
+                    {c === 0 && !contagem(lista, coluna) ? <span className={estilos.rotuloTotal}>Subtotal do bloco</span> : <Contagem conta={contagem(lista, coluna, item.inicio, item.fim)} />}
+                  </td>
+                ))}
+              </tr>
+            ) : (
+              <tr
+                key={item.linha.id}
+                className={[
+                  estilos.linha,
+                  item.linha.titulo !== undefined ? estilos.linhaTitulo : "",
+                  item.linha.cor ? estilos[`cor-${item.linha.cor}`] : "",
+                  item.linha.negrito ? estilos.negrito : "",
+                  linhaAtiva === item.linha.id ? estilos.ativa : "",
+                ].join(" ")}
+                onFocus={() => definirLinhaAtiva(item.linha.id)}
+              >
+                <th scope="row" className={estilos.alca}>
+                  <MenuLinha linha={item.linha} posicao={item.posicao} exibido={item.exibido} total={lista.linhas.length} alterar={alterar} />
+                </th>
+                {item.linha.titulo !== undefined ? (
+                  <td colSpan={lista.colunas.length} data-l={item.posicao - 1} data-c={0} className={estilos.celulaTitulo}>
+                    <input
+                      className={estilos.titulo}
+                      value={item.linha.titulo}
+                      placeholder="Título do bloco — ex.: Turma A · Seg e Qua, 08h às 10h"
+                      aria-label={`Título do bloco ${item.exibido}`}
+                      maxLength={120}
+                      onChange={(e) => alterar((atual) => definirTitulo(atual, item.linha.id, e.target.value))}
+                    />
+                  </td>
+                ) : (
+                  lista.colunas.map((coluna, c) => (
+                    <td key={coluna.id} data-l={item.posicao - 1} data-c={c} className={c === 0 ? estilos.fixa : undefined}>
+                      <Celula
+                        coluna={coluna}
+                        linha={item.linha}
+                        rotuloLinha={item.rotulo}
+                        aoMudar={(valor) => alterar((atual) => definirValor(atual, item.linha.id, coluna.id, valor))}
+                      />
+                    </td>
+                  ))
+                )}
+              </tr>
+            ),
+          )}
         </tbody>
         {temRodape && lista.linhas.length > 0 && (
           <tfoot>
@@ -121,24 +183,9 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
                 <span className="sr-only">Totais</span>
               </th>
               {lista.colunas.map((coluna, c) => {
-                const conta = contagem(lista, coluna);
                 return (
-                  <td key={coluna.id} className={`${c === 0 ? estilos.fixa : ""} tabular`}>
-                    {conta && "marcadas" in conta && (
-                      <span className={estilos.total}>
-                        <strong>{conta.marcadas}</strong> de {conta.total}
-                      </span>
-                    )}
-                    {conta && "sim" in conta && (
-                      <span className={estilos.total}>
-                        <span className={estilos.totalSim}>
-                          <strong>{conta.sim}</strong> Sim
-                        </span>
-                        <span className={estilos.totalNao}>
-                          <strong>{conta.nao}</strong> Não
-                        </span>
-                      </span>
-                    )}
+                  <td key={coluna.id} className={c === 0 ? estilos.fixa : undefined}>
+                    {c === 0 && !contagem(lista, coluna) ? <span className={estilos.rotuloTotal}>{faixas.length ? "Total geral" : "Total"}</span> : <Contagem conta={contagem(lista, coluna)} />}
                   </td>
                 );
               })}
@@ -150,9 +197,30 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
   );
 }
 
-function Celula({ coluna, linha, numero, aoMudar }: { coluna: ColunaLista; linha: LinhaLista; numero: number; aoMudar: (valor: string | boolean | null) => void }) {
+function Contagem({ conta }: { conta: ReturnType<typeof contagem> }) {
+  if (!conta) return null;
+  if ("marcadas" in conta) {
+    return (
+      <span className={`${estilos.total} tabular`}>
+        <strong>{conta.marcadas}</strong> de {conta.total}
+      </span>
+    );
+  }
+  return (
+    <span className={`${estilos.total} tabular`}>
+      <span className={estilos.totalSim}>
+        <strong>{conta.sim}</strong> Sim
+      </span>
+      <span className={estilos.totalNao}>
+        <strong>{conta.nao}</strong> Não
+      </span>
+    </span>
+  );
+}
+
+function Celula({ coluna, linha, rotuloLinha, aoMudar }: { coluna: ColunaLista; linha: LinhaLista; rotuloLinha: string; aoMudar: (valor: string | boolean | null) => void }) {
   const valor = linha.valores[coluna.id];
-  const rotulo = `${coluna.titulo}, linha ${numero}`;
+  const rotulo = `${coluna.titulo}, ${rotuloLinha}`;
 
   if (coluna.tipo === "marca") {
     const marcada = valor === true;
@@ -309,22 +377,26 @@ function CabecalhoColuna({
   );
 }
 
-function MenuLinha({ linha, numero, total, alterar }: { linha: LinhaLista; numero: number; total: number; alterar: Props["alterar"] }) {
+function MenuLinha({ linha, posicao, exibido, total, alterar }: { linha: LinhaLista; posicao: number; exibido: number; total: number; alterar: Props["alterar"] }) {
+  const ehTitulo = linha.titulo !== undefined;
   const acoes: { rotulo: string; icone: NomeIcone; fazer: (l: ListaAcompanhamento) => ListaAcompanhamento; desativada?: boolean; perigo?: boolean }[] = [
-    { rotulo: "Inserir linha acima", icone: "mais", fazer: (l) => inserirLinha(l, numero - 1) },
-    { rotulo: "Inserir linha abaixo", icone: "mais", fazer: (l) => inserirLinha(l, numero) },
-    { rotulo: "Duplicar linha", icone: "copiar", fazer: (l) => duplicarLinha(l, linha.id) },
-    { rotulo: "Mover para cima", icone: "seta-esquerda", fazer: (l) => moverLinha(l, linha.id, -1), desativada: numero === 1 },
-    { rotulo: "Mover para baixo", icone: "seta-direita", fazer: (l) => moverLinha(l, linha.id, 1), desativada: numero === total },
-    { rotulo: "Apagar linha", icone: "lixeira", fazer: (l) => apagarLinha(l, linha.id), perigo: true },
+    { rotulo: "Inserir linha acima", icone: "mais", fazer: (l) => inserirLinha(l, posicao - 1) },
+    { rotulo: "Inserir linha abaixo", icone: "mais", fazer: (l) => inserirLinha(l, posicao) },
+    { rotulo: "Inserir título de bloco acima", icone: "tabela", fazer: (l) => inserirTitulo(l, posicao - 1) },
+    { rotulo: ehTitulo ? "Transformar em linha comum" : "Transformar em título de bloco", icone: "tabela", fazer: (l) => alternarTitulo(l, linha.id) },
+    { rotulo: ehTitulo ? "Duplicar título" : "Duplicar linha", icone: "copiar", fazer: (l) => duplicarLinha(l, linha.id) },
+    { rotulo: "Mover para cima", icone: "seta-esquerda", fazer: (l) => moverLinha(l, linha.id, -1), desativada: posicao === 1 },
+    { rotulo: "Mover para baixo", icone: "seta-direita", fazer: (l) => moverLinha(l, linha.id, 1), desativada: posicao === total },
+    { rotulo: ehTitulo ? "Apagar título (os alunos ficam)" : "Apagar linha", icone: "lixeira", fazer: (l) => apagarLinha(l, linha.id), perigo: true },
   ];
+  const numero = exibido;
   return (
     <MenuSuspenso
-      rotulo={`Linha ${numero}: ações`}
+      rotulo={ehTitulo ? `Título ${numero}: ações` : `Linha ${numero}: ações`}
       classeGatilho={estilos.alcaBotao}
       gatilho={
         <>
-          <span className="tabular">{numero}</span>
+          {ehTitulo ? <Icone nome="tabela" tamanho={15} /> : <span className="tabular">{numero}</span>}
           <Icone nome="mais-opcoes" tamanho={14} className={estilos.alcaPontos} />
         </>
       }
