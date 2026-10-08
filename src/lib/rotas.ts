@@ -24,6 +24,8 @@ export const rotas = {
   provas: () => "/provas",
   professor: () => "/professor",
   professorEnvio: (id: string) => `/professor/envios/${encodeURIComponent(id)}`,
+  professorListas: () => "/professor/listas",
+  professorLista: (id: string) => `/professor/listas/${encodeURIComponent(id)}`,
   quiz: (categoria: string, prova: string) =>
     `/provas/quiz/${encodeURIComponent(categoria)}/${encodeURIComponent(prova)}`,
 } as const;

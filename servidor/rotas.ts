@@ -4,6 +4,8 @@ import type { ArquivoEnviado, Envio, LancarNotaInput, Professor, ReciboEnvio, Sa
 import { TENTATIVAS_POR_QUESTAO } from "../src/types/quiz.js";
 import { DIAS_GUARDADOS, LIMITE_ARQUIVO_MB } from "../src/types/envio.js";
 import type { Armazenamento } from "./armazenamento.js";
+import type { ListaAcompanhamento } from "../src/types/lista.js";
+import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
 import { conferirItem } from "../src/lib/correcaoProva.js";
 import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
 import {
@@ -41,6 +43,7 @@ type CodigoErro =
   | "TENTATIVAS_ESGOTADAS"
   | "NAO_ENCONTRADO"
   | "SEM_PERMISSAO"
+  | "CONFLITO"
   | "ERRO_INTERNO";
 
 function json(dado: unknown, status = 200, cabecalhos: HeadersInit = {}) {
@@ -471,6 +474,54 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     if (partes.length === 2 && metodo === "PATCH") return lancarNota(requisicao, id, professor, armazenamento);
     if (partes.length === 2 && metodo === "DELETE") return apagarEnvio(id, armazenamento);
     if (partes.length === 3 && partes[2] === "arquivo" && metodo === "GET") return baixarArquivo(id, armazenamento);
+  }
+
+  if (partes[0] === "listas") {
+    const professor = professorDa(requisicao);
+    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+
+    if (partes.length === 1 && metodo === "GET") return json({ dados: await listarListas(armazenamento) });
+    if (partes.length === 1 && metodo === "POST") {
+      const corpo = await lerCorpoJson(requisicao);
+      const origemId = typeof corpo?.duplicarDe === "string" ? corpo.duplicarDe : null;
+      let origem: ListaAcompanhamento | undefined;
+      if (origemId) {
+        if (!idListaValido(origemId)) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
+        origem = (await armazenamento.lerJson<ListaAcompanhamento>(caminhoLista(origemId))) ?? undefined;
+        if (!origem) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
+      }
+      const lista = novaLista(professor, origem);
+      await armazenamento.salvarJson(caminhoLista(lista.id), lista);
+      return json(lista, 201);
+    }
+
+    const id = partes[1] ?? "";
+    if (partes.length !== 2 || !idListaValido(id)) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
+    const atual = await armazenamento.lerJson<ListaAcompanhamento>(caminhoLista(id));
+
+    if (metodo === "GET") return atual ? json(atual) : erro(404, "NAO_ENCONTRADO", "Lista não encontrada. Ela pode ter sido apagada.");
+    if (metodo === "DELETE") {
+      if (atual) await armazenamento.apagar([caminhoLista(id)]);
+      return new Response(null, { status: 204 });
+    }
+    if (metodo === "PUT") {
+      if (!atual) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada. Ela pode ter sido apagada.");
+      const conferida = validarLista(await lerCorpoJson(requisicao));
+      if (typeof conferida === "string") return erro(422, "VALIDATION_ERROR", conferida);
+      // Outro professor gravou depois que esta tela abriu a lista: devolve a versão dele em vez de sobrescrever.
+      if (conferida.versao !== atual.versao) {
+        return json({ error: { code: "CONFLITO", message: `${atual.alteradaPor} alterou esta lista enquanto você editava.` }, atual }, 409);
+      }
+      const gravada: ListaAcompanhamento = {
+        ...atual,
+        ...conferida.lista,
+        versao: atual.versao + 1,
+        alteradaPor: professor.nome,
+        alteradaEm: new Date().toISOString(),
+      };
+      await armazenamento.salvarJson(caminhoLista(id), gravada);
+      return json(gravada);
+    }
   }
 
   return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");

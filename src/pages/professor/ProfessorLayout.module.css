@@ -163,3 +163,43 @@
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
+
+/* ---------- Abas: Provas enviadas e Listas ---------- */
+
+.abas {
+  display: flex;
+  gap: var(--space-1);
+  margin-right: auto;
+  padding: 3px;
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+}
+
+.aba {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+}
+
+.aba:hover {
+  color: var(--ink);
+}
+
+.abaAtiva,
+.abaAtiva:hover {
+  background: var(--surface);
+  color: var(--brand-deep);
+  box-shadow: var(--shadow-1);
+}
+
+.aba:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

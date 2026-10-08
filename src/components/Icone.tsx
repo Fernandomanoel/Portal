@@ -49,7 +49,13 @@ export type NomeIcone =
   | "usuario"
   | "video"
   | "saude"
-  | "bussola";
+  | "bussola"
+  | "mais"
+  | "tabela"
+  | "copiar"
+  | "negrito"
+  | "pincel"
+  | "mais-opcoes";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
@@ -303,6 +309,33 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     <>
       <circle cx="12" cy="12" r="8.5" />
       <path d="m14.8 9.2-1.3 4-4 1.3 1.3-4Z" />
+    </>
+  ),
+  mais: <path d="M12 5v14M5 12h14" />,
+  tabela: (
+    <>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+      <path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5v10" />
+    </>
+  ),
+  copiar: (
+    <>
+      <rect x="8.5" y="8.5" width="11" height="11" rx="2" />
+      <path d="M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2" />
+    </>
+  ),
+  negrito: <path d="M7.5 5h5.5a3.5 3.5 0 0 1 0 7H7.5Zm0 7h6.5a3.5 3.5 0 0 1 0 7H7.5Z" />,
+  pincel: (
+    <>
+      <path d="M14.5 4.5 19.5 9.5 11 18l-5-5Z" />
+      <path d="M6 13c-1.8.4-2.5 2-2.5 4.5 0 .7.5 1 1 1 2.5 0 4.1-.7 4.5-2.5" />
+    </>
+  ),
+  "mais-opcoes": (
+    <>
+      <circle cx="6" cy="12" r="1.2" />
+      <circle cx="12" cy="12" r="1.2" />
+      <circle cx="18" cy="12" r="1.2" />
     </>
   ),
 };

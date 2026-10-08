@@ -80,6 +80,9 @@ com `message` pronta para mostrar na tela.
 | `DELETE /envios/<id>` | professor | Apaga o envio e o arquivo. |
 | `GET /envios/<id>/arquivo` | professor | Baixa o arquivo, com o nome do aluno no nome. |
 | `GET\|POST /limpeza` | agendador ou professor | Apaga o que passou de 7 dias. |
+| `GET /listas` · `POST /listas` | professor | Listas de acompanhamento: resumo de todas · cria uma (`{ duplicarDe? }` copia outra). |
+| `GET /listas/<id>` · `DELETE /listas/<id>` | professor | A lista inteira · apaga para todos. |
+| `PUT /listas/<id>` | professor | Grava a lista inteira com a `versao` que a tela abriu. Se outro professor gravou antes, responde 409 com `atual` (a versão dele) em vez de sobrescrever; a tela junta as duas quando mexeram em células diferentes. |
 
 ## O que o servidor garante
 
@@ -93,6 +96,11 @@ com `message` pronta para mostrar na tela.
   tentativas a cada 10 minutos por IP, no login e na liberação.
 - **Pedido de outro site é recusado:** cookie `SameSite=Strict` e conferência da
   origem em tudo que não é leitura.
+- **Listas de acompanhamento não vencem.** Moram em `listas/`, fora das pastas
+  que a limpeza percorre (`envios/`, `arquivos/`, `tentativas/`): ficam até um
+  professor apagar. São compartilhadas entre todos os professores, revalidadas
+  no servidor (até 60 colunas, 1000 linhas, 500 caracteres por célula) e cada
+  gravação registra quem alterou.
 - **Nada passa de 7 dias.** O id do envio começa pela data (`2026-09-24_...`) e os
   arquivos ficam em pastas por dia, então a limpeza apaga por idade sem abrir
   nenhum arquivo.

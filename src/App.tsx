@@ -30,6 +30,8 @@ import { GuiadoVitrinePage } from "@/pages/guiado/GuiadoVitrinePage";
 import { ProfessorEnvioPage } from "@/pages/professor/ProfessorEnvioPage";
 import { ProfessorEnviosPage } from "@/pages/professor/ProfessorEnviosPage";
 import { ProfessorLayout } from "@/pages/professor/ProfessorLayout";
+import { ProfessorListaPage } from "@/pages/professor/ProfessorListaPage";
+import { ProfessorListasPage } from "@/pages/professor/ProfessorListasPage";
 import { ProvasPage } from "@/pages/ProvasPage";
 import { QuizPage } from "@/pages/QuizPage";
 
@@ -95,6 +97,8 @@ const roteador = criarRoteador([
         children: [
           { index: true, element: <ProfessorEnviosPage /> },
           { path: "envios/:id", element: <ProfessorEnvioPage /> },
+          { path: "listas", element: <ProfessorListasPage /> },
+          { path: "listas/:id", element: <ProfessorListaPage /> },
         ],
       },
 

@@ -47,7 +47,7 @@ instrutor passando arquivo por arquivo.
 | Digitação | `/digitacao` | Treino de teclado: modo livre, textos clássicos, Cavaleiros do Zodíaco, letras em inglês e Sonic, com velocidade, precisão, erros e ranking (`/digitacao/ranking`). |
 | Passo a Passo | `/passo-a-passo` | 50 tutoriais guiados (10 de Windows, 10 de Word, 10 de Excel, 10 de PowerPoint, 5 de inteligência artificial e 5 de segurança digital) e 5 jogos de conceito sobre as peças do computador. |
 | Provas | `/provas` | 48 provas interativas organizadas por curso, abertas pela senha de sala do instrutor. |
-| Área do professor | `/professor` | Login por professor: lista de envios, arquivo anexado, respostas e lançamento de nota. |
+| Área do professor | `/professor` | Login por professor: lista de envios, arquivo anexado, respostas e lançamento de nota, e as listas de acompanhamento da equipe (`/professor/listas`). |
 
 ### Atividades: categorias
 
@@ -154,6 +154,35 @@ Os formatos de prova são cinco:
 > **Atenção:** envios e arquivos são apagados sozinhos **7 dias** depois do
 > envio. Quem precisa guardar a nota deve registrá-la antes.
 
+### Listas de acompanhamento
+
+Aba «Listas» da área do professor: uma planilha simples da equipe, feita para
+substituir as listas do SharePoint (que derrubava a sessão a toda hora).
+
+- **Criar:** «Nova lista» já vem com as colunas Aluno (texto) e Presente
+  (marca). «Duplicar» copia uma lista existente — útil para a turma do mês
+  seguinte.
+- **Colunas** («Coluna» na barra): Texto, Marca (um clique marca, outro
+  desmarca), Sim/Não (vazio, Sim em verde ou Não em vermelho) e Lista de
+  opções (você escreve as opções). Clique no título da coluna para renomear,
+  trocar o tipo, mudar a largura, mover ou apagar; arraste a borda para
+  alargar.
+- **Linhas:** «Nova linha» ou Enter na última célula. O número da linha abre
+  o menu (inserir acima/abaixo, duplicar, mover, apagar).
+- **Formatar:** com uma linha selecionada, escolha a cor (azul, verde,
+  amarelo, vermelho) e o negrito na barra.
+- **Salvar:** é automático a cada alteração (ou Ctrl+S). O selo no topo mostra
+  «Salvo», «Salvando…» ou o erro. Se a gravação falhar, o computador guarda
+  um rascunho e oferece recuperar ao reabrir.
+- **Dois professores ao mesmo tempo:** a tela busca as alterações dos colegas
+  sozinha. Se os dois editarem células diferentes, a lista junta tudo; se
+  mudarem a mesma célula, aparece o aviso para escolher qual versão fica.
+- **Exportar .xlsx:** baixa a lista com o cabeçalho em negrito, cores e
+  negrito das linhas, larguras e a primeira linha e coluna congeladas. Marca
+  vira «✓»; Sim/Não vira «Sim»/«Não».
+- **Guarda:** as listas ficam até alguém apagar — não entram na limpeza de 7
+  dias. Apagar remove para todos.
+
 ## 5. Como acrescentar conteúdo
 
 Nenhum conteúdo novo exige tela nova. Tudo é acrescentar um item num arquivo
@@ -205,7 +234,7 @@ src/
 ├── components/             layout, cards, atividades, inglês, digitação, guiado, provas, quiz, Icone
 ├── hooks/                  tema, prova em andamento, trava de prova, tela imersiva, narração, digitação
 ├── lib/                    rotas, busca, cliente da API, correção de atividade, prova e texto, ranking
-├── types/                  contratos: curso, atividadeAutocorrigida, prova, quiz, envio, ingles, guiado
+├── types/                  contratos: curso, atividadeAutocorrigida, prova, quiz, envio, lista, ingles, guiado
 ├── styles/                 tokens, reset e fontes
 ├── assets/                 imagens importadas no código (ilustrações SVG geradas)
 └── data/
@@ -218,7 +247,7 @@ src/
     └── guiado.ts                catálogo do Passo a Passo
 
 public/atividades/<curso>/  arquivos baixados nas atividades (PDF, .xlsx, .pptx, imagens)
-servidor/                   API das provas: rotas, segurança, armazenamento, registro gerado
+servidor/                   API das provas e das listas do professor: rotas, listas, segurança, armazenamento, registro gerado
 api/index.ts                a mesma API como função da Vercel
 scripts/
 ├── gerar-registro-provas.mjs  gera servidor/provas.gerado.ts (roda no dev e no build)

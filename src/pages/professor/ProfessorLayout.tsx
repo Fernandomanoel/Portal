@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { Outlet, useOutletContext } from "react-router-dom";
+import { NavLink, Outlet, useOutletContext } from "react-router-dom";
 
 import { Icone } from "@/components/Icone";
 import { ErroApi, entrar, sair, sessaoAtual } from "@/lib/apiProvas";
+import { rotas } from "@/lib/rotas";
 import type { Professor } from "@/types/envio";
 import estilos from "./ProfessorLayout.module.css";
 
@@ -54,6 +55,16 @@ export function ProfessorLayout() {
             Área do professor · <strong>{professor.nome}</strong>
           </span>
         </p>
+        <nav className={estilos.abas} aria-label="Área do professor">
+          <NavLink to={rotas.professor()} end className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+            <Icone nome="prova" tamanho={16} />
+            Provas enviadas
+          </NavLink>
+          <NavLink to={rotas.professorListas()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+            <Icone nome="tabela" tamanho={16} />
+            Listas
+          </NavLink>
+        </nav>
         <button
           type="button"
           className={estilos.sair}
@@ -96,7 +107,7 @@ function Login({ aviso, aoEntrar }: { aviso?: string; aoEntrar: (professor: Prof
         <Icone nome="cadeado" tamanho={22} />
       </span>
       <h1 className={estilos.titulo}>Área do professor</h1>
-      <p className={estilos.texto}>Provas enviadas pelos alunos, arquivos e notas. Os envios ficam guardados por 7 dias.</p>
+      <p className={estilos.texto}>Provas enviadas pelos alunos, arquivos e notas, e as listas de acompanhamento da equipe.</p>
 
       {aviso && !erro && <p className={estilos.aviso}>{aviso}</p>}
 

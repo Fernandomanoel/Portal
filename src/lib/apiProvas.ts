@@ -5,15 +5,18 @@ import type { ProvaInterativa, ProvaParaAluno, ResultadoItem } from "@/types/qui
 export class ErroApi extends Error {
   readonly status: number;
   readonly code?: string;
+  /** Corpo inteiro da resposta de erro, para rotas que mandam mais que a mensagem (ex.: conflito de versão). */
+  readonly corpo?: unknown;
 
-  constructor(message: string, status: number, code?: string) {
+  constructor(message: string, status: number, code?: string, corpo?: unknown) {
     super(message);
     this.status = status;
     this.code = code;
+    this.corpo = corpo;
   }
 }
 
-async function chamar<T>(caminho: string, opcoes: RequestInit = {}): Promise<T> {
+export async function chamar<T>(caminho: string, opcoes: RequestInit = {}): Promise<T> {
   let resposta: Response;
   try {
     resposta = await fetch(`/api/${caminho}`, { credentials: "same-origin", ...opcoes });
@@ -24,12 +27,12 @@ async function chamar<T>(caminho: string, opcoes: RequestInit = {}): Promise<T> 
   const corpo = await resposta.json().catch(() => null);
   if (!resposta.ok) {
     const erro = corpo?.error;
-    throw new ErroApi(erro?.message ?? "O servidor não respondeu como esperado. Tente de novo.", resposta.status, erro?.code);
+    throw new ErroApi(erro?.message ?? "O servidor não respondeu como esperado. Tente de novo.", resposta.status, erro?.code, corpo);
   }
   return corpo as T;
 }
 
-function comJson(metodo: string, corpo: unknown): RequestInit {
+export function comJson(metodo: string, corpo: unknown): RequestInit {
   return { method: metodo, headers: { "Content-Type": "application/json" }, body: JSON.stringify(corpo) };
 }
 
