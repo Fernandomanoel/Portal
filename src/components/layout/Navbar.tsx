@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { Icone } from "@/components/Icone";
 import { useTemaContexto } from "@/hooks/TemaContexto";
 import { rotas } from "@/lib/rotas";
+import marca from "@/assets/marca-portal.svg";
 import estilos from "./Navbar.module.css";
 
 const SECOES = [
@@ -29,7 +30,10 @@ export function Navbar() {
     <header className={estilos.barra}>
       <nav className={estilos.interna} aria-label="Principal">
         <NavLink to={rotas.inicio()} className={estilos.marca}>
-          Portal<span>.</span>
+          <img src={marca} alt="" width={28} height={28} className={estilos.simbolo} />
+          <span className={estilos.nome}>
+            Portal<span>.</span>
+          </span>
         </NavLink>
 
         <ul className={estilos.secoes}>

@@ -1,0 +1,494 @@
+/* A lista ocupa a largura da tela, como uma página do Notion ou uma pasta do Excel na web. */
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(100vw - 32px, 1440px);
+  margin-inline: calc(50% - min(50vw - 16px, 720px));
+  padding: var(--space-6) clamp(var(--space-4), 3vw, var(--space-8)) var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.voltar:hover {
+  color: var(--brand-deep);
+}
+
+.voltar:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* ---------- Topo: título editável e situação do salvamento ---------- */
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+}
+
+.tituloBloco {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.titulo {
+  width: 100%;
+  margin-left: calc(var(--space-2) * -1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.titulo:hover {
+  background: color-mix(in oklab, var(--ink) 3%, transparent);
+}
+
+.titulo:focus {
+  border-color: var(--brand);
+  background: var(--surface);
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin-top: var(--space-1);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.situacao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.situacao-salvo {
+  color: var(--ink-faint);
+}
+
+.situacao-salvo svg {
+  color: var(--success);
+}
+
+.situacao-pendente .ponto,
+.situacao-salvando .ponto {
+  background: var(--warning);
+}
+
+.situacao-salvando .ponto {
+  animation: pulsar 900ms var(--ease-out) infinite alternate;
+}
+
+.situacao-conflito {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.situacao-conflito .ponto {
+  background: var(--danger);
+}
+
+.situacaoErro {
+  background: var(--danger-tint);
+  color: var(--danger);
+  white-space: normal;
+}
+
+.situacaoErro button {
+  padding: 2px var(--space-2);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+@keyframes pulsar {
+  to {
+    opacity: 0.3;
+  }
+}
+
+/* ---------- Faixas de aviso ---------- */
+
+.faixa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+}
+
+.faixa > p {
+  flex: 1 1 280px;
+}
+
+.faixaAviso {
+  background: var(--warning-tint);
+  color: var(--ink);
+}
+
+.faixaAviso > svg {
+  color: var(--warning);
+}
+
+.faixaPerigo {
+  background: var(--danger-tint);
+  color: var(--ink);
+}
+
+.faixaPerigo > svg {
+  color: var(--danger);
+}
+
+.faixaInfo {
+  background: var(--brand-tint);
+  color: var(--ink);
+}
+
+.faixaInfo > svg {
+  color: var(--brand-deep);
+}
+
+.faixaAcoes {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.faixaPrincipal,
+.faixaSecundario {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.faixaPrincipal {
+  border: 1px solid var(--brand-deep);
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+}
+
+.faixaPrincipal:hover {
+  background: var(--brand-deepest);
+}
+
+.faixaSecundario {
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.faixaPrincipal:focus-visible,
+.faixaSecundario:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---------- Barra de ferramentas ---------- */
+
+.ferramentas {
+  position: sticky;
+  top: var(--nav-height);
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.grupo + .grupo {
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--line);
+}
+
+.ferramentas .botao:not(.exportar) {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink-soft);
+}
+
+.ferramentas .botao:not(.exportar):hover:not(:disabled) {
+  background: color-mix(in oklab, var(--ink) 5%, transparent);
+  color: var(--ink);
+}
+
+.rotuloGrupo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 112px;
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+}
+
+.botao:hover:not(:disabled),
+.botao[aria-expanded="true"] {
+  border-color: var(--brand);
+  background: var(--brand-tint);
+}
+
+.botao:disabled {
+  color: var(--ink-faint);
+  cursor: not-allowed;
+}
+
+.botao[aria-pressed="true"],
+.botao[aria-pressed="true"]:hover:not(:disabled) {
+  border-color: var(--brand-deep);
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+}
+
+.botao:focus-visible,
+.amostra:focus-visible,
+.novaLinha:focus-visible,
+.tipo:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.icone {
+  justify-content: center;
+  width: 36px;
+  padding: 0;
+}
+
+.seta {
+  color: var(--ink-faint);
+}
+
+.exportar {
+  margin-left: auto;
+  border-color: var(--brand-deep);
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+}
+
+.exportar:hover:not(:disabled) {
+  border-color: var(--brand-deepest);
+  background: var(--brand-deepest);
+}
+
+.amostra {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--amostra, var(--surface));
+  cursor: pointer;
+  transition: transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out);
+}
+
+.amostra:hover:not(:disabled) {
+  transform: scale(1.08);
+}
+
+.amostra:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.amostra[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--brand-deep);
+}
+
+.semCor {
+  background: linear-gradient(135deg, var(--surface) 46%, var(--danger) 46%, var(--danger) 54%, var(--surface) 54%);
+}
+
+/* As amostras usam a mesma cor da linha, mais carregada, para dar para distinguir no tema escuro. */
+.amostra-azul {
+  --amostra: color-mix(in oklab, var(--brand) 45%, var(--surface));
+}
+
+.amostra-verde {
+  --amostra: color-mix(in oklab, var(--success) 45%, var(--surface));
+}
+
+.amostra-amarelo {
+  --amostra: color-mix(in oklab, oklch(0.86 0.17 95) 70%, var(--surface));
+}
+
+.amostra-vermelho {
+  --amostra: color-mix(in oklab, var(--danger) 45%, var(--surface));
+}
+
+/* ---------- Menu de tipos de coluna ---------- */
+
+.tipos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 290px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tipo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tipo:hover:not(:disabled) {
+  background: var(--brand-tint);
+}
+
+.tipo strong {
+  display: block;
+  font-size: var(--text-sm);
+}
+
+.tipo span span {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+}
+
+.tipoIcone {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-tint);
+  color: var(--brand-deep);
+}
+
+/* ---------- Pé da grade ---------- */
+
+.novaLinha {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  margin-top: calc(var(--space-2) * -1);
+  padding: var(--space-2) var(--space-3);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.novaLinha:hover:not(:disabled) {
+  border-color: var(--brand);
+  color: var(--brand-deep);
+}
+
+.dica {
+  max-width: 75ch;
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+}
+
+@media (max-width: 720px) {
+  .grupo + .grupo {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .exportar {
+    margin-left: 0;
+  }
+
+  .rotuloGrupo {
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .situacao-salvando .ponto {
+    animation: none;
+  }
+}

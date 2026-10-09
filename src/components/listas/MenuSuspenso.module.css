@@ -1,0 +1,32 @@
+.raiz {
+  position: relative;
+  display: inline-flex;
+}
+
+.painel {
+  position: fixed;
+  z-index: 60;
+  width: max-content;
+  min-width: 220px;
+  max-width: min(320px, calc(100vw - 32px));
+  padding: var(--space-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-2);
+  text-align: left;
+  animation: entrar 140ms var(--ease-out);
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .painel {
+    animation: none;
+  }
+}

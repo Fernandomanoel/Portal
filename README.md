@@ -4,6 +4,8 @@ Portal de materiais de aula e provas dos cursos. Frontend em React + TypeScript;
 o servidor das provas (`servidor/`) é TypeScript também e roda na Vercel ou num
 servidor físico da escola — ver [`docs/SERVIDOR.md`](docs/SERVIDOR.md).
 
+**Documentação completa (uso e técnica): [`docs/DOCUMENTACAO.md`](docs/DOCUMENTACAO.md).**
+
 Este é o portal novo, escrito do zero. O site estático antigo continua no
 repositório `Portal-Atividades` e serve apenas de referência — os dois não se
 mesclam.
@@ -26,6 +28,7 @@ O portal sobe em `http://localhost:5173`.
 | `npm run professor:senha` | Gera o login de um professor para `PROFESSORES` |
 | `npm run preview` | Serve o build de produção |
 | `npm run lint` | oxlint |
+| `npm run ilustracoes -- <filtro>` | Gera as ilustrações SVG das atividades em `src/assets/atividades/` |
 | `npm run planilhas` | Gera as planilhas `.xlsx` baixadas nas atividades de «configurar» e «preencher» (precisa de Python com `openpyxl`); `scripts/planilhas/conferir.py` confere as fórmulas no LibreOffice |
 
 ## Estrutura
@@ -33,33 +36,44 @@ O portal sobe em `http://localhost:5173`.
 ```
 src/
 ├── pages/          uma tela por rota
-├── components/     layout, cards, provas, quiz — mais Icone, o sistema de ícones
-├── hooks/          tema, prova em andamento, motor de prova, digitação
-├── data/           catálogo: atividades, provas, inglês, digitação
+├── components/     layout, cards, atividades, provas, quiz, guiado — mais Icone, o sistema de ícones
+├── hooks/          tema, prova em andamento, trava de prova, narração, digitação
+├── data/           catálogos: atividades, provas, inglês, digitação, Passo a Passo
+│   ├── atividadesAutocorrigidas/   atividades .atividade.ts por curso + dados*.ts das planilhas
+│   └── provasInterativas/          provas .prova.ts (só o servidor carrega)
 ├── types/          contratos de dados
 ├── styles/         tokens, reset e fontes
-└── lib/            rotas, busca e cliente da API
+├── assets/         imagens importadas no código (ilustrações geradas)
+└── lib/            rotas, busca, correção e cliente da API
 
+public/atividades/  arquivos baixados nas atividades (PDF, .xlsx, .pptx, imagens)
 servidor/           API das provas: envios, correção, área do professor, limpeza
 api/index.ts        a mesma API como função da Vercel
+scripts/            registro de provas, ilustrações, planilhas, senha de professor e verificações
+docs/DOCUMENTACAO.md  documentação completa do projeto
 docs/SERVIDOR.md    como o servidor roda, variáveis, rotas e garantias
 docs/API.md         contrato da API de longo prazo
 contrato/api.ts     os mesmos formatos em TypeScript
 PRODUCT.md          verdade de produto: usuários, propósito, restrições
+CLAUDE.md           regras para quem (ou o agente que) edita o código
 .impeccable/        contrato de direção visual
 ```
 
 ## Seções
 
-- **Atividades** — quatro trilhas: Informática, Administrativa/Gestão,
-  Programação, Design
-- **Inglês** — trilha à parte, com atividades e provas próprias
-- **Digitação** — treino de teclado com velocidade, precisão e contagem de erros
-- **Passo a Passo** — tutoriais guiados e jogos de conceito de informática
-  básica, para quem tem mais dificuldade de leitura
-- **Provas** — o aluno se identifica pelo nome, faz a prova (travada em tela
-  cheia quando a prova pede) e envia; a área do professor (`/professor`, com
-  login) mostra os envios, os arquivos e as notas por 7 dias
+- **Atividades** — 65 cursos em 7 categorias (Administrativa, Informática,
+  Programação, Design, Marketing, Comportamental e Saúde), com material de
+  apoio e 224 atividades corrigidas dentro do portal, incluindo as de
+  planilha de «configurar» e «preencher» com o `.xlsx` baixado na atividade
+- **Inglês** — trilha à parte, com 21 atividades em 7 trilhas e provas próprias
+- **Digitação** — treino de teclado com velocidade, precisão, contagem de erros
+  e ranking
+- **Passo a Passo** — 50 tutoriais guiados e 5 jogos de conceito de
+  informática básica, para quem tem mais dificuldade de leitura
+- **Provas** — 48 provas interativas: o aluno se identifica pelo nome, faz a
+  prova (travada em tela cheia quando a prova pede) e envia; a área do
+  professor (`/professor`, com login) mostra os envios, os arquivos e as notas
+  por 7 dias
 
 ## Conteúdo
 
@@ -89,6 +103,16 @@ node scripts/capturar.mjs          # capturas em tema claro e escuro
 node scripts/verificar-prova.mjs   # os dois fluxos de prova, ponta a ponta
 node scripts/verificar-telas.mjs   # 320/768/1024/1440 e ordem de tabulação
 ```
+
+Planilhas das atividades (precisa do LibreOffice com o Calc):
+
+```bash
+python3 scripts/planilhas/conferir.py "$(node scripts/planilhas/exportar.mjs)"
+```
+
+Antes de todo push: `npx tsc -b --force` e `npm run build` limpos. Os commits
+saem com o autor `Fernandomanoel` (a Vercel do projeto é Hobby e trava o
+deploy de outro autor) — ver a seção 12 da documentação.
 
 ## Princípios do servidor
 

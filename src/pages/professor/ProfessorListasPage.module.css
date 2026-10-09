@@ -1,0 +1,191 @@
+.nova {
+  display: inline-flex;
+  align-self: flex-start;
+  width: fit-content;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.nova:hover:not(:disabled) {
+  background: var(--brand-deepest);
+}
+
+.nova:disabled {
+  cursor: progress;
+}
+
+.nova:focus-visible,
+.acao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.erro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--danger-tint);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Cada lista é uma «página»: capa com o desenho de uma planilha, título e quem mexeu por último. */
+.item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out), transform 140ms var(--ease-out);
+}
+
+.item:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-2);
+  transform: translateY(-1px);
+}
+
+.item:has(a:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.capa {
+  height: 92px;
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(to right, transparent 27%, var(--line) 27%, var(--line) calc(27% + 1px), transparent calc(27% + 1px)),
+    linear-gradient(to right, transparent 52%, var(--line) 52%, var(--line) calc(52% + 1px), transparent calc(52% + 1px)),
+    linear-gradient(to right, transparent 76%, var(--line) 76%, var(--line) calc(76% + 1px), transparent calc(76% + 1px)),
+    repeating-linear-gradient(to bottom, color-mix(in oklab, var(--brand) 10%, var(--surface)) 0 22px, var(--surface-soft) 22px 23px, var(--surface-soft) 23px 46px, var(--line) 46px 47px);
+}
+
+.corpo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.selo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-tint);
+  color: var(--brand-deep);
+}
+
+.texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.titulo {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.titulo a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.titulo a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.titulo a:focus-visible {
+  outline: none;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+}
+
+.acoes,
+.confirmar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 var(--space-4) var(--space-4);
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.confirmar span {
+  color: var(--danger);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.acao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 140ms var(--ease-out), border-color 140ms var(--ease-out);
+}
+
+.acao:hover:not(:disabled) {
+  border-color: var(--ink-faint);
+  color: var(--ink);
+}
+
+.apagar:hover:not(:disabled) {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.perigo,
+.perigo:hover:not(:disabled) {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}
+

@@ -1,0 +1,728 @@
+/* Grade da lista: a tabela mora na página, como no Notion; células, seleção e
+   cabeçalho fixo vêm do Excel na web. Linhas finas, nenhuma moldura pesada. */
+
+.rolagem {
+  --linha-grade: color-mix(in oklab, var(--line) 75%, transparent);
+  --hover-linha: color-mix(in oklab, var(--ink) 3.5%, transparent);
+  width: fit-content;
+  max-width: 100%;
+  max-height: min(72vh, 960px);
+  overflow: auto;
+  border-top: 1px solid var(--linha-grade);
+  scrollbar-color: var(--line-strong) transparent;
+  overscroll-behavior: contain;
+}
+
+.grade {
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--text-sm);
+}
+
+.grade th,
+.grade td {
+  height: 36px;
+  padding: 0;
+  border-right: 1px solid var(--linha-grade);
+  border-bottom: 1px solid var(--linha-grade);
+  background: var(--fundo-linha, var(--surface));
+  vertical-align: middle;
+}
+
+/* ---------- Cabeçalho (propriedades) ---------- */
+
+.grade thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: 34px;
+  background: var(--surface);
+  text-align: left;
+}
+
+.canto {
+  left: 0;
+  z-index: 5 !important;
+}
+
+.grade thead .fixa {
+  z-index: 4;
+}
+
+.cabecalho {
+  position: relative;
+}
+
+.cabecalho > div {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.cabecalhoBotao {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  padding: 0 var(--space-3);
+  border: 0;
+  background: none;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 100ms var(--ease-out);
+}
+
+.cabecalhoBotao:hover,
+.cabecalhoBotao[aria-expanded="true"] {
+  background: var(--hover-linha);
+  color: var(--ink);
+}
+
+.cabecalhoBotao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.cabecalhoIcone {
+  flex-shrink: 0;
+  color: var(--ink-faint);
+}
+
+.cabecalhoTitulo {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cabecalhoSeta {
+  flex-shrink: 0;
+  color: var(--ink-faint);
+  opacity: 0;
+  transition: opacity 100ms var(--ease-out);
+}
+
+.cabecalhoBotao:hover .cabecalhoSeta,
+.cabecalhoBotao[aria-expanded="true"] .cabecalhoSeta {
+  opacity: 1;
+}
+
+.redimensionar {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  z-index: 2;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.redimensionar:hover {
+  background: linear-gradient(to right, transparent 2px, var(--brand) 2px, var(--brand) 4px, transparent 4px);
+}
+
+.maisColuna {
+  border-right: 0 !important;
+}
+
+.maisColuna > div {
+  display: flex;
+  height: 100%;
+}
+
+.maisBotao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+
+.maisBotao:hover,
+.maisBotao[aria-expanded="true"] {
+  background: var(--hover-linha);
+  color: var(--ink);
+}
+
+.maisBotao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.vazia {
+  border-right: 0 !important;
+  background: transparent !important;
+}
+
+/* ---------- Calha com o número da linha + primeira coluna fixa ---------- */
+
+.alca {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  width: 56px;
+  border-right-color: transparent !important;
+}
+
+.fixa {
+  position: sticky;
+  left: 56px;
+  z-index: 1;
+}
+
+.alcaBotao {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  width: 56px;
+  height: 36px;
+  padding-right: var(--space-2);
+  border: 0;
+  background: none;
+  color: var(--ink-faint);
+  font: inherit;
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+
+.alcaPontos {
+  order: -1;
+  opacity: 0;
+  transition: opacity 100ms var(--ease-out);
+}
+
+.linha:hover .alcaPontos,
+.alcaBotao:focus-visible .alcaPontos,
+.alcaBotao[aria-expanded="true"] .alcaPontos {
+  opacity: 1;
+}
+
+.alcaBotao:hover,
+.alcaBotao[aria-expanded="true"] {
+  color: var(--ink);
+}
+
+.alcaBotao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+/* ---------- Linhas ---------- */
+
+.linha:not([class*="cor-"]):hover > * {
+  --fundo-linha: color-mix(in oklab, var(--ink) 3%, var(--surface));
+}
+
+.cor-azul {
+  --fundo-linha: color-mix(in oklab, var(--brand) 12%, var(--surface));
+}
+
+.cor-verde {
+  --fundo-linha: color-mix(in oklab, var(--success) 13%, var(--surface));
+}
+
+.cor-amarelo {
+  --fundo-linha: color-mix(in oklab, oklch(0.86 0.17 95) 28%, var(--surface));
+}
+
+.cor-vermelho {
+  --fundo-linha: color-mix(in oklab, var(--danger) 12%, var(--surface));
+}
+
+.negrito .texto,
+.negrito .select {
+  font-weight: 700;
+}
+
+.ativa .alcaBotao {
+  color: var(--brand-deep);
+  font-weight: 700;
+}
+
+/* Célula selecionada: o retângulo azul do Excel. */
+.grade tbody td:focus-within {
+  box-shadow: inset 0 0 0 2px var(--brand);
+}
+
+/* ---------- Células ---------- */
+
+.texto,
+.select {
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--space-3);
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+}
+
+.texto::selection {
+  background: var(--brand-tint-strong);
+}
+
+.select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.select option {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+/* Opção escolhida aparece como etiqueta, como o campo «Select» do Notion. */
+.tag {
+  width: auto;
+  max-width: calc(100% - 16px);
+  height: 22px;
+  margin: 0 var(--space-2);
+  padding: 0 var(--space-2);
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--brand) 18%, var(--surface));
+  color: var(--ink);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 36px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.caixa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--ink-on-brand);
+  transition: background-color 100ms var(--ease-out), border-color 100ms var(--ease-out), transform 100ms var(--ease-out);
+}
+
+.marca:hover .caixa {
+  border-color: var(--brand);
+}
+
+.marca:active .caixa {
+  transform: scale(0.88);
+}
+
+.marca[aria-pressed="true"] .caixa {
+  border-color: var(--brand-deep);
+  background: var(--brand-deep);
+}
+
+.simnao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 var(--space-2);
+}
+
+.opcaoSim,
+.opcaoNao {
+  height: 24px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-faint);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 100ms var(--ease-out), color 100ms var(--ease-out);
+}
+
+.opcaoSim:hover {
+  background: var(--success-tint);
+  color: var(--success);
+}
+
+.opcaoNao:hover {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.sim,
+.sim:hover {
+  background: var(--success);
+  color: #fff;
+}
+
+.nao,
+.nao:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.opcaoSim:focus-visible,
+.opcaoNao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* ---------- Título de bloco: um cabeçalho de seção dentro da página ---------- */
+
+.linhaTitulo > * {
+  --fundo-linha: var(--surface) !important;
+  height: 52px;
+  border-bottom-color: var(--line-strong);
+}
+
+.linhaTitulo .alcaBotao {
+  height: 52px;
+  color: var(--brand-deep);
+}
+
+.linhaTitulo:not(:first-child) > * {
+  border-top: 14px solid var(--surface);
+}
+
+.celulaTitulo {
+  padding: 0;
+  border-right: 0 !important;
+}
+
+.titulo {
+  position: sticky;
+  left: 56px;
+  display: block;
+  width: min(100%, 640px);
+  height: 44px;
+  margin-top: 6px;
+  padding: 0 var(--space-3);
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  outline: none;
+}
+
+.titulo::placeholder {
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+.cor-azul.linhaTitulo .titulo {
+  color: var(--brand-deep);
+}
+
+.cor-verde.linhaTitulo .titulo {
+  color: var(--success);
+}
+
+.cor-vermelho.linhaTitulo .titulo {
+  color: var(--danger);
+}
+
+/* ---------- Subtotal do bloco e total ---------- */
+
+.subtotal > * {
+  height: 30px;
+  border-right-color: transparent !important;
+  background: var(--surface);
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+}
+
+.grade tfoot th,
+.grade tfoot td {
+  position: sticky;
+  bottom: 0;
+  height: 34px;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 0;
+  border-right-color: transparent;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+}
+
+.grade tfoot .fixa {
+  z-index: 2;
+}
+
+.grade tfoot .alca {
+  z-index: 3;
+}
+
+.total {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-2);
+}
+
+.total strong {
+  color: var(--ink);
+}
+
+.totalSim strong {
+  color: var(--success);
+}
+
+.totalNao strong {
+  color: var(--danger);
+}
+
+.rotuloTotal {
+  padding: 0 var(--space-3);
+  color: var(--ink-faint);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+/* ---------- «+ Nova linha»: a última linha da tabela ---------- */
+
+.adicionar td {
+  height: 38px;
+  border-right: 0;
+  background: var(--surface);
+}
+
+.adicionarAcoes {
+  position: sticky;
+  left: 0;
+  display: flex;
+  gap: var(--space-1);
+  width: max-content;
+  padding-left: var(--space-2);
+}
+
+.adicionarBotao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--ink-faint);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.adicionarBotao:hover:not(:disabled) {
+  background: var(--hover-linha);
+  color: var(--ink);
+}
+
+.adicionarBotao:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.adicionarBotao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* ---------- Menus da coluna e da linha ---------- */
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 240px;
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+
+.menuTitulo {
+  padding: var(--space-1) var(--space-2) 0;
+  color: var(--ink-faint);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.campo > span {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.campo input:not([type="range"]),
+.campo select,
+.campo textarea {
+  padding: var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.campo textarea {
+  resize: vertical;
+}
+
+.campo input[type="range"] {
+  accent-color: var(--brand-deep);
+}
+
+.campo :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.menuLinha {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.menuLinha > * {
+  flex: 1;
+}
+
+.menuBotao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 34px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 100ms var(--ease-out), border-color 100ms var(--ease-out);
+}
+
+.menuBotao:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  background: var(--surface-soft);
+}
+
+.menuBotao:disabled {
+  color: var(--ink-faint);
+  cursor: not-allowed;
+}
+
+.menuBotao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.menuItem {
+  justify-content: flex-start;
+  border-color: transparent;
+  background: transparent;
+}
+
+.menu:has(.menuItem) {
+  gap: 1px;
+  min-width: 220px;
+}
+
+.tipoItem {
+  align-items: flex-start;
+  padding-block: var(--space-2);
+  text-align: left;
+}
+
+.tipoItem svg {
+  margin-top: 2px;
+  color: var(--ink-soft);
+}
+
+.tipoItem span {
+  display: flex;
+  flex-direction: column;
+}
+
+.tipoItem small {
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+}
+
+.girar {
+  transform: rotate(90deg);
+}
+
+.perigoSuave {
+  color: var(--danger);
+}
+
+.perigo,
+.perigo:hover:not(:disabled) {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}
+
+.confirmar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--danger-tint);
+}
+
+.confirmar p {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+@media (pointer: coarse) {
+  .grade th,
+  .grade td,
+  .texto,
+  .select,
+  .marca,
+  .simnao,
+  .alcaBotao {
+    height: 44px;
+  }
+
+  .alcaPontos,
+  .cabecalhoSeta {
+    opacity: 1;
+  }
+}

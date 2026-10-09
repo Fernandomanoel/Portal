@@ -1,0 +1,158 @@
+.caixa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.titulo {
+  font-size: var(--text-md);
+}
+
+.suave {
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+
+.situacao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.aprovado {
+  background: var(--success-tint);
+  color: var(--success);
+}
+
+.reprovado {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 96px;
+  gap: var(--space-3);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.campo > span {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.campo input,
+.campo textarea {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  resize: vertical;
+}
+
+.campo input:focus-visible,
+.campo textarea:focus-visible {
+  border-color: var(--brand);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.mensagem {
+  min-height: 12em;
+  field-sizing: content;
+  background: var(--surface-soft) !important;
+  line-height: 1.5;
+}
+
+.segmentos {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 3px;
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+}
+
+.segmento {
+  min-height: 34px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.segmentoAtivo {
+  background: var(--surface);
+  color: var(--brand-deep);
+  box-shadow: var(--shadow-1);
+}
+
+.segmento:focus-visible,
+.copiar:focus-visible,
+.whats:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.copiar,
+.whats {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.copiar {
+  border: 0;
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+}
+
+.copiar:hover {
+  background: var(--brand-deepest);
+}
+
+.whats {
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.whats:hover {
+  border-color: var(--ink-faint);
+}

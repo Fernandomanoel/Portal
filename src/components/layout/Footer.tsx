@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className={estilos.rodape}>
       <div className={estilos.interna}>
-        <span className={estilos.marca}>Portal de Atividades</span>
+        <span className={estilos.marca}>Portal.</span>
         <span>Materiais de aula e provas dos cursos.</span>
       </div>
     </footer>

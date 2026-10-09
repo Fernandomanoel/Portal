@@ -68,6 +68,11 @@ conteúdo próximo de zero para quem não é programador.
   digitar usuário e senha. O navegador não impede a saída — a trava denuncia e
   bloqueia, e cada saída fica registrada no envio.
 - Envios e arquivos são apagados sozinhos 7 dias depois do envio.
+- Listas de acompanhamento na área do professor: planilha simples da equipe
+  (colunas de texto, marca, Sim/Não e lista de opções; linhas com cor e
+  negrito), compartilhada entre todos os professores, salva sozinha, guardada
+  até alguém apagar e exportável em .xlsx. Substitui as listas do SharePoint,
+  que derrubava a sessão por política de segurança.
 - A senha única da tela de listagem de Provas continua sendo trava de interface. O
   acesso real é o login da área do professor (usuário e senha por professor, sessão
   por cookie).
