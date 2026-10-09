@@ -10,6 +10,7 @@ import { respostaAceita, verificarCodigo } from "@/lib/correcaoTexto";
 import { rotas } from "@/lib/rotas";
 import type { Envio, SaidaProva } from "@/types/envio";
 import { TENTATIVAS_POR_QUESTAO, type ProvaInterativa } from "@/types/quiz";
+import { MensagemResultado } from "./MensagemResultado";
 import { dataHora, duracao, hora, nota, situacaoDaNota, tamanhoLegivel } from "./formato";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorEnvioPage.module.css";
@@ -130,6 +131,7 @@ function DetalheEnvio({ envio, prova, aoAtualizar, aoSessaoVencida }: DetalhePro
 
         <aside className={estilos.lateral}>
           <FormularioNota envio={envio} aoAtualizar={aoAtualizar} aoSessaoVencida={aoSessaoVencida} />
+          <MensagemResultado key={`${envio.id}-${envio.nota}`} envio={envio} />
           <p className={`${estilos.apagarEm} tabular`}>
             <Icone nome="relogio" tamanho={16} />
             Apagado sozinho em {new Date(envio.apagarEm).toLocaleDateString("pt-BR")}

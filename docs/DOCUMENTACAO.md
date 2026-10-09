@@ -154,6 +154,19 @@ Os formatos de prova são cinco:
 > **Atenção:** envios e arquivos são apagados sozinhos **7 dias** depois do
 > envio. Quem precisa guardar a nota deve registrá-la antes.
 
+### Mensagem de resultado para o responsável
+
+Na página de um envio, abaixo do formulário de nota, o painel **«Mensagem para
+o responsável»** gera o texto pronto de **aprovado** (nota a partir de 7,0)
+ou **reprovado**, com o curso, a data, a nota e uma observação.
+
+- Depois de lançar a nota, o curso e a data já vêm preenchidos (editáveis); o
+  campo **Observação** começa com o comentário da nota.
+- Escolha **Aluna** ou **Aluno** para a mensagem concordar; o texto muda
+  sozinho ao mexer em qualquer campo, e dá para ajustá-lo à mão.
+- **Copiar mensagem** põe o texto na área de transferência; **Abrir no
+  WhatsApp** abre o WhatsApp com a mensagem pronta para escolher o contato.
+
 ### Listas de acompanhamento
 
 Aba «Listas» da área do professor: uma planilha simples da equipe, feita para
