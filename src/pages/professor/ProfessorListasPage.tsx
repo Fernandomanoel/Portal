@@ -68,7 +68,12 @@ export function ProfessorListasPage() {
         titulo="Listas de acompanhamento"
         texto="Listas da equipe para acompanhar alunos, entregas e reposições. Todo professor vê e edita as mesmas listas; elas ficam guardadas até alguém apagar e podem ser exportadas em .xlsx."
         acoes={
-          <button type="button" className={estilos.nova} onClick={() => void nova()} disabled={criando}>
+          <button
+            type="button"
+            className={estilos.nova}
+            onClick={() => void nova()}
+            disabled={criando}
+          >
             <Icone nome="mais" tamanho={17} />
             {criando ? "Criando…" : "Nova lista"}
           </button>
@@ -94,39 +99,68 @@ export function ProfessorListasPage() {
         <ul className={estilos.lista}>
           {listas.map((lista) => (
             <li key={lista.id} className={estilos.item}>
-              <span className={estilos.selo} aria-hidden="true">
-                <Icone nome="tabela" tamanho={20} />
-              </span>
-              <div className={estilos.texto}>
-                <p className={estilos.titulo}>
-                  <Link to={rotas.professorLista(lista.id)}>{lista.titulo}</Link>
-                </p>
-                <p className={estilos.meta}>
-                  <span className="tabular">
-                    {lista.linhas} {lista.linhas === 1 ? "linha" : "linhas"} · {lista.colunas} {lista.colunas === 1 ? "coluna" : "colunas"}
-                  </span>
-                  <span>
-                    Alterada por {lista.alteradaPor}, <span className="tabular">{dataHora(lista.alteradaEm)}</span>
-                  </span>
-                </p>
+              <div className={estilos.capa} aria-hidden="true" />
+              <div className={estilos.corpo}>
+                <span className={estilos.selo} aria-hidden="true">
+                  <Icone nome="tabela" tamanho={18} />
+                </span>
+                <div className={estilos.texto}>
+                  <p className={estilos.titulo}>
+                    <Link to={rotas.professorLista(lista.id)}>
+                      {lista.titulo}
+                    </Link>
+                  </p>
+                  <p className={estilos.meta}>
+                    <span className="tabular">
+                      {lista.linhas} {lista.linhas === 1 ? "linha" : "linhas"} ·{" "}
+                      {lista.colunas}{" "}
+                      {lista.colunas === 1 ? "coluna" : "colunas"}
+                    </span>
+                    <span>
+                      Alterada por {lista.alteradaPor},{" "}
+                      <span className="tabular">
+                        {dataHora(lista.alteradaEm)}
+                      </span>
+                    </span>
+                  </p>
+                </div>
               </div>
               {apagando === lista.id ? (
                 <div className={estilos.confirmar}>
                   <span>Apagar para todos?</span>
-                  <button type="button" className={estilos.acao} onClick={() => definirApagando(null)}>
+                  <button
+                    type="button"
+                    className={estilos.acao}
+                    onClick={() => definirApagando(null)}
+                  >
                     Cancelar
                   </button>
-                  <button type="button" className={`${estilos.acao} ${estilos.perigo}`} onClick={() => void apagar(lista.id)}>
+                  <button
+                    type="button"
+                    className={`${estilos.acao} ${estilos.perigo}`}
+                    onClick={() => void apagar(lista.id)}
+                  >
                     Apagar
                   </button>
                 </div>
               ) : (
                 <div className={estilos.acoes}>
-                  <button type="button" className={estilos.acao} onClick={() => void nova(lista.id)} disabled={criando} aria-label={`Duplicar ${lista.titulo}`}>
+                  <button
+                    type="button"
+                    className={estilos.acao}
+                    onClick={() => void nova(lista.id)}
+                    disabled={criando}
+                    aria-label={`Duplicar ${lista.titulo}`}
+                  >
                     <Icone nome="copiar" tamanho={16} />
                     <span>Duplicar</span>
                   </button>
-                  <button type="button" className={`${estilos.acao} ${estilos.apagar}`} onClick={() => definirApagando(lista.id)} aria-label={`Apagar ${lista.titulo}`}>
+                  <button
+                    type="button"
+                    className={`${estilos.acao} ${estilos.apagar}`}
+                    onClick={() => definirApagando(lista.id)}
+                    aria-label={`Apagar ${lista.titulo}`}
+                  >
                     <Icone nome="lixeira" tamanho={16} />
                   </button>
                 </div>

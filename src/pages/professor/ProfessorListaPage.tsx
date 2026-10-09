@@ -4,13 +4,11 @@ import { Link, useParams } from "react-router-dom";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { GradeLista } from "@/components/listas/GradeLista";
-import { ICONE_TIPO } from "@/components/listas/iconesTipo";
-import { MenuSuspenso } from "@/components/listas/MenuSuspenso";
 import { gravarLista, obterLista } from "@/lib/apiListas";
 import { ErroApi } from "@/lib/apiProvas";
-import { formatarLinha, inserirColuna, inserirLinha, inserirTitulo, mesclar } from "@/lib/editarLista";
+import { formatarLinha, mesclar } from "@/lib/editarLista";
 import { rotas } from "@/lib/rotas";
-import { CORES_LINHA, LIMITES_LISTA, TIPOS_COLUNA, type ListaAcompanhamento } from "@/types/lista";
+import { CORES_LINHA, LIMITES_LISTA, type ListaAcompanhamento } from "@/types/lista";
 import { dataHora, hora } from "./formato";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorListaPage.module.css";
@@ -220,8 +218,6 @@ export function ProfessorListaPage() {
   if (!lista) return <p aria-live="polite">Abrindo a lista…</p>;
 
   const linhaSelecionada = lista.linhas.find((l) => l.id === linhaAtiva) ?? null;
-  const cheiaDeColunas = lista.colunas.length >= LIMITES_LISTA.colunas;
-  const cheiaDeLinhas = lista.linhas.length >= LIMITES_LISTA.linhas;
 
   return (
     <div className={estilos.pagina}>
@@ -333,64 +329,6 @@ export function ProfessorListaPage() {
       )}
 
       <div className={estilos.ferramentas} role="toolbar" aria-label="Editar a lista">
-        <div className={estilos.grupo}>
-          <button type="button" className={estilos.botao} disabled={cheiaDeLinhas} onClick={() => alterar((l) => inserirLinha(l))}>
-            <Icone nome="mais" tamanho={16} />
-            Linha
-          </button>
-          <button
-            type="button"
-            className={estilos.botao}
-            disabled={cheiaDeLinhas}
-            title="Linha mesclada no fim da lista, para separar turmas e horários"
-            onClick={() => {
-              const indice = lista.linhas.length;
-              alterar((l) => inserirTitulo(l, indice));
-              requestAnimationFrame(() => document.querySelector<HTMLInputElement>(`[data-l="${indice}"] input`)?.focus());
-            }}
-          >
-            <Icone nome="tabela" tamanho={16} />
-            Título de bloco
-          </button>
-          <MenuSuspenso
-            rotulo="Adicionar coluna"
-            classeGatilho={estilos.botao}
-            gatilho={
-              <>
-                <Icone nome="mais" tamanho={16} />
-                Coluna
-                <Icone nome="seta-baixo" tamanho={14} className={estilos.seta} />
-              </>
-            }
-          >
-            {(fechar) => (
-              <ul className={estilos.tipos}>
-                {TIPOS_COLUNA.map((t) => (
-                  <li key={t.tipo}>
-                    <button
-                      type="button"
-                      className={estilos.tipo}
-                      disabled={cheiaDeColunas}
-                      onClick={() => {
-                        fechar();
-                        alterar((l) => inserirColuna(l, t.tipo, t.tipo === "texto" ? "Observação" : t.tipo === "opcoes" ? "Situação" : t.rotulo));
-                      }}
-                    >
-                      <span className={estilos.tipoIcone}>
-                        <Icone nome={ICONE_TIPO[t.tipo]} tamanho={16} />
-                      </span>
-                      <span>
-                        <strong>{t.rotulo}</strong>
-                        <span>{t.descricao}</span>
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </MenuSuspenso>
-        </div>
-
         <div className={estilos.grupo} role="group" aria-label={linhaSelecionada ? "Formatar a linha selecionada" : "Selecione uma linha para formatar"}>
           <span className={estilos.rotuloGrupo}>
             <Icone nome="pincel" tamanho={15} />
@@ -438,26 +376,15 @@ export function ProfessorListaPage() {
       </div>
 
       {lista.colunas.length === 0 ? (
-        <EstadoVazio icone="tabela" titulo="Nenhuma coluna" texto="Use «Coluna» acima para criar a primeira: texto, marca, Sim/Não ou lista de opções." />
+        <EstadoVazio icone="tabela" titulo="Nenhuma coluna" texto="Use o botão + no canto da grade para criar a primeira: texto, marca, Sim/Não ou lista de opções." />
       ) : (
         <>
           <GradeLista lista={lista} alterar={alterar} linhaAtiva={linhaAtiva} definirLinhaAtiva={definirLinhaAtiva} />
-          {lista.linhas.length === 0 ? (
-            <button type="button" className={estilos.novaLinha} onClick={() => alterar((l) => inserirLinha(l))}>
-              <Icone nome="mais" tamanho={16} />
-              Adicionar a primeira linha
-            </button>
-          ) : (
-            <button type="button" className={estilos.novaLinha} disabled={cheiaDeLinhas} onClick={() => alterar((l) => inserirLinha(l))}>
-              <Icone nome="mais" tamanho={16} />
-              Nova linha
-            </button>
-          )}
         </>
       )}
 
       <p className={estilos.dica}>
-        Salva sozinho a cada alteração (ou Ctrl+S). Setas e Enter andam entre as células; clique no título de uma coluna para renomear, mudar o tipo, mover ou apagar; arraste a borda dela para alargar.
+        Salva sozinho (ou Ctrl+S) · Setas e Enter andam entre as células · Clique no título de uma coluna para renomear, mudar o tipo ou apagar; arraste a borda para alargar · O + à direita cria colunas
       </p>
     </div>
   );

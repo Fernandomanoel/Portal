@@ -11,12 +11,13 @@ import {
   definirTitulo,
   definirValor,
   duplicarLinha,
+  inserirColuna,
   inserirLinha,
   inserirTitulo,
   moverColuna,
   moverLinha,
 } from "@/lib/editarLista";
-import { LARGURA_MAXIMA, LARGURA_MINIMA, TIPOS_COLUNA, type ColunaLista, type LinhaLista, type ListaAcompanhamento, type TipoColuna } from "@/types/lista";
+import { LARGURA_MAXIMA, LARGURA_MINIMA, LIMITES_LISTA, TIPOS_COLUNA, type ColunaLista, type LinhaLista, type ListaAcompanhamento, type TipoColuna } from "@/types/lista";
 import { ICONE_TIPO } from "./iconesTipo";
 import { MenuSuspenso } from "./MenuSuspenso";
 import estilos from "./GradeLista.module.css";
@@ -30,6 +31,7 @@ interface Props {
 }
 
 const LARGURA_ALCA = 56;
+const LARGURA_MAIS = 48;
 
 export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Props) {
   const corpo = useRef<HTMLTableSectionElement>(null);
@@ -100,7 +102,15 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
     if (faixa && proximaEhTitulo && temRodape) linhasDaGrade.push({ tipo: "subtotal", titulo: faixa.titulo, inicio: faixa.inicio, fim: faixa.fim });
   });
 
-  const largura = LARGURA_ALCA + lista.colunas.reduce((s, c) => s + c.largura, 0);
+  const largura = LARGURA_ALCA + LARGURA_MAIS + lista.colunas.reduce((s, c) => s + c.largura, 0);
+  const total = lista.colunas.length + 2;
+  const cheiaDeLinhas = lista.linhas.length >= LIMITES_LISTA.linhas;
+
+  function novaLinha() {
+    const indice = lista.linhas.length;
+    alterar((atual) => inserirLinha(atual));
+    requestAnimationFrame(() => focarCelula(indice, 0));
+  }
 
   return (
     <div className={estilos.rolagem}>
@@ -110,6 +120,7 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
           {lista.colunas.map((c) => (
             <col key={c.id} style={{ width: c.largura }} />
           ))}
+          <col style={{ width: LARGURA_MAIS }} />
         </colgroup>
         <thead>
           <tr>
@@ -119,6 +130,33 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
             {lista.colunas.map((coluna, i) => (
               <CabecalhoColuna key={coluna.id} coluna={coluna} indice={i} total={lista.colunas.length} alterar={alterar} primeira={i === 0} />
             ))}
+            <th scope="col" className={estilos.maisColuna}>
+              <MenuSuspenso rotulo="Adicionar coluna" classeGatilho={estilos.maisBotao} alinhar="fim" gatilho={<Icone nome="mais" tamanho={16} />}>
+                {(fechar) => (
+                  <div className={estilos.menu}>
+                    <p className={estilos.menuTitulo}>Nova coluna</p>
+                    {TIPOS_COLUNA.map((t) => (
+                      <button
+                        key={t.tipo}
+                        type="button"
+                        className={`${estilos.menuBotao} ${estilos.menuItem} ${estilos.tipoItem}`}
+                        disabled={lista.colunas.length >= LIMITES_LISTA.colunas}
+                        onClick={() => {
+                          fechar();
+                          alterar((l) => inserirColuna(l, t.tipo, t.tipo === "texto" ? "Observação" : t.tipo === "opcoes" ? "Situação" : t.rotulo));
+                        }}
+                      >
+                        <Icone nome={ICONE_TIPO[t.tipo]} tamanho={16} />
+                        <span>
+                          <strong>{t.rotulo}</strong>
+                          <small>{t.descricao}</small>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </MenuSuspenso>
+            </th>
           </tr>
         </thead>
         <tbody ref={corpo} onKeyDown={navegar}>
@@ -150,7 +188,7 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
                   <MenuLinha linha={item.linha} posicao={item.posicao} exibido={item.exibido} total={lista.linhas.length} alterar={alterar} />
                 </th>
                 {item.linha.titulo !== undefined ? (
-                  <td colSpan={lista.colunas.length} data-l={item.posicao - 1} data-c={0} className={estilos.celulaTitulo}>
+                  <td colSpan={lista.colunas.length + 1} data-l={item.posicao - 1} data-c={0} className={estilos.celulaTitulo}>
                     <input
                       className={estilos.titulo}
                       value={item.linha.titulo}
@@ -172,9 +210,33 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
                     </td>
                   ))
                 )}
+                {item.linha.titulo === undefined && <td className={estilos.vazia} />}
               </tr>
             ),
           )}
+          <tr className={estilos.adicionar}>
+            <td colSpan={total}>
+              <div className={estilos.adicionarAcoes}>
+                <button type="button" className={estilos.adicionarBotao} disabled={cheiaDeLinhas} onClick={novaLinha}>
+                  <Icone nome="mais" tamanho={15} />
+                  Nova linha
+                </button>
+                <button
+                  type="button"
+                  className={estilos.adicionarBotao}
+                  disabled={cheiaDeLinhas}
+                  onClick={() => {
+                    const indice = lista.linhas.length;
+                    alterar((atual) => inserirTitulo(atual, indice));
+                    requestAnimationFrame(() => document.querySelector<HTMLInputElement>(`[data-l="${indice}"] input`)?.focus());
+                  }}
+                >
+                  <Icone nome="tabela" tamanho={15} />
+                  Título de bloco
+                </button>
+              </div>
+            </td>
+          </tr>
         </tbody>
         {temRodape && lista.linhas.length > 0 && (
           <tfoot>
@@ -189,6 +251,7 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
                   </td>
                 );
               })}
+              <td className={estilos.vazia} />
             </tr>
           </tfoot>
         )}
@@ -246,7 +309,7 @@ function Celula({ coluna, linha, rotuloLinha, aoMudar }: { coluna: ColunaLista; 
 
   if (coluna.tipo === "opcoes") {
     return (
-      <select className={estilos.select} value={typeof valor === "string" ? valor : ""} aria-label={rotulo} onChange={(e) => aoMudar(e.target.value || null)}>
+      <select className={typeof valor === "string" && valor ? `${estilos.select} ${estilos.tag}` : estilos.select} value={typeof valor === "string" ? valor : ""} aria-label={rotulo} onChange={(e) => aoMudar(e.target.value || null)}>
         <option value="">—</option>
         {(coluna.opcoes ?? []).map((o) => (
           <option key={o} value={o}>

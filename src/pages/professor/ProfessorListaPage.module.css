@@ -1,7 +1,15 @@
+/* A lista ocupa a largura da tela, como uma página do Notion ou uma pasta do Excel na web. */
 .pagina {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
+  width: min(100vw - 32px, 1440px);
+  margin-inline: calc(50% - min(50vw - 16px, 720px));
+  padding: var(--space-6) clamp(var(--space-4), 3vw, var(--space-8)) var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
 }
 
 .voltar {
@@ -49,15 +57,16 @@
   background: transparent;
   color: var(--ink);
   font-family: var(--font-display);
-  font-size: var(--text-xl);
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
   font-weight: 700;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
   text-overflow: ellipsis;
-  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+  transition: background-color 140ms var(--ease-out);
 }
 
 .titulo:hover {
-  border-color: var(--line);
+  background: color-mix(in oklab, var(--ink) 3%, transparent);
 }
 
 .titulo:focus {
@@ -80,9 +89,9 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--surface-soft);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: transparent;
   color: var(--ink-soft);
   font-size: var(--text-sm);
   font-weight: 600;
@@ -90,7 +99,10 @@
 }
 
 .situacao-salvo {
-  background: var(--success-tint);
+  color: var(--ink-faint);
+}
+
+.situacao-salvo svg {
   color: var(--success);
 }
 
@@ -223,17 +235,16 @@
 
 .ferramentas {
   position: sticky;
-  top: calc(var(--nav-height) + var(--space-2));
+  top: var(--nav-height);
   z-index: 10;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2) var(--space-4);
-  padding: var(--space-2);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface-raised);
-  box-shadow: var(--shadow-1, 0 1px 2px rgba(22, 32, 68, 0.06));
+  margin-top: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
 }
 
 .grupo {
@@ -246,6 +257,17 @@
 .grupo + .grupo {
   padding-left: var(--space-4);
   border-left: 1px solid var(--line);
+}
+
+.ferramentas .botao:not(.exportar) {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink-soft);
+}
+
+.ferramentas .botao:not(.exportar):hover:not(:disabled) {
+  background: color-mix(in oklab, var(--ink) 5%, transparent);
+  color: var(--ink);
 }
 
 .rotuloGrupo {
@@ -324,8 +346,8 @@
 }
 
 .amostra {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border: 1px solid var(--line-strong);
   border-radius: 50%;
   background: var(--amostra, var(--surface));
