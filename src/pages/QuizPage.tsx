@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { QuizContainer } from "@/components/quiz/QuizContainer";
 import { ErroApi, obterProva } from "@/lib/apiProvas";
 import { rotas } from "@/lib/rotas";
+import { lerFicha } from "@/lib/unidade";
 import type { ProvaParaAluno } from "@/types/quiz";
 
 type Estado =
@@ -38,6 +39,9 @@ export function QuizPage() {
       ativo = false;
     };
   }, [provaId]);
+
+  // Sem a senha da unidade não há para onde enviar a prova: volta para a área de Provas.
+  if (!lerFicha()) return <Navigate to={rotas.provas()} replace />;
 
   if (estado.fase === "carregando") {
     return <p aria-live="polite">Carregando a prova…</p>;

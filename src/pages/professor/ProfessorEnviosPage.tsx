@@ -24,7 +24,8 @@ const FILTROS: { id: Filtro; rotulo: string }[] = [
 const ATUALIZAR_A_CADA_MS = 30_000;
 
 export function ProfessorEnviosPage() {
-  const { sessaoVencida } = useProfessor();
+  const { sessaoVencida, professor, unidadeAtual } = useProfessor();
+  const nomeUnidade = (id?: string) => professor.unidades.find((u) => u.id === id)?.nome;
   const [envios, definirEnvios] = useState<Envio[] | null>(null);
   const [erro, definirErro] = useState<string | null>(null);
   const [atualizando, definirAtualizando] = useState(false);
@@ -76,7 +77,7 @@ export function ProfessorEnviosPage() {
     <>
       <CabecalhoPagina
         titulo="Provas enviadas"
-        texto={`Cada envio fica guardado por ${DIAS_GUARDADOS} dias e depois é apagado sozinho, com o arquivo. Baixe o que precisar guardar.`}
+        texto={`Só aparecem os envios ${professor.coordenacao ? (unidadeAtual ? "da unidade escolhida" : "de todas as unidades") : `da ${professor.unidade.nome}`}. Cada envio fica guardado por ${DIAS_GUARDADOS} dias e depois é apagado sozinho, com o arquivo. Baixe o que precisar guardar.`}
       />
 
       <div className={estilos.ferramentas}>
@@ -145,7 +146,7 @@ export function ProfessorEnviosPage() {
           </p>
           <ul className={estilos.lista}>
             {visiveis.map((envio) => (
-              <LinhaEnvio key={envio.id} envio={envio} />
+              <LinhaEnvio key={envio.id} envio={envio} unidade={professor.coordenacao && !unidadeAtual ? nomeUnidade(envio.unidade) : undefined} />
             ))}
           </ul>
         </>
@@ -154,7 +155,7 @@ export function ProfessorEnviosPage() {
   );
 }
 
-function LinhaEnvio({ envio }: { envio: Envio }) {
+function LinhaEnvio({ envio, unidade }: { envio: Envio; unidade?: string }) {
   const situacao = situacaoDaNota(envio.nota);
   const saidas = envio.saidas.length;
 
@@ -166,6 +167,7 @@ function LinhaEnvio({ envio }: { envio: Envio }) {
         </p>
         <p className={estilos.provaTitulo}>{envio.provaTitulo}</p>
         <p className={estilos.meta}>
+          {unidade && <span className={estilos.marca}>{unidade}</span>}
           <span className="tabular">{dataHora(envio.enviadaEm)}</span>
           {envio.arquivo && (
             <span className={estilos.marca}>

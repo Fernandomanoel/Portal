@@ -1,4 +1,6 @@
-import type { Envio, LancarNotaInput, Professor, ReciboEnvio } from "@/types/envio";
+import type { Envio, LancarNotaInput, ReciboEnvio } from "@/types/envio";
+import type { FichaUnidade, SessaoProfessor } from "@/types/unidade";
+import { comUnidade } from "./unidade";
 import type { ProvaInterativa, ProvaParaAluno, ResultadoItem } from "@/types/quiz";
 
 /** Erro da API com a mensagem já pronta para mostrar na tela. */
@@ -41,6 +43,8 @@ export function comJson(metodo: string, corpo: unknown): RequestInit {
 export interface DadosEnvio {
   /** Gerada uma vez por prova: reenviar depois de uma falha de rede não duplica. */
   chave: string;
+  /** Ficha da unidade (senha da aba Provas): sem ela o servidor não sabe para qual unidade enviar. */
+  ficha: string;
   provaId: string;
   nomeAluno: string;
   iniciadaEm: string;
@@ -61,9 +65,12 @@ export function enviarProva(dados: DadosEnvio, arquivo: File | null) {
   return chamar<ReciboEnvio>("envios", { method: "POST", body: formulario });
 }
 
-export function liberarProva(usuario: string, senha: string) {
-  return chamar<{ nome: string }>("liberacoes", comJson("POST", { usuario, senha }));
+export function liberarProva(usuario: string, senha: string, ficha: string) {
+  return chamar<{ nome: string }>("liberacoes", comJson("POST", { usuario, senha, ficha }));
 }
+
+/** A senha da aba Provas identifica a unidade e devolve a ficha que o envio carrega. */
+export const entrarNaUnidade = (senha: string) => chamar<FichaUnidade>("unidades/entrar", comJson("POST", { senha }));
 
 /** Só existe enquanto a nota está pendente (`correcao.aRevisar > 0`): fecha a
  *  nota provisória ali mesmo, sem esperar o professor revisar. */
@@ -71,16 +78,16 @@ export const aceitarResultadoProvisorio = (id: string) => chamar<ReciboEnvio>(`e
 
 // --------------------------------------------------------------- professor
 
-export const entrar = (usuario: string, senha: string) => chamar<Professor>("sessao", comJson("POST", { usuario, senha }));
+export const entrar = (usuario: string, senha: string) => chamar<SessaoProfessor>("sessao", comJson("POST", { usuario, senha }));
 export const sair = () => chamar<void>("sessao", { method: "DELETE" });
-export const sessaoAtual = () => chamar<Professor>("sessao");
+export const sessaoAtual = () => chamar<SessaoProfessor>("sessao");
 
 export function listarEnvios(filtros: { provaId?: string; busca?: string } = {}) {
   const parametros = new URLSearchParams();
   if (filtros.provaId) parametros.set("provaId", filtros.provaId);
   if (filtros.busca) parametros.set("busca", filtros.busca);
   const consulta = parametros.toString();
-  return chamar<{ dados: Envio[] }>(`envios${consulta ? `?${consulta}` : ""}`);
+  return chamar<{ dados: Envio[] }>(comUnidade(`envios${consulta ? `?${consulta}` : ""}`));
 }
 
 /** `prova` vem com o gabarito; é nula se o arquivo da prova saiu do portal depois do envio. */

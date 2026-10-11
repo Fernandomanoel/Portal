@@ -1,16 +1,19 @@
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { Fragment, useCallback, useEffect, useState, type FormEvent } from "react";
 import { NavLink, Outlet, useOutletContext } from "react-router-dom";
 
 import { Icone } from "@/components/Icone";
 import { ErroApi, entrar, sair, sessaoAtual } from "@/lib/apiProvas";
 import { rotas } from "@/lib/rotas";
-import type { Professor } from "@/types/envio";
+import { definirUnidadeAtiva, unidadeAtiva } from "@/lib/unidade";
+import type { SessaoProfessor } from "@/types/unidade";
 import estilos from "./ProfessorLayout.module.css";
 
-type Estado = { fase: "conferindo" } | { fase: "fora"; aviso?: string } | { fase: "dentro"; professor: Professor };
+type Estado = { fase: "conferindo" } | { fase: "fora"; aviso?: string } | { fase: "dentro"; professor: SessaoProfessor };
 
 export interface ContextoProfessor {
-  professor: Professor;
+  professor: SessaoProfessor;
+  /** Coordenação: unidade que está sendo olhada (`null` = todas). Professor de unidade: a própria. */
+  unidadeAtual: string | null;
   /** Chamada quando a API responde 401 no meio do uso: a sessão de 12 h venceu. */
   sessaoVencida: () => void;
 }
@@ -22,6 +25,7 @@ export function useProfessor() {
 /** Toda a área do professor passa por aqui: sem sessão, só o login aparece. */
 export function ProfessorLayout() {
   const [estado, definirEstado] = useState<Estado>({ fase: "conferindo" });
+  const [escolhida, definirEscolhida] = useState<string | null>(() => unidadeAtiva());
 
   useEffect(() => {
     let ativo = true;
@@ -46,6 +50,7 @@ export function ProfessorLayout() {
   }
 
   const { professor } = estado;
+  const unidadeAtual = professor.coordenacao ? escolhida : professor.unidade.id;
   return (
     <>
       <div className={estilos.barra}>
@@ -54,6 +59,28 @@ export function ProfessorLayout() {
           <span>
             Área do professor · <strong>{professor.nome}</strong>
           </span>
+          {professor.coordenacao ? (
+            <label className={estilos.unidadeSeletor}>
+              <span className="sr-only">Unidade</span>
+              <select
+                value={escolhida ?? ""}
+                onChange={(e) => {
+                  const id = e.target.value || null;
+                  definirUnidadeAtiva(id);
+                  definirEscolhida(id);
+                }}
+              >
+                <option value="">Todas as unidades</option>
+                {professor.unidades.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.nome}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <span className={estilos.unidade}>{professor.unidade.nome}</span>
+          )}
         </p>
         <nav className={estilos.abas} aria-label="Área do professor">
           <NavLink to={rotas.professor()} end className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
@@ -76,12 +103,15 @@ export function ProfessorLayout() {
           Sair
         </button>
       </div>
-      <Outlet context={{ professor, sessaoVencida } satisfies ContextoProfessor} />
+      {/* Trocar de unidade remonta a página: tudo é buscado de novo, já filtrado. */}
+      <Fragment key={unidadeAtual ?? "todas"}>
+        <Outlet context={{ professor, unidadeAtual, sessaoVencida } satisfies ContextoProfessor} />
+      </Fragment>
     </>
   );
 }
 
-function Login({ aviso, aoEntrar }: { aviso?: string; aoEntrar: (professor: Professor) => void }) {
+function Login({ aviso, aoEntrar }: { aviso?: string; aoEntrar: (professor: SessaoProfessor) => void }) {
   const [usuario, definirUsuario] = useState("");
   const [senha, definirSenha] = useState("");
   const [erro, definirErro] = useState<string | null>(null);
@@ -107,7 +137,7 @@ function Login({ aviso, aoEntrar }: { aviso?: string; aoEntrar: (professor: Prof
         <Icone nome="cadeado" tamanho={22} />
       </span>
       <h1 className={estilos.titulo}>Área do professor</h1>
-      <p className={estilos.texto}>Provas enviadas pelos alunos, arquivos e notas, e as listas de acompanhamento da equipe.</p>
+      <p className={estilos.texto}>Provas enviadas pelos alunos da sua unidade, arquivos e notas, e as listas de acompanhamento da equipe.</p>
 
       {aviso && !erro && <p className={estilos.aviso}>{aviso}</p>}
 

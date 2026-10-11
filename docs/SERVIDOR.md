@@ -20,7 +20,9 @@ A troca entre Blob e disco é a interface `Armazenamento`
 
 | Variável | Obrigatória | O que é |
 |---|---|---|
-| `PROFESSORES` | sim | Lista JSON de professores com a senha em hash. Gere cada item com `npm run professor:senha`. |
+| `UNIDADES` | sim | Lista JSON das unidades: `id`, `nome` e a senha da aba Provas em hash. Gere cada item com `npm run unidade:senha`. Cada unidade precisa de uma senha diferente. |
+| `PROFESSORES` | sim | Lista JSON de professores com a senha em hash e a **unidade** (`id` de `UNIDADES`, ou `*` para a coordenação, que vê todas). Gere cada item com `npm run professor:senha`. Professor sem unidade válida não entra. |
+| `UNIDADE_PADRAO` | recomendada | `id` da unidade que herda os envios e as listas criados antes de existirem unidades. Sem ela, esses dados só a coordenação vê. |
 | `SEGREDO_SESSAO` | sim | Pelo menos 32 caracteres aleatórios. Assina o cookie de sessão; trocar derruba todas as sessões. |
 | `BLOB_READ_WRITE_TOKEN` | na Vercel | Criada sozinha quando o Blob é ligado ao projeto. Se a loja for ligada com um prefixo próprio (ex. `provas_READ_WRITE_TOKEN`), o servidor acha essa variável sozinho — não precisa ser exatamente esse nome. |
 | `CRON_SECRET` | na Vercel | Autoriza a limpeza diária agendada em `vercel.json`. |
@@ -31,16 +33,27 @@ A troca entre Blob e disco é a interface `Armazenamento`
 
 No `npm run dev`, as variáveis vêm do `.env.local` (fora do git).
 
+### Adicionar uma unidade
+
+```bash
+npm run unidade:senha -- centro "Unidade Centro" "senha-da-aba-provas"
+```
+
+A saída é um objeto JSON; `UNIDADES` é a lista desses objetos. O `id` (letras
+minúsculas, números e hífen) é o que os professores usam em `unidade`. Trocar a
+senha de uma unidade = gerar outro objeto e substituir na variável.
+
 ### Adicionar um professor
 
 ```bash
-npm run professor:senha -- maria "Maria Souza" "uma senha forte"
+npm run professor:senha -- maria "Maria Souza" "uma senha forte" centro
 ```
 
-A saída é um objeto JSON. `PROFESSORES` é a lista desses objetos:
+A saída é um objeto JSON (o último argumento é o id da unidade do professor, ou `*`).
+`PROFESSORES` é a lista desses objetos:
 
 ```
-PROFESSORES=[{"usuario":"maria","nome":"Maria Souza","senha":"scrypt:..."},{...}]
+PROFESSORES=[{"usuario":"maria","nome":"Maria Souza","unidade":"centro","senha":"scrypt:..."},{...}]
 ```
 
 Tirar alguém da lista derruba a sessão dele na próxima vez que ele usar a área
@@ -70,11 +83,12 @@ com `message` pronta para mostrar na tela.
 | Rota | Quem | O que faz |
 |---|---|---|
 | `GET /provas/<id>` | público | A prova **sem o gabarito**, para o aluno fazer. |
-| `POST /envios` | público | O aluno envia (multipart: `dados` em JSON + `arquivo`). Devolve só nota e acertos. |
-| `POST /liberacoes` | público | Confere usuário e senha do professor para destravar a prova na máquina do aluno. |
+| `POST /envios` | público | O aluno envia (multipart: `dados` em JSON, incluindo a `ficha` da unidade, + `arquivo`). Sem ficha válida responde 401 `UNIDADE_INVALIDA`. Devolve só nota e acertos. |
+| `POST /unidades/entrar` | público | A senha da aba Provas (`{ senha }`) identifica a unidade e devolve `{ unidade, ficha, expiraEm }`. A ficha é assinada e vale 12 horas. |
+| `POST /liberacoes` | público | Confere usuário e senha do professor (e a ficha) para destravar a prova na máquina do aluno. Só libera professor da unidade da ficha, ou a coordenação. |
 | `POST /sessao` | público | Login do professor. Cookie `HttpOnly`, `SameSite=Strict`, 12 horas. |
 | `GET /sessao` · `DELETE /sessao` | professor | Quem está logado · sair. |
-| `GET /envios?provaId=&busca=` | professor | Lista, mais novo primeiro. Roda a limpeza antes. |
+| `GET /envios?provaId=&busca=&unidade=` | professor | Lista, mais novo primeiro, só da unidade do professor (a coordenação vê todas ou escolhe com `unidade=`). Roda a limpeza antes. |
 | `GET /envios/<id>` | professor | `{ envio, prova }`, a prova com o gabarito. |
 | `PATCH /envios/<id>` | professor | Lança a nota: `{ nota, comentario? }` (0 a 10, uma casa). |
 | `DELETE /envios/<id>` | professor | Apaga o envio e o arquivo. |
@@ -96,6 +110,12 @@ com `message` pronta para mostrar na tela.
   tentativas a cada 10 minutos por IP, no login e na liberação.
 - **Pedido de outro site é recusado:** cookie `SameSite=Strict` e conferência da
   origem em tudo que não é leitura.
+- **Cada unidade só enxerga o que é seu.** O envio nasce com a unidade da ficha
+  (a ficha vem da senha da aba Provas e é assinada com `SEGREDO_SESSAO`: não dá
+  para trocá-la nem inventá-la). Envio, arquivo, nota e lista de outra unidade
+  respondem 404, como se não existissem, em qualquer rota. O professor tem a
+  unidade na variável `PROFESSORES`: mudar um professor de unidade vale na
+  hora, sem esperar a sessão acabar.
 - **Listas de acompanhamento não vencem.** Moram em `listas/`, fora das pastas
   que a limpeza percorre (`envios/`, `arquivos/`, `tentativas/`): ficam até um
   professor apagar. São compartilhadas entre todos os professores, revalidadas

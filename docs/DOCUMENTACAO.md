@@ -154,6 +154,27 @@ Os formatos de prova são cinco:
 > **Atenção:** envios e arquivos são apagados sozinhos **7 dias** depois do
 > envio. Quem precisa guardar a nota deve registrá-la antes.
 
+### Unidades
+
+Mais de uma unidade usa o mesmo portal, sem misturar os dados:
+
+1. Na aba **Provas**, quem aplica digita a **senha da sua unidade**. O servidor
+   confere, reconhece a unidade e a tela passa a mostrar «Respostas enviadas
+   para: Unidade X». Tudo o que os alunos enviarem a partir dali vai para a
+   unidade X.
+2. Cada **professor** pertence a uma unidade: na área do professor ele só vê
+   os envios, os arquivos, as notas e as listas dela. O nome da unidade
+   aparece no topo.
+3. A **coordenação** vê todas as unidades e escolhe qual olhar no seletor do
+   topo; para criar uma lista, escolhe antes a unidade.
+4. Se a prova travar (aluno saiu da tela), só um professor **da mesma unidade**
+   (ou a coordenação) consegue liberar.
+5. Abrir uma prova sem ter digitado a senha da unidade volta para a trava.
+
+Cadastrar unidades, trocar senhas e ligar professores a unidades é feito nas
+variáveis de ambiente (ver a Parte 2, seção 9). Envios e listas anteriores às
+unidades pertencem à `UNIDADE_PADRAO`.
+
 ### Mensagem de resultado para o responsável
 
 Na página de um envio, abaixo do formulário de nota, o painel **«Mensagem para
@@ -358,14 +379,17 @@ O resumo:
   - cookie `HttpOnly` + `SameSite=Strict`;
   - limpeza automática dos envios com mais de 7 dias.
 - **Variáveis de ambiente.** Os valores nunca vão para o repositório:
+  - `UNIDADES` e `UNIDADE_PADRAO`;
   - `PROFESSORES`;
   - `SEGREDO_SESSAO`;
   - `CRON_SECRET`;
   - `BLOB_READ_WRITE_TOKEN`;
   - `LIMITE_ARQUIVO_MB`, `DADOS_DIR`, `PORTA` e `SITE_DIR`.
+- **Nova unidade:** `npm run unidade:senha -- id "Nome" "senha"`; acrescente a
+  saída à lista `UNIDADES`.
 - **Novo professor:**
-  `npm run professor:senha -- usuario "Nome" "senha"`. Acrescente a saída à
-  lista `PROFESSORES`.
+  `npm run professor:senha -- usuario "Nome" "senha" id-da-unidade`
+  (`*` = coordenação). Acrescente a saída à lista `PROFESSORES`.
 
 ## 10. Geradores
 

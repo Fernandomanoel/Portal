@@ -13,7 +13,8 @@ import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorListasPage.module.css";
 
 export function ProfessorListasPage() {
-  const { sessaoVencida } = useProfessor();
+  const { sessaoVencida, professor, unidadeAtual } = useProfessor();
+  const semUnidade = professor.coordenacao && !unidadeAtual;
   const navegar = useNavigate();
   const [listas, definirListas] = useState<ResumoLista[] | null>(null);
   const [erro, definirErro] = useState<string | null>(null);
@@ -66,13 +67,14 @@ export function ProfessorListasPage() {
     <>
       <CabecalhoPagina
         titulo="Listas de acompanhamento"
-        texto="Listas da equipe para acompanhar alunos, entregas e reposições. Todo professor vê e edita as mesmas listas; elas ficam guardadas até alguém apagar e podem ser exportadas em .xlsx."
+        texto={`Listas da equipe ${professor.coordenacao ? (unidadeAtual ? "da unidade escolhida" : "de todas as unidades") : `da ${professor.unidade.nome}`} para acompanhar alunos, entregas e reposições. Os professores da unidade veem e editam as mesmas listas; elas ficam guardadas até alguém apagar e podem ser exportadas em .xlsx.`}
         acoes={
           <button
             type="button"
             className={estilos.nova}
             onClick={() => void nova()}
-            disabled={criando}
+            disabled={criando || semUnidade}
+            title={semUnidade ? "Escolha uma unidade no topo da página para criar a lista" : undefined}
           >
             <Icone nome="mais" tamanho={17} />
             {criando ? "Criando…" : "Nova lista"}

@@ -115,7 +115,7 @@ esse `user.name`/`user.email` de volta.
   sem pedido explícito — é o ponto de "IA sugere, instrutor decide". Hoje
   ele é o `PATCH /api/envios/<id>` da área do professor.
 - Envio de prova some em 7 dias (`DIAS_GUARDADOS`) por decisão do usuário —
-  não aumentar sem pedido. Segredos (`PROFESSORES`, `SEGREDO_SESSAO`,
+  não aumentar sem pedido. Segredos (`PROFESSORES`, `UNIDADES`, `SEGREDO_SESSAO`,
   `CRON_SECRET`) só em variável de ambiente, nunca no repositório.
 - Mudança visual em qualquer tela existente passa pela skill **Impeccable**
   (`impeccable context` antes, `impeccable detect --json` depois),
