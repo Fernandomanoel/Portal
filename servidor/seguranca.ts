@@ -19,7 +19,11 @@ function professores(): ProfessorCadastrado[] {
   if (!bruto) return [];
   try {
     const lista = JSON.parse(bruto) as ProfessorCadastrado[];
-    return Array.isArray(lista) ? lista.filter((p) => p.usuario && p.senha) : [];
+    if (!Array.isArray(lista)) return [];
+    // Professor cadastrado antes de existirem unidades (sem `unidade`) fica na
+    // unidade padrão, como os envios e listas antigos: ninguém perde o login.
+    const padrao = unidadePadrao();
+    return lista.filter((p) => p.usuario && p.senha).map((p) => (p.unidade ? p : { ...p, unidade: padrao ?? "" }));
   } catch {
     return [];
   }
