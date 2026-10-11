@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 
 import { Icone } from "@/components/Icone";
 import { ErroApi, liberarProva } from "@/lib/apiProvas";
+import { lerFicha } from "@/lib/unidade";
 import type { SaidaProva } from "@/types/envio";
 import estilos from "./ProvaAplicada.module.css";
 
@@ -29,7 +30,7 @@ export function ProvaBloqueada({ saida, aoLiberar }: Props) {
     definirEnviando(true);
     definirErro(null);
     try {
-      const { nome } = await liberarProva(usuario, senha);
+      const { nome } = await liberarProva(usuario, senha, lerFicha()?.ficha ?? "");
       aoLiberar(nome);
     } catch (falha) {
       definirErro(falha instanceof ErroApi ? falha.message : "Não foi possível liberar. Tente de novo.");

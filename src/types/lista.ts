@@ -45,6 +45,8 @@ export interface LinhaLista {
 
 export interface ListaAcompanhamento {
   id: string;
+  /** Unidade dona da lista. Listas antigas não têm: valem como a unidade padrão. */
+  unidade?: string;
   titulo: string;
   colunas: ColunaLista[];
   linhas: LinhaLista[];
@@ -58,6 +60,7 @@ export interface ListaAcompanhamento {
 
 export interface ResumoLista {
   id: string;
+  unidade?: string;
   titulo: string;
   colunas: number;
   linhas: number;

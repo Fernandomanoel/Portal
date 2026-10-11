@@ -7,11 +7,13 @@ import { ProvaCard } from "@/components/cards/ProvaCard";
 import { ProvasLock } from "@/components/provas/ProvasLock";
 import { PROVAS_CATEGORIAS, PROVAS_MANIFEST } from "@/data/provasManifest";
 import { normalizar } from "@/lib/busca";
+import { guardarFicha, limparFicha } from "@/lib/unidade";
+import type { FichaUnidade } from "@/types/unidade";
 import estilos from "./ProvasPage.module.css";
 
 export function ProvasPage() {
   // Estado só em memória: recarregar a página pede a senha de novo, como antes.
-  const [liberada, definirLiberada] = useState(false);
+  const [ficha, definirFicha] = useState<FichaUnidade | null>(null);
   const [busca, definirBusca] = useState("");
   const [categoria, definirCategoria] = useState<string | null>(null);
 
@@ -40,15 +42,22 @@ export function ProvasPage() {
       .filter((grupo) => grupo.cursos.length > 0);
   }, [cursos, busca, categoria]);
 
-  if (!liberada) {
-    return <ProvasLock aoEntrar={() => definirLiberada(true)} />;
+  if (!ficha) {
+    return (
+      <ProvasLock
+        aoEntrar={(nova) => {
+          guardarFicha(nova);
+          definirFicha(nova);
+        }}
+      />
+    );
   }
 
   return (
     <>
       <CabecalhoPagina
         titulo="Provas"
-        texto="Provas dos cursos, por categoria."
+        texto={`Provas dos cursos, por categoria. Respostas enviadas para: ${ficha.unidade.nome}.`}
       />
 
       <div className={estilos.ferramentas}>
@@ -63,7 +72,10 @@ export function ProvasPage() {
           />
         </form>
 
-        <button type="button" className={estilos.sair} onClick={() => definirLiberada(false)}>
+        <button type="button" className={estilos.sair} onClick={() => {
+            limparFicha();
+            definirFicha(null);
+          }}>
           Sair da área de provas
         </button>
 

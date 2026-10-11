@@ -32,13 +32,13 @@ const idParte = (v: unknown): v is string => typeof v === "string" && /^[a-zA-Z0
 const texto = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : "");
 
 export function resumir(lista: ListaAcompanhamento): ResumoLista {
-  const { id, titulo, colunas, linhas, alteradaPor, alteradaEm } = lista;
-  return { id, titulo, colunas: colunas.length, linhas: linhas.filter((l) => l.titulo === undefined).length, alteradaPor, alteradaEm };
+  const { id, titulo, colunas, linhas, alteradaPor, alteradaEm, unidade } = lista;
+  return { id, titulo, unidade, colunas: colunas.length, linhas: linhas.filter((l) => l.titulo === undefined).length, alteradaPor, alteradaEm };
 }
 
-export function novaLista(professor: Professor, origem?: ListaAcompanhamento): ListaAcompanhamento {
+export function novaLista(professor: Professor, unidade: string | null, origem?: ListaAcompanhamento): ListaAcompanhamento {
   const agora = new Date().toISOString();
-  const autoria = { versao: 1, criadaPor: professor.nome, criadaEm: agora, alteradaPor: professor.nome, alteradaEm: agora };
+  const autoria = { unidade: unidade ?? undefined, versao: 1, criadaPor: professor.nome, criadaEm: agora, alteradaPor: professor.nome, alteradaEm: agora };
   if (origem) {
     return { ...origem, ...autoria, id: novoId("lst_", 12), titulo: `${origem.titulo} (cópia)`.slice(0, LIMITES_LISTA.titulo) };
   }

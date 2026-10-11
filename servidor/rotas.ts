@@ -5,12 +5,19 @@ import { TENTATIVAS_POR_QUESTAO } from "../src/types/quiz.js";
 import { DIAS_GUARDADOS, LIMITE_ARQUIVO_MB } from "../src/types/envio.js";
 import type { Armazenamento } from "./armazenamento.js";
 import type { ListaAcompanhamento } from "../src/types/lista.js";
+import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
 import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
 import { conferirItem } from "../src/lib/correcaoProva.js";
 import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
 import {
   COOKIE_SESSAO,
+  acharUnidade,
   autenticar,
+  autenticarUnidade,
+  criarFicha,
+  lerFicha,
+  todasAsUnidades,
+  unidadePadrao,
   cookieApagado,
   cookieSessao,
   criarSessao,
@@ -43,6 +50,7 @@ type CodigoErro =
   | "TENTATIVAS_ESGOTADAS"
   | "NAO_ENCONTRADO"
   | "SEM_PERMISSAO"
+  | "UNIDADE_INVALIDA"
   | "CONFLITO"
   | "ERRO_INTERNO";
 
@@ -112,6 +120,39 @@ function professorDa(requisicao: Request): Professor | null {
   return lerSessao(lerCookie(requisicao.headers.get("cookie"), COOKIE_SESSAO));
 }
 
+// ------------------------------------------------------------------ unidades
+
+/** Envios e listas criados antes das unidades não têm o campo: valem como a unidade padrão. */
+const unidadeDe = (recurso: { unidade?: string }) => recurso.unidade ?? unidadePadrao();
+
+const coordenacao = (professor: Professor) => professor.unidade === TODAS_AS_UNIDADES;
+
+/** Cada professor só toca no que é da sua unidade; a coordenação toca em tudo. */
+const podeVer = (professor: Professor, recurso: { unidade?: string }) => coordenacao(professor) || unidadeDe(recurso) === professor.unidade;
+
+/**
+ * Unidade em que o professor está trabalhando agora: a dele, ou, na coordenação,
+ * a que ela escolheu (?unidade=). `null` na coordenação sem escolha = todas.
+ */
+function unidadeAtiva(professor: Professor, url: URL): string | null | "invalida" {
+  if (!coordenacao(professor)) return professor.unidade;
+  const pedida = url.searchParams.get("unidade");
+  if (!pedida || pedida === TODAS_AS_UNIDADES) return null;
+  return acharUnidade(pedida) ? pedida : "invalida";
+}
+
+function sessaoDe(professor: Professor): SessaoProfessor {
+  const todas = todasAsUnidades();
+  const coord = coordenacao(professor);
+  return {
+    usuario: professor.usuario,
+    nome: professor.nome,
+    coordenacao: coord,
+    unidade: coord ? { id: TODAS_AS_UNIDADES, nome: "Todas as unidades" } : (acharUnidade(professor.unidade) ?? { id: professor.unidade, nome: professor.unidade }),
+    unidades: coord ? todas : [],
+  };
+}
+
 /** Cookie SameSite=Strict já barra outro site; conferir a origem fecha o resto. */
 function origemPermitida(requisicao: Request) {
   const origem = requisicao.headers.get("origin");
@@ -152,6 +193,10 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
 
   const chave = chaveValida(dados.chave) ? dados.chave : null;
   if (!chave) return erro(422, "VALIDATION_ERROR", "Envio sem chave.");
+
+  // A senha da aba Provas identificou a unidade; sem a ficha não há para onde enviar a prova.
+  const unidade = lerFicha(dados.ficha);
+  if (!unidade) return erro(401, "UNIDADE_INVALIDA", "A sessão da unidade terminou. Volte à área de Provas e digite a senha da unidade de novo.");
 
   const agora = new Date();
   const id = `${dia(agora)}_${chave}`;
@@ -216,6 +261,7 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
     provaTitulo: prova.titulo,
     tipoProva: tipoDe(prova),
     nomeAluno,
+    unidade: unidade.id,
     iniciadaEm,
     enviadaEm: agora.toISOString(),
     respostas: validacao.respostas,
@@ -261,7 +307,9 @@ export async function limpar(armazenamento: Armazenamento, agora = new Date()) {
 
 // ------------------------------------------------------------- professor
 
-async function listarEnvios(url: URL, armazenamento: Armazenamento) {
+async function listarEnvios(url: URL, professor: Professor, armazenamento: Armazenamento) {
+  const ativa = unidadeAtiva(professor, url);
+  if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
   await limpar(armazenamento);
   const itens = (await armazenamento.listar("envios/")).filter((item) => item.caminho.endsWith(".json"));
   const envios = (await Promise.all(itens.map((item) => armazenamento.lerJson<Envio>(item.caminho)))).filter(
@@ -276,6 +324,8 @@ async function listarEnvios(url: URL, armazenamento: Armazenamento) {
     .trim();
 
   const filtrados = envios
+    .filter((envio) => ativa === null || unidadeDe(envio) === ativa)
+    .map((envio) => ({ ...envio, unidade: unidadeDe(envio) ?? undefined }))
     .filter((envio) => !provaId || envio.provaId === provaId)
     .filter(
       (envio) =>
@@ -421,6 +471,25 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     return json(recibo(atualizado));
   }
 
+  // Público: as unidades para escolher na aba Provas (só id e nome; a senha nunca sai do servidor).
+  if (partes[0] === "unidades" && partes.length === 1 && metodo === "GET") {
+    const dados = todasAsUnidades().sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    if (!dados.length) return erro(503, "ERRO_INTERNO", "Nenhuma unidade foi configurada no servidor (variável UNIDADES).");
+    return json({ dados });
+  }
+
+  // Público: a unidade escolhida + a senha dela. Devolve a ficha que o envio carrega.
+  if (partes[0] === "unidades" && partes[1] === "entrar" && metodo === "POST") {
+    const ip = ipDe(requisicao);
+    if (!tentativaPermitida(`unidade:${ip}`)) return erro(429, "LIMITE_TENTATIVAS", "Muitas tentativas. Espere alguns minutos.");
+    if (!todasAsUnidades().length) return erro(503, "ERRO_INTERNO", "Nenhuma unidade foi configurada no servidor (variável UNIDADES).");
+    const corpo = await lerCorpoJson(requisicao);
+    const unidade = autenticarUnidade(String(corpo?.unidade ?? ""), String(corpo?.senha ?? ""));
+    if (!unidade) return erro(401, "CREDENCIAIS_INVALIDAS", "Senha incorreta. Tente de novo.");
+    limparTentativas(`unidade:${ip}`);
+    return json({ unidade, ...criarFicha(unidade) });
+  }
+
   // Público: o professor libera, na máquina do aluno, a prova que travou.
   if (partes[0] === "liberacoes" && metodo === "POST") {
     const ip = ipDe(requisicao);
@@ -428,6 +497,13 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     const corpo = await lerCorpoJson(requisicao);
     const professor = autenticar(String(corpo?.usuario ?? ""), String(corpo?.senha ?? ""));
     if (!professor) return erro(401, "CREDENCIAIS_INVALIDAS", "Usuário ou senha do professor incorretos.");
+    if (professor === "SEM_UNIDADE") return erro(403, "SEM_PERMISSAO", "Seu usuário ainda não está ligado a uma unidade.");
+    // Só libera a máquina quem é da unidade que abriu a prova (ou a coordenação).
+    const unidade = lerFicha(corpo?.ficha);
+    if (!unidade) return erro(401, "UNIDADE_INVALIDA", "A sessão da unidade terminou. Volte à área de Provas.");
+    if (!coordenacao(professor) && professor.unidade !== unidade.id) {
+      return erro(403, "SEM_PERMISSAO", `Este professor não é da ${unidade.nome}.`);
+    }
     limparTentativas(`liberar:${ip}`);
     return json({ nome: professor.nome });
   }
@@ -439,12 +515,13 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
       const corpo = await lerCorpoJson(requisicao);
       const professor = autenticar(String(corpo?.usuario ?? ""), String(corpo?.senha ?? ""));
       if (!professor) return erro(401, "CREDENCIAIS_INVALIDAS", "Usuário ou senha incorretos.");
+      if (professor === "SEM_UNIDADE") return erro(403, "SEM_PERMISSAO", "Seu usuário ainda não está ligado a uma unidade. Peça à coordenação para configurar.");
       limparTentativas(`entrar:${ip}`);
-      return json(professor, 200, { "Set-Cookie": cookieSessao(criarSessao(professor), seguro) });
+      return json(sessaoDe(professor), 200, { "Set-Cookie": cookieSessao(criarSessao(professor), seguro) });
     }
     if (metodo === "DELETE") return new Response(null, { status: 204, headers: { "Set-Cookie": cookieApagado(seguro) } });
     const professor = professorDa(requisicao);
-    return professor ? json(professor) : erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    return professor ? json(sessaoDe(professor)) : erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
   }
 
   // Limpeza diária: chamada pelo agendador da Vercel (Authorization com
@@ -460,16 +537,20 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     const professor = professorDa(requisicao);
     if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
 
-    if (partes.length === 1 && metodo === "GET") return listarEnvios(url, armazenamento);
+    if (partes.length === 1 && metodo === "GET") return listarEnvios(url, professor, armazenamento);
 
     const id = partes[1] ?? "";
     if (!idValido(id)) return erro(404, "NAO_ENCONTRADO", "Envio não encontrado.");
 
+    // Envio de outra unidade responde como se não existisse.
+    const doEnvio = await armazenamento.lerJson<Envio>(caminhoEnvio(id));
+    if (doEnvio && !podeVer(professor, doEnvio)) return erro(404, "NAO_ENCONTRADO", "Envio não encontrado.");
+
     if (partes.length === 2 && metodo === "GET") {
-      const envio = await armazenamento.lerJson<Envio>(caminhoEnvio(id));
+      const envio = doEnvio;
       if (!envio) return erro(404, "NAO_ENCONTRADO", "Envio não encontrado. Ele pode ter passado dos 7 dias e sido apagado.");
       // Com o gabarito: o professor vê cada resposta ao lado da certa.
-      return json({ envio, prova: await acharProva(envio.provaId) });
+      return json({ envio: { ...envio, unidade: unidadeDe(envio) ?? undefined }, prova: await acharProva(envio.provaId) });
     }
     if (partes.length === 2 && metodo === "PATCH") return lancarNota(requisicao, id, professor, armazenamento);
     if (partes.length === 2 && metodo === "DELETE") return apagarEnvio(id, armazenamento);
@@ -480,24 +561,33 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     const professor = professorDa(requisicao);
     if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
 
-    if (partes.length === 1 && metodo === "GET") return json({ dados: await listarListas(armazenamento) });
+    const ativa = unidadeAtiva(professor, url);
+    if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
+
+    if (partes.length === 1 && metodo === "GET") {
+      return json({ dados: (await listarListas(armazenamento)).filter((l) => ativa === null || (l.unidade ?? unidadePadrao()) === ativa) });
+    }
     if (partes.length === 1 && metodo === "POST") {
+      // A coordenação precisa dizer em qual unidade a lista nasce.
+      if (ativa === null) return erro(422, "VALIDATION_ERROR", "Escolha uma unidade antes de criar a lista.");
       const corpo = await lerCorpoJson(requisicao);
       const origemId = typeof corpo?.duplicarDe === "string" ? corpo.duplicarDe : null;
       let origem: ListaAcompanhamento | undefined;
       if (origemId) {
         if (!idListaValido(origemId)) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
         origem = (await armazenamento.lerJson<ListaAcompanhamento>(caminhoLista(origemId))) ?? undefined;
-        if (!origem) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
+        if (!origem || !podeVer(professor, origem)) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
       }
-      const lista = novaLista(professor, origem);
+      const lista = novaLista(professor, ativa, origem);
       await armazenamento.salvarJson(caminhoLista(lista.id), lista);
       return json(lista, 201);
     }
 
     const id = partes[1] ?? "";
     if (partes.length !== 2 || !idListaValido(id)) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
-    const atual = await armazenamento.lerJson<ListaAcompanhamento>(caminhoLista(id));
+    const lida = await armazenamento.lerJson<ListaAcompanhamento>(caminhoLista(id));
+    // Lista de outra unidade responde como se não existisse.
+    const atual = lida && podeVer(professor, lida) ? lida : null;
 
     if (metodo === "GET") return atual ? json(atual) : erro(404, "NAO_ENCONTRADO", "Lista não encontrada. Ela pode ter sido apagada.");
     if (metodo === "DELETE") {

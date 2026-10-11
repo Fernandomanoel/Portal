@@ -12,6 +12,7 @@
     "build:servidor": "rolldown servidor/local.ts --platform node --format esm --no-codeSplitting --file dist-servidor/servidor.mjs",
     "servidor": "node dist-servidor/servidor.mjs",
     "professor:senha": "node scripts/senha-professor.mjs",
+    "unidade:senha": "node scripts/senha-unidade.mjs",
     "planilhas": "python3 scripts/planilhas/gerar.py \"$(node scripts/planilhas/exportar.mjs)\""
   },
   "dependencies": {

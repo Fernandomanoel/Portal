@@ -1,28 +1,54 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 import { Icone } from "@/components/Icone";
+import { ErroApi, entrarNaUnidade, listarUnidades } from "@/lib/apiProvas";
+import type { FichaUnidade, Unidade } from "@/types/unidade";
 import estilos from "./ProvasLock.module.css";
 
-/**
- * Trava de interface, não de segurança: o portal é estático e qualquer pessoa
- * com acesso ao repositório alcança os arquivos de qualquer forma. É uma
- * convenção de sala de aula, e é explicitamente provisória — a direção é
- * substituí-la por login de instrutor com JWT quando o backend existir.
- */
-const SENHA = "T1ringa@";
-
-export function ProvasLock({ aoEntrar }: { aoEntrar: () => void }) {
+export function ProvasLock({ aoEntrar }: { aoEntrar: (ficha: FichaUnidade) => void }) {
+  const [unidades, definirUnidades] = useState<Unidade[] | null>(null);
+  const [falhaLista, definirFalhaLista] = useState<string | null>(null);
+  const [tentativa, definirTentativa] = useState(0);
+  const [unidade, definirUnidade] = useState("");
   const [senha, definirSenha] = useState("");
-  const [erro, definirErro] = useState(false);
+  const [erro, definirErro] = useState<string | null>(null);
+  const [enviando, definirEnviando] = useState(false);
 
-  function enviar(evento: FormEvent) {
+  useEffect(() => {
+    let ativo = true;
+    listarUnidades()
+      .then((lista) => {
+        if (!ativo) return;
+        definirUnidades(lista);
+        // Com uma unidade só não há o que escolher.
+        if (lista.length === 1) definirUnidade(lista[0].id);
+      })
+      .catch((falha) => {
+        if (ativo) definirFalhaLista(falha instanceof ErroApi ? falha.message : "Não foi possível carregar as unidades. Tente de novo.");
+      });
+    return () => {
+      ativo = false;
+    };
+  }, [tentativa]);
+
+  function carregarDeNovo() {
+    definirFalhaLista(null);
+    definirUnidades(null);
+    definirTentativa((n) => n + 1);
+  }
+
+  async function enviar(evento: FormEvent) {
     evento.preventDefault();
-    if (senha === SENHA) {
-      aoEntrar();
-      return;
+    definirEnviando(true);
+    definirErro(null);
+    try {
+      aoEntrar(await entrarNaUnidade(unidade, senha));
+    } catch (falha) {
+      definirErro(falha instanceof ErroApi ? falha.message : "Não foi possível conferir a senha. Tente de novo.");
+      definirSenha("");
+    } finally {
+      definirEnviando(false);
     }
-    definirErro(true);
-    definirSenha("");
   }
 
   return (
@@ -33,34 +59,74 @@ export function ProvasLock({ aoEntrar }: { aoEntrar: () => void }) {
 
       <h1 className={estilos.titulo}>Área de provas</h1>
       <p className={estilos.texto}>
-        Esta área é usada pelo instrutor. A senha é pedida toda vez que a página
-        carrega.
+        Escolha a sua unidade e digite a senha dela. As provas só abrem com a senha, e as respostas dos alunos vão para a unidade escolhida.
       </p>
 
-      <div className={estilos.campo}>
-        <label htmlFor="senha-provas">Senha</label>
-        <input
-          id="senha-provas"
-          type="password"
-          value={senha}
-          autoComplete="current-password"
-          onChange={(evento) => {
-            definirSenha(evento.target.value);
-            definirErro(false);
-          }}
-        />
-      </div>
-
-      {erro && (
-        <p className={estilos.erro} role="alert">
-          <Icone nome="x" tamanho={16} />
-          Senha incorreta. Tente de novo.
+      {falhaLista ? (
+        <>
+          <p className={estilos.erro} role="alert">
+            <Icone nome="x" tamanho={16} />
+            {falhaLista}
+          </p>
+          <button type="button" className={estilos.tentarDeNovo} onClick={carregarDeNovo}>
+            Tentar de novo
+          </button>
+        </>
+      ) : unidades === null ? (
+        <p className={estilos.carregando} role="status">
+          Carregando as unidades…
         </p>
-      )}
+      ) : (
+        <>
+          <div className={estilos.campo}>
+            <label htmlFor="unidade-provas">Unidade</label>
+            <select
+              id="unidade-provas"
+              value={unidade}
+              autoFocus={unidades.length > 1}
+              onChange={(evento) => {
+                definirUnidade(evento.target.value);
+                definirErro(null);
+              }}
+            >
+              <option value="" disabled>
+                Escolha a unidade
+              </option>
+              {unidades.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.nome}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <button type="submit" className={estilos.entrar}>
-        Entrar
-      </button>
+          <div className={estilos.campo}>
+            <label htmlFor="senha-provas">Senha da unidade</label>
+            <input
+              id="senha-provas"
+              type="password"
+              value={senha}
+              autoComplete="current-password"
+              autoFocus={unidades.length === 1}
+              onChange={(evento) => {
+                definirSenha(evento.target.value);
+                definirErro(null);
+              }}
+            />
+          </div>
+
+          {erro && (
+            <p className={estilos.erro} role="alert">
+              <Icone nome="x" tamanho={16} />
+              {erro}
+            </p>
+          )}
+
+          <button type="submit" className={estilos.entrar} disabled={enviando || !unidade || !senha}>
+            {enviando ? "Conferindo…" : "Entrar"}
+          </button>
+        </>
+      )}
     </form>
   );
 }

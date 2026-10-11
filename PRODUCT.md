@@ -73,9 +73,13 @@ conteúdo próximo de zero para quem não é programador.
   negrito), compartilhada entre todos os professores, salva sozinha, guardada
   até alguém apagar e exportável em .xlsx. Substitui as listas do SharePoint,
   que derrubava a sessão por política de segurança.
-- A senha única da tela de listagem de Provas continua sendo trava de interface. O
-  acesso real é o login da área do professor (usuário e senha por professor, sessão
-  por cookie).
+- Várias unidades usam o mesmo portal sem misturar os dados. Na aba Provas
+  escolhe-se a unidade na lista e digita-se a senha dela: o servidor confere e devolve
+  uma ficha assinada que o envio da prova leva junto, então as provas vão para a
+  unidade escolhida. Cada professor (usuário e senha próprios, sessão por cookie) pertence a uma
+  unidade e só vê envios, arquivos, notas e listas dela; a coordenação (`*`) vê todas
+  e escolhe a unidade no topo. Envios e listas anteriores às unidades pertencem à
+  unidade padrão.
 - Modo claro e escuro são parte do produto, não um extra.
 - Seção "Passo a Passo": tutoriais de um micro-passo por tela (indicador "passo X
   de Y", imagem por passo, narração por voz do navegador só quando a pessoa clica,

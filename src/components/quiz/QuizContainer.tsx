@@ -4,6 +4,7 @@ import { useBlocker, useNavigate } from "react-router-dom";
 import { useProvaEmAndamento } from "@/hooks/ProvaEmAndamento";
 import { useTravaProva } from "@/hooks/useTravaProva";
 import { ErroApi, aceitarResultadoProvisorio, enviarProva, verificarItem } from "@/lib/apiProvas";
+import { lerFicha } from "@/lib/unidade";
 import type { ReciboEnvio, SaidaProva } from "@/types/envio";
 import { ehAutocorrigida, ehDescritiva, ehMista, ehPratica, totalDeQuestoes, type ProvaParaAluno, type ResultadoItem } from "@/types/quiz";
 import { CampoArquivo, problemaDoArquivo } from "./CampoArquivo";
@@ -153,7 +154,7 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
           ? prova.perguntas.map((pergunta, i) => (pergunta.tipo === "dissertativa" ? (textos[i] ?? "") : (escolhas[i] ?? null)))
           : Array.from({ length: totalQuestoes }, (_, i) => escolhas[i] ?? null);
     try {
-      const recibo = await enviarProva({ chave, provaId, nomeAluno, iniciadaEm, respostas, saidas }, arquivo);
+      const recibo = await enviarProva({ chave, ficha: lerFicha()?.ficha ?? "", provaId, nomeAluno, iniciadaEm, respostas, saidas }, arquivo);
       definirFase({ tipo: "enviada", recibo });
     } catch (falha) {
       definirErroEnvio(falha instanceof ErroApi ? falha.message : "Não foi possível enviar. Tente de novo.");

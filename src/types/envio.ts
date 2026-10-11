@@ -27,6 +27,8 @@ export interface Envio {
   provaTitulo: string;
   tipoProva: "multipla_escolha" | "descritiva" | "pratica" | "mista" | "autocorrigida";
   nomeAluno: string;
+  /** Unidade que liberou a prova (senha da aba Provas). Envios antigos não têm: valem como a unidade padrão. */
+  unidade?: string;
   iniciadaEm: string;
   enviadaEm: string;
   /** Múltipla escolha: índice escolhido por questão. Descritiva: o texto.
@@ -60,6 +62,8 @@ export interface ReciboEnvio {
 export interface Professor {
   usuario: string;
   nome: string;
+  /** Id da unidade do professor; `*` é a coordenação, que vê todas. */
+  unidade: string;
 }
 
 /** Mesmo formato de `LancarNotaInput` em contrato/api.ts. */

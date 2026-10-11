@@ -1,6 +1,7 @@
 import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 
 import type { Professor } from "../src/types/envio.js";
+import { TODAS_AS_UNIDADES, type Unidade } from "../src/types/unidade.js";
 
 /**
  * Professores vêm da variável PROFESSORES, um JSON:
@@ -18,7 +19,11 @@ function professores(): ProfessorCadastrado[] {
   if (!bruto) return [];
   try {
     const lista = JSON.parse(bruto) as ProfessorCadastrado[];
-    return Array.isArray(lista) ? lista.filter((p) => p.usuario && p.senha) : [];
+    if (!Array.isArray(lista)) return [];
+    // Professor cadastrado antes de existirem unidades (sem `unidade`) fica na
+    // unidade padrão, como os envios e listas antigos: ninguém perde o login.
+    const padrao = unidadePadrao();
+    return lista.filter((p) => p.usuario && p.senha).map((p) => (p.unidade ? p : { ...p, unidade: padrao ?? "" }));
   } catch {
     return [];
   }
@@ -42,11 +47,55 @@ function senhaConfere(senha: string, guardada: string): boolean {
 // e não revela quais usuários existem.
 const HASH_FALSO = gerarHashSenha(randomBytes(12).toString("hex"));
 
-export function autenticar(usuario: string, senha: string): Professor | null {
+export function autenticar(usuario: string, senha: string): Professor | "SEM_UNIDADE" | null {
   const alvo = usuario.trim().toLowerCase();
   const professor = professores().find((p) => p.usuario.toLowerCase() === alvo);
   const confere = senhaConfere(senha, professor?.senha ?? HASH_FALSO);
-  return professor && confere ? { usuario: professor.usuario, nome: professor.nome || professor.usuario } : null;
+  if (!professor || !confere) return null;
+  if (!unidadeValida(professor.unidade)) return "SEM_UNIDADE";
+  return { usuario: professor.usuario, nome: professor.nome || professor.usuario, unidade: professor.unidade };
+}
+
+// ----------------------------------------------------------------- unidades
+
+/**
+ * Unidades vêm da variável UNIDADES, um JSON:
+ *   [{"id":"centro","nome":"Unidade Centro","senha":"scrypt:..."}]
+ * A senha é a que se digita na aba Provas depois de escolher a unidade na lista
+ * (o `id` e o `nome` são públicos, a senha não); vale o mesmo cuidado dos professores
+ * (só o hash, gerado por `npm run unidade:senha`). Cada professor da variável
+ * PROFESSORES aponta para o `id` da sua unidade, ou para `*` (coordenação).
+ */
+interface UnidadeCadastrada extends Unidade {
+  senha: string;
+}
+
+function unidadesCadastradas(): UnidadeCadastrada[] {
+  const bruto = process.env.UNIDADES;
+  if (!bruto) return [];
+  try {
+    const lista = JSON.parse(bruto) as UnidadeCadastrada[];
+    return Array.isArray(lista) ? lista.filter((u) => /^[a-z0-9-]{2,30}$/.test(u?.id ?? "") && u.nome && u.senha) : [];
+  } catch {
+    return [];
+  }
+}
+
+export const todasAsUnidades = (): Unidade[] => unidadesCadastradas().map(({ id, nome }) => ({ id, nome }));
+export const acharUnidade = (id: string): Unidade | null => todasAsUnidades().find((u) => u.id === id) ?? null;
+export const unidadeValida = (id: unknown): id is string => id === TODAS_AS_UNIDADES || (typeof id === "string" && !!acharUnidade(id));
+
+/** Unidade que herda envios e listas criados antes de existirem unidades (variável UNIDADE_PADRAO). */
+export function unidadePadrao(): string | null {
+  const id = process.env.UNIDADE_PADRAO?.trim();
+  return id && acharUnidade(id) ? id : null;
+}
+
+/** Quem aplica a prova escolhe a unidade na lista e digita a senha dela. Id inexistente também passa pelo scrypt: o tempo não revela se a unidade existe. */
+export function autenticarUnidade(id: string, senha: string): Unidade | null {
+  const unidade = unidadesCadastradas().find((u) => u.id === id);
+  const confere = senhaConfere(senha, unidade?.senha ?? HASH_FALSO);
+  return unidade && confere ? { id: unidade.id, nome: unidade.nome } : null;
 }
 
 // ------------------------------------------------------------------ sessão
@@ -79,9 +128,36 @@ export function lerSessao(token: string | undefined): Professor | null {
   try {
     const dado = JSON.parse(Buffer.from(conteudo, "base64url").toString()) as Professor & { expira: number };
     if (dado.expira < Date.now()) return null;
-    // Professor removido da variável perde o acesso sem esperar a sessão expirar.
-    if (!professores().some((p) => p.usuario === dado.usuario)) return null;
-    return { usuario: dado.usuario, nome: dado.nome };
+    // Professor removido da variável perde o acesso sem esperar a sessão expirar;
+    // a unidade vem da variável, então mudar o professor de unidade vale na hora.
+    const atual = professores().find((p) => p.usuario === dado.usuario);
+    if (!atual || !unidadeValida(atual.unidade)) return null;
+    return { usuario: dado.usuario, nome: dado.nome, unidade: atual.unidade };
+  } catch {
+    return null;
+  }
+}
+
+// A ficha da unidade é o que o aluno carrega depois de digitar a senha da aba Provas.
+const DURACAO_FICHA_MS = 12 * 60 * 60 * 1000;
+
+export function criarFicha(unidade: Unidade): { ficha: string; expiraEm: string } {
+  const expira = Date.now() + DURACAO_FICHA_MS;
+  const conteudo = Buffer.from(JSON.stringify({ u: unidade.id, expira, t: "ficha" })).toString("base64url");
+  return { ficha: `${conteudo}.${assinar(conteudo)}`, expiraEm: new Date(expira).toISOString() };
+}
+
+export function lerFicha(token: unknown): Unidade | null {
+  if (typeof token !== "string") return null;
+  const [conteudo, assinatura] = token.split(".");
+  if (!conteudo || !assinatura) return null;
+  const esperada = Buffer.from(assinar(conteudo));
+  const recebida = Buffer.from(assinatura);
+  if (esperada.length !== recebida.length || !timingSafeEqual(esperada, recebida)) return null;
+  try {
+    const dado = JSON.parse(Buffer.from(conteudo, "base64url").toString()) as { u?: string; expira?: number; t?: string };
+    if (dado.t !== "ficha" || typeof dado.expira !== "number" || dado.expira < Date.now()) return null;
+    return acharUnidade(String(dado.u));
   } catch {
     return null;
   }
