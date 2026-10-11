@@ -1,4 +1,12 @@
 {
+  "redirects": [
+    {
+      "source": "/:caminho(.*)",
+      "has": [{ "type": "host", "value": "portal-microlins.vercel.app" }],
+      "destination": "https://oportale.vercel.app/:caminho",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/api/:rota*", "destination": "/api?rota=:rota*" },
     { "source": "/(.*)", "destination": "/index.html" }
