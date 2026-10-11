@@ -1,15 +1,54 @@
 {
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), geolocation=(), payment=(), microphone=(self)"
+        }
+      ]
+    }
+  ],
   "redirects": [
     {
       "source": "/:caminho(.*)",
-      "has": [{ "type": "host", "value": "portal-microlins.vercel.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "portal-microlins.vercel.app"
+        }
+      ],
       "destination": "https://oportale.vercel.app/:caminho",
       "permanent": true
     }
   ],
   "rewrites": [
-    { "source": "/api/:rota*", "destination": "/api?rota=:rota*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/:rota*",
+      "destination": "/api?rota=:rota*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
-  "crons": [{ "path": "/api/limpeza", "schedule": "0 7 * * *" }]
+  "crons": [
+    {
+      "path": "/api/limpeza",
+      "schedule": "0 7 * * *"
+    }
+  ]
 }
