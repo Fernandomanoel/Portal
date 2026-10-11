@@ -20,7 +20,7 @@ A troca entre Blob e disco é a interface `Armazenamento`
 
 | Variável | Obrigatória | O que é |
 |---|---|---|
-| `UNIDADES` | sim | Lista JSON das unidades: `id`, `nome` e a senha da aba Provas em hash. Gere cada item com `npm run unidade:senha`. Cada unidade precisa de uma senha diferente. |
+| `UNIDADES` | sim | Lista JSON das unidades: `id`, `nome` e a senha da aba Provas em hash. Gere cada item com `npm run unidade:senha`. O `id` e o `nome` aparecem na lista de unidades da aba Provas; a senha não sai do servidor. |
 | `PROFESSORES` | sim | Lista JSON de professores com a senha em hash e a **unidade** (`id` de `UNIDADES`, ou `*` para a coordenação, que vê todas). Gere cada item com `npm run professor:senha`. Professor sem unidade válida não entra. |
 | `UNIDADE_PADRAO` | recomendada | `id` da unidade que herda os envios e as listas criados antes de existirem unidades. Sem ela, esses dados só a coordenação vê. |
 | `SEGREDO_SESSAO` | sim | Pelo menos 32 caracteres aleatórios. Assina o cookie de sessão; trocar derruba todas as sessões. |
@@ -84,7 +84,8 @@ com `message` pronta para mostrar na tela.
 |---|---|---|
 | `GET /provas/<id>` | público | A prova **sem o gabarito**, para o aluno fazer. |
 | `POST /envios` | público | O aluno envia (multipart: `dados` em JSON, incluindo a `ficha` da unidade, + `arquivo`). Sem ficha válida responde 401 `UNIDADE_INVALIDA`. Devolve só nota e acertos. |
-| `POST /unidades/entrar` | público | A senha da aba Provas (`{ senha }`) identifica a unidade e devolve `{ unidade, ficha, expiraEm }`. A ficha é assinada e vale 12 horas. |
+| `GET /unidades` | público | As unidades para escolher na aba Provas: `{ dados: [{ id, nome }] }`, em ordem alfabética. Nunca devolve a senha. |
+| `POST /unidades/entrar` | público | A unidade escolhida e a senha dela (`{ unidade, senha }`) devolvem `{ unidade, ficha, expiraEm }`. A ficha é assinada e vale 12 horas. Senha errada vale como unidade inexistente: mesma resposta, mesmo tempo. |
 | `POST /liberacoes` | público | Confere usuário e senha do professor (e a ficha) para destravar a prova na máquina do aluno. Só libera professor da unidade da ficha, ou a coordenação. |
 | `POST /sessao` | público | Login do professor. Cookie `HttpOnly`, `SameSite=Strict`, 12 horas. |
 | `GET /sessao` · `DELETE /sessao` | professor | Quem está logado · sair. |

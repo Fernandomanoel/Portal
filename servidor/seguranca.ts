@@ -57,7 +57,8 @@ export function autenticar(usuario: string, senha: string): Professor | "SEM_UNI
 /**
  * Unidades vêm da variável UNIDADES, um JSON:
  *   [{"id":"centro","nome":"Unidade Centro","senha":"scrypt:..."}]
- * A senha é a que se digita na aba Provas; vale o mesmo cuidado dos professores
+ * A senha é a que se digita na aba Provas depois de escolher a unidade na lista
+ * (o `id` e o `nome` são públicos, a senha não); vale o mesmo cuidado dos professores
  * (só o hash, gerado por `npm run unidade:senha`). Cada professor da variável
  * PROFESSORES aponta para o `id` da sua unidade, ou para `*` (coordenação).
  */
@@ -86,14 +87,11 @@ export function unidadePadrao(): string | null {
   return id && acharUnidade(id) ? id : null;
 }
 
-/** A senha da aba Provas identifica a unidade. Todas passam pelo scrypt: o tempo não revela qual errou. */
-export function autenticarUnidade(senha: string): Unidade | null {
-  let achada: Unidade | null = null;
-  for (const u of unidadesCadastradas()) {
-    if (senhaConfere(senha, u.senha) && !achada) achada = { id: u.id, nome: u.nome };
-  }
-  if (!unidadesCadastradas().length) senhaConfere(senha, HASH_FALSO);
-  return achada;
+/** Quem aplica a prova escolhe a unidade na lista e digita a senha dela. Id inexistente também passa pelo scrypt: o tempo não revela se a unidade existe. */
+export function autenticarUnidade(id: string, senha: string): Unidade | null {
+  const unidade = unidadesCadastradas().find((u) => u.id === id);
+  const confere = senhaConfere(senha, unidade?.senha ?? HASH_FALSO);
+  return unidade && confere ? { id: unidade.id, nome: unidade.nome } : null;
 }
 
 // ------------------------------------------------------------------ sessão

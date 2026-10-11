@@ -1,5 +1,5 @@
 import type { Envio, LancarNotaInput, ReciboEnvio } from "@/types/envio";
-import type { FichaUnidade, SessaoProfessor } from "@/types/unidade";
+import type { FichaUnidade, SessaoProfessor, Unidade } from "@/types/unidade";
 import { comUnidade } from "./unidade";
 import type { ProvaInterativa, ProvaParaAluno, ResultadoItem } from "@/types/quiz";
 
@@ -69,8 +69,11 @@ export function liberarProva(usuario: string, senha: string, ficha: string) {
   return chamar<{ nome: string }>("liberacoes", comJson("POST", { usuario, senha, ficha }));
 }
 
-/** A senha da aba Provas identifica a unidade e devolve a ficha que o envio carrega. */
-export const entrarNaUnidade = (senha: string) => chamar<FichaUnidade>("unidades/entrar", comJson("POST", { senha }));
+/** As unidades para escolher na aba Provas. */
+export const listarUnidades = async () => (await chamar<{ dados: Unidade[] }>("unidades")).dados;
+
+/** A unidade escolhida e a senha dela: devolve a ficha que o envio da prova carrega. */
+export const entrarNaUnidade = (unidade: string, senha: string) => chamar<FichaUnidade>("unidades/entrar", comJson("POST", { unidade, senha }));
 
 /** Só existe enquanto a nota está pendente (`correcao.aRevisar > 0`): fecha a
  *  nota provisória ali mesmo, sem esperar o professor revisar. */

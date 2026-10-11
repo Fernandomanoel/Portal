@@ -16,6 +16,8 @@ const txt = async (sel) => (await page.locator(sel).textContent()).replace(/\s+/
 
 async function entrarNasProvas() {
   await page.goto(`${base}/provas`, { waitUntil: 'networkidle' });
+  const escolha = page.getByLabel('Unidade', { exact: true });
+  if (await escolha.isVisible()) await escolha.selectOption(process.env.UNIDADE ?? { index: 1 });
   await page.getByLabel('Senha da unidade').fill(process.env.SENHA_UNIDADE ?? 'microlins');
   await page.getByRole('button', { name: 'Entrar' }).click();
   await page.waitForTimeout(300);

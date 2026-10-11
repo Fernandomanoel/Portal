@@ -471,13 +471,20 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     return json(recibo(atualizado));
   }
 
-  // Público: a senha da aba Provas identifica a unidade. Devolve a ficha que o envio carrega.
+  // Público: as unidades para escolher na aba Provas (só id e nome; a senha nunca sai do servidor).
+  if (partes[0] === "unidades" && partes.length === 1 && metodo === "GET") {
+    const dados = todasAsUnidades().sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+    if (!dados.length) return erro(503, "ERRO_INTERNO", "Nenhuma unidade foi configurada no servidor (variável UNIDADES).");
+    return json({ dados });
+  }
+
+  // Público: a unidade escolhida + a senha dela. Devolve a ficha que o envio carrega.
   if (partes[0] === "unidades" && partes[1] === "entrar" && metodo === "POST") {
     const ip = ipDe(requisicao);
     if (!tentativaPermitida(`unidade:${ip}`)) return erro(429, "LIMITE_TENTATIVAS", "Muitas tentativas. Espere alguns minutos.");
     if (!todasAsUnidades().length) return erro(503, "ERRO_INTERNO", "Nenhuma unidade foi configurada no servidor (variável UNIDADES).");
     const corpo = await lerCorpoJson(requisicao);
-    const unidade = autenticarUnidade(String(corpo?.senha ?? ""));
+    const unidade = autenticarUnidade(String(corpo?.unidade ?? ""), String(corpo?.senha ?? ""));
     if (!unidade) return erro(401, "CREDENCIAIS_INVALIDAS", "Senha incorreta. Tente de novo.");
     limparTentativas(`unidade:${ip}`);
     return json({ unidade, ...criarFicha(unidade) });

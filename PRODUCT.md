@@ -73,10 +73,10 @@ conteúdo próximo de zero para quem não é programador.
   negrito), compartilhada entre todos os professores, salva sozinha, guardada
   até alguém apagar e exportável em .xlsx. Substitui as listas do SharePoint,
   que derrubava a sessão por política de segurança.
-- Várias unidades usam o mesmo portal sem misturar os dados. A senha da aba Provas é
-  da unidade: o servidor confere, identifica a unidade e devolve uma ficha assinada
-  que o envio da prova leva junto, então as provas vão para a unidade que digitou a
-  senha. Cada professor (usuário e senha próprios, sessão por cookie) pertence a uma
+- Várias unidades usam o mesmo portal sem misturar os dados. Na aba Provas
+  escolhe-se a unidade na lista e digita-se a senha dela: o servidor confere e devolve
+  uma ficha assinada que o envio da prova leva junto, então as provas vão para a
+  unidade escolhida. Cada professor (usuário e senha próprios, sessão por cookie) pertence a uma
   unidade e só vê envios, arquivos, notas e listas dela; a coordenação (`*`) vê todas
   e escolhe a unidade no topo. Envios e listas anteriores às unidades pertencem à
   unidade padrão.

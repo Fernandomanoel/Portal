@@ -18,5 +18,5 @@ if (senha.length < 6) {
 const sal = randomBytes(16);
 const hash = scryptSync(senha, sal, 32);
 const unidade = { id, nome, senha: `scrypt:${sal.toString("hex")}:${hash.toString("hex")}` };
-console.log("Acrescente este objeto à lista da variável UNIDADES (cada unidade precisa de uma senha diferente):");
+console.log("Acrescente este objeto à lista da variável UNIDADES (o id e o nome aparecem na lista de unidades da aba Provas):");
 console.log(JSON.stringify(unidade));

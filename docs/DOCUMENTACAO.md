@@ -158,10 +158,10 @@ Os formatos de prova são cinco:
 
 Mais de uma unidade usa o mesmo portal, sem misturar os dados:
 
-1. Na aba **Provas**, quem aplica digita a **senha da sua unidade**. O servidor
-   confere, reconhece a unidade e a tela passa a mostrar «Respostas enviadas
-   para: Unidade X». Tudo o que os alunos enviarem a partir dali vai para a
-   unidade X.
+1. Na aba **Provas**, quem aplica **escolhe a unidade na lista** e digita a
+   **senha dela**. O servidor confere e a tela passa a mostrar «Respostas
+   enviadas para: Unidade X». Tudo o que os alunos enviarem a partir dali vai
+   para a unidade X. Com uma unidade só cadastrada, ela já vem escolhida.
 2. Cada **professor** pertence a uma unidade: na área do professor ele só vê
    os envios, os arquivos, as notas e as listas dela. O nome da unidade
    aparece no topo.
