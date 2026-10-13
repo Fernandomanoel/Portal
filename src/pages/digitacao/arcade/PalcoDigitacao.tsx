@@ -3,6 +3,9 @@ import { forwardRef, useEffect, useImperativeHandle, useRef, useState, type Reac
 import { Icone } from "@/components/Icone";
 import estilos from "./PalcoDigitacao.module.css";
 
+export type Seta = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
+const SETAS = new Set<string>(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]);
+
 export interface PalcoRef {
   focar: () => void;
 }
@@ -15,6 +18,8 @@ interface Props {
   aoComando?: (tecla: "Enter" | "Escape" | "Backspace") => void;
   /** Enquanto true, o aviso de "clique para jogar" não aparece (ex.: tela de nível concluído). */
   semAviso?: boolean;
+  /** Setas apertadas e soltas (para jogos em que o aluno também move alguma coisa). */
+  aoSeta?: (seta: Seta, apertada: boolean) => void;
   /** Fora de foco o jogo para: quem saiu da tela não perde vida sem ver. */
   aoMudarFoco?: (focado: boolean) => void;
   className?: string;
@@ -27,7 +32,7 @@ interface Props {
  * ponto da cena devolve o foco ao campo.
  */
 export const PalcoDigitacao = forwardRef<PalcoRef, Props>(function PalcoDigitacao(
-  { children, aoCaractere, aoComando, semAviso, aoMudarFoco, className, rotulo },
+  { children, aoCaractere, aoComando, aoSeta, semAviso, aoMudarFoco, className, rotulo },
   ref,
 ) {
   const campoRef = useRef<HTMLInputElement>(null);
@@ -88,6 +93,13 @@ export const PalcoDigitacao = forwardRef<PalcoRef, Props>(function PalcoDigitaca
             aoComando?.(evento.key);
           }
           if (evento.key === "Tab") evento.preventDefault();
+          if (aoSeta && SETAS.has(evento.key)) {
+            evento.preventDefault();
+            aoSeta(evento.key as Seta, true);
+          }
+        }}
+        onKeyUp={(evento) => {
+          if (aoSeta && SETAS.has(evento.key)) aoSeta(evento.key as Seta, false);
         }}
       />
     </div>

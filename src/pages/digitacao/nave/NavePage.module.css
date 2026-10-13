@@ -1,0 +1,271 @@
+.pagina {
+  --destaque: #ffe066;
+
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px clamp(12px, 2.5vw, 28px) 16px;
+  background: radial-gradient(120% 80% at 50% 0%, #1a1450 0%, #070418 60%);
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.vidas {
+  display: flex;
+  gap: 6px;
+}
+
+/* Vida = uma navezinha. */
+.vida {
+  width: 18px;
+  height: 18px;
+  background: #e8eeff;
+  clip-path: polygon(50% 0, 64% 45%, 100% 78%, 100% 100%, 50% 84%, 0 100%, 0 78%, 36% 45%);
+}
+
+.vidaPerdida {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ---------- Área de jogo ---------- */
+
+.area {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.lado {
+  flex: 0 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #dfe6ff;
+}
+
+.lado h2 {
+  color: #ffffff;
+  font-family: var(--font-display, inherit);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.lado p {
+  color: #b8c3e8;
+  font-size: 0.92rem;
+}
+
+.controles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.88rem;
+}
+
+.controles li {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+kbd {
+  display: inline-block;
+  min-width: 22px;
+  margin-right: 3px;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: #e8eeff;
+  color: #0f1f3d;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* A tela mantém a proporção 2:3 e cabe na altura da janela. */
+.palco {
+  flex: 0 0 auto;
+  height: min(calc(100dvh - 150px), 150vw);
+  min-height: 420px;
+  aspect-ratio: 2 / 3;
+  max-width: 100%;
+  border-radius: 14px;
+  background: #04081f;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.tela {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* ---------- Chefe ---------- */
+
+.chefe {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.vidaChefe {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+
+.vidaChefe i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #ff4d6d, #ffb703);
+  transform-origin: left;
+  transition: transform 120ms linear;
+}
+
+.erro {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 4px rgba(255, 77, 109, 0.9);
+  animation: clarao 300ms ease-out forwards;
+}
+
+@keyframes clarao {
+  to {
+    opacity: 0;
+  }
+}
+
+/* ---------- Evento de tempo ---------- */
+
+.evento {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  max-width: 92%;
+  padding: 12px 18px 14px;
+  border-radius: 16px;
+  background: rgba(8, 6, 30, 0.88);
+  box-shadow: 0 0 0 2px #ffe066, 0 0 40px rgba(255, 224, 102, 0.45);
+  transform: translateX(-50%);
+  animation: entrar 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+@keyframes entrar {
+  from {
+    transform: translateX(-50%) scale(1.4);
+    opacity: 0;
+  }
+}
+
+.chamada {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffe066;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.palavra {
+  color: #ffffff;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  white-space: pre;
+}
+
+.palavra .feita {
+  color: #7dffb2;
+}
+
+.palavra .proxima {
+  color: #ffe066;
+  text-decoration: underline 3px;
+  text-underline-offset: 6px;
+}
+
+.relogio {
+  width: 100%;
+  min-width: 160px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+
+.relogio i {
+  display: block;
+  height: 100%;
+  background: #7dffb2;
+}
+
+.relogio i.acabando {
+  background: #ff4d6d;
+}
+
+@media (max-width: 900px) {
+  .area {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lado {
+    order: 2;
+    flex-basis: auto;
+    width: min(100%, 520px);
+  }
+
+  .palco {
+    height: auto;
+    width: min(100%, 520px);
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .evento,
+  .erro {
+    animation: none;
+  }
+}

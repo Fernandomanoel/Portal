@@ -11,6 +11,7 @@ const JOGOS_FIXOS = [
   { id: "digitacao-baloes", titulo: "Balões de Letras" },
   { id: "digitacao-constelacao", titulo: "Constelação" },
   { id: "digitacao-pulo", titulo: "Pulo das Palavras" },
+  { id: "digitacao-nave", titulo: "Esquadrão Hiper" },
 ];
 
 /**

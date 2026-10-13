@@ -94,6 +94,15 @@ const JOGOS: {
     etiqueta: "8 níveis",
     acento: "#138a52",
   },
+  {
+    para: rotas.digitacaoNave(),
+    icone: "raio",
+    sigla: "EH",
+    titulo: "Esquadrão Hiper",
+    texto: "Pilote a nave com as setas e digite a palavra a tempo para soltar o especial contra os chefes.",
+    etiqueta: "5 fases",
+    acento: "#2b1d8f",
+  },
 ];
 
 export function DigitacaoHubPage() {

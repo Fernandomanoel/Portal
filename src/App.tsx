@@ -26,6 +26,7 @@ import { SonicPage } from "@/pages/digitacao/sonic/SonicPage";
 import { BaloesPage } from "@/pages/digitacao/baloes/BaloesPage";
 import { ConstelacaoPage } from "@/pages/digitacao/constelacao/ConstelacaoPage";
 import { PuloPage } from "@/pages/digitacao/pulo/PuloPage";
+import { NavePage } from "@/pages/digitacao/nave/NavePage";
 import { TextosClassicosPage } from "@/pages/digitacao/textosClassicos/TextosClassicosPage";
 import { GuiadoJogoPage } from "@/pages/guiado/GuiadoJogoPage";
 import { GuiadoTutorialPage } from "@/pages/guiado/GuiadoTutorialPage";
@@ -89,6 +90,7 @@ const roteador = criarRoteador([
       { path: "digitacao/baloes", element: <BaloesPage /> },
       { path: "digitacao/constelacao", element: <ConstelacaoPage /> },
       { path: "digitacao/pulo", element: <PuloPage /> },
+      { path: "digitacao/nave", element: <NavePage /> },
 
       { path: "passo-a-passo", element: <GuiadoVitrinePage /> },
       { path: "passo-a-passo/tutorial/:caminho", element: <GuiadoTutorialPage /> },

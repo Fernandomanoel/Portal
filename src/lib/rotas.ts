@@ -20,6 +20,7 @@ export const rotas = {
   digitacaoBaloes: () => "/digitacao/baloes",
   digitacaoConstelacao: () => "/digitacao/constelacao",
   digitacaoPulo: () => "/digitacao/pulo",
+  digitacaoNave: () => "/digitacao/nave",
   digitacaoRanking: () => "/digitacao/ranking",
   guiado: () => "/passo-a-passo",
   guiadoTutorial: (caminho: string) => `/passo-a-passo/tutorial/${encodeURIComponent(caminho)}`,
