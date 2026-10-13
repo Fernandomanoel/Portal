@@ -12,7 +12,6 @@ export const rotas = {
   inglesAtividade: (slug: string) => `/ingles/atividades/${slug}`,
   inglesProvas: () => "/ingles/provas",
   digitacao: () => "/digitacao",
-  digitacaoLivre: () => "/digitacao/livre",
   digitacaoTextosClassicos: () => "/digitacao/textos-classicos",
   digitacaoCavaleirosZodiaco: () => "/digitacao/cavaleiros-zodiaco",
   digitacaoLetrasIngles: () => "/digitacao/letras-ingles",

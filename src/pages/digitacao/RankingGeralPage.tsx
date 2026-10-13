@@ -1,6 +1,5 @@
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
-import { EXERCICIOS } from "@/data/digitacao";
 import { ENSAIOS } from "@/pages/digitacao/letrasIngles/dados";
 import estilos from "./RankingGeralPage.module.css";
 
@@ -28,18 +27,6 @@ export function RankingGeralPage() {
       />
 
       <div className={estilos.secoes}>
-        {EXERCICIOS.length > 0 && (
-          <section className={estilos.secao}>
-            <h2 className={estilos.tituloSecao}>Treino livre</h2>
-            {EXERCICIOS.map((exercicio) => (
-              <div key={exercicio.id} className={estilos.bloco}>
-                <h3 className={estilos.tituloJogo}>{exercicio.titulo}</h3>
-                <PainelRanking jogoId={`digitacao-livre-${exercicio.id}`} />
-              </div>
-            ))}
-          </section>
-        )}
-
         {JOGOS_FIXOS.map((jogo) => (
           <section key={jogo.id} className={estilos.secao}>
             <h2 className={estilos.tituloSecao}>{jogo.titulo}</h2>

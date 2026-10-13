@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import { Icone, type NomeIcone } from "@/components/Icone";
 import { ATIVIDADES } from "@/data/atividades";
-import { EXERCICIOS } from "@/data/digitacao";
+import { JOGOS } from "@/data/jogosDigitacao";
 import { ATIVIDADES_INGLES, PROVAS_INGLES } from "@/data/ingles";
 import { rotas } from "@/lib/rotas";
 import { CATEGORIAS, type CategoriaAtividade } from "@/types/curso";
@@ -111,13 +111,7 @@ export function HomePage() {
 
         <article className={estilos.digitacao}>
           <div className={estilos.inglesTopo}>
-            <span
-              className={
-                EXERCICIOS.length > 0
-                  ? `${estilos.selo} ${estilos.seloVivo}`
-                  : estilos.selo
-              }
-            >
+            <span className={`${estilos.selo} ${estilos.seloVivo}`}>
               <Icone nome="digitacao" tamanho={22} />
             </span>
             <h2 className={estilos.nome}>
@@ -127,13 +121,7 @@ export function HomePage() {
           <p className={estilos.descricao}>
             Treino de teclado, medido em velocidade e precisão.
           </p>
-          <span
-            className={EXERCICIOS.length > 0 ? estilos.contagem : estilos.aguardando}
-          >
-            {EXERCICIOS.length > 0
-              ? contar(EXERCICIOS.length, "exercício", "exercícios")
-              : "em breve"}
-          </span>
+          <span className={estilos.contagem}>{contar(JOGOS.length, "jogo", "jogos")}</span>
         </article>
 
         <article className={estilos.provas}>
