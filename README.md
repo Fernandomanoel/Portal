@@ -68,7 +68,9 @@ CLAUDE.md           regras para quem (ou o agente que) edita o código
   planilha de «configurar» e «preencher» com o `.xlsx` baixado na atividade
 - **Inglês** — trilha à parte, com 21 atividades em 7 trilhas e provas próprias
 - **Digitação** — treino de teclado com velocidade, precisão, contagem de erros
-  e ranking
+  e ranking, incluindo três jogos de arcade (Balões de Letras, Constelação e
+  Pulo das Palavras) e o Esquadrão Hiper, jogo de nave com eventos de
+  digitação e chefes
 - **Passo a Passo** — 50 tutoriais guiados e 5 jogos de conceito de
   informática básica, para quem tem mais dificuldade de leitura
 - **Provas** — 48 provas interativas: o aluno se identifica pelo nome, faz a

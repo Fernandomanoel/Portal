@@ -1,0 +1,66 @@
+.mapa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.nivel {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.nivel:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.nivel:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nivel:focus-visible {
+  outline: 3px solid #ffe066;
+  outline-offset: 2px;
+}
+
+.feito {
+  border-color: rgba(255, 224, 102, 0.7);
+}
+
+.atual {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #0f1f3d;
+}
+
+.estrelas {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  display: flex;
+  gap: 2px;
+  transform: translateX(-50%);
+}
+
+.estrelas i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.estrelas i.cheia {
+  background: #ffd23f;
+}

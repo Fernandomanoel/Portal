@@ -1,0 +1,50 @@
+.palco {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  cursor: text;
+}
+
+/* Fora da tela, mas focável: é por ele que as teclas chegam. */
+.campo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.aviso {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 20;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f1f3d;
+  font: inherit;
+  font-weight: 800;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.aviso small {
+  max-width: 26ch;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.aviso:focus-visible {
+  outline: 3px solid #ffe066;
+  outline-offset: 3px;
+}

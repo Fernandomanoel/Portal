@@ -17,12 +17,15 @@ import { IngresAtividadePage } from "@/pages/IngresAtividadePage";
 import { IngresAtividadesPage } from "@/pages/IngresAtividadesPage";
 import { IngresHubPage } from "@/pages/IngresHubPage";
 import { IngresProvasPage } from "@/pages/IngresProvasPage";
-import { DigitacaoPage } from "@/pages/DigitacaoPage";
 import { DigitacaoHubPage } from "@/pages/digitacao/DigitacaoHubPage";
 import { RankingGeralPage } from "@/pages/digitacao/RankingGeralPage";
 import { CavaleirosZodiacoPage } from "@/pages/digitacao/cavaleirosZodiaco/CavaleirosZodiacoPage";
 import { LetrasInglesPage } from "@/pages/digitacao/letrasIngles/LetrasInglesPage";
 import { SonicPage } from "@/pages/digitacao/sonic/SonicPage";
+import { BaloesPage } from "@/pages/digitacao/baloes/BaloesPage";
+import { ConstelacaoPage } from "@/pages/digitacao/constelacao/ConstelacaoPage";
+import { PuloPage } from "@/pages/digitacao/pulo/PuloPage";
+import { NavePage } from "@/pages/digitacao/nave/NavePage";
 import { TextosClassicosPage } from "@/pages/digitacao/textosClassicos/TextosClassicosPage";
 import { GuiadoJogoPage } from "@/pages/guiado/GuiadoJogoPage";
 import { GuiadoTutorialPage } from "@/pages/guiado/GuiadoTutorialPage";
@@ -78,11 +81,14 @@ const roteador = criarRoteador([
 
       { path: "digitacao", element: <DigitacaoHubPage /> },
       { path: "digitacao/ranking", element: <RankingGeralPage /> },
-      { path: "digitacao/livre", element: <DigitacaoPage /> },
       { path: "digitacao/textos-classicos", element: <TextosClassicosPage /> },
       { path: "digitacao/cavaleiros-zodiaco", element: <CavaleirosZodiacoPage /> },
       { path: "digitacao/letras-ingles", element: <LetrasInglesPage /> },
       { path: "digitacao/sonic", element: <SonicPage /> },
+      { path: "digitacao/baloes", element: <BaloesPage /> },
+      { path: "digitacao/constelacao", element: <ConstelacaoPage /> },
+      { path: "digitacao/pulo", element: <PuloPage /> },
+      { path: "digitacao/nave", element: <NavePage /> },
 
       { path: "passo-a-passo", element: <GuiadoVitrinePage /> },
       { path: "passo-a-passo/tutorial/:caminho", element: <GuiadoTutorialPage /> },

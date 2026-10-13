@@ -28,6 +28,9 @@ export type NomeIcone =
   | "musica"
   | "raio"
   | "trofeu"
+  | "balao"
+  | "estrela"
+  | "pulo"
   | "alvo"
   | "alerta"
   | "som"
@@ -176,6 +179,20 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     </>
   ),
   raio: <path d="M13 3 5.5 13.2h5l-1.5 7.8 8-11.5h-5.2Z" />,
+  balao: (
+    <>
+      <path d="M12 3.5c3.3 0 5.5 2.5 5.5 5.6 0 3.6-2.9 6.4-5.5 7.4-2.6-1-5.5-3.8-5.5-7.4 0-3.1 2.2-5.6 5.5-5.6Z" />
+      <path d="m11 16.5-.6 1.4h3.2l-.6-1.4M12 18c-.8 1.4.8 2.2 0 3.5" />
+    </>
+  ),
+  estrela: <path d="m12 3.6 2.5 5.2 5.7.8-4.1 4 1 5.6L12 16.5l-5.1 2.7 1-5.6-4.1-4 5.7-.8Z" />,
+  pulo: (
+    <>
+      <path d="M3.5 19.5h6M14.5 13.5h6" />
+      <path d="M6.5 16.5c1.6-6 6.4-8.5 11-6" />
+      <path d="m15.4 8.8 2.1 1.7-1.3 2.4" />
+    </>
+  ),
   trofeu: (
     <>
       <path d="M8 4.5h8V8a4 4 0 0 1-8 0Z" />
