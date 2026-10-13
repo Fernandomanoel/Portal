@@ -44,7 +44,7 @@ instrutor passando arquivo por arquivo.
 | Início | `/` | Entrada com atalhos para as seções. |
 | Atividades | `/atividades` | 65 cursos em 7 categorias. Cada curso tem material de apoio e atividades corrigidas dentro do portal. |
 | Inglês | `/ingles` | Trilha própria: 21 atividades em 7 trilhas (vocabulário, ouvir e ler, frases, Gabi, vida real, textos e redação), mais as provas de inglês. |
-| Digitação | `/digitacao` | Treino de teclado: modo livre, textos clássicos, Cavaleiros do Zodíaco, letras em inglês e Sonic, com velocidade, precisão, erros e ranking (`/digitacao/ranking`). |
+| Digitação | `/digitacao` | Treino de teclado: modo livre, textos clássicos, Cavaleiros do Zodíaco, letras em inglês, Sonic e três jogos de arcade (Balões de Letras, Constelação e Pulo das Palavras), com velocidade, precisão, erros e ranking (`/digitacao/ranking`). Os jogos de arcade guardam os níveis liberados no navegador; cada um tem os níveis num `dados.ts` em `src/pages/digitacao/<jogo>/`, e a base comum (laço de animação, captura de teclas, mapa de níveis, quadro de fim) fica em `src/pages/digitacao/arcade/`. |
 | Passo a Passo | `/passo-a-passo` | 50 tutoriais guiados (10 de Windows, 10 de Word, 10 de Excel, 10 de PowerPoint, 5 de inteligência artificial e 5 de segurança digital) e 5 jogos de conceito sobre as peças do computador. |
 | Provas | `/provas` | 48 provas interativas organizadas por curso, abertas pela senha de sala do instrutor. |
 | Área do professor | `/professor` | Login por professor: lista de envios, arquivo anexado, respostas e lançamento de nota, e as listas de acompanhamento da equipe (`/professor/listas`). |

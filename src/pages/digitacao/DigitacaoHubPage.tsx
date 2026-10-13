@@ -67,6 +67,33 @@ const JOGOS: {
     etiqueta: "16 fases",
     acento: "#e07a00",
   },
+  {
+    para: rotas.digitacaoBaloes(),
+    icone: "balao",
+    sigla: "BL",
+    titulo: "Balões de Letras",
+    texto: "Estoure o balão apertando a letra dele. Os níveis seguem as fileiras do teclado.",
+    etiqueta: "16 níveis",
+    acento: "#e63946",
+  },
+  {
+    para: rotas.digitacaoConstelacao(),
+    icone: "estrela",
+    sigla: "CT",
+    titulo: "Constelação",
+    texto: "Digite a palavra da estrela antes que ela caia. As acesas formam uma constelação.",
+    etiqueta: "10 níveis",
+    acento: "#4c3fb0",
+  },
+  {
+    para: rotas.digitacaoPulo(),
+    icone: "pulo",
+    sigla: "PP",
+    titulo: "Pulo das Palavras",
+    texto: "Leve o robô Bit de chip em chip pela placa, digitando antes que o chip caia.",
+    etiqueta: "8 níveis",
+    acento: "#138a52",
+  },
 ];
 
 export function DigitacaoHubPage() {

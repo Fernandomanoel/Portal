@@ -1,0 +1,262 @@
+.pagina {
+  --destaque: #ffd76a;
+
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px clamp(12px, 2.5vw, 28px) 16px;
+  background: #050a1f;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.vidas {
+  display: flex;
+  gap: 6px;
+}
+
+.vida {
+  width: 20px;
+  height: 20px;
+  background: #ffd76a;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.vidaPerdida {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ---------- Céu ---------- */
+
+.ceu {
+  flex: 1 1 auto;
+  min-height: clamp(360px, 66vh, 680px);
+  border-radius: 18px;
+  background:
+    radial-gradient(80% 60% at 75% 0%, rgba(84, 70, 190, 0.45), transparent 70%),
+    radial-gradient(70% 50% at 10% 100%, rgba(20, 120, 140, 0.35), transparent 70%),
+    linear-gradient(180deg, #0b1440 0%, #050a1f 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.relogio {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.relogio span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #7ad7ff, #ffd76a);
+}
+
+.pontinho {
+  position: absolute;
+  border-radius: 50%;
+  background: #ffffff;
+  opacity: 0.5;
+  animation: piscar 4s ease-in-out infinite;
+}
+
+@keyframes piscar {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+.linhas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.linhas line {
+  stroke: rgba(255, 215, 106, 0.55);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+
+.noCeu {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #ffd76a;
+  box-shadow: 0 0 12px #ffd76a;
+}
+
+.erro {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 3px rgba(255, 92, 120, 0.85), inset 0 0 40px rgba(255, 92, 120, 0.35);
+  animation: clarao 380ms ease-out forwards;
+}
+
+@keyframes clarao {
+  to {
+    opacity: 0;
+  }
+}
+
+/* ---------- Estrela ---------- */
+
+/* Ponto zero no centro da estrela; tudo se posiciona a partir dele. */
+.estrela {
+  position: absolute;
+  z-index: 2;
+  width: 0;
+  height: 0;
+}
+
+/* Anel do tempo: encolhe conforme a estrela vai se apagando. */
+.anel {
+  --cor-anel: #7ad7ff;
+
+  position: absolute;
+  top: -26px;
+  left: -26px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: conic-gradient(var(--cor-anel) calc(var(--fracao) * 360deg), rgba(255, 255, 255, 0.1) 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+}
+
+.pouco .anel {
+  --cor-anel: #ff5c78;
+}
+
+.forma {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: 30px;
+  height: 30px;
+  background: #e8eeff;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  filter: drop-shadow(0 0 6px rgba(200, 215, 255, 0.8));
+}
+
+.pouco .forma {
+  animation: tremer 300ms linear infinite;
+}
+
+@keyframes tremer {
+  25% {
+    transform: translateX(-1px);
+  }
+
+  75% {
+    transform: translateX(1px);
+  }
+}
+
+.palavra {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  transform: translateX(-50%);
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: rgba(8, 14, 46, 0.82);
+  color: #e8eeff;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: pre;
+  box-shadow: 0 0 0 1px rgba(122, 215, 255, 0.25);
+}
+
+.palavra b {
+  color: #ffd76a;
+  font-weight: 800;
+}
+
+.alvo .palavra {
+  background: #ffffff;
+  color: #0b1440;
+  box-shadow: 0 0 0 2px #ffd76a, 0 0 18px rgba(255, 215, 106, 0.6);
+}
+
+.alvo .palavra b {
+  color: #b7791f;
+}
+
+.alvo .forma {
+  background: #ffd76a;
+}
+
+.acesa .forma {
+  background: #ffd76a;
+  animation: acender 600ms ease-out forwards;
+}
+
+.acesa .anel,
+.caindo .anel,
+.acesa .palavra {
+  display: none;
+}
+
+@keyframes acender {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.8);
+    filter: drop-shadow(0 0 22px #ffd76a);
+  }
+
+  100% {
+    transform: scale(0.35);
+    opacity: 0.9;
+  }
+}
+
+.caindo {
+  animation: cair 900ms ease-in forwards;
+}
+
+.caindo .forma {
+  background: #6b7280;
+  filter: none;
+}
+
+.caindo .palavra {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+@keyframes cair {
+  to {
+    transform: translate(40px, 140px) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pontinho,
+  .pouco .forma,
+  .acesa .forma,
+  .caindo,
+  .erro {
+    animation: none;
+  }
+}

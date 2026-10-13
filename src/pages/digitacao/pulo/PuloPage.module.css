@@ -1,0 +1,387 @@
+.pagina {
+  --destaque: #7dffb2;
+
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px clamp(12px, 2.5vw, 28px) 16px;
+  background: #062a1f;
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.vidas {
+  display: flex;
+  gap: 6px;
+}
+
+/* Vida = uma bateria. */
+.vida {
+  width: 14px;
+  height: 22px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #7dffb2, #2fbf71);
+  box-shadow: 0 -3px 0 -1px #7dffb2;
+}
+
+.vidaPerdida {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- Placa de circuito ---------- */
+
+.placa {
+  flex: 1 1 auto;
+  min-height: clamp(340px, 60vh, 620px);
+  border-radius: 18px;
+  background: radial-gradient(120% 90% at 50% 0%, #0d5a3f 0%, #073d2b 60%, #04291d 100%);
+  box-shadow: inset 0 0 0 1px rgba(125, 255, 178, 0.15);
+}
+
+/* Trilhas de cobre no fundo, andando mais devagar que o primeiro plano. */
+.trilhas {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(90deg, transparent 0 46%, rgba(125, 255, 178, 0.35) 46% 47%, transparent 47% 100%),
+    linear-gradient(0deg, transparent 0 62%, rgba(125, 255, 178, 0.25) 62% 63%, transparent 63% 100%),
+    radial-gradient(circle at 46.5% 62.5%, rgba(255, 210, 120, 0.7) 0 3px, transparent 4px);
+  background-size: 160px 120px;
+  transition: background-position 450ms ease;
+}
+
+.erro {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 3px rgba(255, 92, 92, 0.85), inset 0 0 40px rgba(255, 92, 92, 0.3);
+  animation: clarao 380ms ease-out forwards;
+}
+
+@keyframes clarao {
+  to {
+    opacity: 0;
+  }
+}
+
+/* No celular o mundo encolhe para caber o chip atual e o próximo. */
+.zoom {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 100%;
+}
+
+@media (max-width: 640px) {
+  .zoom {
+    inset: 0 -60% 0 0;
+    transform: scale(0.62);
+  }
+}
+
+.mundo {
+  position: absolute;
+  inset: 0;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Chips ---------- */
+
+.chip {
+  position: absolute;
+  height: 26px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #2b3440, #161c24);
+  box-shadow:
+    0 4px 0 #0b0f14,
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Perninhas do chip. */
+.chip::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -10px;
+  height: 7px;
+  background: repeating-linear-gradient(90deg, #c9a85a 0 5px, transparent 5px 12px);
+}
+
+.passado {
+  opacity: 0.35;
+}
+
+.atual {
+  box-shadow:
+    0 4px 0 #0b0f14,
+    0 0 0 2px rgba(125, 255, 178, 0.6);
+}
+
+.falhando {
+  animation: falhar 160ms linear infinite;
+  background: linear-gradient(180deg, #5a2b2b, #2a1414);
+}
+
+@keyframes falhar {
+  25% {
+    transform: translate(-1px, 1px);
+  }
+
+  75% {
+    transform: translate(1px, -1px);
+  }
+}
+
+.chegada {
+  background: linear-gradient(180deg, #2f7a55, #18402c);
+}
+
+.bandeira {
+  position: absolute;
+  right: 18px;
+  bottom: 26px;
+  width: 3px;
+  height: 54px;
+  background: #e8eeff;
+}
+
+.bandeira::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 2px;
+  width: 30px;
+  height: 20px;
+  background: repeating-conic-gradient(#ffffff 0 25%, #0f1f3d 0 50%) 0 0 / 10px 10px;
+}
+
+/* Bateria do chip: quanto falta para ele cair. */
+.carga {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 9px;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.carga span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #ff5c5c, #ffd25c 40%, #7dffb2);
+}
+
+.palavra {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: rgba(4, 30, 20, 0.75);
+  color: rgba(232, 238, 255, 0.55);
+  font-family: var(--font-display, inherit);
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.palavraAlvo {
+  bottom: 44px;
+  background: #ffffff;
+  color: #0b2a1e;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  box-shadow: 0 0 0 2px #7dffb2, 0 0 18px rgba(125, 255, 178, 0.5);
+}
+
+.palavra b,
+.palavraVirus b {
+  color: #138a52;
+}
+
+/* ---------- Vírus ---------- */
+
+.virus {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: translateX(-50%);
+}
+
+.corpoVirus {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff8a8a, #c81e3a 70%);
+  box-shadow:
+    0 -14px 0 -12px #c81e3a,
+    0 14px 0 -12px #c81e3a,
+    14px 0 0 -12px #c81e3a,
+    -14px 0 0 -12px #c81e3a;
+  animation: pulsar 900ms ease-in-out infinite alternate;
+}
+
+@keyframes pulsar {
+  to {
+    transform: scale(1.12) rotate(20deg);
+  }
+}
+
+.palavraVirus {
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: rgba(60, 10, 20, 0.85);
+  color: #ffd1d8;
+  font-family: var(--font-display, inherit);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.virusAlvo .palavraVirus {
+  background: #ffffff;
+  color: #7a0f22;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  box-shadow: 0 0 0 2px #ff5c78, 0 0 18px rgba(255, 92, 120, 0.5);
+}
+
+.virusAlvo .palavraVirus b {
+  color: #c81e3a;
+}
+
+/* ---------- Bit ---------- */
+
+.bit {
+  position: absolute;
+  z-index: 3;
+  width: 48px;
+  height: 56px;
+  transition:
+    left 450ms cubic-bezier(0.22, 1, 0.36, 1),
+    bottom 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.salto {
+  animation: salto 450ms ease-out;
+}
+
+@keyframes salto {
+  40% {
+    transform: translateY(-70px) rotate(-8deg);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.volta {
+  animation: volta 700ms ease-out;
+}
+
+@keyframes volta {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  35% {
+    transform: translateY(120px) rotate(30deg);
+    opacity: 0;
+  }
+
+  36% {
+    transform: translateY(-80px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.antena {
+  stroke: #9fb3c8;
+  stroke-width: 2;
+}
+
+.luz {
+  fill: #7dffb2;
+}
+
+.cabeca {
+  fill: #e8eeff;
+}
+
+.visor {
+  fill: #0f1f3d;
+}
+
+.olho {
+  fill: #7dffb2;
+}
+
+.corpo {
+  fill: #3a86ff;
+}
+
+.pe {
+  fill: #9fb3c8;
+}
+
+.avisoQueda {
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  z-index: 6;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #9b1c31;
+  font-weight: 800;
+  animation: sumir 1.6s ease-in forwards;
+}
+
+@keyframes sumir {
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mundo,
+  .bit,
+  .trilhas {
+    transition: none;
+  }
+
+  .salto,
+  .volta,
+  .falhando,
+  .corpoVirus,
+  .erro {
+    animation: none;
+  }
+}

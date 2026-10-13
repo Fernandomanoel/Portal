@@ -8,6 +8,9 @@ const JOGOS_FIXOS = [
   { id: "digitacao-textos-classicos", titulo: "Textos Clássicos" },
   { id: "digitacao-cavaleiros-zodiaco", titulo: "Batalha das 12 Casas" },
   { id: "digitacao-sonic", titulo: "Sonic Digital Pro" },
+  { id: "digitacao-baloes", titulo: "Balões de Letras" },
+  { id: "digitacao-constelacao", titulo: "Constelação" },
+  { id: "digitacao-pulo", titulo: "Pulo das Palavras" },
 ];
 
 /**

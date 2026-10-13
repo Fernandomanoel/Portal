@@ -1,0 +1,315 @@
+/* O céu é a cor do período (manhã, tarde, pôr do sol, noite); o resto da página acompanha. */
+.pagina {
+  --ceu-alto: #6ec3f4;
+  --ceu-baixo: #d8f1ff;
+  --morro-perto: #4caf50;
+  --morro-longe: #7cc576;
+  --astro: #ffd54a;
+  --nuvem: rgba(255, 255, 255, 0.9);
+  --fundo: #1f6fb5;
+  --destaque: #ffe066;
+
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px clamp(12px, 2.5vw, 28px) 16px;
+  background: var(--fundo);
+  font-family: var(--font-body, system-ui, sans-serif);
+  transition: background-color 600ms ease;
+}
+
+.tarde {
+  --ceu-alto: #3d9be9;
+  --ceu-baixo: #fde9b8;
+  --morro-perto: #3e9b43;
+  --morro-longe: #8bbf5a;
+  --astro: #ffc233;
+  --fundo: #1b5e9e;
+}
+
+.por-do-sol {
+  --ceu-alto: #6d3fa8;
+  --ceu-baixo: #ff9a62;
+  --morro-perto: #3b4a2e;
+  --morro-longe: #7a5a48;
+  --astro: #ff6b35;
+  --nuvem: rgba(255, 214, 196, 0.85);
+  --fundo: #4b2a78;
+}
+
+.noite {
+  --ceu-alto: #070d2b;
+  --ceu-baixo: #22306b;
+  --morro-perto: #0e1a2e;
+  --morro-longe: #1b2b4a;
+  --astro: #f3f0d8;
+  --nuvem: rgba(170, 186, 230, 0.35);
+  --fundo: #070d2b;
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.vidas {
+  display: flex;
+  gap: 6px;
+}
+
+/* Vida = um balãozinho; perdida fica vazada. */
+.vida {
+  width: 16px;
+  height: 20px;
+  border-radius: 50% 50% 46% 46%;
+  background: #ff5a6e;
+  box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.15);
+}
+
+.vidaPerdida {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- Cena ---------- */
+
+.cena {
+  flex: 1 1 auto;
+  min-height: clamp(280px, 44vh, 560px);
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--ceu-alto) 0%, var(--ceu-baixo) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+.astro {
+  position: absolute;
+  top: 9%;
+  right: 9%;
+  width: clamp(48px, 7vw, 84px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--astro);
+  box-shadow: 0 0 40px var(--astro);
+}
+
+.noite .astro {
+  box-shadow: 0 0 30px rgba(243, 240, 216, 0.5), inset -12px -6px 0 rgba(0, 0, 0, 0.12);
+}
+
+.nuvens span {
+  position: absolute;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--nuvem);
+  animation: nuvem 60s linear infinite;
+}
+
+.nuvens span::before {
+  content: "";
+  position: absolute;
+  left: 22%;
+  bottom: 40%;
+  width: 46%;
+  height: 160%;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.nuvens span:nth-child(1) {
+  top: 16%;
+  left: 8%;
+  width: 120px;
+}
+
+.nuvens span:nth-child(2) {
+  top: 30%;
+  left: 52%;
+  width: 90px;
+  animation-duration: 80s;
+}
+
+.nuvens span:nth-child(3) {
+  top: 8%;
+  left: 34%;
+  width: 70px;
+  animation-duration: 70s;
+}
+
+@keyframes nuvem {
+  from {
+    transform: translateX(-30vw);
+  }
+
+  to {
+    transform: translateX(80vw);
+  }
+}
+
+.morros {
+  position: absolute;
+  inset: auto 0 0;
+  height: 26%;
+  background:
+    radial-gradient(120% 90% at 20% 100%, var(--morro-perto) 60%, transparent 61%),
+    radial-gradient(90% 120% at 85% 100%, var(--morro-perto) 55%, transparent 56%),
+    radial-gradient(140% 140% at 55% 110%, var(--morro-longe) 60%, transparent 61%);
+}
+
+.periodo {
+  position: absolute;
+  left: 14px;
+  top: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Clarão vermelho na borda a cada tecla errada. */
+.erro {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 4px rgba(230, 57, 70, 0.9), inset 0 0 40px rgba(230, 57, 70, 0.45);
+  animation: clarao 380ms ease-out forwards;
+}
+
+@keyframes clarao {
+  to {
+    opacity: 0;
+  }
+}
+
+/* ---------- Balões ---------- */
+
+.balao {
+  position: absolute;
+  z-index: 2;
+  width: clamp(54px, 6.5vw, 76px);
+  aspect-ratio: 5 / 6;
+  margin-left: calc(clamp(54px, 6.5vw, 76px) / -2);
+  border-radius: 50% 50% 46% 46% / 55% 55% 45% 45%;
+  background: radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.55) 0 12%, transparent 13%), var(--cor);
+  box-shadow: inset -6px -8px 0 rgba(0, 0, 0, 0.14);
+  transform: rotate(var(--balanco));
+  transform-origin: 50% 160%;
+}
+
+/* Nó e barbante. */
+.balao::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 10px;
+  height: 8px;
+  margin-left: -5px;
+  background: var(--cor);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.balao::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 2px;
+  height: 46px;
+  margin-top: 2px;
+  background: rgba(40, 40, 40, 0.45);
+}
+
+.urgente {
+  outline: 3px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 3px;
+}
+
+.letra {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-bottom: 6%;
+  color: #ffffff;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.estourando {
+  animation: estouro 350ms ease-out forwards;
+}
+
+.estourando::after {
+  display: none;
+}
+
+@keyframes estouro {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  40% {
+    transform: scale(1.35);
+    opacity: 0.9;
+    filter: brightness(1.4);
+  }
+
+  100% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}
+
+/* ---------- Teclado ---------- */
+
+.rodape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.alternar {
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.alternar:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.alternar:focus-visible {
+  outline: 3px solid #ffe066;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nuvens span,
+  .estourando,
+  .erro {
+    animation: none;
+  }
+
+  .estourando {
+    opacity: 0;
+  }
+}
