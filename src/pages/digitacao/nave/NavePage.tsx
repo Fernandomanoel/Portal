@@ -16,8 +16,24 @@ import {
 import { PalcoDigitacao, type PalcoRef, type Seta } from "../arcade/PalcoDigitacao";
 import { QuadroJogo } from "../arcade/QuadroJogo";
 import { TopoJogo } from "../arcade/TopoJogo";
-import { FASES, VIDAS } from "./dados";
-import { ALTURA, LARGURA, criarEstado, desenhar, digitar, passo, type Entrada, type Estado, type Evento } from "./motor";
+import { ENERGIA_MAXIMA, FASES, VIDAS } from "./dados";
+import {
+  ALTURA,
+  LARGURA,
+  abrirTerminal,
+  apagar,
+  codigosDaFase,
+  criarEstado,
+  desenhar,
+  digitar,
+  fecharTerminal,
+  multiplicador,
+  passo,
+  type Alerta,
+  type Entrada,
+  type Estado,
+  type Terminal,
+} from "./motor";
 import estilos from "./NavePage.module.css";
 
 const JOGO_ID = "digitacao-nave";
@@ -29,27 +45,56 @@ type Etapa = "inicio" | "jogando" | "concluida" | "fim" | "vitoria";
 interface Resumo {
   vidas: number;
   pontos: number;
-  evento: Evento | null;
+  energia: number;
+  multiplicador: number;
+  arma: number;
+  alerta: Alerta | null;
+  terminal: Terminal | null;
+  aviso: string | null;
+  efeitos: Estado["efeitos"];
   chefe: { nome: string; fracao: number } | null;
   abatidos: number;
   especiais: number;
-  perdidos: number;
+  alertasPerdidos: number;
   acertos: number;
   erros: number;
   msDigitando: number;
 }
 
-const RESUMO_VAZIO: Resumo = { vidas: VIDAS, pontos: 0, evento: null, chefe: null, abatidos: 0, especiais: 0, perdidos: 0, acertos: 0, erros: 0, msDigitando: 0 };
+const RESUMO_VAZIO: Resumo = {
+  vidas: VIDAS,
+  pontos: 0,
+  energia: 30,
+  multiplicador: 1,
+  arma: 1,
+  alerta: null,
+  terminal: null,
+  aviso: null,
+  efeitos: { turbo: 0, escudo: 0, laser: 0, bomba: 0 },
+  chefe: null,
+  abatidos: 0,
+  especiais: 0,
+  alertasPerdidos: 0,
+  acertos: 0,
+  erros: 0,
+  msDigitando: 0,
+};
 
 function resumir(e: Estado): Resumo {
   return {
     vidas: e.vidas,
     pontos: e.pontos,
-    evento: e.evento ? { ...e.evento } : null,
+    energia: e.energia,
+    multiplicador: multiplicador(e),
+    arma: e.jogador.arma,
+    alerta: e.alerta ? { ...e.alerta } : null,
+    terminal: e.terminal ? { ...e.terminal } : null,
+    aviso: e.aviso?.texto ?? null,
+    efeitos: { ...e.efeitos },
     chefe: e.chefe ? { nome: FASES[e.fase].chefe, fracao: e.chefe.vida / e.chefe.vidaTotal } : null,
     abatidos: e.abatidos,
     especiais: e.especiais,
-    perdidos: e.perdidos,
+    alertasPerdidos: e.alertasPerdidos,
     acertos: e.acertos,
     erros: e.erros,
     msDigitando: e.msDigitando,
@@ -57,6 +102,7 @@ function resumir(e: Estado): Resumo {
 }
 
 const MAPA_SETAS: Record<Seta, keyof Omit<Entrada, "alvo">> = { ArrowLeft: "esquerda", ArrowRight: "direita", ArrowUp: "cima", ArrowDown: "baixo" };
+const SEM_ENTRADA = (): Entrada => ({ esquerda: false, direita: false, cima: false, baixo: false, alvo: null });
 
 export function NavePage() {
   useEntrarEmTelaImersiva();
@@ -67,11 +113,11 @@ export function NavePage() {
   const [resumo, definirResumo] = useState<Resumo>(RESUMO_VAZIO);
   const [focado, definirFocado] = useState(true);
   const [errou, definirErrou] = useState(0);
-  /** Pontos e números do jogo inteiro, somando as fases já vencidas (para o ranking). */
+  /** Números das fases já vencidas nesta partida (para o ranking somar o jogo inteiro). */
   const [acumulado, definirAcumulado] = useState({ pontos: 0, acertos: 0, erros: 0, msDigitando: 0 });
 
   const estadoRef = useRef<Estado | null>(null);
-  const entradaRef = useRef<Entrada>({ esquerda: false, direita: false, cima: false, baixo: false, alvo: null });
+  const entradaRef = useRef<Entrada>(SEM_ENTRADA());
   const telaRef = useRef<HTMLCanvasElement>(null);
   const palcoRef = useRef<PalcoRef>(null);
 
@@ -80,34 +126,28 @@ export function NavePage() {
     const ctx = telaRef.current?.getContext("2d");
     if (!e || !ctx) return;
     passo(e, dt, entradaRef.current);
-    desenhar(ctx, e);
+    desenhar(ctx, e, entradaRef.current);
     definirResumo(resumir(e));
     if (e.situacao === "derrota") definirEtapa("fim");
     if (e.situacao === "vitoria") {
-      const estrelas = estrelasPorPrecisao(precisao(e.acertos, e.erros));
-      const novo = comNivelConcluido(progresso, fase, estrelas, FASES.length);
+      const novo = comNivelConcluido(progresso, fase, estrelasPorPrecisao(precisao(e.acertos, e.erros)), FASES.length);
       salvarProgresso(CHAVE_PROGRESSO, novo);
       definirProgresso(novo);
       definirEtapa(fase === FASES.length - 1 ? "vitoria" : "concluida");
     }
   });
 
-  function comecar(qual = fase, manterPontos = false) {
-    if (manterPontos) {
-      definirAcumulado((a) => ({
-        pontos: a.pontos + resumo.pontos,
-        acertos: a.acertos + resumo.acertos,
-        erros: a.erros + resumo.erros,
-        msDigitando: a.msDigitando + resumo.msDigitando,
-      }));
-    } else {
-      definirAcumulado({ pontos: 0, acertos: 0, erros: 0, msDigitando: 0 });
-    }
-    estadoRef.current = criarEstado(qual, VIDAS, 0);
+  function comecar(qual = fase, somar = false) {
+    definirAcumulado((a) =>
+      somar
+        ? { pontos: a.pontos + resumo.pontos, acertos: a.acertos + resumo.acertos, erros: a.erros + resumo.erros, msDigitando: a.msDigitando + resumo.msDigitando }
+        : { pontos: 0, acertos: 0, erros: 0, msDigitando: 0 },
+    );
+    estadoRef.current = criarEstado(qual);
+    entradaRef.current = SEM_ENTRADA();
     definirFase(qual);
-    definirResumo({ ...RESUMO_VAZIO, pontos: 0 });
+    definirResumo(RESUMO_VAZIO);
     definirEtapa("jogando");
-    entradaRef.current = { esquerda: false, direita: false, cima: false, baixo: false, alvo: null };
     palcoRef.current?.focar();
   }
 
@@ -122,12 +162,23 @@ export function NavePage() {
 
   function aoCaractere(caractere: string) {
     const e = estadoRef.current;
-    if (!e || etapa !== "jogando" || !e.evento) return;
+    if (!e || etapa !== "jogando") return;
     if (!digitar(e, caractere)) definirErrou((n) => n + 1);
     definirResumo(resumir(e));
   }
 
   function aoComando(tecla: "Enter" | "Escape" | "Backspace") {
+    const e = estadoRef.current;
+    if (etapa === "jogando" && e) {
+      if (tecla === "Enter") {
+        if (e.terminal) fecharTerminal(e);
+        else abrirTerminal(e);
+      }
+      else if (tecla === "Escape") fecharTerminal(e);
+      else apagar(e);
+      definirResumo(resumir(e));
+      return;
+    }
     if (tecla !== "Enter") return;
     if (etapa === "inicio") comecar();
     else if (etapa === "concluida") comecar(fase + 1, true);
@@ -135,13 +186,17 @@ export function NavePage() {
     else if (etapa === "vitoria") comecar(0);
   }
 
-  function aoSeta(seta: Seta, apertada: boolean) {
-    entradaRef.current[MAPA_SETAS[seta]] = apertada;
+  function abrirPeloBotao() {
+    const e = estadoRef.current;
+    if (!e || etapa !== "jogando") return;
+    abrirTerminal(e);
+    definirResumo(resumir(e));
+    palcoRef.current?.focar();
   }
 
   function aoMudarFoco(valor: boolean) {
     definirFocado(valor);
-    if (!valor) entradaRef.current = { esquerda: false, direita: false, cima: false, baixo: false, alvo: null };
+    if (!valor) entradaRef.current = SEM_ENTRADA();
   }
 
   // Mouse ou dedo: arrastando sobre a tela, a nave vai atrás.
@@ -152,6 +207,7 @@ export function NavePage() {
   }
 
   const dados = FASES[fase];
+  const codigos = codigosDaFase(fase);
   const total = {
     pontos: acumulado.pontos + resumo.pontos,
     acertos: acumulado.acertos + resumo.acertos,
@@ -161,7 +217,10 @@ export function NavePage() {
   const precisaoFase = precisao(resumo.acertos, resumo.erros);
   const precisaoTotal = precisao(total.acertos, total.erros);
   const ppmTotal = ppm(total.acertos, total.msDigitando);
-  const evento = resumo.evento;
+  const { alerta, terminal } = resumo;
+  const minuscula = (texto: string) => texto.toLocaleLowerCase("pt-BR");
+  const candidatos = terminal ? codigos.filter((c) => minuscula(c.codigo).startsWith(minuscula(terminal.digitado))) : [];
+  const ativos = (["turbo", "escudo", "laser"] as const).filter((chave) => resumo.efeitos[chave] > 0);
 
   return (
     <div className={estilos.pagina}>
@@ -189,129 +248,212 @@ export function NavePage() {
         <aside className={estilos.lado}>
           <h2>{dados.nome}</h2>
           <p>{dados.dica}</p>
+
+          <div className={estilos.energia}>
+            <span>
+              Energia <strong>{Math.floor(resumo.energia)}</strong>
+            </span>
+            <div className={estilos.barraEnergia}>
+              <i style={{ transform: `scaleX(${resumo.energia / ENERGIA_MAXIMA})` }} />
+            </div>
+          </div>
+
+          <h3 className={estilos.subtitulo}>Códigos de trapaça</h3>
+          <ul className={estilos.codigos}>
+            {codigos.map((c) => (
+              <li key={c.id} className={resumo.energia >= c.custo ? estilos.pronto : ""}>
+                <span className={estilos.nomeCodigo}>
+                  {c.nome}
+                  <small>{c.custo}</small>
+                </span>
+                <kbd>{c.codigo}</kbd>
+                <span className={estilos.descricao}>{c.descricao}</span>
+              </li>
+            ))}
+          </ul>
+
           <ul className={estilos.controles}>
             <li>
               <kbd>←</kbd>
               <kbd>↑</kbd>
               <kbd>↓</kbd>
-              <kbd>→</kbd> movem a nave (ou arraste com o mouse)
+              <kbd>→</kbd> pilotam (ou arraste com o mouse)
             </li>
-            <li>A nave atira sozinha</li>
-            <li>Apareceu uma palavra? Digite antes do tempo acabar para soltar o especial</li>
-            <li>Se o tempo acabar, você perde uma vida</li>
+            <li>
+              <kbd>Enter</kbd> abre o terminal; digite o código; <kbd>Esc</kbd> fecha
+            </li>
+            <li>Alerta vermelho: digite a palavra antes do tempo acabar ou perde uma vida</li>
           </ul>
         </aside>
 
-        <PalcoDigitacao
-          ref={palcoRef}
-          className={estilos.palco}
-          rotulo="Mova a nave com as setas e digite a palavra do especial"
-          aoCaractere={aoCaractere}
-          aoComando={aoComando}
-          aoSeta={aoSeta}
-          aoMudarFoco={aoMudarFoco}
-          semAviso={etapa !== "jogando"}
-        >
-          <canvas
-            ref={telaRef}
-            className={estilos.tela}
-            width={LARGURA}
-            height={ALTURA}
-            onPointerDown={(evento) => {
-              evento.currentTarget.setPointerCapture(evento.pointerId);
-              apontar(evento);
+        <div className={estilos.coluna}>
+          <PalcoDigitacao
+            ref={palcoRef}
+            className={estilos.palco}
+            rotulo="Pilote com as setas; Enter abre o terminal de códigos"
+            aoCaractere={aoCaractere}
+            aoComando={aoComando}
+            aoSeta={(seta, apertada) => {
+              entradaRef.current[MAPA_SETAS[seta]] = apertada;
             }}
-            onPointerMove={apontar}
-            onPointerUp={() => {
-              entradaRef.current.alvo = null;
-            }}
-          />
+            aoMudarFoco={aoMudarFoco}
+            semAviso={etapa !== "jogando"}
+          >
+            <canvas
+              ref={telaRef}
+              className={estilos.tela}
+              width={LARGURA}
+              height={ALTURA}
+              onPointerDown={(evento) => {
+                evento.currentTarget.setPointerCapture(evento.pointerId);
+                apontar(evento);
+              }}
+              onPointerMove={apontar}
+              onPointerUp={() => {
+                entradaRef.current.alvo = null;
+              }}
+            />
 
-          {resumo.chefe && (
-            <div className={estilos.chefe}>
-              <span>{resumo.chefe.nome}</span>
-              <div className={estilos.vidaChefe}>
-                <i style={{ transform: `scaleX(${resumo.chefe.fracao})` }} />
-              </div>
-            </div>
-          )}
-
-          {errou > 0 && <span key={errou} className={estilos.erro} aria-hidden="true" />}
-
-          {evento && etapa === "jogando" && (
-            <div className={estilos.evento} role="status">
-              <span className={estilos.chamada}>
-                <Icone nome="raio" tamanho={16} />
-                Especial! Digite:
-              </span>
-              <span className={estilos.palavra}>
-                {evento.palavra.split("").map((letra, i) => (
-                  <span key={i} className={i < evento.digitado.length ? estilos.feita : i === evento.digitado.length ? estilos.proxima : ""}>
-                    {letra === " " ? " " : letra}
+            {etapa === "jogando" && (
+              <div className={estilos.hud} aria-hidden="true">
+                <span className={estilos.mini}>
+                  <i style={{ transform: `scaleX(${resumo.energia / ENERGIA_MAXIMA})` }} />
+                </span>
+                <span>Arma {resumo.arma}</span>
+                {resumo.multiplicador > 1 && <b className={estilos.combo}>×{resumo.multiplicador}</b>}
+                {ativos.map((chave) => (
+                  <span key={chave} className={estilos.efeito}>
+                    {chave} {Math.ceil(resumo.efeitos[chave])}s
                   </span>
                 ))}
-              </span>
-              <span className={estilos.relogio}>
-                <i style={{ width: `${(evento.restante / evento.total) * 100}%` }} className={evento.restante / evento.total < 0.3 ? estilos.acabando : ""} />
-              </span>
-            </div>
-          )}
+              </div>
+            )}
 
-          {etapa === "inicio" && (
-            <QuadroJogo
-              icone="raio"
-              titulo={`Fase ${fase + 1}: ${dados.nome}`}
-              texto={`${dados.dica} No fim da fase, o chefe ${dados.chefe} pede palavras mais longas e mais seguidas.`}
-              botoes={[{ rotulo: "Decolar", icone: "seta-direita", acao: () => comecar(), principal: true }]}
-              atalho="ou aperte Enter. Setas movem a nave; letras soltam o especial."
-            />
+            {resumo.chefe && (
+              <div className={estilos.chefe}>
+                <span>{resumo.chefe.nome}</span>
+                <div className={estilos.vidaChefe}>
+                  <i style={{ transform: `scaleX(${resumo.chefe.fracao})` }} />
+                </div>
+              </div>
+            )}
+
+            {errou > 0 && <span key={errou} className={estilos.erro} aria-hidden="true" />}
+
+            {resumo.aviso && etapa === "jogando" && (
+              <p key={resumo.aviso} className={estilos.aviso}>
+                {resumo.aviso}
+              </p>
+            )}
+
+            {alerta && etapa === "jogando" && (
+              <div className={estilos.alerta} role="status">
+                <span className={estilos.chamada}>
+                  <Icone nome="alerta" tamanho={16} />
+                  Pane! Digite:
+                </span>
+                <span className={estilos.palavra}>
+                  {alerta.palavra.split("").map((letra, i) => (
+                    <span key={i} className={i < alerta.digitado.length ? estilos.feita : i === alerta.digitado.length ? estilos.proxima : ""}>
+                      {letra}
+                    </span>
+                  ))}
+                </span>
+                <span className={estilos.relogio}>
+                  <i style={{ transform: `scaleX(${alerta.restante / alerta.total})` }} className={alerta.restante / alerta.total < 0.3 ? estilos.acabando : ""} />
+                </span>
+              </div>
+            )}
+
+            {terminal && etapa === "jogando" && (
+              <div className={estilos.terminal} role="status">
+                <p className={estilos.linha}>
+                  <span className={estilos.prompt}>&gt;</span>
+                  {terminal.digitado}
+                  <span className={estilos.cursor} />
+                </p>
+                <ul className={estilos.sugestoes}>
+                  {candidatos.map((c) => (
+                    <li key={c.id} className={resumo.energia >= c.custo ? "" : estilos.semEnergia}>
+                      <span>
+                        <b>{c.codigo.slice(0, terminal.digitado.length)}</b>
+                        {c.codigo.slice(terminal.digitado.length)}
+                      </span>
+                      <small>
+                        {c.nome} · {c.custo}
+                      </small>
+                    </li>
+                  ))}
+                </ul>
+                <span className={estilos.relogio}>
+                  <i style={{ transform: `scaleX(${terminal.restante / terminal.total})` }} />
+                </span>
+              </div>
+            )}
+
+            {etapa === "inicio" && (
+              <QuadroJogo
+                icone="raio"
+                titulo={`Fase ${fase + 1}: ${dados.nome}`}
+                texto={`${dados.dica} No fim, o chefe ${dados.chefe}.`}
+                botoes={[{ rotulo: "Decolar", icone: "seta-direita", acao: () => comecar(), principal: true }]}
+                atalho="ou aperte Enter. Setas pilotam; Enter abre o terminal de códigos."
+              />
+            )}
+            {etapa === "concluida" && (
+              <QuadroJogo
+                icone="trofeu"
+                titulo={`${dados.chefe} derrotado!`}
+                estrelas={estrelasPorPrecisao(precisaoFase)}
+                texto="3 estrelas: 97% de precisão nos códigos e alertas. 2 estrelas: 90% ou mais."
+                medidas={[
+                  { rotulo: "Pontos", valor: total.pontos.toLocaleString("pt-BR") },
+                  { rotulo: "Especiais", valor: resumo.especiais },
+                  { rotulo: "Abatidos", valor: resumo.abatidos },
+                  { rotulo: "Panes perdidas", valor: resumo.alertasPerdidos },
+                ]}
+                botoes={[
+                  { rotulo: "Repetir fase", icone: "recomecar", acao: () => comecar(fase) },
+                  { rotulo: "Próxima fase", icone: "seta-direita", acao: () => comecar(fase + 1, true), principal: true },
+                ]}
+                atalho="ou aperte Enter"
+              />
+            )}
+            {(etapa === "fim" || etapa === "vitoria") && (
+              <QuadroJogo
+                icone={etapa === "vitoria" ? "trofeu" : "raio"}
+                titulo={etapa === "vitoria" ? "O Esquadrão venceu as 5 fases!" : "Nave abatida!"}
+                texto={
+                  etapa === "vitoria"
+                    ? "Você derrotou o Núcleo Mestre. Pilotagem e digitação de campeão!"
+                    : "Encha a energia abatendo inimigos e use os códigos: o terminal deixa o jogo em câmera lenta."
+                }
+                medidas={[
+                  { rotulo: "Pontos", valor: total.pontos.toLocaleString("pt-BR") },
+                  { rotulo: "Precisão", valor: `${precisaoTotal}%` },
+                  { rotulo: "Palavras/min", valor: ppmTotal },
+                  { rotulo: "Especiais", valor: resumo.especiais },
+                ]}
+                ranking={total.acertos > 0 ? { jogoId: JOGO_ID, ppm: ppmTotal, precisao: precisaoTotal } : undefined}
+                botoes={[
+                  {
+                    rotulo: etapa === "vitoria" ? "Jogar do começo" : "Tentar de novo",
+                    icone: "recomecar",
+                    acao: () => comecar(etapa === "vitoria" ? 0 : fase),
+                    principal: true,
+                  },
+                ]}
+              />
+            )}
+          </PalcoDigitacao>
+
+          {etapa === "jogando" && (
+            <button type="button" className={estilos.botaoTerminal} onClick={abrirPeloBotao}>
+              <Icone nome="digitacao" tamanho={18} />
+              Terminal de códigos (Enter)
+            </button>
           )}
-          {etapa === "concluida" && (
-            <QuadroJogo
-              icone="trofeu"
-              titulo={`${dados.chefe} derrotado!`}
-              estrelas={estrelasPorPrecisao(precisaoFase)}
-              texto="3 estrelas: 97% de precisão nos especiais. 2 estrelas: 90% ou mais."
-              medidas={[
-                { rotulo: "Pontos", valor: total.pontos.toLocaleString("pt-BR") },
-                { rotulo: "Especiais", valor: resumo.especiais },
-                { rotulo: "Perdidos", valor: resumo.perdidos },
-                { rotulo: "Abatidos", valor: resumo.abatidos },
-              ]}
-              botoes={[
-                { rotulo: "Repetir fase", icone: "recomecar", acao: () => comecar(fase) },
-                { rotulo: "Próxima fase", icone: "seta-direita", acao: () => comecar(fase + 1, true), principal: true },
-              ]}
-              atalho="ou aperte Enter"
-            />
-          )}
-          {(etapa === "fim" || etapa === "vitoria") && (
-            <QuadroJogo
-              icone={etapa === "vitoria" ? "trofeu" : "raio"}
-              titulo={etapa === "vitoria" ? "O Esquadrão venceu as 5 fases!" : "Nave abatida!"}
-              texto={
-                etapa === "vitoria"
-                  ? "Você derrotou o Núcleo Mestre. Pilotagem e digitação de campeão!"
-                  : "Assim que a palavra aparecer, tire os olhos dos tiros e digite: a câmera lenta é para isso."
-              }
-              medidas={[
-                { rotulo: "Pontos", valor: total.pontos.toLocaleString("pt-BR") },
-                { rotulo: "Precisão", valor: `${precisaoTotal}%` },
-                { rotulo: "Palavras/min", valor: ppmTotal },
-                { rotulo: "Especiais", valor: resumo.especiais },
-              ]}
-              ranking={total.acertos > 0 ? { jogoId: JOGO_ID, ppm: ppmTotal, precisao: precisaoTotal } : undefined}
-              botoes={[
-                {
-                  rotulo: etapa === "vitoria" ? "Jogar do começo" : "Tentar de novo",
-                  icone: "recomecar",
-                  acao: () => comecar(etapa === "vitoria" ? 0 : fase),
-                  principal: true,
-                },
-              ]}
-            />
-          )}
-        </PalcoDigitacao>
+        </div>
       </div>
     </div>
   );
