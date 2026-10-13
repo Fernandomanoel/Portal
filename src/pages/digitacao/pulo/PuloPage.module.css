@@ -651,27 +651,51 @@
   }
 }
 
+/* O movimento do Bit e da câmera é o próprio jogo: sem ele o Bit parece se teletransportar.
+   O global.css zera durações em "menos movimento", então elas voltam aqui só para o que
+   leva o Bit de um chip a outro; o decorativo e piscante continua desligado. */
 @media (prefers-reduced-motion: reduce) {
-  .mundo,
-  .bit,
-  .onda,
-  .trilhas {
-    transition: none;
-  }
-
-  .salto,
-  .volta,
   .correndo,
   .correndo *,
-  .salto-sobe .figura,
-  .poeira i,
   .corpoVirus,
   .moeda,
   .velocidade::before,
   .onda::before,
   .alarme,
-  .ganho,
   .erro {
     animation: none;
+  }
+
+  .bit {
+    transition-duration: 450ms !important;
+  }
+
+  .mundo,
+  .trilhas {
+    transition-duration: 650ms !important;
+  }
+
+  .onda {
+    transition-duration: 160ms !important;
+  }
+
+  .salto {
+    animation-duration: 450ms !important;
+  }
+
+  .salto-sobe .figura {
+    animation-duration: 400ms !important;
+  }
+
+  .volta {
+    animation-duration: 800ms !important;
+  }
+
+  .poeira i {
+    animation-duration: 420ms !important;
+  }
+
+  .ganho {
+    animation-duration: 900ms !important;
   }
 }
