@@ -136,6 +136,27 @@ mesma tabela) e o gabarito é calculado no arquivo a partir delas. `consulta` mo
 copiar (números sem separador de milhar, para importar em SQL/Python), confere o comando por `padrao` e o
 resultado por número. Modelos: `Escrita Fiscal/`, `Análise de Dados/` e `Inteligência Artificial II/`.
 
+### Atividade «na planilha, passo a passo no portal» (Contabilidade)
+
+Para o aluno fazer o trabalho inteiro numa planilha que **copia o visual** de um modelo do curso (plano de
+contas em faixas de cor, lançamentos em roxo, débito em vermelho, crédito em verde, conferência «OK / Errado» na
+própria planilha) e o portal só explicar o caminho com figuras, o modelo é `Contabilidade/` e o
+`Escrita Fiscal/escrita-fiscal-simples-nacional-aliquota-efetiva`:
+
+- Dados e gabarito num lugar só: `dadosContabilidade.ts` (plano de contas, fatos, saldos calculados). A atividade
+  lê os valores daí (`saldos(...)`, `fechamento(...)`), nunca digita um número que a planilha também calcula.
+- A planilha sai de `scripts/planilhas/contabilidade.py` (`npm run planilhas`). As fórmulas de conferência levam o
+  valor certo dentro delas, como na planilha original, e a aba `Listas` (oculta) alimenta a lista suspensa das contas.
+- As figuras são **prints da própria planilha** no estado de cada passo, com anel laranja nas células em que o aluno
+  mexe: `npm run prints:contabilidade` (precisa de `soffice`, `pdftoppm` e Pillow) grava em
+  `src/assets/atividades/contabilidade/`. Para uma figura nova, acrescente uma linha `f(...)` em
+  `scripts/planilhas/prints_contabilidade.py` e use `print("nome", "descrição", "legenda")` na atividade
+  (`contabilidadeComum.ts`: nome errado quebra na hora).
+- Cada etapa é um item com `passos` + `imagem` + `campos` numéricos (`numero`, `escolher`): o aluno prova que
+  entendeu lendo um saldo da planilha dele.
+- Antes de publicar, preencha uma cópia com as respostas certas (as funções aceitam `gabarito=True`), recalcule no
+  LibreOffice e confirme que todos os OK e os totais batem com os números das atividades.
+
 ### Atividades de Python e de SQL: guia de ambiente para iniciantes
 
 Atividade que exige executar código abre com o guia ilustrado de `guiasLinguagens.ts`: `guiaPython(...)`

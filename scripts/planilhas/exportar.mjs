@@ -17,6 +17,7 @@ import * as F from "@/data/atividadesAutocorrigidas/dadosFolha";
 import * as C from "@/data/atividadesAutocorrigidas/dadosCobranca";
 import * as X from "@/data/atividadesAutocorrigidas/dadosCaixa";
 import * as V from "@/data/atividadesAutocorrigidas/dadosVendas";
+import * as K from "@/data/atividadesAutocorrigidas/dadosContabilidade";
 
 const data = (n: number) => C.paraData(n);
 
@@ -64,6 +65,18 @@ export default {
       saldoSistema: X.CONCILIACAO.saldoSistema,
       saldoAjustado: X.CONCILIACAO.saldoAjustado,
     },
+  },
+  contabilidade: {
+    plano: K.PLANO,
+    aula14: K.AULA_14,
+    aula15: K.AULA_15,
+    aula16: K.AULA_16,
+    fechamento: { aula14: K.fechamento(K.AULA_14), aula15: K.fechamento(K.AULA_15_COMPLETA), aula16: K.fechamento(K.AULA_16) },
+    totais15: K.totaisPorConta(K.AULA_15_COMPLETA),
+    anexos: K.ANEXOS_SIMPLES,
+    rbm: K.SIMPLES_RBM,
+    rbt12: K.SIMPLES_RBT12,
+    esperado: K.ESPERADO_SIMPLES,
   },
   vendas: {
     produtos: V.PRODUTOS,
