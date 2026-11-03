@@ -1488,6 +1488,11 @@ export const ATIVIDADES: Curso[] = [
         descricao: "Um dia de trabalho de fechamento: conferir um balancete de verificação, achar uma diferença de lançamento e simular o parcelamento de um débito tributário.",
         caminho: "Escrita Fiscal/escrita-fiscal-contabilidade-e-parcelamento",
       },
+      {
+        titulo: "Atividade Prática: Escrita Fiscal — Simples Nacional: Alíquota Efetiva e Imposto do Mês na Planilha",
+        descricao: "Monte numa planilha a consulta do Simples Nacional: ache a faixa pela receita de 12 meses, calcule a alíquota efetiva e o imposto do mês nos Anexos I, II e III, com passo a passo ilustrado.",
+        caminho: "Escrita Fiscal/escrita-fiscal-simples-nacional-aliquota-efetiva",
+      },
     ],
   },
   {
@@ -1498,6 +1503,33 @@ export const ATIVIDADES: Curso[] = [
     sigla: "CT",
     cor: "#166534",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Atividade Prática: Contabilidade — Plano de Contas: Conta Sintética ou Analítica",
+        descricao: "Na planilha, classifique as 108 contas de um plano de contas como sintéticas ou analíticas e confira o placar. Passo a passo ilustrado.",
+        caminho: "Contabilidade/contabilidade-plano-de-contas",
+      },
+      {
+        titulo: "Atividade Prática: Contabilidade — Lançamentos na Planilha: Compra e Venda da Walking Pet",
+        descricao: "Débito e crédito na prática: sete lançamentos de uma compra e duas vendas, com saldos calculados pela própria planilha. Passo a passo ilustrado.",
+        caminho: "Contabilidade/contabilidade-lancamentos-compra-e-venda",
+      },
+      {
+        titulo: "Atividade Prática: Contabilidade — Lançamentos na Planilha: Imposto, Fornecedor e Cheque Especial",
+        descricao: "ICMS a pagar, pagamento ao fornecedor, cheque especial, venda de 80 kits e juros: nove lançamentos novos sobre os da aula anterior. Passo a passo ilustrado.",
+        caminho: "Contabilidade/contabilidade-lancamentos-impostos-e-emprestimo",
+      },
+      {
+        titulo: "Atividade Prática: Contabilidade — Montando o Balanço Patrimonial e a DRE da Walking Pet",
+        descricao: "Ligue os saldos dos lançamentos ao modelo de Balanço e DRE com fórmulas entre abas e confira se Ativo e Passivo fecham. Passo a passo ilustrado.",
+        caminho: "Contabilidade/contabilidade-balanco-e-dre",
+      },
+      {
+        titulo: "Atividade Prática: Contabilidade — Contabilidade Completa de uma Empresa Nova (Banho e Tosa)",
+        descricao: "Prática livre: 13 fatos do primeiro mês de uma empresa nova, do capital dos sócios ao pagamento do fornecedor, lançados na planilha por você. Passo a passo ilustrado.",
+        caminho: "Contabilidade/contabilidade-pratica-livre-banho-e-tosa",
+      },
+    ],
   },
   {
     slug: "gestao-projetos",

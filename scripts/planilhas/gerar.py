@@ -10,11 +10,12 @@ import sys
 
 import caixa
 import cobranca
+import contabilidade
 import estoque
 import folha
 import vendas
 
 dados = json.load(open(sys.argv[1], encoding="utf-8"))
-for modulo, chave in [(estoque, "estoque"), (folha, "folha"), (cobranca, "cobranca"), (caixa, "caixa"), (vendas, "vendas")]:
+for modulo, chave in [(estoque, "estoque"), (folha, "folha"), (cobranca, "cobranca"), (caixa, "caixa"), (vendas, "vendas"), (contabilidade, "contabilidade")]:
     for arquivo in modulo.gerar(dados[chave]):
         print("gerada:", arquivo)

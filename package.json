@@ -13,6 +13,7 @@
     "servidor": "node dist-servidor/servidor.mjs",
     "professor:senha": "node scripts/senha-professor.mjs",
     "unidade:senha": "node scripts/senha-unidade.mjs",
+    "prints:contabilidade": "python3 scripts/planilhas/prints_contabilidade.py \"$(node scripts/planilhas/exportar.mjs)\"",
     "planilhas": "python3 scripts/planilhas/gerar.py \"$(node scripts/planilhas/exportar.mjs)\""
   },
   "dependencies": {
