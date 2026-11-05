@@ -41,7 +41,7 @@ src/
 ├── hooks/          tema, prova em andamento, trava de prova, narração, digitação
 ├── data/           catálogos: atividades, provas, inglês, digitação, Passo a Passo
 │   ├── atividadesAutocorrigidas/   atividades .atividade.ts por curso + dados*.ts das planilhas
-│   ├── conteudosProfessor/         teoria de cada curso para o professor (.conteudo.ts)
+│   ├── conteudosProfessor/         teoria de cada curso para o professor (.conteudo.ts; editável como wiki)
 │   └── provasInterativas/          provas .prova.ts (só o servidor carrega)
 ├── types/          contratos de dados
 ├── styles/         tokens, reset e fontes
