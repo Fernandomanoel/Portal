@@ -1191,6 +1191,11 @@ export const ATIVIDADES: Curso[] = [
         descricao: "Ligar telas, animar, apresentar, testar com um colega e compartilhar.",
         caminho: "Figma/figma-grau5-prototipo-e-colaboracao",
       },
+      {
+        titulo: "Figma — Grau 6: Animações, Botões e Ícones",
+        descricao: "Ícones no quadro de 24 px, botões com estados, micro-animações com Smart animate e exportação.",
+        caminho: "Figma/figma-grau6-animacoes-botoes-e-icones",
+      },
     ],
   },
   {

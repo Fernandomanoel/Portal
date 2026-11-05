@@ -575,3 +575,136 @@ telas['comentarios-e-compartilhar'] = (() => {
     alvoRet(166, 184, 308, 34, 6),
   ], '#eef2f7');
 })();
+
+// =================== Atividade 6 — Animações, botões e ícones ===================
+
+const CORACAO = 'M12 20.5s-7.2-4.6-9.3-9.2C1.2 8 3.2 4.6 6.6 4.6c2 0 3.6 1.1 5.4 3.1 1.8-2 3.4-3.1 5.4-3.1 3.4 0 5.4 3.4 3.9 6.7C19.2 15.9 12 20.5 12 20.5z';
+
+telas['icone-grade-24'] = (() => {
+  const u = 8;
+  const x0 = 60;
+  const y0 = 70;
+  const p = [texto(160, 36, 'Ícone no quadro de 24 × 24', { tamanho: 14, negrito: true, centro: true })];
+  p.push(ret(x0, y0, 24 * u, 24 * u, '#ffffff', { stroke: '#cbd5e1' }));
+  for (let i = 1; i < 24; i++) p.push(lin(x0 + i * u, y0, x0 + i * u, y0 + 24 * u, '#eef2f7', 1), lin(x0, y0 + i * u, x0 + 24 * u, y0 + i * u, '#eef2f7', 1));
+  p.push(ret(x0 + 2 * u, y0 + 2 * u, 20 * u, 20 * u, 'none', { stroke: '#ef4444', extra: ' stroke-dasharray="5 3"' }));
+  p.push(`  <g transform="translate(${x0} ${y0}) scale(${u})"><path d="${CORACAO}" fill="#ede9fe" stroke="${ROXO}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></g>`);
+  p.push(t(x0 + 96, y0 + 24 * u + 18, '24 × 24 px', { negrito: true, centro: true, tamanho: 11 }));
+  p.push(ret(300, 70, 150, 200, '#ffffff', { rx: 10, stroke: '#cbd5e1' }));
+  p.push(texto(375, 94, 'No tamanho real', { tamanho: 11.5, negrito: true, centro: true }));
+  for (const [tam, y] of [[24, 112], [32, 150], [48, 194]]) p.push(`  <g transform="translate(${375 - tam / 2} ${y}) scale(${tam / 24})"><path d="${CORACAO}" fill="#ede9fe" stroke="${ROXO}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></g>`, t(430, y + tam / 2 + 4, `${tam}`, { cor: CINZA }));
+  p.push(ret(470, 70, 150, 200, '#f0fdf4', { rx: 10, stroke: '#86efac' }));
+  p.push(texto(545, 94, 'Boas práticas', { tamanho: 11.5, negrito: true, centro: true, cor: '#166534' }));
+  ['Quadro de 24 × 24', 'Margem de 2 px', 'Traço de 2 px', 'Pontas arredondadas', 'Formas simples', 'Uma cor só'].forEach((s, i) => p.push(texto(482, 120 + i * 24, '• ' + s, { tamanho: 10, cor: '#166534' })));
+  p.push(ret(40, 316, 560, 56, '#fff7ed', { rx: 10, stroke: '#fdba74' }), texto(320, 340, 'A linha vermelha é a margem de segurança: nada do desenho passa dela.', { tamanho: 12, negrito: true, cor: '#7c2d12', centro: true }), texto(320, 360, 'Todo ícone do conjunto segue o mesmo quadro e o mesmo traço: por isso parecem uma família.', { tamanho: 11, cor: '#7c2d12', centro: true }));
+  return svg(p, '#eef2f7');
+})();
+
+telas['operacoes-booleanas'] = (() => {
+  const defs = `  <defs>
+    <mask id="semB"><rect width="640" height="400" fill="#fff"/><circle cx="0" cy="0" r="30" fill="#000"/></mask>
+  </defs>`;
+  const ops = [['União', 'une as formas em uma'], ['Subtração', 'a de cima recorta a de baixo'], ['Interseção', 'só o que as duas têm em comum'], ['Exclusão', 'tudo, menos a parte comum']];
+  const p = [defs, texto(320, 34, 'Operações booleanas: formas novas a partir de formas simples', { tamanho: 14, negrito: true, centro: true })];
+  ops.forEach(([nome, d], i) => {
+    const x = 30 + i * 150;
+    const ca = [x + 52, 130];
+    const cb = [x + 78, 130];
+    p.push(ret(x, 60, 140, 190, '#ffffff', { rx: 12, stroke: '#cbd5e1' }));
+    p.push(`  <defs><clipPath id="b${i}"><circle cx="${cb[0]}" cy="${cb[1]}" r="32"/></clipPath><mask id="m${i}"><rect x="${x}" y="60" width="140" height="190" fill="#fff"/><circle cx="${cb[0]}" cy="${cb[1]}" r="32" fill="#000"/></mask><mask id="n${i}"><rect x="${x}" y="60" width="140" height="190" fill="#fff"/><circle cx="${ca[0]}" cy="${ca[1]}" r="32" fill="#000"/></mask></defs>`);
+    if (i === 0) p.push(circ(ca[0], ca[1], 32, ROXO), circ(cb[0], cb[1], 32, ROXO));
+    if (i === 1) p.push(`  <circle cx="${ca[0]}" cy="${ca[1]}" r="32" fill="${ROXO}" mask="url(#m${i})"/>`);
+    if (i === 2) p.push(`  <circle cx="${ca[0]}" cy="${ca[1]}" r="32" fill="${ROXO}" clip-path="url(#b${i})"/>`);
+    if (i === 3) p.push(`  <circle cx="${ca[0]}" cy="${ca[1]}" r="32" fill="${ROXO}" mask="url(#m${i})"/>`, `  <circle cx="${cb[0]}" cy="${cb[1]}" r="32" fill="${ROXO}" mask="url(#n${i})"/>`);
+    p.push(texto(x + 70, 196, nome, { tamanho: 13, negrito: true, centro: true }), texto(x + 70, 214, d.split(' ').slice(0, 3).join(' '), { tamanho: 9.5, cor: CINZA, centro: true }), texto(x + 70, 228, d.split(' ').slice(3).join(' '), { tamanho: 9.5, cor: CINZA, centro: true }));
+  });
+  p.push(ret(30, 270, 580, 100, '#fff7ed', { rx: 10, stroke: '#fdba74' }));
+  p.push(texto(320, 296, 'Selecione duas formas e use o menu da barra superior (ícone de formas booleanas).', { tamanho: 12, negrito: true, cor: '#7c2d12', centro: true }));
+  p.push(texto(320, 318, 'Ex.: casa = quadrado (união) + triângulo; engrenagem = círculo (subtração) com furo no meio.', { tamanho: 11.5, cor: '#7c2d12', centro: true }));
+  p.push(texto(320, 340, 'Depois use Flatten (Ctrl + E) para virar um único vetor, pronto para exportar.', { tamanho: 11.5, cor: '#7c2d12', centro: true }));
+  return svg(p, '#eef2f7');
+})();
+
+telas['botao-animado-hover'] = svg([
+  ...figma({
+    itens: [{ rotulo: 'Botão', tipo: 'componente', ativa: true }, { rotulo: 'Estado = Padrão', nivel: 1, tipo: 'componente' }, { rotulo: 'Estado = Hover', nivel: 1, tipo: 'componente' }],
+    props: [
+      {
+        titulo: 'Interação',
+        linhas: [
+          { chip: 'Gatilho: Hover (mouse)', ativo: true, destaque: true },
+          { chip: 'Ação:    Mudar para', ativo: true },
+          { chip: 'Destino: Estado = Hover', ativo: true },
+          { chip: 'Animação: Smart animate' },
+          { chip: 'Ease out  ·  200 ms' },
+        ],
+      },
+    ],
+    propsOpcoes: { aba: 'Protótipo' },
+    canvas: [
+      t(240, 120, 'Padrão', { cor: CINZA, negrito: true }),
+      botaoUI(205, 130, 110, 36, 'Comprar', { cor: ROXO }),
+      seta(260, 176, 260, 214, AZ, 3), t(270, 200, 'mouse em cima', { cor: AZ, negrito: true, tamanho: 9 }),
+      t(240, 240, 'Hover', { cor: CINZA, negrito: true }),
+      ret(201, 246, 118, 44, '#5b21b6', { rx: 10, extra: ' filter="url(#sombra)"' }), t(260, 273, 'Comprar', { cor: '#fff', negrito: true, centro: true, tamanho: 11 }),
+    ],
+  }),
+], '#eef2f7');
+
+telas['micro-interacao-toggle'] = (() => {
+  const chave = (x, y, ligada) => `${ret(x, y, 90, 48, ligada ? '#16a34a' : '#cbd5e1', { rx: 24 })}\n${circ(ligada ? x + 66 : x + 24, y + 24, 18, '#ffffff')}\n${texto(x + 45, y + 78, ligada ? 'Ligado' : 'Desligado', { tamanho: 12, negrito: true, centro: true })}`;
+  return svg([
+    texto(320, 34, 'Micro-interação: o botão liga/desliga', { tamanho: 14, negrito: true, centro: true }),
+    ret(40, 60, 250, 150, '#ffffff', { rx: 12, stroke: '#cbd5e1' }), ret(350, 60, 250, 150, '#ffffff', { rx: 12, stroke: '#cbd5e1' }),
+    chave(120, 94, false), chave(430, 94, true),
+    seta(300, 135, 340, 135, AZ, 3), texto(320, 118, 'ao clicar', { tamanho: 9.5, cor: AZ, negrito: true, centro: true }),
+    seta(340, 160, 300, 160, '#94a3b8', 2), texto(320, 176, 'ao clicar', { tamanho: 9.5, cor: CINZA, centro: true }),
+    ret(40, 230, 560, 140, '#eff6ff', { rx: 12, stroke: '#93c5fd' }),
+    texto(60, 256, 'Como montar', { tamanho: 12.5, negrito: true, cor: '#1e3a8a' }),
+    texto(60, 280, '1. Componente com duas variantes: Estado = Desligado e Estado = Ligado.', { tamanho: 11, cor: '#1e3a8a' }),
+    texto(60, 300, '2. A bolinha tem o MESMO nome nas duas variantes (assim o Smart animate a move).', { tamanho: 11, cor: '#1e3a8a' }),
+    texto(60, 320, '3. Protótipo: Desligado → Ao clicar → Mudar para Ligado (e o contrário), Smart animate, 200 ms.', { tamanho: 11, cor: '#1e3a8a' }),
+    texto(60, 346, 'O Figma interpola a posição da bolinha e a cor do fundo sozinho.', { tamanho: 11, negrito: true, cor: '#1e3a8a' }),
+  ], '#eef2f7');
+})();
+
+telas['exportar-icone'] = svg([
+  ...figma({
+    itens: [{ rotulo: 'Ícones', tipo: 'quadro' }, { rotulo: 'icon/coracao', nivel: 1, tipo: 'componente', ativa: true }, { rotulo: 'icon/casa', nivel: 1, tipo: 'componente' }],
+    props: [
+      { titulo: 'Tamanho', linhas: [['L', '24', ['A', '24']]] },
+      { titulo: 'Traço', linhas: [{ cor: ROXO, texto: '7C3AED · 2 px' }] },
+      { titulo: 'Exportar  +', linhas: [{ chip: 'SVG', ativo: true, destaque: true }, { chip: 'PNG   2x' }, { chip: 'Exportar icon/coracao', ativo: true }] },
+    ],
+    canvas: [
+      ret(230, 140, 180, 150, '#ffffff', { rx: 8, stroke: '#d1d5db' }),
+      `  <g transform="translate(290 170) scale(2.5)"><path d="${CORACAO}" fill="none" stroke="${ROXO}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></g>`,
+      ret(288, 168, 64, 64, 'none', { stroke: AZ, sw: 1.5 }),
+      t(320, 262, 'icon/coracao  ·  24 × 24', { centro: true, cor: CINZA }),
+    ],
+  }),
+], '#eef2f7');
+
+telas['curvas-de-animacao'] = (() => {
+  const curvas = [
+    ['Linear', 'M0 80 L100 0', 'mecânica, sem vida', '#94a3b8'],
+    ['Ease in', 'M0 80 C60 80 80 40 100 0', 'saída de cena', '#f97316'],
+    ['Ease out', 'M0 80 C20 40 40 0 100 0', 'entrada: o mais usado', '#16a34a'],
+    ['Spring', 'M0 80 C30 -20 50 20 65 0 S85 6 100 0', 'quica: toque divertido', '#7c3aed'],
+  ];
+  const p = [texto(320, 34, 'Curvas de animação: como o movimento acelera', { tamanho: 14, negrito: true, centro: true })];
+  curvas.forEach(([nome, d, uso, cor], i) => {
+    const x = 28 + i * 150;
+    p.push(ret(x, 56, 138, 180, '#ffffff', { rx: 12, stroke: '#cbd5e1' }));
+    p.push(lin(x + 19, 80, x + 19, 160, '#e5e7eb', 1), lin(x + 19, 160, x + 119, 160, '#e5e7eb', 1));
+    p.push(`  <g transform="translate(${x + 19} 80)"><path d="${d}" transform="translate(0 0)" fill="none" stroke="${cor}" stroke-width="3" stroke-linecap="round"/></g>`);
+    p.push(texto(x + 69, 188, nome, { tamanho: 13, negrito: true, centro: true }), texto(x + 69, 208, uso, { tamanho: 9.5, cor: CINZA, centro: true }));
+    p.push(texto(x + 124, 100, 'fim', { tamanho: 8, cor: CINZA, centro: true }), texto(x + 19, 176, 'tempo →', { tamanho: 8, cor: CINZA }));
+  });
+  p.push(ret(28, 256, 584, 112, '#fff7ed', { rx: 12, stroke: '#fdba74' }));
+  p.push(texto(44, 282, 'Quanto dura?', { tamanho: 12.5, negrito: true, cor: '#7c2d12' }));
+  p.push(texto(44, 304, 'Botão e troca de estado: 100–200 ms.  Menus e janelinhas: 200–300 ms.  Troca de tela: 300–500 ms.', { tamanho: 11, cor: '#7c2d12' }));
+  p.push(texto(44, 326, 'Mais que 500 ms cansa; menos que 100 ms ninguém percebe.', { tamanho: 11, cor: '#7c2d12' }));
+  p.push(texto(44, 352, 'Regra de ouro: a animação ajuda a entender o que mudou — não é enfeite.', { tamanho: 11.5, negrito: true, cor: '#7c2d12' }));
+  return svg(p, '#eef2f7');
+})();

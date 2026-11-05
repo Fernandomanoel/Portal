@@ -42,7 +42,7 @@ const conteudo: ConteudoCurso = {
         "O protótipo liga telas por interações (clicar, arrastar) e transições, simulando o produto antes de ele ser programado. Pode ser testado no navegador ou no celular. Comentários e o compartilhamento por link permitem a colaboração com a equipe. Em geral o designer entrega o design para o desenvolvedor, que o inspeciona para pegar medidas e cores.",
       ],
       pontos: ["Ligar telas em um protótipo clicável.", "Compartilhar e comentar um design."],
-      atividades: ["figma-grau5-prototipo-e-colaboracao"],
+      atividades: ["figma-grau5-prototipo-e-colaboracao", "figma-grau6-animacoes-botoes-e-icones"],
     },
   ],
   glossario: [

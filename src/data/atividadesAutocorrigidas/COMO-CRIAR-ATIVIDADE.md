@@ -159,8 +159,8 @@ própria planilha) e o portal só explicar o caminho com figuras, o modelo é `C
 
 ### Atividades de Figma (muito visuais)
 
-`Figma/` tem cinco graus (interface e wireframe, quadros e camadas, Auto Layout e grades, componentes e
-estilos, protótipo e colaboração). Cada item traz uma figura do kit (`scripts/ilustracoes/telas/figma.mjs`,
+`Figma/` tem seis graus (interface e wireframe, quadros e camadas, Auto Layout e grades, componentes e
+estilos, protótipo e colaboração, animações/botões/ícones). Cada item traz uma figura do kit (`scripts/ilustracoes/telas/figma.mjs`,
 peças próprias: barra de ferramentas, camadas e painel de propriedades no estilo do Figma). Em
 `figmaComum.ts`, `figura("nome", alt, legenda)` pega a figura pelo nome do arquivo (nome errado quebra na
 hora) e `comFigura(escolha(...), figura(...))` põe a figura numa pergunta corrigida. Atalhos do Figma conferidos
