@@ -222,6 +222,14 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "8 questões de código",
     },
   ],
+  "Marketing Digital": [
+    {
+      tipo: "quiz",
+      rotulo: "Prova de Marketing Digital — post e campanha",
+      caminho: "Marketing Digital/prova-marketing-digital-post-e-campanha",
+      tamanho: "9 questões + prática em 6 etapas",
+    },
+  ],
   "Matemática Financeira": [
     {
       tipo: "quiz",

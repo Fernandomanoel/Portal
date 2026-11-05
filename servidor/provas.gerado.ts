@@ -34,6 +34,7 @@ export const REGISTRO_PROVAS: Record<string, () => Promise<{ default: ProvaInter
   "Introdução à Informática/avaliacao-pacote-office": () => import("../src/data/provasInterativas/Introdução à Informática/avaliacao-pacote-office.prova.js"),
   "JavaScript/prova-javascript-testes-automatizados": () => import("../src/data/provasInterativas/JavaScript/prova-javascript-testes-automatizados.prova.js"),
   "Lógica de Programação/avaliacao-pratica-logica": () => import("../src/data/provasInterativas/Lógica de Programação/avaliacao-pratica-logica.prova.js"),
+  "Marketing Digital/prova-marketing-digital-post-e-campanha": () => import("../src/data/provasInterativas/Marketing Digital/prova-marketing-digital-post-e-campanha.prova.js"),
   "Matemática Financeira/avaliacao-a": () => import("../src/data/provasInterativas/Matemática Financeira/avaliacao-a.prova.js"),
   "Matemática Financeira/avaliacao-b": () => import("../src/data/provasInterativas/Matemática Financeira/avaliacao-b.prova.js"),
   "Operador de Telemarketing/avaliacao-operador-de-telemarketing": () => import("../src/data/provasInterativas/Operador de Telemarketing/avaliacao-operador-de-telemarketing.prova.js"),
