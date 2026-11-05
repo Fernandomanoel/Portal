@@ -227,7 +227,7 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tipo: "quiz",
       rotulo: "Prova de Marketing Digital — post e campanha",
       caminho: "Marketing Digital/prova-marketing-digital-post-e-campanha",
-      tamanho: "9 questões + prática em 6 etapas",
+      tamanho: "9 questões + prática com post no Canva",
     },
   ],
   "Matemática Financeira": [

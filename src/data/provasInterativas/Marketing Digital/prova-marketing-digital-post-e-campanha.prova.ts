@@ -6,7 +6,9 @@ import type { CampoProva, ProvaInterativa } from "@/types/quiz";
  * (marketing e propaganda, 4 Ps, persona, funil, copywriting, Matriz FOFA,
  * CAC e LTV, conversão e teste A/B, gestão de crise).
  * Parte B: uma prática dividida em seis questões, cuja demanda é criar um
- * POST e uma CAMPANHA para uma empresa fictícia. Os textos são conferidos
+ * POST e uma CAMPANHA para uma empresa fictícia. O post é feito no Canva
+ * (por isso a prova deixa o aluno trocar de aba) e a imagem é anexada ao
+ * enviar; o professor confere a arte no envio. Os textos são conferidos
  * pelos elementos que um bom post e uma boa campanha precisam ter (objetivo
  * com número e prazo, chamada para ação, hashtag, slogan curto, fases da
  * campanha...), aceitando redações diferentes. Cada questão vale 1 ponto e
@@ -32,8 +34,15 @@ const BRIEFING = [
 const prova: ProvaInterativa = {
   tipo: "autocorrigida",
   titulo: "Prova de Marketing Digital — post e campanha",
+  // O aluno cria o post no Canva, em outra aba, e anexa a imagem ao enviar a prova.
+  permiteSairDaAba: true,
+  envioArquivo: {
+    obrigatorio: true,
+    extensoes: [".png", ".jpg", ".jpeg", ".pdf"],
+    rotulo: "Envie a imagem do post que você criou no Canva (PNG, JPG ou PDF)",
+  },
   introducao:
-    "Prova de Marketing Digital feita aqui mesmo, sem abrir nenhum outro programa. A Parte A tem nove questões sobre os assuntos das atividades. A Parte B é uma prática dividida em seis questões: você cria um post e uma campanha para uma empresa. Use «Testar resposta» em cada questão (3 testes). Cada questão vale 1 ponto.",
+    "A Parte A tem nove questões sobre os assuntos das atividades. A Parte B é uma prática dividida em seis questões: você cria um post e uma campanha para uma empresa. O post você cria no Canva (canva.com, em outra aba) e anexa a imagem no fim da prova, no campo de envio de arquivo. As respostas escritas usam «Testar resposta» (3 testes por questão) e cada questão vale 1 ponto; a arte do post o professor confere no envio.",
   itens: [
     // ---------------------------------------------------------------- Parte A
     {
@@ -237,8 +246,9 @@ const prova: ProvaInterativa = {
       mensagemErrada: "Pense onde está o público, o que vende o produto (imagem do box) e como a pessoa faz o pedido (um caminho claro, como o WhatsApp).",
     },
     {
-      titulo: "Parte B, prática 3: Crie o post (1 pt)",
-      enunciado: "Escreva a legenda do post e descreva a arte (a foto ou o vídeo) que vai com ela.",
+      titulo: "Parte B, prática 3: Crie o post no Canva (1 pt)",
+      enunciado:
+        "Crie o post do lançamento no Canva (modelo «Post do Instagram», 1080 × 1350): foto ou ilustração do box, título, preço e chamada para pedir. Baixe como PNG ou JPG e anexe no campo de envio de arquivo no fim da prova. Aqui, escreva a legenda e explique as escolhas da sua arte.",
       referencia: "Box Café da Manhã: 2 pães, 1 bolo pequeno, geleia e suco natural, para 2 pessoas, R$ 59,90 com entrega. Pedidos pelo WhatsApp.",
       campos: [
         {
@@ -256,14 +266,14 @@ const prova: ProvaInterativa = {
         },
         {
           id: "arte",
-          rotulo: "Descreva a arte do post (imagem ou vídeo):",
-          placeholder: "Ex.: Foto do box aberto sobre uma mesa de madeira, com luz natural...",
+          rotulo: "Explique as escolhas da sua arte no Canva (imagem, cores, texto na imagem) e por que combinam com a marca:",
+          placeholder: "Ex.: Usei a foto do box aberto sobre uma mesa de madeira, cores creme e marrom, porque passam a ideia de feito à mão...",
           regra: {
             tipo: "texto",
             minPalavras: 8,
             minCaracteres: 30,
             palavrasChave: String.raw`\b(foto\w*|imagem|imagens|v[ií]deo\w*|cor\w*|box|mesa|cesta|luz|fundo|layout|texto|logo\w*|carrossel|reels|slide\w*|cena)\b`,
-            mensagemSemPalavraChave: "Descreva o que aparece: foto ou vídeo do box, cenário, cores, texto na imagem.",
+            mensagemSemPalavraChave: "Explique o que aparece na sua arte: foto ou ilustração do box, cores, fonte e texto na imagem.",
           },
           mensagemCerta: "Arte descrita com clareza.",
         },
