@@ -73,6 +73,11 @@ conteúdo próximo de zero para quem não é programador.
   negrito), compartilhada entre todos os professores, salva sozinha, guardada
   até alguém apagar e exportável em .xlsx. Substitui as listas do SharePoint,
   que derrubava a sessão por política de segurança.
+- Aba «Conteúdos» na área do professor: a teoria de cada curso, na ordem das
+  atividades (explicação, o que o aluno precisa saber, exemplos, erros comuns,
+  glossário e dicas de como conduzir a aula), para quem ensina um assunto fora
+  da sua área. Cobre todos os cursos, menos os do pacote Office. Um arquivo por
+  curso em `src/data/conteudosProfessor/`, carregado só quando a página abre.
 - Várias unidades usam o mesmo portal sem misturar os dados. Na aba Provas
   escolhe-se a unidade na lista e digita-se a senha dela: o servidor confere e devolve
   uma ficha assinada que o envio da prova leva junto, então as provas vão para a

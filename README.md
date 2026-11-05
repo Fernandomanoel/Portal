@@ -41,6 +41,7 @@ src/
 ├── hooks/          tema, prova em andamento, trava de prova, narração, digitação
 ├── data/           catálogos: atividades, provas, inglês, digitação, Passo a Passo
 │   ├── atividadesAutocorrigidas/   atividades .atividade.ts por curso + dados*.ts das planilhas
+│   ├── conteudosProfessor/         teoria de cada curso para o professor (.conteudo.ts)
 │   └── provasInterativas/          provas .prova.ts (só o servidor carrega)
 ├── types/          contratos de dados
 ├── styles/         tokens, reset e fontes
@@ -90,6 +91,7 @@ formatos mais elaborados têm guia próprio:
 |---|---|
 | Material de apoio de um curso (PDF, vídeo, imagem, planilha...) | [`src/data/COMO-FORNECER-MATERIAL.md`](src/data/COMO-FORNECER-MATERIAL.md) |
 | Atividade autocorrigida | [`src/data/atividadesAutocorrigidas/COMO-CRIAR-ATIVIDADE.md`](src/data/atividadesAutocorrigidas/COMO-CRIAR-ATIVIDADE.md) |
+| Conteúdo do professor | [`src/data/conteudosProfessor/COMO-CRIAR-CONTEUDO.md`](src/data/conteudosProfessor/COMO-CRIAR-CONTEUDO.md) |
 | Prova interativa | [`src/data/provasInterativas/COMO-CRIAR-PROVA.md`](src/data/provasInterativas/COMO-CRIAR-PROVA.md) |
 
 Regra central do material de curso: todo arquivo do próprio portal (PDF,
