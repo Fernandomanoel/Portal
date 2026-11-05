@@ -206,6 +206,14 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "9 questões",
     },
   ],
+  "C#": [
+    {
+      tipo: "quiz",
+      rotulo: "Prova de C# — correção automática",
+      caminho: "CSharp/prova-csharp-correcao-automatica",
+      tamanho: "10 questões",
+    },
+  ],
   "Python": [
     {
       tipo: "quiz",

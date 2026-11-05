@@ -10,6 +10,7 @@ export const REGISTRO_PROVAS: Record<string, () => Promise<{ default: ProvaInter
   "Auxiliar Médico/prova-auxiliar-medico": () => import("../src/data/provasInterativas/Auxiliar Médico/prova-auxiliar-medico.prova.js"),
   "Banco de Dados/avaliacao-controle-de-biblioteca": () => import("../src/data/provasInterativas/Banco de Dados/avaliacao-controle-de-biblioteca.prova.js"),
   "CSS/avaliacao-pratica-css": () => import("../src/data/provasInterativas/CSS/avaliacao-pratica-css.prova.js"),
+  "CSharp/prova-csharp-correcao-automatica": () => import("../src/data/provasInterativas/CSharp/prova-csharp-correcao-automatica.prova.js"),
   "Compras e Estoque/avaliacao-compras-e-estoque": () => import("../src/data/provasInterativas/Compras e Estoque/avaliacao-compras-e-estoque.prova.js"),
   "Contabilidade/avaliacao-notas-fiscais": () => import("../src/data/provasInterativas/Contabilidade/avaliacao-notas-fiscais.prova.js"),
   "Crédito e Cobrança/avaliacao-credito-e-cobranca": () => import("../src/data/provasInterativas/Crédito e Cobrança/avaliacao-credito-e-cobranca.prova.js"),
