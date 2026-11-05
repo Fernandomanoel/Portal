@@ -78,6 +78,12 @@ conteúdo próximo de zero para quem não é programador.
   glossário e dicas de como conduzir a aula), para quem ensina um assunto fora
   da sua área. Cobre todos os cursos, menos os do pacote Office. Um arquivo por
   curso em `src/data/conteudosProfessor/`, carregado só quando a página abre.
+  Funciona como uma wiki: qualquer professor edita (com **negrito**, *itálico* e
+  `código`), cada salvamento vira uma versão com autor, data e comentário, e o
+  histórico mostra o que mudou (palavra a palavra) e permite restaurar uma versão.
+  As edições ficam em `conteudos/<curso>.json` no armazenamento (não expiram); o
+  texto original do arquivo `.conteudo.ts` é a versão 0. Duas pessoas editando ao
+  mesmo tempo: quem salva depois recebe aviso (409) em vez de sobrescrever.
 - Várias unidades usam o mesmo portal sem misturar os dados. Na aba Provas
   escolhe-se a unidade na lista e digita-se a senha dela: o servidor confere e devolve
   uma ficha assinada que o envio da prova leva junto, então as provas vão para a

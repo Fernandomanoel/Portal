@@ -4,8 +4,11 @@ import type { ArquivoEnviado, Envio, LancarNotaInput, Professor, ReciboEnvio, Sa
 import { TENTATIVAS_POR_QUESTAO } from "../src/types/quiz.js";
 import { DIAS_GUARDADOS, LIMITE_ARQUIVO_MB } from "../src/types/envio.js";
 import type { Armazenamento } from "./armazenamento.js";
+import type { HistoricoConteudo, RevisaoConteudo } from "../src/types/conteudoProfessor.js";
+import { LIMITES_CONTEUDO } from "../src/types/conteudoProfessor.js";
 import type { ListaAcompanhamento } from "../src/types/lista.js";
 import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
+import { caminhoConteudo, comentarioValido, slugValido, validarConteudo } from "./conteudos.js";
 import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
 import { conferirItem } from "../src/lib/correcaoProva.js";
 import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
@@ -611,6 +614,39 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
       };
       await armazenamento.salvarJson(caminhoLista(id), gravada);
       return json(gravada);
+    }
+  }
+
+  // Conteúdos dos cursos: uma «wiki» editada por qualquer professor, com o histórico de versões.
+  if (partes[0] === "conteudos") {
+    const professor = professorDa(requisicao);
+    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    const slug = partes[1] ?? "";
+    if (partes.length !== 2 || !slugValido(slug)) return erro(404, "NAO_ENCONTRADO", "Conteúdo não encontrado.");
+    const historico = (await armazenamento.lerJson<HistoricoConteudo>(caminhoConteudo(slug))) ?? { slug, revisoes: [] };
+
+    if (metodo === "GET") return json(historico);
+    if (metodo === "PUT") {
+      const corpo = await lerCorpoJson(requisicao);
+      const conteudo = validarConteudo(corpo?.conteudo);
+      if (typeof conteudo === "string") return erro(422, "VALIDATION_ERROR", conteudo);
+      const atualNumero = historico.revisoes.at(-1)?.numero ?? 0;
+      // Outro professor gravou depois que esta tela abriu o conteúdo: devolve o dele em vez de sobrescrever.
+      if (Number(corpo?.base) !== atualNumero) {
+        return json({ error: { code: "CONFLITO", message: `${historico.revisoes.at(-1)?.autor ?? "Outro professor"} alterou este conteúdo enquanto você editava.` }, atual: historico }, 409);
+      }
+      const nova: RevisaoConteudo = {
+        numero: atualNumero + 1,
+        autor: professor.nome,
+        unidade: professor.unidade,
+        em: new Date().toISOString(),
+        comentario: comentarioValido(corpo?.comentario),
+        tipo: corpo?.tipo === "restauracao" ? "restauracao" : "edicao",
+        conteudo,
+      };
+      const gravado: HistoricoConteudo = { slug, revisoes: [...historico.revisoes, nova].slice(-LIMITES_CONTEUDO.revisoes) };
+      await armazenamento.salvarJson(caminhoConteudo(slug), gravado);
+      return json(gravado);
     }
   }
 

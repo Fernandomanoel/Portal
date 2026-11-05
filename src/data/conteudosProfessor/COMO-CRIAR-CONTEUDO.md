@@ -39,3 +39,7 @@ Regras de escrita:
 - Não vale copiar gabarito das atividades nem das provas.
 - Os cursos do pacote Office (Windows, Excel, Word, PowerPoint, Internet e
   redes sociais, Outlook, Introdução à Informática) ficam de fora desta aba.
+
+## Edição pelos professores
+
+O arquivo `.conteudo.ts` é só o texto original (versão 0). Os professores editam pela própria aba; as edições ficam no armazenamento (`conteudos/<slug>.json`) e a tela mostra sempre a última versão. Alterar o `.conteudo.ts` depois não muda o que quem já editou vê; o texto original aparece no histórico para comparação ou restauração. Formatação aceita nos textos: `**negrito**`, `*itálico*` e `` `código` ``.
