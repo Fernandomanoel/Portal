@@ -206,12 +206,28 @@ export const PROVAS_MANIFEST: ManifestoProvas = {
       tamanho: "9 questões",
     },
   ],
+  "C#": [
+    {
+      tipo: "quiz",
+      rotulo: "Prova de C# — correção automática",
+      caminho: "CSharp/prova-csharp-correcao-automatica",
+      tamanho: "10 questões",
+    },
+  ],
   "Python": [
     {
       tipo: "quiz",
       rotulo: "Prova de Python — correção automática",
       caminho: "Python/prova-python-testes-automatizados",
       tamanho: "8 questões de código",
+    },
+  ],
+  "Marketing Digital": [
+    {
+      tipo: "quiz",
+      rotulo: "Prova de Marketing Digital — post e campanha",
+      caminho: "Marketing Digital/prova-marketing-digital-post-e-campanha",
+      tamanho: "9 questões + prática com post no Canva",
     },
   ],
   "Matemática Financeira": [

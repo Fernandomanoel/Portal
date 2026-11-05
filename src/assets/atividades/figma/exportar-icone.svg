@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <rect x="20" y="16" width="600" height="368" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" filter="url(#sombra)"/>
+  <defs><clipPath id="tela"><rect x="161" y="50" width="318" height="334"/></clipPath></defs>
+  <rect x="161" y="50" width="318" height="334" rx="0" fill="#e5e5e5"/>
+  <g clip-path="url(#tela)">
+  <rect x="230" y="140" width="180" height="150" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-width="1"/>
+  <g transform="translate(290 170) scale(2.5)"><path d="M12 20.5s-7.2-4.6-9.3-9.2C1.2 8 3.2 4.6 6.6 4.6c2 0 3.6 1.1 5.4 3.1 1.8-2 3.4-3.1 5.4-3.1 3.4 0 5.4 3.4 3.9 6.7C19.2 15.9 12 20.5 12 20.5z" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></g>
+  <rect x="288" y="168" width="64" height="64" rx="0" fill="none" stroke="#0d99ff" stroke-width="1.5"/>
+  <text x="320" y="262" font-size="9.5" fill="#6b7280" text-anchor="middle">icon/coracao  ·  24 × 24</text>
+  </g>
+  <rect x="20" y="50" width="140" height="334" rx="0" fill="#ffffff"/>
+  <line x1="160" y1="50" x2="160" y2="384" stroke="#e5e5e5" stroke-width="1"/>
+  <text x="32" y="66" font-size="9" fill="#6b7280">Páginas</text>
+  <text x="78" y="66" font-size="10" fill="#1f2937" font-weight="700">Camadas</text>
+  <line x1="20" y1="74" x2="160" y2="74" stroke="#e5e5e5" stroke-width="1"/>
+  <path d="M33 85 V94 M36 85 V94 M30 88 H39 M30 91 H39" stroke="#6b7280" stroke-width="1" fill="none"/>
+  <text x="45" y="93.5" font-size="9.5" fill="#1f2937">Ícones</text>
+  <rect x="21" y="100" width="138" height="19" rx="0" fill="#daebf7"/>
+  <path d="M46.5 104 L51.5 109.5 L46.5 115 L41.5 109.5 Z" fill="#7c3aed"/>
+  <text x="57" y="113.5" font-size="9.5" fill="#1f2937" font-weight="700">icon/coracao</text>
+  <path d="M46.5 124 L51.5 129.5 L46.5 135 L41.5 129.5 Z" fill="#7c3aed"/>
+  <text x="57" y="133.5" font-size="9.5" fill="#1f2937">icon/casa</text>
+  <rect x="480" y="50" width="140" height="334" rx="0" fill="#ffffff"/>
+  <line x1="480" y1="50" x2="480" y2="384" stroke="#e5e5e5" stroke-width="1"/>
+  <text x="492" y="67" font-size="9.5" fill="#1f2937" font-weight="700">Design</text>
+  <line x1="492" y1="72" x2="525.6" y2="72" stroke="#0d99ff" stroke-width="2"/>
+  <text x="548" y="67" font-size="9.5" fill="#6b7280">Protótipo</text>
+  <line x1="480" y1="74" x2="620" y2="74" stroke="#e5e5e5" stroke-width="1"/>
+  <text x="492" y="90" font-size="9.5" fill="#1f2937" font-weight="700">Tamanho</text>
+  <rect x="492" y="100" width="54" height="16" rx="3" fill="#f3f4f6"/>
+  <text x="498" y="111.5" font-size="8.5" fill="#6b7280">L</text>
+  <text x="516" y="111.5" font-size="9" fill="#1f2937">24</text>
+  <rect x="552" y="100" width="56" height="16" rx="3" fill="#f3f4f6"/>
+  <text x="558" y="111.5" font-size="8.5" fill="#6b7280">A</text>
+  <text x="574" y="111.5" font-size="9" fill="#1f2937">24</text>
+  <line x1="480" y1="126" x2="620" y2="126" stroke="#e5e5e5" stroke-width="1"/>
+  <text x="492" y="136" font-size="9.5" fill="#1f2937" font-weight="700">Traço</text>
+  <rect x="492" y="146" width="14" height="14" rx="2" fill="#7c3aed" stroke="#d1d5db" stroke-width="1"/>
+  <text x="512" y="157" font-size="9" fill="#1f2937">7C3AED · 2 px</text>
+  <line x1="480" y1="172" x2="620" y2="172" stroke="#e5e5e5" stroke-width="1"/>
+  <text x="492" y="182" font-size="9.5" fill="#1f2937" font-weight="700">Exportar  +</text>
+  <rect x="492" y="192" width="116" height="16" rx="3" fill="#daebf7" stroke="#0d99ff" stroke-width="1"/>
+  <text x="500" y="203.5" font-size="9" fill="#1f2937" font-weight="700">SVG</text>
+  <rect x="488" y="189" width="126" height="22" rx="5" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <rect x="488" y="189" width="126" height="22" rx="5" fill="none" stroke="#ea580c" stroke-width="5"/>
+  <rect x="492" y="216" width="116" height="16" rx="3" fill="#f3f4f6"/>
+  <text x="500" y="227.5" font-size="9" fill="#1f2937">PNG   2x</text>
+  <rect x="492" y="240" width="116" height="16" rx="3" fill="#daebf7" stroke="#0d99ff" stroke-width="1"/>
+  <text x="500" y="251.5" font-size="9" fill="#1f2937" font-weight="700">Exportar icon/coracao</text>
+  <line x1="480" y1="266" x2="620" y2="266" stroke="#e5e5e5" stroke-width="1"/>
+  <rect x="20" y="16" width="600" height="34" rx="10" fill="#2c2c2c"/>
+  <rect x="20" y="34" width="600" height="16" rx="0" fill="#2c2c2c"/>
+  <rect x="31" y="21" width="26" height="24" rx="5" fill="#0d99ff"/>
+  <path d="M39 27 L39 39 L42 36 L45 41 L47 40 L44 35 L49 35 Z" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M71 26 V40 M77 26 V40 M67 30 H81 M67 36 H81" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="98" y="27" width="12" height="12" rx="1" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M128 39 L130 32 L137 25 L141 29 L134 36 Z" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="164" y="38" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">T</text>
+  <circle cx="194" cy="33" r="6" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><path d="M192 34 L194 30 L196 34" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="470" y="37" font-size="10" fill="#d1d5db">100%</text>
+  <rect x="540" y="23" width="66" height="20" rx="5" fill="#0d99ff"/>
+  <text x="573" y="37" font-size="9" fill="#ffffff" font-weight="700" text-anchor="middle">Compartilhar</text>
+</svg>

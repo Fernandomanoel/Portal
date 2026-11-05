@@ -157,6 +157,15 @@ própria planilha) e o portal só explicar o caminho com figuras, o modelo é `C
 - Antes de publicar, preencha uma cópia com as respostas certas (as funções aceitam `gabarito=True`), recalcule no
   LibreOffice e confirme que todos os OK e os totais batem com os números das atividades.
 
+### Atividades de Figma (muito visuais)
+
+`Figma/` tem seis graus (interface e wireframe, quadros e camadas, Auto Layout e grades, componentes e
+estilos, protótipo e colaboração, animações/botões/ícones). Cada item traz uma figura do kit (`scripts/ilustracoes/telas/figma.mjs`,
+peças próprias: barra de ferramentas, camadas e painel de propriedades no estilo do Figma). Em
+`figmaComum.ts`, `figura("nome", alt, legenda)` pega a figura pelo nome do arquivo (nome errado quebra na
+hora) e `comFigura(escolha(...), figura(...))` põe a figura numa pergunta corrigida. Atalhos do Figma conferidos
+para Windows (Auto Layout = Shift + A; componente = Ctrl + Alt + K; apresentar = Ctrl + Alt + Enter).
+
 ### Atividades de Python e de SQL: guia de ambiente para iniciantes
 
 Atividade que exige executar código abre com o guia ilustrado de `guiasLinguagens.ts`: `guiaPython(...)`

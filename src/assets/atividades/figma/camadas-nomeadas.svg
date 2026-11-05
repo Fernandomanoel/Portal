@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="160" y="34" font-size="13" fill="#1f2937" font-weight="700" text-anchor="middle">Antes: nomes padrão</text>
+  <text x="480" y="34" font-size="13" fill="#1f2937" font-weight="700" text-anchor="middle">Depois: nomes que explicam</text>
+  <rect x="30" y="50" width="260" height="250" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <path d="M51 70 V79 M54 70 V79 M48 73 H57 M48 76 H57" stroke="#6b7280" stroke-width="1" fill="none"/>
+  <text x="66" y="80" font-size="12" fill="#b91c1c">Frame 1</text>
+  <rect x="62" y="104" width="9" height="9" fill="none" stroke="#6b7280"/>
+  <text x="80" y="114" font-size="12" fill="#b91c1c">Rectangle 12</text>
+  <rect x="62" y="138" width="9" height="9" fill="none" stroke="#6b7280"/>
+  <text x="80" y="148" font-size="12" fill="#b91c1c">Rectangle 13</text>
+  <circle cx="67" cy="176.5" r="4.5" fill="none" stroke="#6b7280"/>
+  <text x="80" y="182" font-size="12" fill="#b91c1c">Ellipse 4</text>
+  <text x="66.5" y="215" font-size="11" font-weight="700" fill="#6b7280" text-anchor="middle">T</text>
+  <text x="80" y="216" font-size="12" fill="#b91c1c">Text</text>
+  <text x="66.5" y="249" font-size="11" font-weight="700" fill="#6b7280" text-anchor="middle">T</text>
+  <text x="80" y="250" font-size="12" fill="#b91c1c">Text</text>
+  <rect x="350" y="50" width="260" height="250" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <path d="M371 70 V79 M374 70 V79 M368 73 H377 M368 76 H377" stroke="#6b7280" stroke-width="1" fill="none"/>
+  <text x="386" y="80" font-size="12" fill="#15803d" font-weight="700">Tela de perfil</text>
+  <rect x="382" y="104" width="9" height="9" fill="none" stroke="#6b7280"/>
+  <text x="400" y="114" font-size="12" fill="#15803d" font-weight="700">Cabeçalho</text>
+  <rect x="382" y="138" width="9" height="9" fill="none" stroke="#6b7280"/>
+  <text x="400" y="148" font-size="12" fill="#15803d" font-weight="700">Fundo do cartão</text>
+  <circle cx="387" cy="176.5" r="4.5" fill="none" stroke="#6b7280"/>
+  <text x="400" y="182" font-size="12" fill="#15803d" font-weight="700">Foto do usuário</text>
+  <text x="386.5" y="215" font-size="11" font-weight="700" fill="#6b7280" text-anchor="middle">T</text>
+  <text x="400" y="216" font-size="12" fill="#15803d" font-weight="700">Nome</text>
+  <text x="386.5" y="249" font-size="11" font-weight="700" fill="#6b7280" text-anchor="middle">T</text>
+  <text x="400" y="250" font-size="12" fill="#15803d" font-weight="700">Cargo</text>
+  <text x="320" y="176" font-size="30" fill="#0d99ff" text-anchor="middle">→</text>
+  <rect x="30" y="320" width="580" height="54" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1"/>
+  <text x="320" y="343" font-size="12.5" fill="#7c2d12" font-weight="700" text-anchor="middle">Dê dois cliques no nome da camada (ou Ctrl + R) e digite.</text>
+  <text x="320" y="362" font-size="11" fill="#7c2d12" text-anchor="middle">Quem abrir o arquivo depois — inclusive você — entende tudo sem abrir camada por camada.</text>
+</svg>

@@ -87,6 +87,10 @@ export function ProfessorLayout() {
             <Icone nome="prova" tamanho={16} />
             Provas enviadas
           </NavLink>
+          <NavLink to={rotas.professorConteudos()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+            <Icone nome="livro" tamanho={16} />
+            Conteúdos
+          </NavLink>
           <NavLink to={rotas.professorListas()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
             <Icone nome="tabela" tamanho={16} />
             Listas

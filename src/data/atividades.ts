@@ -1165,6 +1165,38 @@ export const ATIVIDADES: Curso[] = [
     sigla: "FG",
     cor: "#e8492b",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Figma — Grau 1: Conhecendo o Figma e o Processo de Design",
+        descricao: "UX e UI, as partes da tela do Figma, atalhos e o primeiro wireframe.",
+        caminho: "Figma/figma-grau1-conhecendo-o-figma",
+      },
+      {
+        titulo: "Figma — Grau 2: Quadros, Formas e Camadas",
+        descricao: "Quadros por aparelho, formas e texto, camadas com nome e alinhamento.",
+        caminho: "Figma/figma-grau2-quadros-formas-e-camadas",
+      },
+      {
+        titulo: "Figma — Grau 3: Auto Layout, Grades e Espaçamento",
+        descricao: "Botão e lista que se ajustam sozinhos, grade de colunas e a régua dos 8.",
+        caminho: "Figma/figma-grau3-auto-layout-e-grades",
+      },
+      {
+        titulo: "Figma — Grau 4: Componentes, Variantes e Estilos",
+        descricao: "Componente principal e instâncias, variantes de estado e estilos de cor e texto.",
+        caminho: "Figma/figma-grau4-componentes-e-estilos",
+      },
+      {
+        titulo: "Figma — Grau 5: Protótipo, Teste e Colaboração",
+        descricao: "Ligar telas, animar, apresentar, testar com um colega e compartilhar.",
+        caminho: "Figma/figma-grau5-prototipo-e-colaboracao",
+      },
+      {
+        titulo: "Figma — Grau 6: Animações, Botões e Ícones",
+        descricao: "Ícones no quadro de 24 px, botões com estados, micro-animações com Smart animate e exportação.",
+        caminho: "Figma/figma-grau6-animacoes-botoes-e-icones",
+      },
+    ],
   },
   {
     slug: "after-effects",
