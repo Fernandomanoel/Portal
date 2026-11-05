@@ -10,6 +10,7 @@ const conteudo: ConteudoCurso = {
         "UX (experiência do usuário) é o quanto a pessoa consegue cumprir o objetivo com facilidade; UI (interface do usuário) é o visual e a interação das telas. O processo comum: entender o usuário, definir o problema, esboçar (wireframe, uma versão simples em preto e branco), desenhar a tela em alta fidelidade, prototipar e testar com pessoas reais.",
       ],
       pontos: ["Diferenciar UX e UI.", "Descrever as etapas do processo."],
+      atividades: ["figma-grau1-conhecendo-o-figma"],
     },
     {
       titulo: "Quadros, formas e organização",
@@ -17,6 +18,7 @@ const conteudo: ConteudoCurso = {
         "No Figma, o design vive em quadros (frames), que representam telas de tamanhos conhecidos (celular, tablet, computador). Dentro deles colocam-se formas, textos e imagens. Camadas nomeadas, grupos e páginas mantêm o arquivo organizado. Atalhos: R (retângulo), T (texto), F (quadro), Ctrl+D (duplicar).",
       ],
       pontos: ["Criar quadros para diferentes dispositivos.", "Nomear e organizar camadas."],
+      atividades: ["figma-grau2-quadros-formas-e-camadas"],
     },
     {
       titulo: "Layout: auto layout, grades e alinhamento",
@@ -24,6 +26,7 @@ const conteudo: ConteudoCurso = {
         "O Auto Layout organiza os elementos e ajusta o tamanho automaticamente quando o conteúdo muda (um botão cresce com o texto, uma lista cresce com os itens): é a base de designs responsivos. As grades de layout (colunas) e os espaçamentos consistentes (múltiplos de 4 ou 8 px) dão ordem visual.",
       ],
       pontos: ["Usar Auto Layout em um botão e em uma lista.", "Aplicar espaçamentos consistentes."],
+      atividades: ["figma-grau3-auto-layout-e-grades"],
     },
     {
       titulo: "Componentes, estilos e sistema de design",
@@ -31,6 +34,7 @@ const conteudo: ConteudoCurso = {
         "Componentes são elementos reutilizáveis (botões, cartões, campos): mudanças no componente principal se refletem nas cópias (instâncias). Variantes reúnem estados (normal, passando o mouse, desabilitado). Os estilos de cor e de texto padronizam a aparência. Um sistema de design reúne tudo isso para manter a consistência do produto.",
       ],
       pontos: ["Criar um componente e usar instâncias.", "Definir estilos de cor e texto."],
+      atividades: ["figma-grau4-componentes-e-estilos"],
     },
     {
       titulo: "Prototipação e colaboração",
@@ -38,6 +42,7 @@ const conteudo: ConteudoCurso = {
         "O protótipo liga telas por interações (clicar, arrastar) e transições, simulando o produto antes de ele ser programado. Pode ser testado no navegador ou no celular. Comentários e o compartilhamento por link permitem a colaboração com a equipe. Em geral o designer entrega o design para o desenvolvedor, que o inspeciona para pegar medidas e cores.",
       ],
       pontos: ["Ligar telas em um protótipo clicável.", "Compartilhar e comentar um design."],
+      atividades: ["figma-grau5-prototipo-e-colaboracao"],
     },
   ],
   glossario: [
