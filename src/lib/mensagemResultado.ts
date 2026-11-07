@@ -39,3 +39,33 @@ export function mensagemResultado({ curso, data, nota, genero, observacao }: Dad
 
   return [...cabecalho, ...corpo, "Equipe Microlins Ⓜ"].join("\n");
 }
+
+/** Nota digitada à mão (aceita vírgula ou ponto); vazia ou inválida vira `null`, que a mensagem escreve como «Pendente». */
+export function lerNotaLivro(texto: string): number | null {
+  const n = Number(texto.trim().replace(",", "."));
+  return texto.trim() !== "" && Number.isFinite(n) && n >= 0 && n <= 10 ? n : null;
+}
+
+const notaVirgula = (n: number) => n.toFixed(1).replace(".", ",");
+
+export interface DadosHistorico {
+  curso: string;
+  nota: number;
+  /** Nota do livro lançada na hora; sem ela, a mensagem sai com «Pendente». */
+  livro: number | null;
+  texto: string;
+}
+
+/** Texto inicial do histórico, que o professor ajusta: o que a pessoa fez na prova, conforme a nota. */
+export function textoPadraoHistorico(nota: number, genero: "aluna" | "aluno") {
+  const artigo = genero === "aluna" ? "A aluna" : "O aluno";
+  return aprovada(nota)
+    ? `${artigo} concluiu todas as etapas solicitadas na prova e demonstrou bom domínio do conteúdo. Parabéns!!`
+    : `${artigo} não concluiu todas as etapas solicitadas na prova e precisa reforçar o conteúdo.`;
+}
+
+/** Registro para o histórico do outro sistema: módulo, nota da prova, nota do livro e um parágrafo. */
+export function mensagemHistorico({ curso, nota, livro, texto }: DadosHistorico) {
+  const livroTexto = livro === null ? "Pendente" : notaVirgula(livro);
+  return `Módulo: ${curso.trim()}\n\nProva: ${notaVirgula(nota)}         Livro: ${livroTexto}\n\n${texto.trim()}`;
+}
