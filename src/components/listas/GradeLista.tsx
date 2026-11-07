@@ -1,4 +1,4 @@
-import { useRef, useState, type KeyboardEvent, type PointerEvent as EventoPonteiro } from "react";
+import { useRef, useState, type KeyboardEvent, type PointerEvent as EventoPonteiro, type ReactNode } from "react";
 
 import { Icone, type NomeIcone } from "@/components/Icone";
 import {
@@ -123,7 +123,16 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
           <col style={{ width: LARGURA_MAIS }} />
         </colgroup>
         <thead>
-          <tr>
+          <tr className={estilos.letras} aria-hidden="true">
+            <th className={`${estilos.alca} ${estilos.canto}`} />
+            {lista.colunas.map((coluna, i) => (
+              <th key={coluna.id} className={i === 0 ? estilos.fixa : undefined}>
+                {letraColuna(i)}
+              </th>
+            ))}
+            <th />
+          </tr>
+          <tr className={estilos.titulos}>
             <th scope="col" className={`${estilos.alca} ${estilos.canto}`}>
               <span className="sr-only">Linha</span>
             </th>
@@ -131,31 +140,7 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
               <CabecalhoColuna key={coluna.id} coluna={coluna} indice={i} total={lista.colunas.length} alterar={alterar} primeira={i === 0} />
             ))}
             <th scope="col" className={estilos.maisColuna}>
-              <MenuSuspenso rotulo="Adicionar coluna" classeGatilho={estilos.maisBotao} alinhar="fim" gatilho={<Icone nome="mais" tamanho={16} />}>
-                {(fechar) => (
-                  <div className={estilos.menu}>
-                    <p className={estilos.menuTitulo}>Nova coluna</p>
-                    {TIPOS_COLUNA.map((t) => (
-                      <button
-                        key={t.tipo}
-                        type="button"
-                        className={`${estilos.menuBotao} ${estilos.menuItem} ${estilos.tipoItem}`}
-                        disabled={lista.colunas.length >= LIMITES_LISTA.colunas}
-                        onClick={() => {
-                          fechar();
-                          alterar((l) => inserirColuna(l, t.tipo, t.tipo === "texto" ? "Observação" : t.tipo === "opcoes" ? "Situação" : t.rotulo));
-                        }}
-                      >
-                        <Icone nome={ICONE_TIPO[t.tipo]} tamanho={16} />
-                        <span>
-                          <strong>{t.rotulo}</strong>
-                          <small>{t.descricao}</small>
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </MenuSuspenso>
+              <MenuNovaColuna lista={lista} alterar={alterar} classeGatilho={estilos.maisBotao} gatilho={<Icone nome="mais" tamanho={16} />} />
             </th>
           </tr>
         </thead>
@@ -258,6 +243,48 @@ export function GradeLista({ lista, alterar, linhaAtiva, definirLinhaAtiva }: Pr
       </table>
     </div>
   );
+}
+
+/** Menu com os tipos de coluna: usado no «+» do cabeçalho da grade e na barra de ferramentas da página. */
+export function MenuNovaColuna({ lista, alterar, classeGatilho, gatilho, rotulo = "Adicionar coluna" }: { lista: ListaAcompanhamento; alterar: Props["alterar"]; classeGatilho: string; gatilho: ReactNode; rotulo?: string }) {
+  return (
+    <MenuSuspenso rotulo={rotulo} classeGatilho={classeGatilho} alinhar="fim" gatilho={gatilho}>
+      {(fechar) => (
+        <div className={estilos.menu}>
+          <p className={estilos.menuTitulo}>Nova coluna</p>
+          {TIPOS_COLUNA.map((t) => (
+            <button
+              key={t.tipo}
+              type="button"
+              className={`${estilos.menuBotao} ${estilos.menuItem} ${estilos.tipoItem}`}
+              disabled={lista.colunas.length >= LIMITES_LISTA.colunas}
+              onClick={() => {
+                fechar();
+                alterar((l) => inserirColuna(l, t.tipo, t.tipo === "texto" ? "Observação" : t.tipo === "opcoes" ? "Situação" : t.rotulo));
+              }}
+            >
+              <Icone nome={ICONE_TIPO[t.tipo]} tamanho={16} />
+              <span>
+                <strong>{t.rotulo}</strong>
+                <small>{t.descricao}</small>
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+    </MenuSuspenso>
+  );
+}
+
+/** A, B, C… Z, AA, AB… como nas planilhas. */
+function letraColuna(i: number) {
+  let n = i;
+  let letra = "";
+  do {
+    letra = String.fromCharCode(65 + (n % 26)) + letra;
+    n = Math.floor(n / 26) - 1;
+  } while (n >= 0);
+  return letra;
 }
 
 function Contagem({ conta }: { conta: ReturnType<typeof contagem> }) {

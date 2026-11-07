@@ -3,10 +3,11 @@ import { Link, useParams } from "react-router-dom";
 
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
-import { GradeLista } from "@/components/listas/GradeLista";
+import { GradeLista, MenuNovaColuna } from "@/components/listas/GradeLista";
+import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import { gravarLista, obterLista } from "@/lib/apiListas";
 import { ErroApi } from "@/lib/apiProvas";
-import { formatarLinha, mesclar } from "@/lib/editarLista";
+import { formatarLinha, inserirLinha, inserirTitulo, mesclar } from "@/lib/editarLista";
 import { rotas } from "@/lib/rotas";
 import { CORES_LINHA, LIMITES_LISTA, type ListaAcompanhamento } from "@/types/lista";
 import { dataHora, hora } from "./formato";
@@ -46,6 +47,8 @@ function apagarRascunho(id: string) {
 }
 
 export function ProfessorListaPage() {
+  // A lista é uma tela de trabalho: sem menu nem rodapé do portal, com a grade ocupando a janela.
+  useEntrarEmTelaImersiva();
   const { id = "" } = useParams();
   const { sessaoVencida } = useProfessor();
   const [lista, definirLista] = useState<ListaAcompanhamento | null>(null);
@@ -219,14 +222,18 @@ export function ProfessorListaPage() {
 
   const linhaSelecionada = lista.linhas.find((l) => l.id === linhaAtiva) ?? null;
 
+  const nLinhas = lista.linhas.filter((l) => l.titulo === undefined).length;
+
   return (
     <div className={estilos.pagina}>
-      <Link to={rotas.professorListas()} className={estilos.voltar}>
-        <Icone nome="seta-esquerda" tamanho={16} />
-        Listas
-      </Link>
-
-      <header className={estilos.topo}>
+      <header className={estilos.barraTopo}>
+        <Link to={rotas.professorListas()} className={estilos.voltarBotao}>
+          <Icone nome="seta-esquerda" tamanho={18} />
+          <span>Voltar às listas</span>
+        </Link>
+        <span className={estilos.folha} aria-hidden="true">
+          <Icone nome="tabela" tamanho={22} />
+        </span>
         <div className={estilos.tituloBloco}>
           <label htmlFor="titulo-lista" className="sr-only">
             Nome da lista
@@ -240,16 +247,91 @@ export function ProfessorListaPage() {
             onBlur={(e) => !e.target.value.trim() && alterar((l) => ({ ...l, titulo: "Sem título" }))}
           />
           <p className={estilos.meta}>
-            <span className="tabular">
-              {lista.linhas.filter((l) => l.titulo === undefined).length} {lista.linhas.filter((l) => l.titulo === undefined).length === 1 ? "linha" : "linhas"} · {lista.colunas.length} {lista.colunas.length === 1 ? "coluna" : "colunas"}
-            </span>
-            <span>
-              Alterada por {lista.alteradaPor}, <span className="tabular">{dataHora(lista.alteradaEm)}</span>
-            </span>
+            Alterada por {lista.alteradaPor}, <span className="tabular">{dataHora(lista.alteradaEm)}</span>
           </p>
         </div>
         <Situacao situacao={situacao} mensagem={mensagem} aoTentar={() => void salvar()} />
+        <button
+          type="button"
+          className={`${estilos.botao} ${estilos.exportar}`}
+          onClick={() => void import("@/lib/exportarLista").then(({ baixarXlsx }) => baixarXlsx(atual.current ?? lista))}
+        >
+          <Icone nome="baixar" tamanho={16} />
+          Exportar .xlsx
+        </button>
       </header>
+
+      <div className={estilos.ferramentas} role="toolbar" aria-label="Editar a lista">
+        <div className={estilos.grupo} role="group" aria-label="Inserir">
+          <button
+            type="button"
+            className={estilos.botao}
+            disabled={lista.linhas.length >= LIMITES_LISTA.linhas}
+            onClick={() => alterar((l) => inserirLinha(l))}
+          >
+            <Icone nome="mais" tamanho={16} />
+            Linha
+          </button>
+          <button
+            type="button"
+            className={estilos.botao}
+            disabled={lista.linhas.length >= LIMITES_LISTA.linhas}
+            onClick={() => alterar((l) => inserirTitulo(l, l.linhas.length))}
+          >
+            <Icone nome="tabela" tamanho={16} />
+            Título de bloco
+          </button>
+          <MenuNovaColuna
+            lista={lista}
+            alterar={alterar}
+            rotulo="Nova coluna"
+            classeGatilho={estilos.botao}
+            gatilho={
+              <>
+                <Icone nome="mais" tamanho={16} />
+                Coluna
+                <Icone nome="seta-baixo" tamanho={13} />
+              </>
+            }
+          />
+        </div>
+
+        <div className={estilos.grupo} role="group" aria-label={linhaSelecionada ? "Formatar a linha selecionada" : "Selecione uma linha para formatar"}>
+          <span className={estilos.rotuloGrupo}>
+            <Icone nome="pincel" tamanho={15} />
+            {linhaSelecionada ? (linhaSelecionada.titulo !== undefined ? "Título" : "Linha selecionada") : "Formatar linha"}
+          </span>
+          <button
+            type="button"
+            className={`${estilos.amostra} ${estilos.semCor}`}
+            aria-label="Sem cor"
+            aria-pressed={!!linhaSelecionada && !linhaSelecionada.cor}
+            disabled={!linhaSelecionada}
+            onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor: null }))}
+          />
+          {CORES_LINHA.map(({ cor, rotulo }) => (
+            <button
+              key={cor}
+              type="button"
+              className={`${estilos.amostra} ${estilos[`amostra-${cor}`]}`}
+              aria-label={rotulo}
+              aria-pressed={linhaSelecionada?.cor === cor}
+              disabled={!linhaSelecionada}
+              onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor }))}
+            />
+          ))}
+          <button
+            type="button"
+            className={`${estilos.botao} ${estilos.icone}`}
+            aria-label="Negrito"
+            aria-pressed={!!linhaSelecionada?.negrito}
+            disabled={!linhaSelecionada}
+            onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { negrito: !linhaSelecionada.negrito }))}
+          >
+            <Icone nome="negrito" tamanho={16} />
+          </button>
+        </div>
+      </div>
 
       {rascunho && (
         <div className={`${estilos.faixa} ${estilos.faixaAviso}`} role="status">
@@ -328,53 +410,6 @@ export function ProfessorListaPage() {
         </p>
       )}
 
-      <div className={estilos.ferramentas} role="toolbar" aria-label="Editar a lista">
-        <div className={estilos.grupo} role="group" aria-label={linhaSelecionada ? "Formatar a linha selecionada" : "Selecione uma linha para formatar"}>
-          <span className={estilos.rotuloGrupo}>
-            <Icone nome="pincel" tamanho={15} />
-            {linhaSelecionada ? (linhaSelecionada.titulo !== undefined ? "Título" : "Linha selecionada") : "Formatar linha"}
-          </span>
-          <button
-            type="button"
-            className={`${estilos.amostra} ${estilos.semCor}`}
-            aria-label="Sem cor"
-            aria-pressed={!!linhaSelecionada && !linhaSelecionada.cor}
-            disabled={!linhaSelecionada}
-            onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor: null }))}
-          />
-          {CORES_LINHA.map(({ cor, rotulo }) => (
-            <button
-              key={cor}
-              type="button"
-              className={`${estilos.amostra} ${estilos[`amostra-${cor}`]}`}
-              aria-label={rotulo}
-              aria-pressed={linhaSelecionada?.cor === cor}
-              disabled={!linhaSelecionada}
-              onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor }))}
-            />
-          ))}
-          <button
-            type="button"
-            className={`${estilos.botao} ${estilos.icone}`}
-            aria-label="Negrito"
-            aria-pressed={!!linhaSelecionada?.negrito}
-            disabled={!linhaSelecionada}
-            onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { negrito: !linhaSelecionada.negrito }))}
-          >
-            <Icone nome="negrito" tamanho={16} />
-          </button>
-        </div>
-
-        <button
-          type="button"
-          className={`${estilos.botao} ${estilos.exportar}`}
-          onClick={() => void import("@/lib/exportarLista").then(({ baixarXlsx }) => baixarXlsx(atual.current ?? lista))}
-        >
-          <Icone nome="baixar" tamanho={16} />
-          Exportar .xlsx
-        </button>
-      </div>
-
       {lista.colunas.length === 0 ? (
         <EstadoVazio icone="tabela" titulo="Nenhuma coluna" texto="Use o botão + no canto da grade para criar a primeira: texto, marca, Sim/Não ou lista de opções." />
       ) : (
@@ -383,9 +418,12 @@ export function ProfessorListaPage() {
         </>
       )}
 
-      <p className={estilos.dica}>
-        Salva sozinho (ou Ctrl+S) · Setas e Enter andam entre as células · Clique no título de uma coluna para renomear, mudar o tipo ou apagar; arraste a borda para alargar · O + à direita cria colunas
-      </p>
+      <footer className={estilos.rodape}>
+        <span className="tabular">
+          {nLinhas} {nLinhas === 1 ? "linha" : "linhas"} · {lista.colunas.length} {lista.colunas.length === 1 ? "coluna" : "colunas"}
+        </span>
+        <span>Salva sozinho (ou Ctrl+S) · Setas e Enter andam entre as células · Clique no título da coluna para renomear, mudar o tipo ou apagar</span>
+      </footer>
     </div>
   );
 }

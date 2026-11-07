@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState, type FormEvent } from "react";
-import { NavLink, Outlet, useOutletContext } from "react-router-dom";
+import { NavLink, Outlet, useMatch, useOutletContext } from "react-router-dom";
 
 import { Icone } from "@/components/Icone";
 import { ErroApi, entrar, sair, sessaoAtual } from "@/lib/apiProvas";
@@ -43,6 +43,8 @@ function SenhaProvas({ professor, unidade }: { professor: SessaoProfessor; unida
 export function ProfessorLayout() {
   const [estado, definirEstado] = useState<Estado>({ fase: "conferindo" });
   const [escolhida, definirEscolhida] = useState<string | null>(() => unidadeAtiva());
+  // O editor de listas é tela cheia, com o próprio «Voltar às listas»: a barra da área do professor sai.
+  const noEditor = useMatch("/professor/listas/:id") !== null;
 
   useEffect(() => {
     let ativo = true;
@@ -70,61 +72,65 @@ export function ProfessorLayout() {
   const unidadeAtual = professor.coordenacao ? escolhida : professor.unidade.id;
   return (
     <>
-      <div className={estilos.barra}>
-        <p className={estilos.quem}>
-          <Icone nome="pessoas" tamanho={18} />
-          <span>
-            Área do professor · <strong>{professor.nome}</strong>
-          </span>
-          {professor.coordenacao ? (
-            <label className={estilos.unidadeSeletor}>
-              <span className="sr-only">Unidade</span>
-              <select
-                value={escolhida ?? ""}
-                onChange={(e) => {
-                  const id = e.target.value || null;
-                  definirUnidadeAtiva(id);
-                  definirEscolhida(id);
-                }}
-              >
-                <option value="">Todas as unidades</option>
-                {professor.unidades.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.nome}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ) : (
-            <span className={estilos.unidade}>{professor.unidade.nome}</span>
-          )}
-        </p>
-        <nav className={estilos.abas} aria-label="Área do professor">
-          <NavLink to={rotas.professor()} end className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-            <Icone nome="prova" tamanho={16} />
-            Provas enviadas
-          </NavLink>
-          <NavLink to={rotas.professorConteudos()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-            <Icone nome="livro" tamanho={16} />
-            Conteúdos
-          </NavLink>
-          <NavLink to={rotas.professorListas()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-            <Icone nome="tabela" tamanho={16} />
-            Listas
-          </NavLink>
-        </nav>
-        <button
-          type="button"
-          className={estilos.sair}
-          onClick={() => {
-            void sair().finally(() => definirEstado({ fase: "fora" }));
-          }}
-        >
-          <Icone nome="sair" tamanho={16} />
-          Sair
-        </button>
-      </div>
-      <SenhaProvas professor={professor} unidade={unidadeAtual} />
+      {!noEditor && (
+        <>
+          <div className={estilos.barra}>
+            <p className={estilos.quem}>
+              <Icone nome="pessoas" tamanho={18} />
+              <span>
+                Área do professor · <strong>{professor.nome}</strong>
+              </span>
+              {professor.coordenacao ? (
+                <label className={estilos.unidadeSeletor}>
+                  <span className="sr-only">Unidade</span>
+                  <select
+                    value={escolhida ?? ""}
+                    onChange={(e) => {
+                      const id = e.target.value || null;
+                      definirUnidadeAtiva(id);
+                      definirEscolhida(id);
+                    }}
+                  >
+                    <option value="">Todas as unidades</option>
+                    {professor.unidades.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.nome}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <span className={estilos.unidade}>{professor.unidade.nome}</span>
+              )}
+            </p>
+            <nav className={estilos.abas} aria-label="Área do professor">
+              <NavLink to={rotas.professor()} end className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                <Icone nome="prova" tamanho={16} />
+                Provas enviadas
+              </NavLink>
+              <NavLink to={rotas.professorConteudos()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                <Icone nome="livro" tamanho={16} />
+                Conteúdos
+              </NavLink>
+              <NavLink to={rotas.professorListas()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                <Icone nome="tabela" tamanho={16} />
+                Listas
+              </NavLink>
+            </nav>
+            <button
+              type="button"
+              className={estilos.sair}
+              onClick={() => {
+                void sair().finally(() => definirEstado({ fase: "fora" }));
+              }}
+            >
+              <Icone nome="sair" tamanho={16} />
+              Sair
+            </button>
+          </div>
+          <SenhaProvas professor={professor} unidade={unidadeAtual} />
+        </>
+      )}
       {/* Trocar de unidade remonta a página: tudo é buscado de novo, já filtrado. */}
       <Fragment key={unidadeAtual ?? "todas"}>
         <Outlet context={{ professor, unidadeAtual, sessaoVencida } satisfies ContextoProfessor} />
