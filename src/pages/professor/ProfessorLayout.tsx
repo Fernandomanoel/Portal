@@ -22,6 +22,23 @@ export function useProfessor() {
   return useOutletContext<ContextoProfessor>();
 }
 
+/** Lembrete da senha da aba Provas: escondida até pedir, só para quem esqueceu. A coordenação vê a da unidade escolhida. */
+function SenhaProvas({ professor, unidade }: { professor: SessaoProfessor; unidade: string | null }) {
+  const [visivel, definirVisivel] = useState(false);
+  const senha = unidade ? professor.senhasProvas?.[unidade] : undefined;
+  if (!senha) return null;
+  return (
+    <p className={estilos.senhaProvas}>
+      <Icone nome="cadeado" tamanho={16} />
+      <span>Senha da aba Provas:</span>
+      {visivel ? <code>{senha}</code> : <span aria-hidden="true">••••••••</span>}
+      <button type="button" aria-pressed={visivel} onClick={() => definirVisivel(!visivel)}>
+        {visivel ? "Esconder" : "Mostrar"}
+      </button>
+    </p>
+  );
+}
+
 /** Toda a área do professor passa por aqui: sem sessão, só o login aparece. */
 export function ProfessorLayout() {
   const [estado, definirEstado] = useState<Estado>({ fase: "conferindo" });
@@ -107,6 +124,7 @@ export function ProfessorLayout() {
           Sair
         </button>
       </div>
+      <SenhaProvas professor={professor} unidade={unidadeAtual} />
       {/* Trocar de unidade remonta a página: tudo é buscado de novo, já filtrado. */}
       <Fragment key={unidadeAtual ?? "todas"}>
         <Outlet context={{ professor, unidadeAtual, sessaoVencida } satisfies ContextoProfessor} />

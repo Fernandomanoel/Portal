@@ -68,6 +68,8 @@ export function autenticar(usuario: string, senha: string): Professor | "SEM_UNI
  */
 interface UnidadeCadastrada extends Unidade {
   senha: string;
+  /** Opcional: a senha em texto, só para a área do professor lembrar a quem esqueceu (nunca sai na lista pública de unidades). */
+  lembrete?: string;
 }
 
 function unidadesCadastradas(): UnidadeCadastrada[] {
@@ -80,6 +82,10 @@ function unidadesCadastradas(): UnidadeCadastrada[] {
     return [];
   }
 }
+
+/** Senhas em texto das unidades que têm `lembrete`: só para sessões de professor logado. */
+export const lembretesDasUnidades = (): Record<string, string> =>
+  Object.fromEntries(unidadesCadastradas().flatMap((u) => (typeof u.lembrete === "string" && u.lembrete ? [[u.id, u.lembrete]] : [])));
 
 export const todasAsUnidades = (): Unidade[] => unidadesCadastradas().map(({ id, nome }) => ({ id, nome }));
 export const acharUnidade = (id: string): Unidade | null => todasAsUnidades().find((u) => u.id === id) ?? null;

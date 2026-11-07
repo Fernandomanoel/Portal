@@ -19,6 +19,7 @@ import {
   autenticarUnidade,
   criarFicha,
   lerFicha,
+  lembretesDasUnidades,
   todasAsUnidades,
   unidadePadrao,
   cookieApagado,
@@ -147,12 +148,14 @@ function unidadeAtiva(professor: Professor, url: URL): string | null | "invalida
 function sessaoDe(professor: Professor): SessaoProfessor {
   const todas = todasAsUnidades();
   const coord = coordenacao(professor);
+  const lembretes = lembretesDasUnidades();
   return {
     usuario: professor.usuario,
     nome: professor.nome,
     coordenacao: coord,
     unidade: coord ? { id: TODAS_AS_UNIDADES, nome: "Todas as unidades" } : (acharUnidade(professor.unidade) ?? { id: professor.unidade, nome: professor.unidade }),
     unidades: coord ? todas : [],
+    senhasProvas: coord ? lembretes : professor.unidade in lembretes ? { [professor.unidade]: lembretes[professor.unidade] } : {},
   };
 }
 

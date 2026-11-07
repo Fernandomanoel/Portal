@@ -21,6 +21,8 @@ export interface SessaoProfessor {
   coordenacao: boolean;
   /** Só na coordenação: todas as unidades cadastradas. */
   unidades: Unidade[];
+  /** Senha da aba Provas, por id de unidade, para quem esqueceu: só as unidades que têm lembrete cadastrado (a do professor; na coordenação, todas). */
+  senhasProvas: Record<string, string>;
 }
 
 export const TODAS_AS_UNIDADES = "*";

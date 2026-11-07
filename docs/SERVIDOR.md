@@ -43,6 +43,12 @@ A saída é um objeto JSON; `UNIDADES` é a lista desses objetos. O `id` (letras
 minúsculas, números e hífen) é o que os professores usam em `unidade`. Trocar a
 senha de uma unidade = gerar outro objeto e substituir na variável.
 
+Com `--lembrete` no fim do comando, o objeto leva também `lembrete`: a senha em texto,
+que a área do professor mostra (escondida, com botão Mostrar) a quem esqueceu. Só vai
+para professor logado, da própria unidade (a coordenação vê a da unidade escolhida), e
+nunca para a lista pública de unidades. É uma troca consciente: quem tem esse login lê
+a senha. Sem `lembrete`, nada aparece.
+
 ### Adicionar um professor
 
 ```bash
