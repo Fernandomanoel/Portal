@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="320" y="32" font-size="15" fill="#1f2937" font-weight="700" text-anchor="middle">PARE: quatro segundos entre sentir e reagir</text>
+  <rect x="26" y="56" width="132" height="160" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="92" cy="86" r="16" fill="#7c3aed"/>
+  <text x="92" y="92" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">1</text>
+  <text x="92" y="124" font-size="12.5" fill="#1f2937" font-weight="700" text-anchor="middle">Pare</text>
+  <text x="92" y="146" font-size="10" fill="#6b7280" text-anchor="middle">interrompa o que</text>
+  <text x="92" y="161" font-size="10" fill="#6b7280" text-anchor="middle">ia dizer ou fazer</text>
+  <line x1="160" y1="136" x2="176" y2="136" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="176,136 168.8,139.5 168.8,132.5" fill="#94a3b8"/>
+  <rect x="178" y="56" width="132" height="160" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="244" cy="86" r="16" fill="#7c3aed"/>
+  <text x="244" y="92" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">2</text>
+  <text x="244" y="124" font-size="12.5" fill="#1f2937" font-weight="700" text-anchor="middle">Respire</text>
+  <text x="244" y="146" font-size="10" fill="#6b7280" text-anchor="middle">devagar, soltando</text>
+  <text x="244" y="161" font-size="9.661835748792269" fill="#6b7280" text-anchor="middle">mais longo do que puxou</text>
+  <line x1="312" y1="136" x2="328" y2="136" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="328,136 320.8,139.5 320.8,132.5" fill="#94a3b8"/>
+  <rect x="330" y="56" width="132" height="160" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="396" cy="86" r="16" fill="#7c3aed"/>
+  <text x="396" y="92" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">3</text>
+  <text x="396" y="124" font-size="12.5" fill="#1f2937" font-weight="700" text-anchor="middle">Observe</text>
+  <text x="396" y="146" font-size="10" fill="#6b7280" text-anchor="middle">o que sinto?</text>
+  <text x="396" y="161" font-size="10" fill="#6b7280" text-anchor="middle">o que pensei?</text>
+  <line x1="464" y1="136" x2="480" y2="136" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="480,136 472.8,139.5 472.8,132.5" fill="#94a3b8"/>
+  <rect x="482" y="56" width="132" height="160" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="548" cy="86" r="16" fill="#7c3aed"/>
+  <text x="548" y="92" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">4</text>
+  <text x="548" y="124" font-size="12.5" fill="#1f2937" font-weight="700" text-anchor="middle">Escolha</text>
+  <text x="548" y="146" font-size="10" fill="#6b7280" text-anchor="middle">a reação que</text>
+  <text x="548" y="161" font-size="8.88888888888889" fill="#6b7280" text-anchor="middle">ajuda, e não a do impulso</text>
+  <rect x="26" y="236" width="288" height="140" rx="12" fill="#fee2e2" stroke="#fca5a5" stroke-width="1"/>
+  <rect x="326" y="236" width="288" height="140" rx="12" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="42" y="262" font-size="12.5" fill="#7f1d1d" font-weight="700">Reação no impulso</text>
+  <text x="42" y="286" font-size="10.5" fill="#7f1d1d">Colega: "Você errou de novo."</text>
+  <text x="42" y="306" font-size="10.5" fill="#7f1d1d">Você: "Errei nada, você que não</text>
+  <text x="42" y="322" font-size="10.5" fill="#7f1d1d">sabe explicar!"</text>
+  <text x="42" y="350" font-size="10.5" fill="#7f1d1d" font-weight="700">Resultado: briga e nada resolvido.</text>
+  <text x="342" y="262" font-size="12.5" fill="#14532d" font-weight="700">Reação escolhida</text>
+  <text x="342" y="286" font-size="10.5" fill="#14532d">Colega: "Você errou de novo."</text>
+  <text x="342" y="306" font-size="10.5" fill="#14532d">Você: "Me mostra onde foi? Quero</text>
+  <text x="342" y="322" font-size="10.5" fill="#14532d">entender para não repetir."</text>
+  <text x="342" y="350" font-size="10.5" fill="#14532d" font-weight="700">Resultado: o problema é resolvido.</text>
+</svg>

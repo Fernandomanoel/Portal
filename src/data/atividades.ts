@@ -1870,6 +1870,33 @@ export const ATIVIDADES: Curso[] = [
     sigla: "IE",
     cor: "#7c3aed",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Inteligência Emocional — Conhecendo as Emoções",
+        descricao: "As seis emoções básicas, os sinais no corpo, a intensidade e a sua emoção da semana.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-conhecendo-as-emocoes",
+      },
+      {
+        titulo: "Inteligência Emocional — Conhecendo a Si Mesmo",
+        descricao: "Perfis de energia social, gatilhos e o seu diário emocional.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-conhecendo-a-si-mesmo",
+      },
+      {
+        titulo: "Inteligência Emocional — Lidando com Cada Emoção",
+        descricao: "Regra do PARE, respiração quadrada e o que ajuda em cada emoção.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-lidando-com-cada-emocao",
+      },
+      {
+        titulo: "Inteligência Emocional — Situações com Outras Pessoas",
+        descricao: "O que dizer e como reagir com colegas extrovertidos, introvertidos e ambivertidos.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-situacoes-com-pessoas",
+      },
+      {
+        titulo: "Inteligência Emocional — Locais, Ambientes e Mediação",
+        descricao: "O tom de cada ambiente, atendimento a pessoas alteradas e como mediar um conflito no trabalho.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-locais-e-ambientes",
+      },
+    ],
   },
   {
     slug: "lideranca",
