@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="320" y="32" font-size="15" fill="#1f2937" font-weight="700" text-anchor="middle">Do pedido à reconfirmação</text>
+  <rect x="26" y="62" width="104" height="150" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="78" cy="92" r="16" fill="#0d9488"/>
+  <text x="78" y="98" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">1</text>
+  <text x="78" y="130" font-size="12" fill="#1f2937" font-weight="700" text-anchor="middle">Receber</text>
+  <text x="78" y="150" font-size="9.5" fill="#6b7280" text-anchor="middle">cumprimente e</text>
+  <text x="78" y="164" font-size="9.5" fill="#6b7280" text-anchor="middle">ouça o pedido</text>
+  <line x1="132" y1="137" x2="145" y2="137" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="145,137 137.8,140.5 137.8,133.5" fill="#94a3b8"/>
+  <rect x="147" y="62" width="104" height="150" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="199" cy="92" r="16" fill="#0d9488"/>
+  <text x="199" y="98" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">2</text>
+  <text x="199" y="130" font-size="12" fill="#1f2937" font-weight="700" text-anchor="middle">Coletar</text>
+  <text x="199" y="150" font-size="9.5" fill="#6b7280" text-anchor="middle">nome, nascimento,</text>
+  <text x="199" y="164" font-size="9.465020576131687" fill="#6b7280" text-anchor="middle">telefone, convênio</text>
+  <line x1="253" y1="137" x2="266" y2="137" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="266,137 258.8,140.5 258.8,133.5" fill="#94a3b8"/>
+  <rect x="268" y="62" width="104" height="150" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="320" cy="92" r="16" fill="#0d9488"/>
+  <text x="320" y="98" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">3</text>
+  <text x="320" y="130" font-size="12" fill="#1f2937" font-weight="700" text-anchor="middle">Verificar</text>
+  <text x="320" y="150" font-size="9.5" fill="#6b7280" text-anchor="middle">veja a agenda</text>
+  <text x="320" y="164" font-size="9.5" fill="#6b7280" text-anchor="middle">do médico</text>
+  <line x1="374" y1="137" x2="387" y2="137" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="387,137 379.8,140.5 379.8,133.5" fill="#94a3b8"/>
+  <rect x="389" y="62" width="104" height="150" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="441" cy="92" r="16" fill="#0d9488"/>
+  <text x="441" y="98" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">4</text>
+  <text x="441" y="130" font-size="12" fill="#1f2937" font-weight="700" text-anchor="middle">Confirmar</text>
+  <text x="441" y="150" font-size="9.5" fill="#6b7280" text-anchor="middle">repita dia, hora,</text>
+  <text x="441" y="164" font-size="9.5" fill="#6b7280" text-anchor="middle">documentos</text>
+  <line x1="495" y1="137" x2="508" y2="137" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="508,137 500.8,140.5 500.8,133.5" fill="#94a3b8"/>
+  <rect x="510" y="62" width="104" height="150" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="562" cy="92" r="16" fill="#0d9488"/>
+  <text x="562" y="98" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">5</text>
+  <text x="562" y="130" font-size="12" fill="#1f2937" font-weight="700" text-anchor="middle">Reconfirmar</text>
+  <text x="562" y="150" font-size="9.5" fill="#6b7280" text-anchor="middle">1 a 2 dias antes</text>
+  <text x="562" y="164" font-size="9.5" fill="#6b7280" text-anchor="middle">por telefone</text>
+  <rect x="26" y="236" width="588" height="130" rx="12" fill="#fef3c7" stroke="#fcd34d" stroke-width="1"/>
+  <text x="44" y="264" font-size="12.5" fill="#78350f" font-weight="700">E se não houver horário?</text>
+  <text x="44" y="288" font-size="11" fill="#78350f">1. Ofereça a próxima data livre ou outro horário/dia.</text>
+  <text x="44" y="308" font-size="11" fill="#78350f">2. Se a pessoa preferir esperar, anote em lista de espera, com telefone.</text>
+  <text x="44" y="328" font-size="11" fill="#78350f">3. Quando abrir uma vaga (cancelamento), avise na ordem da lista.</text>
+  <text x="44" y="352" font-size="11" fill="#78350f" font-weight="700">Nunca prometa o que a agenda não permite: informe com clareza.</text>
+</svg>

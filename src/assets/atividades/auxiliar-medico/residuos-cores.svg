@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="320" y="32" font-size="15" fill="#1f2937" font-weight="700" text-anchor="middle">Cada resíduo no seu recipiente</text>
+  <rect x="26" y="48" width="588" height="326" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <path d="M86 100 h88 l-8 130 h-72 z" fill="#4b5563" stroke="#1f2937" stroke-width="2"/>
+  <rect x="80" y="88" width="100" height="14" rx="4" fill="#4b5563" stroke="#1f2937" stroke-width="2"/>
+
+  <text x="130" y="262" font-size="12" fill="#1f2937" font-weight="700" text-anchor="middle">Lixo comum</text>
+  <text x="130" y="282" font-size="10" fill="#6b7280" text-anchor="middle">papel toalha seco, embalagens,</text>
+  <text x="130" y="297" font-size="10" fill="#6b7280" text-anchor="middle">copos, papel de escritório</text>
+  <path d="M276 100 h88 l-8 130 h-72 z" fill="#f1f5f9" stroke="#1f2937" stroke-width="2"/>
+  <rect x="270" y="88" width="100" height="14" rx="4" fill="#f1f5f9" stroke="#1f2937" stroke-width="2"/>
+  <path d="M320 150 l-14 24 h28 z" fill="none" stroke="#1f2937" stroke-width="2.5"/>  <text x="320" y="170" font-size="14" fill="#1f2937" font-weight="700" text-anchor="middle">!</text>
+  <text x="320" y="262" font-size="12" fill="#1f2937" font-weight="700" text-anchor="middle">Infectante (saco branco)</text>
+  <text x="320" y="282" font-size="10" fill="#6b7280" text-anchor="middle">gaze e algodão com sangue,</text>
+  <text x="320" y="297" font-size="10" fill="#6b7280" text-anchor="middle">luvas usadas, curativos</text>
+  <path d="M466 100 h88 l-8 130 h-72 z" fill="#facc15" stroke="#1f2937" stroke-width="2"/>
+  <rect x="460" y="88" width="100" height="14" rx="4" fill="#facc15" stroke="#1f2937" stroke-width="2"/>
+
+  <text x="510" y="262" font-size="12" fill="#1f2937" font-weight="700" text-anchor="middle">Perfurocortante</text>
+  <text x="510" y="282" font-size="10" fill="#6b7280" text-anchor="middle">agulhas, lâminas e vidro quebrado</text>
+  <text x="510" y="297" font-size="10" fill="#6b7280" text-anchor="middle">em caixa rígida amarela</text>
+  <rect x="60" y="318" width="520" height="40" rx="8" fill="#fee2e2" stroke="#fca5a5" stroke-width="1"/>
+  <text x="320" y="343" font-size="11" fill="#7f1d1d" font-weight="700" text-anchor="middle">Perfurocortante: nunca recapar agulha e nunca encher a caixa além da linha indicada.</text>
+</svg>
