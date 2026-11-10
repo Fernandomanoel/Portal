@@ -31,6 +31,8 @@ export const rotas = {
   professorConteudo: (slug: string) => `/professor/conteudos/${slug}`,
   professorUsuarios: () => "/professor/usuarios",
   professorListas: () => "/professor/listas",
+  professorPacotes: () => "/professor/pacotes",
+  professorMensagens: () => "/professor/mensagens",
   professorLista: (id: string) => `/professor/listas/${encodeURIComponent(id)}`,
   quiz: (categoria: string, prova: string) =>
     `/provas/quiz/${encodeURIComponent(categoria)}/${encodeURIComponent(prova)}`,

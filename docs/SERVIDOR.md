@@ -90,6 +90,21 @@ pizza e rosca, com até 6 séries somadas, em média, contagem, mínimo ou máxi
 como PNG, e a exportação `.xlsx` leva as fórmulas reais, os formatos, as mesclagens, as linhas e colunas
 fixas e uma segunda aba "Gráficos" com as imagens.
 
+### Pacotes e Mensagens (ferramentas vindas do sistema de gestão)
+
+Duas abas da área do professor trazem, no padrão do portal, funções do sistema em `microapp/`. As duas
+leem a planilha **no navegador** (`src/lib/lerPlanilha.ts`: `.xlsx`, `.xls` e `.csv`, sem biblioteca):
+o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servidor.
+
+- **Pacotes** (`src/lib/pacotes.ts`): com a planilha de agendamentos (colunas Educador, Aluno, Qtd Aula
+  Realizada, Qtd Agendamento, Dias Agendamento), calcula o previsto até hoje por aluno e marca Atrasado,
+  Em dia (até 1 aula de diferença) ou Adiantado, por grupo Seg/Qua, Ter/Qui e Sábado. Desconta os
+  feriados nacionais (sem Carnaval e Corpus Christi) e o dia 5/9. O relatório sai em `.csv`.
+- **Mensagens** (`src/lib/mensagensAlunos.ts`): com a planilha de controle, monta o aviso de faltas (alunos
+  ativos com 2 ou mais faltas, descontadas as reposições) ou o lembrete por turno, e cada botão abre o
+  WhatsApp (`wa.me`) com o texto pronto. O envio é manual, um aluno por vez: o portal não usa a Evolution
+  API nem dispara em massa. O texto editado fica guardado no navegador de quem editou.
+
 ### Quando o login ou a lista de unidades não funciona
 
 O servidor confere as variáveis `UNIDADES` e `PROFESSORES` e escreve o problema nos logs (Vercel > Logs,
