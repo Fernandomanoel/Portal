@@ -1,0 +1,23 @@
+# Python / FastAPI
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+!**/.env.example
+venv/
+
+# Node / React
+node_modules/
+dist/
+.env.local
+
+# Banco de dados local
+*.sqlite3
+
+# Kubernetes secrets reais (use secret.yaml.example)
+k8s/secret.yaml
+
+# IDEs
+.vscode/
+.idea/
