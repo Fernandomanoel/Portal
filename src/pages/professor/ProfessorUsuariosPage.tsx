@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { Icone } from "@/components/Icone";
-import { apagarUsuario, atualizarUsuario, criarUsuario, listarUsuarios, type ListaDeUsuarios } from "@/lib/apiUsuarios";
+import { ajustarFixo, apagarUsuario, atualizarUsuario, criarUsuario, listarUsuarios, voltarFixoAoPadrao, type ListaDeUsuarios } from "@/lib/apiUsuarios";
 import { ErroApi } from "@/lib/apiProvas";
-import { PERMISSOES, type PermissaoId, type UsuarioCadastrado } from "@/types/acesso";
+import { PERMISSOES, type PermissaoId, type UsuarioCadastrado, type UsuarioFixo } from "@/types/acesso";
 import { TODAS_AS_UNIDADES } from "@/types/unidade";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorUsuariosPage.module.css";
@@ -30,7 +30,7 @@ export function ProfessorUsuariosPage() {
   const { professor, sessaoVencida } = useProfessor();
   const [dados, definirDados] = useState<ListaDeUsuarios | null>(null);
   const [erro, definirErro] = useState<string | null>(null);
-  const [editando, definirEditando] = useState<{ modo: "novo" } | { modo: "editar"; usuario: string } | null>(null);
+  const [editando, definirEditando] = useState<{ modo: "novo" } | { modo: "editar"; usuario: string } | { modo: "fixo"; usuario: string } | null>(null);
   const [apagando, definirApagando] = useState<string | null>(null);
 
   const tratar = useCallback(
@@ -66,6 +66,16 @@ export function ProfessorUsuariosPage() {
     }
   }
 
+  async function mudarFixo(f: UsuarioFixo, acao: "alternar" | "padrao") {
+    try {
+      if (acao === "padrao") await voltarFixoAoPadrao(f.usuario);
+      else await ajustarFixo(f.usuario, { ativo: !f.ativo });
+      await carregar();
+    } catch (falha) {
+      tratar(falha, "Não foi possível alterar o usuário.");
+    }
+  }
+
   async function apagar(usuario: string) {
     try {
       await apagarUsuario(usuario);
@@ -77,6 +87,7 @@ export function ProfessorUsuariosPage() {
   }
 
   const aEditar = editando?.modo === "editar" ? dados?.dados.find((u) => u.usuario === editando.usuario) : undefined;
+  const fixoAEditar = editando?.modo === "fixo" ? dados?.fixos.find((u) => u.usuario === editando.usuario) : undefined;
 
   return (
     <>
@@ -100,9 +111,10 @@ export function ProfessorUsuariosPage() {
 
       {editando && dados && (
         <FormularioUsuario
-          key={editando.modo === "novo" ? "novo" : editando.usuario}
+          key={editando.modo === "novo" ? "novo" : `${editando.modo}-${editando.usuario}`}
           dados={dados}
           existente={aEditar}
+          fixo={fixoAEditar}
           todasAsUnidades={professor.todasAsUnidades}
           minhasUnidades={professor.coordenacao ? professor.unidades.map((u) => u.id) : [professor.unidade.id]}
           minhasPermissoes={professor.permissoes}
@@ -181,12 +193,54 @@ export function ProfessorUsuariosPage() {
           {dados.fixos.length > 0 && (
             <section aria-labelledby="titulo-fixos" className={estilos.secao}>
               <h2 id="titulo-fixos">Professores da configuração do servidor</h2>
-              <p className={estilos.suave}>Estes entram com as permissões padrão e só mudam pela variável PROFESSORES, na Vercel.</p>
-              <ul className={estilos.fixos}>
+              <p className={estilos.suave}>
+                O nome, o usuário e a senha destes só mudam pela variável PROFESSORES, na Vercel. Aqui você ajusta as unidades, o que cada um acessa e pode bloquear a entrada. As mudanças valem na hora.
+              </p>
+              <ul className={estilos.lista}>
                 {dados.fixos.map((f) => (
-                  <li key={f.usuario}>
-                    <strong>{f.nome}</strong> <span className={estilos.usuario}>({f.usuario})</span> · {nomeUnidade(f.unidade)}
-                    {f.administrador && " · administrador"}
+                  <li key={f.usuario} className={`${estilos.item} ${f.ativo ? "" : estilos.inativo}`}>
+                    <div className={estilos.quem}>
+                      <p className={estilos.nome}>
+                        {f.nome} {!f.ativo && <span className={estilos.etiquetaInativo}>bloqueado</span>}
+                      </p>
+                      <p className={estilos.usuario}>
+                        {f.usuario}
+                        {f.administrador ? " · administrador" : f.ajustado ? " · ajustado pela tela" : " · acesso padrão"}
+                      </p>
+                    </div>
+                    <div className={estilos.acesso}>
+                      <p className={estilos.rotulo}>Unidades</p>
+                      <ul className={estilos.chips}>
+                        {f.unidades.map((id) => (
+                          <li key={id}>{nomeUnidade(id)}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className={estilos.acesso}>
+                      <p className={estilos.rotulo}>Acessa</p>
+                      <ul className={estilos.chips}>
+                        {f.permissoes.map((p) => (
+                          <li key={p}>{rotuloPermissao(p)}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    {f.ajustavel && f.usuario !== professor.usuario ? (
+                      <div className={estilos.acoes}>
+                        <button type="button" className={estilos.acao} onClick={() => definirEditando({ modo: "fixo", usuario: f.usuario })} disabled={editando !== null}>
+                          Editar acesso
+                        </button>
+                        <button type="button" className={estilos.acao} onClick={() => void mudarFixo(f, "alternar")}>
+                          {f.ativo ? "Bloquear" : "Desbloquear"}
+                        </button>
+                        {f.ajustado && (
+                          <button type="button" className={estilos.acao} onClick={() => void mudarFixo(f, "padrao")}>
+                            Voltar ao padrão
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <p className={estilos.suave}>{f.administrador ? "Administrador: só muda pela Vercel." : "Só muda pela Vercel."}</p>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -201,6 +255,7 @@ export function ProfessorUsuariosPage() {
 function FormularioUsuario({
   dados,
   existente,
+  fixo,
   todasAsUnidades,
   minhasUnidades,
   minhasPermissoes,
@@ -210,6 +265,8 @@ function FormularioUsuario({
 }: {
   dados: ListaDeUsuarios;
   existente: UsuarioCadastrado | undefined;
+  /** Professor da variável: só unidades e permissões são editáveis. */
+  fixo?: UsuarioFixo;
   todasAsUnidades: boolean;
   minhasUnidades: string[];
   minhasPermissoes: PermissaoId[];
@@ -217,10 +274,10 @@ function FormularioUsuario({
   aoCancelar: () => void;
   tratar: (falha: unknown, padrao: string) => void;
 }) {
-  const [f, definirF] = useState<Formulario>(() => (existente ? { usuario: existente.usuario, nome: existente.nome, senha: "", unidades: existente.unidades, permissoes: existente.permissoes, ativo: existente.ativo } : vazio()));
+  const [f, definirF] = useState<Formulario>(() => (fixo ? { usuario: fixo.usuario, nome: fixo.nome, senha: "", unidades: fixo.unidades, permissoes: fixo.permissoes, ativo: fixo.ativo } : existente ? { usuario: existente.usuario, nome: existente.nome, senha: "", unidades: existente.unidades, permissoes: existente.permissoes, ativo: existente.ativo } : vazio()));
   const [salvando, definirSalvando] = useState(false);
   const [mensagem, definirMensagem] = useState<string | null>(null);
-  const novo = !existente;
+  const novo = !existente && !fixo;
   const todas = f.unidades.includes(TODAS_AS_UNIDADES);
 
   // Só se libera o que quem cria também tem: o servidor confere, aqui só se esconde o que seria recusado.
@@ -234,9 +291,11 @@ function FormularioUsuario({
     definirSalvando(true);
     definirMensagem(null);
     try {
-      if (novo) {
+      if (fixo) {
+        await ajustarFixo(fixo.usuario, { unidades: f.unidades, permissoes: f.permissoes });
+      } else if (novo) {
         await criarUsuario({ usuario: f.usuario.trim(), nome: f.nome, senha: f.senha, unidades: f.unidades, permissoes: f.permissoes });
-      } else {
+      } else if (existente) {
         await atualizarUsuario(existente.usuario, { nome: f.nome, unidades: f.unidades, permissoes: f.permissoes, ...(f.senha ? { senha: f.senha } : {}) });
       }
       await aoSalvar();
@@ -249,12 +308,13 @@ function FormularioUsuario({
 
   return (
     <form className={estilos.formulario} onSubmit={(e) => void enviar(e)} aria-labelledby="titulo-form">
-      <h2 id="titulo-form">{novo ? "Novo usuário" : `Editar ${existente.nome}`}</h2>
+      <h2 id="titulo-form">{fixo ? `Acesso de ${fixo.nome}` : novo ? "Novo usuário" : `Editar ${existente?.nome ?? ""}`}</h2>
+      {fixo && <p className={estilos.suave}>Nome, usuário e senha deste professor ficam na Vercel. Aqui você define de quais unidades ele é e o que pode acessar.</p>}
 
-      <div className={estilos.grade}>
+      <div className={estilos.grade} hidden={!!fixo}>
         <label className={estilos.campo}>
           <span>Nome</span>
-          <input value={f.nome} onChange={(e) => definirF({ ...f, nome: e.target.value })} maxLength={80} required />
+          <input value={f.nome} onChange={(e) => definirF({ ...f, nome: e.target.value })} maxLength={80} required disabled={!!fixo} />
         </label>
         <label className={estilos.campo}>
           <span>Usuário (para entrar)</span>
@@ -263,7 +323,7 @@ function FormularioUsuario({
         <label className={estilos.campo}>
           <span>{novo ? "Senha" : "Nova senha (deixe vazio para manter)"}</span>
           <span className={estilos.linhaSenha}>
-            <input value={f.senha} onChange={(e) => definirF({ ...f, senha: e.target.value })} minLength={8} maxLength={100} required={novo} autoComplete="off" />
+            <input value={f.senha} onChange={(e) => definirF({ ...f, senha: e.target.value })} minLength={8} maxLength={100} required={novo} disabled={!!fixo} autoComplete="off" />
             <button type="button" className={estilos.acao} onClick={() => definirF({ ...f, senha: senhaAleatoria() })}>
               Gerar
             </button>

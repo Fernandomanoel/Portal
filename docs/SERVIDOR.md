@@ -65,6 +65,14 @@ armazenamento, com a senha só em hash; as mudanças valem na hora (desativar de
 - Professores da variável `PROFESSORES` continuam valendo, com as permissões padrão (provas, conteúdos
   e listas), e só mudam pela Vercel.
 
+### Ajustar professores da variável pela tela
+
+Na aba Usuários, o administrador também ajusta os professores da variável `PROFESSORES`: de quais unidades
+são, o que acessam (inclusive as abas Módulos, Pacotes e Mensagens) e se estão bloqueados. O ajuste fica em
+`ajustes/<usuario>.json` e vale na hora, mesmo para quem já está logado; «Voltar ao padrão» apaga o ajuste.
+Nome, usuário e senha continuam só na Vercel, e um professor com `"administrador": true` nunca é ajustado
+pela tela, para ninguém se trancar do lado de fora.
+
 ### Listas compartilhadas entre unidades
 
 Cada lista tem uma **unidade dona** (ou a **rede**, criada por quem alcança todas as unidades) e pode ser
@@ -100,6 +108,8 @@ o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servi
   Realizada, Qtd Agendamento, Dias Agendamento), calcula o previsto até hoje por aluno e marca Atrasado,
   Em dia (até 1 aula de diferença) ou Adiantado, por grupo Seg/Qua, Ter/Qui e Sábado. Desconta os
   feriados nacionais (sem Carnaval e Corpus Christi) e o dia 5/9. O relatório sai em `.csv`.
+- **Módulos** (`src/lib/acompanhamentoModulos.ts`): calculadora que compara parcelas pagas, módulo atual e
+  faltas e diz se o aluno está REGULAR, em ATENÇÃO ou PENDENTE, com a conta e a mensagem ao responsável.
 - **Mensagens** (`src/lib/mensagensAlunos.ts`): com a planilha de controle, monta o aviso de faltas (alunos
   ativos com 2 ou mais faltas, descontadas as reposições) ou o lembrete por turno, e cada botão abre o
   WhatsApp (`wa.me`) com o texto pronto. O envio é manual, um aluno por vez: o portal não usa a Evolution
