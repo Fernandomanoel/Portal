@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+
+  --color-navy-50: #eef4fa;
+  --color-navy-100: #d5e4f2;
+  --color-navy-200: #abc8e3;
+  --color-navy-300: #74a3cc;
+  --color-navy-400: #4578ad;
+  --color-navy-500: #2d5c8e;
+  --color-navy-600: #1e4570;
+  --color-navy-700: #163456;
+  --color-navy-800: #0c2340;
+  --color-navy-900: #08182c;
+  --color-navy-950: #050e1a;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #f4f4f5;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dark body {
+  background: #020617;
+  color: #f8fafc;
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+}
+
+.app-shell {
+  min-height: 100svh;
+  width: 100%;
+  background-color: #f4f4f5;
+  background-image:
+    radial-gradient(ellipse 90% 55% at 50% -18%, rgba(12, 35, 64, 0.09), transparent 58%),
+    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(45, 92, 142, 0.06), transparent 50%);
+}
+
+html.dark .app-shell {
+  background-color: #020617;
+  background-image:
+    radial-gradient(ellipse 90% 55% at 50% -18%, rgba(30, 69, 112, 0.28), transparent 58%),
+    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(12, 35, 64, 0.45), transparent 50%);
+}
+
+.field {
+  @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition
+    placeholder:text-slate-400
+    focus:border-navy-500 focus:ring-2 focus:ring-navy-500/20
+    dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50 dark:placeholder:text-slate-500
+    dark:focus:border-navy-400 dark:focus:ring-navy-400/20;
+}
+
+.btn-primary {
+  @apply inline-flex w-full items-center justify-center gap-2 rounded-xl bg-navy-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-200
+    hover:bg-navy-900 hover:shadow-md
+    disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-100 disabled:shadow-none
+    dark:bg-navy-600 dark:hover:bg-navy-500 dark:disabled:bg-slate-700 dark:disabled:text-slate-500;
+}
+
+.btn-secondary {
+  @apply inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition duration-200
+    hover:bg-slate-50 hover:shadow-md
+    disabled:cursor-not-allowed disabled:opacity-50
+    dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800;
+}
+
+.card {
+  @apply rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur-md sm:p-6
+    dark:border-slate-800 dark:bg-slate-900/80 dark:shadow-md;
+}
+
+.page-title {
+  @apply text-2xl font-bold tracking-tight text-slate-900 dark:text-white;
+}
+
+.page-subtitle {
+  @apply text-sm leading-relaxed text-slate-500 dark:text-slate-400;
+}
+
+.badge {
+  @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold;
+}
+
+.dropzone {
+  @apply relative min-h-[220px] rounded-2xl border-2 border-dashed p-12 text-center transition-all duration-200 sm:min-h-[260px] sm:p-16;
+}
