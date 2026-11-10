@@ -74,7 +74,7 @@ não muda o compartilhamento nem apaga. Quem não alcança a unidade dona nem re
 
 ### Grade, fórmulas e gráficos das listas
 
-A lista é uma grade no estilo planilha. Além de texto, opção, caixa de marcação e pessoa, ela tem colunas
+A lista é uma grade no estilo planilha: uma lista nova já nasce de A a Z com 100 linhas, e quem precisar de mais acrescenta (limite de 60 colunas e 1000 linhas). Além de texto, opção, caixa de marcação e pessoa, ela tem colunas
 **número** (formato número, moeda ou percentual, casas decimais e total no rodapé: soma, média, mínimo,
 máximo ou contagem) e **data** (guardada como `yyyy-mm-dd`). Uma célula que começa com `=` é fórmula
 (`=SOMA(C1:C10)`, `=SE(B2>3;"alto";"baixo")`, `MÉDIA`, `CONT.SE`, `SOMASE`, `ARRED`, `SEERRO`...; `;` separa

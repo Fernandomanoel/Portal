@@ -6,6 +6,7 @@ import {
   CORES_LINHA,
   LARGURA_MAXIMA,
   LARGURA_MINIMA,
+  GRADE_INICIAL,
   LARGURA_PADRAO,
   LIMITES_LISTA,
   type ColunaLista,
@@ -43,7 +44,7 @@ const texto = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, m
 
 export function resumir(lista: ListaAcompanhamento): ResumoLista {
   const { id, titulo, colunas, linhas, alteradaPor, alteradaEm, unidade, compartilhamento } = lista;
-  return { id, titulo, unidade, compartilhamento, colunas: colunas.length, linhas: linhas.filter((l) => l.titulo === undefined).length, alteradaPor, alteradaEm };
+  return { id, titulo, unidade, compartilhamento, colunas: colunas.length, linhas: linhas.filter((l) => l.titulo === undefined && Object.keys(l.valores).length > 0).length, alteradaPor, alteradaEm };
 }
 
 export function novaLista(professor: Professor, unidade: string | null, origem?: ListaAcompanhamento): ListaAcompanhamento {
@@ -54,16 +55,18 @@ export function novaLista(professor: Professor, unidade: string | null, origem?:
   if (origem) {
     return { ...origem, ...autoria, id: novoId("lst_", 12), titulo: `${origem.titulo} (cópia)`.slice(0, LIMITES_LISTA.titulo) };
   }
-  const aluno = novoId("c", 8);
-  const presente = novoId("c", 8);
+  // Como numa planilha: a grade já nasce de A a Z e com 100 linhas; depois disso, quem precisar acrescenta.
+  const colunas = Array.from({ length: GRADE_INICIAL.colunas }, (_, i) => ({
+    id: novoId("c", 8),
+    titulo: `Coluna ${String.fromCharCode(65 + i)}`,
+    tipo: "texto" as const,
+    largura: LARGURA_PADRAO.texto,
+  }));
   return {
     id: novoId("lst_", 12),
     titulo: "Nova lista",
-    colunas: [
-      { id: aluno, titulo: "Aluno", tipo: "texto", largura: LARGURA_PADRAO.texto },
-      { id: presente, titulo: "Presente", tipo: "marca", largura: LARGURA_PADRAO.marca },
-    ],
-    linhas: [{ id: novoId("l", 8), valores: {} }],
+    colunas,
+    linhas: Array.from({ length: GRADE_INICIAL.linhas }, () => ({ id: novoId("l", 8), valores: {} })),
     ...autoria,
   };
 }

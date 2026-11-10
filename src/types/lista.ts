@@ -161,3 +161,6 @@ export const LIMITES_LISTA = { colunas: 60, linhas: 1000, texto: 500, titulo: 12
 export const LARGURA_MINIMA = 64;
 export const LARGURA_MAXIMA = 480;
 export const LARGURA_PADRAO: Record<TipoColuna, number> = { texto: 220, numero: 140, data: 150, marca: 140, simnao: 150, opcoes: 170 };
+
+/** Tamanho de uma lista nova: colunas A a Z e 100 linhas, como numa planilha. */
+export const GRADE_INICIAL = { colunas: 26, linhas: 100 } as const;
