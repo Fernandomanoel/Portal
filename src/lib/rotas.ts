@@ -30,6 +30,7 @@ export const rotas = {
   professorConteudos: () => "/professor/conteudos",
   professorConteudo: (slug: string) => `/professor/conteudos/${slug}`,
   professorUsuarios: () => "/professor/usuarios",
+  professorAnalisador: () => "/professor/analisador-contratos",
   professorListas: () => "/professor/listas",
   professorLista: (id: string) => `/professor/listas/${encodeURIComponent(id)}`,
   quiz: (categoria: string, prova: string) =>

@@ -30,6 +30,7 @@ import { TextosClassicosPage } from "@/pages/digitacao/textosClassicos/TextosCla
 import { GuiadoJogoPage } from "@/pages/guiado/GuiadoJogoPage";
 import { GuiadoTutorialPage } from "@/pages/guiado/GuiadoTutorialPage";
 import { GuiadoVitrinePage } from "@/pages/guiado/GuiadoVitrinePage";
+import { ProfessorAnalisadorPage } from "@/pages/professor/ProfessorAnalisadorPage";
 import { ProfessorConteudoPage } from "@/pages/professor/ProfessorConteudoPage";
 import { ProfessorConteudosPage } from "@/pages/professor/ProfessorConteudosPage";
 import { ProfessorEnvioPage } from "@/pages/professor/ProfessorEnvioPage";
@@ -111,6 +112,7 @@ const roteador = criarRoteador([
           { path: "listas", element: <ProfessorListasPage /> },
           { path: "listas/:id", element: <ProfessorListaPage /> },
           { path: "usuarios", element: <ProfessorUsuariosPage /> },
+          { path: "analisador-contratos", element: <ProfessorAnalisadorPage /> },
         ],
       },
 

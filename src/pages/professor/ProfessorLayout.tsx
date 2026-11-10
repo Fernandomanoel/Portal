@@ -8,6 +8,9 @@ import { definirUnidadeAtiva, unidadeAtiva } from "@/lib/unidade";
 import type { SessaoProfessor } from "@/types/unidade";
 import estilos from "./ProfessorLayout.module.css";
 
+// Sistema de gestão que roda na rede da escola (Docker). Sem a variável, o link não aparece.
+const URL_ANALISADOR_PACOTES: string | undefined = import.meta.env.VITE_URL_ANALISADOR_PACOTES;
+
 type Estado = { fase: "conferindo" } | { fase: "fora"; aviso?: string } | { fase: "dentro"; professor: SessaoProfessor };
 
 export interface ContextoProfessor {
@@ -135,6 +138,16 @@ export function ProfessorLayout() {
                   <Icone nome="pessoas" tamanho={16} />
                   Usuários
                 </NavLink>
+              )}
+              <NavLink to={rotas.professorAnalisador()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                <Icone nome="grafico" tamanho={16} />
+                Analisador de contratos
+              </NavLink>
+              {URL_ANALISADOR_PACOTES && (
+                <a href={URL_ANALISADOR_PACOTES} target="_blank" rel="noreferrer" className={estilos.aba}>
+                  <Icone nome="link" tamanho={16} />
+                  Analisador de pacotes
+                </a>
               )}
             </nav>
             <button
