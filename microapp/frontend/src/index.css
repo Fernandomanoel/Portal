@@ -68,16 +68,10 @@ body {
   min-height: 100svh;
   width: 100%;
   background-color: #f4f6fb;
-  background-image:
-    radial-gradient(ellipse 90% 55% at 50% -18%, rgba(79, 124, 255, 0.10), transparent 58%),
-    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(30, 64, 175, 0.06), transparent 50%);
 }
 
 html.dark .app-shell {
-  background-color: #020617;
-  background-image:
-    radial-gradient(ellipse 90% 55% at 50% -18%, rgba(30, 69, 112, 0.28), transparent 58%),
-    radial-gradient(ellipse 40% 30% at 100% 0%, rgba(12, 35, 64, 0.45), transparent 50%);
+  background-color: #101319;
 }
 
 .field {
@@ -103,8 +97,8 @@ html.dark .app-shell {
 }
 
 .card {
-  @apply rounded-2xl border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur-md sm:p-6
-    dark:border-slate-800 dark:bg-slate-900/80 dark:shadow-md;
+  @apply rounded-xl border border-slate-200 bg-white p-5 sm:p-6
+    dark:border-slate-800 dark:bg-slate-900;
 }
 
 .page-title {

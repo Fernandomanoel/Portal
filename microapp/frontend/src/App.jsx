@@ -63,13 +63,16 @@ export default function App() {
 
   return (
     <div className="app-shell font-sans text-slate-900 dark:text-slate-50">
-      <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/70 backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/70">
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
         <Header
           usuario={usuario}
           onLogout={handleLogout}
           menuAberto={menuAberto}
           onToggleMenu={() => setMenuAberto((aberto) => !aberto)}
         />
+      </header>
+
+      <div className="md:flex">
         <NavTabs
           cargoUsuario={usuario.cargo}
           abaAtiva={abaAtiva}
@@ -77,9 +80,8 @@ export default function App() {
           menuAberto={menuAberto}
           whatsappConectado={whatsappConectado}
         />
-      </header>
 
-      <main className="w-full px-6 py-6">
+      <main className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-6 sm:px-8 sm:py-8">
         {abaAtiva === 'conectar' ? (
           <ConectarWhatsapp onStatusChange={(status) => atualizarStatus(status === 'CONNECTED')} />
         ) : null}
@@ -104,6 +106,7 @@ export default function App() {
         {abaAtiva === 'usuarios' && ehAdmin ? <CadastroUsuario /> : null}
         {abaAtiva === 'auditoria' && ehAdmSistema ? <Auditoria /> : null}
       </main>
+      </div>
     </div>
   );
 }

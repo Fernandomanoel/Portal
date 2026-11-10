@@ -97,7 +97,7 @@ export function AcompanhamentoModulos() {
         <div>
           <h2 className="page-title flex items-center gap-2">
             <BookOpen size={22} className="text-navy-600 dark:text-navy-300" />
-            Acompanhamento de Módulos
+            Analisador de contratos
           </h2>
           <p className="page-subtitle mt-1">
             Calculadora rápida de atendimento. Os dados não são salvos e são perdidos ao atualizar a
