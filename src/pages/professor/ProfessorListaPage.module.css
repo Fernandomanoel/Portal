@@ -271,10 +271,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2) var(--space-4);
+  gap: var(--space-1) var(--space-3);
   margin: var(--space-2) var(--space-4);
   padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius);
   background: var(--surface-soft);
 }
 
@@ -287,7 +287,7 @@
 
 .grupo + .grupo {
   padding-left: var(--space-4);
-  border-left: 1px solid var(--line);
+  border-left: 1px solid var(--line-strong);
 }
 
 .ferramentas .botao {
@@ -585,6 +585,58 @@
 
 .compartilharNota {
   margin-top: var(--space-2);
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+}
+
+.amostra-cinza {
+  --amostra: color-mix(in oklab, var(--ink) 18%, var(--surface));
+}
+
+.menuBordas,
+.menuFixar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 200px;
+  padding: var(--space-1);
+}
+
+.menuBordas button {
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.menuBordas button:hover:not(:disabled),
+.menuBordas button[aria-pressed="true"] {
+  background: var(--brand-tint);
+}
+
+.menuFixar label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.menuFixar select {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+
+.menuFixar p {
   color: var(--ink-faint);
   font-size: var(--text-xs);
 }

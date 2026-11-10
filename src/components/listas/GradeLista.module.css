@@ -264,6 +264,98 @@
   --fundo-linha: color-mix(in oklab, var(--danger) 12%, var(--surface));
 }
 
+.cor-cinza {
+  --fundo-linha: color-mix(in oklab, var(--ink) 7%, var(--surface));
+}
+
+/* Cor de uma célula só: as mesmas misturas da cor de linha, declaradas na própria célula. */
+.cel-azul {
+  --fundo-linha: color-mix(in oklab, var(--brand) 16%, var(--surface)) !important;
+}
+
+.cel-verde {
+  --fundo-linha: color-mix(in oklab, var(--success) 17%, var(--surface)) !important;
+}
+
+.cel-amarelo {
+  --fundo-linha: color-mix(in oklab, oklch(0.86 0.17 95) 34%, var(--surface)) !important;
+}
+
+.cel-vermelho {
+  --fundo-linha: color-mix(in oklab, var(--danger) 16%, var(--surface)) !important;
+}
+
+.cel-cinza {
+  --fundo-linha: color-mix(in oklab, var(--ink) 11%, var(--surface)) !important;
+}
+
+.celNegrito {
+  font-weight: 700;
+}
+
+.celItalico {
+  font-style: italic;
+}
+
+.bordaForte {
+  box-shadow: inset 0 0 0 2px var(--ink-soft);
+}
+
+.semBorda {
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+/* Células escolhidas em área: um véu azul por cima da cor da célula. */
+.selecionada {
+  background-image: linear-gradient(color-mix(in oklab, var(--brand) 18%, transparent), color-mix(in oklab, var(--brand) 18%, transparent));
+}
+
+.emArea input,
+.emArea select {
+  user-select: none;
+}
+
+.mesclada {
+  vertical-align: middle;
+}
+
+.erroFormula {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.letraBotao {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.letraBotao:hover {
+  background: color-mix(in oklab, var(--brand) 12%, transparent);
+  color: var(--brand-deep);
+}
+
+.letraBotao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.letraAtiva {
+  color: var(--brand-deep);
+  font-weight: 700;
+}
+
+.totalRotulo {
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
+
 .negrito .texto,
 .negrito .select {
   font-weight: 700;

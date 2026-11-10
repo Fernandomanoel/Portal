@@ -131,12 +131,18 @@ export function alterarColuna(lista: Lista, colunaId: string, mudanca: Partial<O
   if (mudanca.largura !== undefined) nova.largura = Math.min(LARGURA_MAXIMA, Math.max(LARGURA_MINIMA, Math.round(mudanca.largura)));
   if (nova.tipo === "opcoes" && !nova.opcoes) nova.opcoes = ["Opção 1", "Opção 2"];
   if (nova.tipo !== "opcoes") delete nova.opcoes;
+  if (nova.tipo !== "numero") {
+    delete nova.formato;
+    delete nova.casas;
+    delete nova.rodape;
+  }
   if (mudanca.tipo && mudanca.tipo !== antiga.tipo && mudanca.largura === undefined) nova.largura = LARGURA_PADRAO[mudanca.tipo];
 
   const serve = (v: ValorCelula) => {
     if (nova.tipo === "marca") return v === true;
     if (nova.tipo === "simnao") return v === "sim" || v === "nao";
     if (nova.tipo === "opcoes") return typeof v === "string" && !!nova.opcoes?.includes(v);
+    if (nova.tipo === "data") return typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v);
     return typeof v === "string";
   };
   return {
@@ -235,7 +241,19 @@ export function mesclar(base: Lista, minha: Lista, deles: Lista): Lista | null {
       if (meu === undefined) delete valores[chave];
       else valores[chave] = meu;
     }
-    const nova = { ...delesLinha, valores };
+    const estilos = { ...(delesLinha.estilos ?? {}) };
+    const chavesEstilo = new Set([...Object.keys(minhaLinha.estilos ?? {}), ...Object.keys(original.estilos ?? {})]);
+    for (const chave of chavesEstilo) {
+      const meu = minhaLinha.estilos?.[chave];
+      const antes = original.estilos?.[chave];
+      if (igual(meu, antes)) continue;
+      const deles = delesLinha.estilos?.[chave];
+      if (!igual(deles, antes) && !igual(deles, meu)) return null;
+      if (meu === undefined) delete estilos[chave];
+      else estilos[chave] = meu;
+    }
+    const nova = { ...delesLinha, valores, ...(Object.keys(estilos).length ? { estilos } : {}) };
+    if (!Object.keys(estilos).length) delete nova.estilos;
     for (const campo of ["cor", "negrito", "titulo"] as const) {
       if (minhaLinha[campo] === original[campo]) continue;
       if (delesLinha[campo] !== original[campo] && delesLinha[campo] !== minhaLinha[campo]) return null;
@@ -245,9 +263,19 @@ export function mesclar(base: Lista, minha: Lista, deles: Lista): Lista | null {
     linhas[indiceDeles] = nova;
   }
 
+  // Mesclagens, congelamento e gráficos: cada um vai inteiro de quem mudou; se os dois mudaram de jeitos diferentes, é conflito.
+  const extras: Partial<Lista> = {};
+  for (const campo of ["mesclagens", "congelar", "graficos"] as const) {
+    const meuMudou = !igual(minha[campo], base[campo]);
+    const delesMudou = !igual(deles[campo], base[campo]);
+    if (meuMudou && delesMudou && !igual(minha[campo], deles[campo])) return null;
+    (extras as Record<string, unknown>)[campo] = meuMudou ? minha[campo] : deles[campo];
+  }
+
   const ids = new Set(colunas.map((c) => c.id));
   return {
     ...deles,
+    ...extras,
     titulo,
     colunas,
     linhas: linhas.map((l) => ({ ...l, valores: Object.fromEntries(Object.entries(l.valores).filter(([c]) => ids.has(c))) })),

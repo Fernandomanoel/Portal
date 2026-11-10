@@ -9,8 +9,9 @@ import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import { gravarLista, obterLista } from "@/lib/apiListas";
 import { ErroApi, listarUnidades } from "@/lib/apiProvas";
 import { formatarLinha, inserirLinha, inserirTitulo, mesclar } from "@/lib/editarLista";
+import { areaDaSelecao, areaUnica, desmesclarArea, erroDeMesclagem, estilarArea, estiloDaArea, mesclarArea, sanear, type Selecao } from "@/lib/gradeLista";
 import { rotas } from "@/lib/rotas";
-import { CORES_LINHA, LIMITES_LISTA, type Compartilhamento, type ListaAcompanhamento } from "@/types/lista";
+import { CORES_LINHA, LIMITES_LISTA, type Compartilhamento, type CorLinha, type ListaAcompanhamento } from "@/types/lista";
 import { TODAS_AS_UNIDADES, type Unidade } from "@/types/unidade";
 import { dataHora, hora } from "./formato";
 import { useProfessor } from "./ProfessorLayout";
@@ -60,6 +61,7 @@ export function ProfessorListaPage() {
   const [conflito, definirConflito] = useState<ListaAcompanhamento | null>(null);
   const [rascunho, definirRascunho] = useState<ListaAcompanhamento | null>(null);
   const [linhaAtiva, definirLinhaAtiva] = useState<string | null>(null);
+  const [selecao, definirSelecao] = useState<Selecao | null>(null);
   const [aviso, definirAviso] = useState<string | null>(null);
   const [unidades, definirUnidades] = useState<Unidade[]>([]);
 
@@ -166,7 +168,8 @@ export function ProfessorListaPage() {
     (mudar: (l: ListaAcompanhamento) => ListaAcompanhamento) => {
       // Quem só pode ver a lista não altera nada, nem por atalho.
       if (!atual.current || atual.current.acesso?.editar === false) return;
-      trocarLista(mudar(atual.current));
+      // `sanear` tira o que ficou sem sentido (mesclagem de linha apagada, congelamento maior que a lista).
+      trocarLista(sanear(mudar(atual.current)));
       sujo.current = true;
       if (!conflitoAberto.current) agendar();
     },
@@ -232,6 +235,10 @@ export function ProfessorListaPage() {
 
   const nLinhas = lista.linhas.filter((l) => l.titulo === undefined).length;
   const somenteLeitura = lista.acesso?.editar === false;
+  const area = selecao && !somenteLeitura ? areaDaSelecao(selecao) : null;
+  const estiloSel = area ? estiloDaArea(lista, area) : {};
+  const podeMesclar = !!area && !areaUnica(area) && erroDeMesclagem(lista, area) === null;
+  const temMesclagem = !!lista.mesclagens?.length;
   const podeCompartilhar = lista.acesso?.administrar === true;
   const nomeUnidade = (id: string) => (id === TODAS_AS_UNIDADES ? "todas as unidades" : (unidades.find((u) => u.id === id)?.nome ?? id));
 
@@ -332,6 +339,83 @@ export function ProfessorListaPage() {
               {() => <PainelCompartilhar lista={lista} unidades={unidades} aoMudar={(c) => alterar((l) => ({ ...l, compartilhamento: c }))} />}
             </MenuSuspenso>
           )}
+        </div>
+
+        <div className={estilos.grupo} role="group" aria-label={area ? "Formatar as células selecionadas" : "Selecione células para formatar"}>
+          <span className={estilos.rotuloGrupo}>
+            <Icone nome="pincel" tamanho={15} />
+            {area ? (areaUnica(area) ? "Célula" : "Células selecionadas") : "Formatar células"}
+          </span>
+          <button type="button" className={`${estilos.amostra} ${estilos.semCor}`} aria-label="Sem cor de fundo" aria-pressed={!!area && !estiloSel.fundo} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { fundo: null }))} />
+          {CORES_LINHA.map(({ cor, rotulo }) => (
+            <button key={cor} type="button" className={`${estilos.amostra} ${estilos[`amostra-${cor}`]}`} aria-label={`Fundo ${rotulo.toLowerCase()}`} aria-pressed={estiloSel.fundo === cor} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { fundo: cor as CorLinha }))} />
+          ))}
+          <button type="button" className={`${estilos.botao} ${estilos.icone}`} aria-label="Negrito na célula" aria-pressed={!!estiloSel.negrito} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { negrito: !estiloSel.negrito }))}>
+            <Icone nome="negrito" tamanho={16} />
+          </button>
+          <button type="button" className={`${estilos.botao} ${estilos.icone}`} aria-label="Itálico" aria-pressed={!!estiloSel.italico} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { italico: !estiloSel.italico }))}>
+            <Icone nome="italico" tamanho={16} />
+          </button>
+          {(["esquerda", "centro", "direita"] as const).map((a) => (
+            <button key={a} type="button" className={`${estilos.botao} ${estilos.icone}`} aria-label={`Alinhar à ${a === "centro" ? "o centro" : a}`} aria-pressed={estiloSel.alinhar === a} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { alinhar: estiloSel.alinhar === a ? null : a }))}>
+              <Icone nome={`alinhar-${a}`} tamanho={16} />
+            </button>
+          ))}
+          <MenuSuspenso rotulo="Bordas da célula" classeGatilho={`${estilos.botao} ${estilos.icone}`} gatilho={<Icone nome="bordas" tamanho={16} />}>
+            {(fechar) => (
+              <div className={estilos.menuBordas}>
+                {([["todas", "Contorno forte"], ["nenhuma", "Sem linhas"], [null, "Padrão da grade"]] as const).map(([valor, rotulo]) => (
+                  <button key={rotulo} type="button" disabled={!area} aria-pressed={(estiloSel.bordas ?? null) === valor} onClick={() => { fechar(); if (area) alterar((l) => estilarArea(l, area, { bordas: valor })); }}>
+                    {rotulo}
+                  </button>
+                ))}
+              </div>
+            )}
+          </MenuSuspenso>
+        </div>
+
+        <div className={estilos.grupo} role="group" aria-label="Grade">
+          <button type="button" className={estilos.botao} disabled={somenteLeitura || !(podeMesclar || (area && temMesclagem))} title={area && !areaUnica(area) && !podeMesclar ? (erroDeMesclagem(lista, area) ?? undefined) : "Selecione duas ou mais células"} onClick={() => area && alterar((l) => (podeMesclar ? mesclarArea(l, area) : desmesclarArea(l, area)))}>
+            <Icone nome="mesclar" tamanho={16} />
+            {podeMesclar || !temMesclagem ? "Mesclar" : "Desfazer mescla"}
+          </button>
+          <MenuSuspenso
+            rotulo="Fixar linhas e colunas"
+            classeGatilho={estilos.botao}
+            gatilho={
+              <>
+                <Icone nome="congelar" tamanho={16} />
+                Fixar
+                <Icone nome="seta-baixo" tamanho={13} />
+              </>
+            }
+          >
+            {() => (
+              <div className={estilos.menuFixar}>
+                <label>
+                  <span>Linhas de cima</span>
+                  <select value={lista.congelar?.linhas ?? 0} disabled={somenteLeitura} onChange={(e) => alterar((l) => ({ ...l, congelar: { linhas: Number(e.target.value), colunas: l.congelar?.colunas ?? 1 } }))}>
+                    {[0, 1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n === 0 ? "Nenhuma" : n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Colunas da esquerda</span>
+                  <select value={lista.congelar?.colunas ?? 1} disabled={somenteLeitura} onChange={(e) => alterar((l) => ({ ...l, congelar: { linhas: l.congelar?.linhas ?? 0, colunas: Number(e.target.value) } }))}>
+                    {[0, 1, 2, 3].map((n) => (
+                      <option key={n} value={n}>
+                        {n === 0 ? "Nenhuma" : n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <p>O cabeçalho (letras e títulos) fica sempre fixo.</p>
+              </div>
+            )}
+          </MenuSuspenso>
         </div>
 
         <div className={estilos.grupo} role="group" aria-label={linhaSelecionada ? "Formatar a linha selecionada" : "Selecione uma linha para formatar"}>
@@ -453,7 +537,7 @@ export function ProfessorListaPage() {
       ) : (
         <>
           <fieldset className={estilos.areaGrade} disabled={somenteLeitura}>
-            <GradeLista lista={lista} alterar={alterar} linhaAtiva={linhaAtiva} definirLinhaAtiva={definirLinhaAtiva} />
+            <GradeLista lista={lista} alterar={alterar} linhaAtiva={linhaAtiva} definirLinhaAtiva={definirLinhaAtiva} selecao={selecao} definirSelecao={definirSelecao} />
           </fieldset>
         </>
       )}

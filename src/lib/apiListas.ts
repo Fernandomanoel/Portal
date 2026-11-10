@@ -11,7 +11,7 @@ export const apagarLista = (id: string) => chamar<void>(caminho(id), { method: "
 
 /** Responde 409 (ErroApi com `corpo.atual`) quando outro professor gravou antes. */
 export function gravarLista(lista: ListaAcompanhamento) {
-  const { titulo, colunas, linhas, versao, compartilhamento } = lista;
+  const { titulo, colunas, linhas, versao, compartilhamento, mesclagens, congelar, graficos } = lista;
   // `compartilhamento: null` avisa o servidor que parou de compartilhar; só quem é da unidade dona consegue mudar isso.
-  return chamar<ListaAcompanhamento>(caminho(lista.id), comJson("PUT", { titulo, colunas, linhas, versao, compartilhamento: compartilhamento ?? null }));
+  return chamar<ListaAcompanhamento>(caminho(lista.id), comJson("PUT", { titulo, colunas, linhas, versao, compartilhamento: compartilhamento ?? null, mesclagens, congelar, graficos }));
 }

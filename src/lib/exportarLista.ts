@@ -1,4 +1,6 @@
-import type { CorLinha, ListaAcompanhamento, ValorCelula } from "@/types/lista";
+import { ehErro, ehFormula, formulaParaExcel, letraDaColuna, lerNumero, calculadora, mostrarResultado } from "@/lib/formulas";
+import { indiceMesclagens } from "@/lib/gradeLista";
+import type { ColunaLista, CorLinha, ListaAcompanhamento, ValorCelula } from "@/types/lista";
 
 /**
  * Exporta a lista em .xlsx direto no navegador. O .xlsx é um zip de XMLs; aqui
@@ -8,52 +10,101 @@ import type { CorLinha, ListaAcompanhamento, ValorCelula } from "@/types/lista";
  */
 
 // Mesmos tons claros das linhas na tela, legíveis com texto preto.
-const FUNDOS: Record<CorLinha, string> = { azul: "DBE6FF", verde: "D7F2E0", amarelo: "FDF1B0", vermelho: "FBDADA" };
-const CORES: (CorLinha | null)[] = [null, "azul", "verde", "amarelo", "vermelho"];
+const FUNDOS: Record<CorLinha, string> = { azul: "DBE6FF", verde: "D7F2E0", amarelo: "FDF1B0", vermelho: "FBDADA", cinza: "E5E7EB" };
 
 // Caracteres de controle (colados de outro programa) deixam o XML inválido: saem antes de escapar.
 const semControle = (texto: string) => [...texto].filter((c) => c >= " " || c === "\t" || c === "\n" || c === "\r").join("");
 const escapar = (texto: string) => semControle(texto).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
 function letraColuna(indice: number) {
-  let n = indice + 1;
-  let letra = "";
-  while (n > 0) {
-    const resto = (n - 1) % 26;
-    letra = String.fromCharCode(65 + resto) + letra;
-    n = Math.floor((n - 1) / 26);
+  return letraDaColuna(indice);
+}
+
+// ------------------------------------------------------------------ estilos
+
+interface EspecEstilo {
+  fundo?: CorLinha | "cabecalho" | "titulo";
+  negrito?: boolean;
+  italico?: boolean;
+  alinhar?: "left" | "center" | "right";
+  borda?: "padrao" | "forte" | "nenhuma";
+  /** Código de formato de número do Excel (ex.: `"R$" #,##0.00`). */
+  formato?: string;
+  fonteTitulo?: boolean;
+}
+
+/** Junta as combinações de estilo usadas e devolve o índice de cada uma em `cellXfs`. */
+class RegistroDeEstilos {
+  private fills: string[] = ['<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>'];
+  private fillIds = new Map<string, number>();
+  private fontes = new Map<string, number>([["normal", 0]]);
+  private formatos = new Map<string, number>();
+  private xfs: string[] = ['<xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>'];
+  private chaves = new Map<string, number>();
+
+  private fill(cor: string | undefined) {
+    if (!cor) return 0;
+    let id = this.fillIds.get(cor);
+    if (id === undefined) {
+      id = this.fills.length;
+      this.fills.push(`<fill><patternFill patternType="solid"><fgColor rgb="FF${cor}"/></patternFill></fill>`);
+      this.fillIds.set(cor, id);
+    }
+    return id;
   }
-  return letra;
+
+  private fonte(e: EspecEstilo) {
+    const chave = `${e.negrito ? "b" : ""}${e.italico ? "i" : ""}${e.fonteTitulo ? "t" : ""}` || "normal";
+    let id = this.fontes.get(chave);
+    if (id === undefined) {
+      id = this.fontes.size;
+      this.fontes.set(chave, id);
+    }
+    return id;
+  }
+
+  indice(e: EspecEstilo): number {
+    const chave = JSON.stringify(e);
+    const existente = this.chaves.get(chave);
+    if (existente !== undefined) return existente;
+    const cor = e.fundo === "cabecalho" ? "E5E7EB" : e.fundo === "titulo" ? "DBE6FF" : e.fundo ? FUNDOS[e.fundo] : undefined;
+    let numFmt = 0;
+    if (e.formato) {
+      numFmt = this.formatos.get(e.formato) ?? 164 + this.formatos.size;
+      this.formatos.set(e.formato, numFmt);
+    }
+    const alinhamento = `<alignment vertical="center"${e.alinhar ? ` horizontal="${e.alinhar}"` : ""}${e.fundo === "cabecalho" ? ' wrapText="1"' : ""}/>`;
+    const xf = `<xf numFmtId="${numFmt}" fontId="${this.fonte(e)}" fillId="${this.fill(cor)}" borderId="${e.borda === "forte" ? 2 : e.borda === "nenhuma" ? 0 : 1}" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">${alinhamento}</xf>`;
+    this.xfs.push(xf);
+    this.chaves.set(chave, this.xfs.length - 1);
+    return this.xfs.length - 1;
+  }
+
+  xml() {
+    const fonte = (b: boolean, i: boolean, t: boolean) => `<font>${b ? "<b/>" : ""}${i ? "<i/>" : ""}<sz val="${t ? 12 : 11}"/>${t ? '<color rgb="FF1E3A8A"/>' : ""}<name val="Calibri"/></font>`;
+    const fontes = [...this.fontes.keys()].map((k) => (k === "normal" ? fonte(false, false, false) : fonte(k.includes("b"), k.includes("i"), k.includes("t"))));
+    const fino = (c: string) => `<left style="thin"><color rgb="${c}"/></left><right style="thin"><color rgb="${c}"/></right><top style="thin"><color rgb="${c}"/></top><bottom style="thin"><color rgb="${c}"/></bottom><diagonal/>`;
+    const forte = '<left style="medium"><color rgb="FF374151"/></left><right style="medium"><color rgb="FF374151"/></right><top style="medium"><color rgb="FF374151"/></top><bottom style="medium"><color rgb="FF374151"/></bottom><diagonal/>';
+    const numFmts = [...this.formatos].map(([codigo, id]) => `<numFmt numFmtId="${id}" formatCode="${escapar(codigo)}"/>`).join("");
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">${numFmts ? `<numFmts count="${this.formatos.size}">${numFmts}</numFmts>` : ""}<fonts count="${fontes.length}">${fontes.join("")}</fonts><fills count="${this.fills.length}">${this.fills.join("")}</fills><borders count="3"><border><left/><right/><top/><bottom/><diagonal/></border><border>${fino("FFD1D5DB")}</border><border>${forte}</border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${this.xfs.length}">${this.xfs.join("")}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
+  }
 }
 
-/** Estilo de célula: 1 é o cabeçalho; os demais combinam cor da linha × negrito × centralizado. */
-function estilo(cor: CorLinha | undefined, negrito: boolean, centro: boolean) {
-  return 2 + CORES.indexOf(cor ?? null) * 4 + (negrito ? 2 : 0) + (centro ? 1 : 0);
+/** Formato de número do Excel para a coluna: moeda, porcentagem ou número com as casas escolhidas. */
+function formatoExcel(coluna: ColunaLista): string | undefined {
+  if (coluna.tipo === "data") return "dd/mm/yyyy";
+  if (coluna.tipo !== "numero") return undefined;
+  const casas = coluna.casas ?? (coluna.formato === "moeda" ? 2 : coluna.formato === "percentual" ? 1 : undefined);
+  const decimais = casas === undefined ? "0.######" : casas === 0 ? "0" : `0.${"0".repeat(casas)}`;
+  const milhar = decimais.startsWith("0") ? `#,##${decimais}` : decimais;
+  if (coluna.formato === "moeda") return `"R$" ${milhar}`;
+  if (coluna.formato === "percentual") return `${decimais}%`;
+  return milhar;
 }
 
-const ESTILO_TITULO = 2 + CORES.length * 4;
-const estiloTitulo = (cor: CorLinha | undefined) => (cor ? ESTILO_TITULO + CORES.indexOf(cor) : ESTILO_TITULO);
-
-function stylesXml() {
-  const fills = ['<fill><patternFill patternType="none"/></fill>', '<fill><patternFill patternType="gray125"/></fill>', '<fill><patternFill patternType="solid"><fgColor rgb="FFE5E7EB"/></patternFill></fill>'];
-  for (const cor of CORES.slice(1)) fills.push(`<fill><patternFill patternType="solid"><fgColor rgb="FF${FUNDOS[cor!]}"/></patternFill></fill>`);
-  const borda = '<border><left style="thin"><color rgb="FFD1D5DB"/></left><right style="thin"><color rgb="FFD1D5DB"/></right><top style="thin"><color rgb="FFD1D5DB"/></top><bottom style="thin"><color rgb="FFD1D5DB"/></bottom><diagonal/></border>';
-  const xfs = ['<xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>', '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>'];
-  const xfTitulo = (fillId: number) =>
-    `<xf numFmtId="0" fontId="2" fillId="${fillId}" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>`;
-  CORES.forEach((_, i) => {
-    const fillId = i === 0 ? 0 : i + 2;
-    for (const negrito of [false, true])
-      for (const centro of [false, true])
-        xfs.push(`<xf numFmtId="0" fontId="${negrito ? 1 : 0}" fillId="${fillId}" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"${centro ? ' horizontal="center"' : ""}/></xf>`);
-  });
-  // Títulos de bloco: um estilo por cor de linha, mais o padrão (fundo azul-claro).
-  fills.push('<fill><patternFill patternType="solid"><fgColor rgb="FFDBE6FF"/></patternFill></fill>');
-  xfs.push(xfTitulo(fills.length - 1));
-  CORES.slice(1).forEach((_, i) => xfs.push(xfTitulo(i + 3)));
-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="12"/><color rgb="FF1E3A8A"/><name val="Calibri"/></font></fonts><fills count="${fills.length}">${fills.join("")}</fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${borda}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="${xfs.length}">${xfs.join("")}</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
-}
+/** Dias desde 30/12/1899, como o Excel guarda datas. */
+const serialDaData = (iso: string) => Math.round((Date.UTC(Number(iso.slice(0, 4)), Number(iso.slice(5, 7)) - 1, Number(iso.slice(8, 10))) - Date.UTC(1899, 11, 30)) / 86400000);
 
 function textoDaCelula(valor: ValorCelula | undefined, tipo: string) {
   if (valor === undefined) return "";
@@ -62,37 +113,77 @@ function textoDaCelula(valor: ValorCelula | undefined, tipo: string) {
   return String(valor);
 }
 
-function planilhaXml(lista: ListaAcompanhamento) {
+const celulaTexto = (ref: string, s: number, t: string) => `<c r="${ref}" s="${s}" t="inlineStr"><is><t xml:space="preserve">${escapar(t)}</t></is></c>`;
+
+function planilhaXml(lista: ListaAcompanhamento, estilos: RegistroDeEstilos, temGraficos: boolean) {
   const { colunas, linhas } = lista;
+  const calc = calculadora(lista);
+  const indiceM = indiceMesclagens(lista);
   const cols = colunas.map((c, i) => `<col min="${i + 1}" max="${i + 1}" width="${Math.max(6, Math.round(c.largura / 7))}" customWidth="1"/>`).join("");
-  const cabecalho = colunas.map((c, i) => `<c r="${letraColuna(i)}1" s="1" t="inlineStr"><is><t xml:space="preserve">${escapar(c.titulo)}</t></is></c>`).join("");
+  const sCab = estilos.indice({ fundo: "cabecalho", negrito: true });
+  const cabecalho = colunas.map((c, i) => celulaTexto(`${letraColuna(i)}1`, sCab, c.titulo)).join("");
   const mescladas: string[] = [];
   const ultima = letraColuna(Math.max(0, colunas.length - 1));
   const corpo = linhas
     .map((linha, l) => {
       const r = l + 2;
       if (linha.titulo !== undefined) {
-        const s = estiloTitulo(linha.cor);
+        const s = estilos.indice({ fundo: linha.cor ?? "titulo", negrito: true, fonteTitulo: true });
         if (colunas.length > 1) mescladas.push(`A${r}:${ultima}${r}`);
         const resto = colunas.slice(1).map((_, i) => `<c r="${letraColuna(i + 1)}${r}" s="${s}"/>`).join("");
-        return `<row r="${r}" ht="24" customHeight="1"><c r="A${r}" s="${s}" t="inlineStr"><is><t xml:space="preserve">${escapar(linha.titulo)}</t></is></c>${resto}</row>`;
+        return `<row r="${r}" ht="24" customHeight="1">${celulaTexto(`A${r}`, s, linha.titulo)}${resto}</row>`;
       }
       const celulas = colunas
         .map((c, i) => {
-          const s = estilo(linha.cor, !!linha.negrito, c.tipo === "marca" || c.tipo === "simnao");
-          const texto = textoDaCelula(linha.valores[c.id], c.tipo);
           const ref = `${letraColuna(i)}${r}`;
-          return texto ? `<c r="${ref}" s="${s}" t="inlineStr"><is><t xml:space="preserve">${escapar(texto)}</t></is></c>` : `<c r="${ref}" s="${s}"/>`;
+          const e = linha.estilos?.[c.id];
+          const centro = c.tipo === "marca" || c.tipo === "simnao";
+          const s = estilos.indice({
+            fundo: e?.fundo ?? linha.cor,
+            negrito: !!(e?.negrito ?? linha.negrito),
+            italico: !!e?.italico,
+            alinhar: e?.alinhar ? ({ esquerda: "left", centro: "center", direita: "right" } as const)[e.alinhar] : centro ? "center" : c.tipo === "numero" ? "right" : undefined,
+            borda: e?.bordas === "todas" ? "forte" : e?.bordas === "nenhuma" ? "nenhuma" : "padrao",
+            formato: formatoExcel(c),
+          });
+          const merge = indiceM.get(`${linha.id}:${c.id}`);
+          if (merge && !merge.ancora) return `<c r="${ref}" s="${s}"/>`;
+          if (merge && (merge.colunas > 1 || merge.linhas > 1)) mescladas.push(`${ref}:${letraColuna(i + merge.colunas - 1)}${r + merge.linhas - 1}`);
+          const valor = linha.valores[c.id];
+          if (valor === undefined) return `<c r="${ref}" s="${s}"/>`;
+          if (ehFormula(valor) && c.tipo !== "marca") {
+            const excel = formulaParaExcel(valor);
+            const resultado = calc.resolver(l, i);
+            if (excel) {
+              const f = `<f>${escapar(excel)}</f>`;
+              if (ehErro(resultado)) return `<c r="${ref}" s="${s}" t="e">${f}<v>${escapar(resultado.erro)}</v></c>`;
+              if (typeof resultado === "number") return `<c r="${ref}" s="${s}">${f}<v>${resultado}</v></c>`;
+              if (typeof resultado === "boolean") return `<c r="${ref}" s="${s}" t="b">${f}<v>${resultado ? 1 : 0}</v></c>`;
+              return `<c r="${ref}" s="${s}" t="str">${f}<v>${escapar(String(resultado ?? ""))}</v></c>`;
+            }
+            // Fórmula sem equivalente no Excel: vai só o resultado.
+            return celulaTexto(ref, s, mostrarResultado(resultado));
+          }
+          if (c.tipo === "numero" && typeof valor === "string") {
+            const n = lerNumero(valor);
+            if (n !== null) return `<c r="${ref}" s="${s}"><v>${n}</v></c>`;
+          }
+          if (c.tipo === "data" && typeof valor === "string") return `<c r="${ref}" s="${s}"><v>${serialDaData(valor)}</v></c>`;
+          const texto = textoDaCelula(valor, c.tipo);
+          return texto ? celulaTexto(ref, s, texto) : `<c r="${ref}" s="${s}"/>`;
         })
         .join("");
       return `<row r="${r}">${celulas}</row>`;
     })
     .join("");
-  const congelar = colunas.length > 1
-    ? '<pane xSplit="1" ySplit="1" topLeftCell="B2" activePane="bottomRight" state="frozen"/><selection pane="bottomRight" activeCell="B2" sqref="B2"/>'
-    : '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>';
+  const fixasColunas = Math.min(lista.congelar?.colunas ?? 1, Math.max(0, colunas.length - 1) + 1);
+  const fixasLinhas = lista.congelar?.linhas ?? 0;
+  const x = fixasColunas;
+  const y = 1 + fixasLinhas;
+  const celulaSuperior = `${letraColuna(x)}${y + 1}`;
+  const painel = x > 0 ? `<pane xSplit="${x}" ySplit="${y}" topLeftCell="${celulaSuperior}" activePane="bottomRight" state="frozen"/><selection pane="bottomRight" activeCell="${celulaSuperior}" sqref="${celulaSuperior}"/>` : `<pane ySplit="${y}" topLeftCell="A${y + 1}" activePane="bottomLeft" state="frozen"/>`;
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0">${congelar}</sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ""}<sheetData><row r="1" ht="22" customHeight="1">${cabecalho}</row>${corpo}</sheetData>${mescladas.length ? `<mergeCells count="${mescladas.length}">${mescladas.map((m) => `<mergeCell ref="${m}"/>`).join("")}</mergeCells>` : ""}</worksheet>`;
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetViews><sheetView workbookViewId="0">${painel}</sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ""}<sheetData><row r="1" ht="22" customHeight="1">${cabecalho}</row>${corpo}</sheetData>${mescladas.length ? `<mergeCells count="${mescladas.length}">${mescladas.map((m) => `<mergeCell ref="${m}"/>`).join("")}</mergeCells>` : ""}${temGraficos ? '<drawing r:id="rId1"/>' : ""}</worksheet>`;
 }
 
 const nomeDaAba = (titulo: string) => titulo.replace(/[[\]:*?/\\]/g, " ").trim().slice(0, 31) || "Lista";
@@ -158,6 +249,8 @@ function zipGuardado(arquivos: { nome: string; conteudo: string }[]) {
 }
 
 export function listaParaXlsx(lista: ListaAcompanhamento) {
+  const estilos = new RegistroDeEstilos();
+  const sheet = planilhaXml(lista, estilos, false);
   return zipGuardado([
     {
       nome: "[Content_Types].xml",
@@ -179,8 +272,8 @@ export function listaParaXlsx(lista: ListaAcompanhamento) {
       conteudo: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`,
     },
-    { nome: "xl/styles.xml", conteudo: stylesXml() },
-    { nome: "xl/worksheets/sheet1.xml", conteudo: planilhaXml(lista) },
+    { nome: "xl/styles.xml", conteudo: estilos.xml() },
+    { nome: "xl/worksheets/sheet1.xml", conteudo: sheet },
   ]);
 }
 
