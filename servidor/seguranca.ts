@@ -30,6 +30,66 @@ export function professores(): ProfessorCadastrado[] {
   }
 }
 
+/**
+ * Aponta o que está errado nas variáveis UNIDADES e PROFESSORES (JSON quebrado, uma colada na outra,
+ * entradas sem os campos obrigatórios). Sem isso o servidor ignora o valor e o sintoma é só
+ * «senha incorreta» ou «nenhuma unidade». Nunca devolve o conteúdo das variáveis.
+ */
+export function problemasDeConfiguracao(): string[] {
+  const problemas: string[] = [];
+  const ler = (nome: "UNIDADES" | "PROFESSORES"): unknown[] | null => {
+    const bruto = process.env[nome];
+    if (!bruto?.trim()) {
+      problemas.push(`A variável ${nome} está vazia ou não existe.`);
+      return null;
+    }
+    try {
+      const valor = JSON.parse(bruto) as unknown;
+      if (!Array.isArray(valor)) {
+        problemas.push(`A variável ${nome} precisa ser uma lista JSON (começa com [ e termina com ]).`);
+        return null;
+      }
+      return valor;
+    } catch {
+      problemas.push(`A variável ${nome} não é um JSON válido (confira vírgulas, aspas e colchetes).`);
+      return null;
+    }
+  };
+  const unidades = ler("UNIDADES");
+  const lista = ler("PROFESSORES");
+  const chaves = (valor: unknown[]) => valor.filter((v): v is Record<string, unknown> => !!v && typeof v === "object");
+  if (unidades) {
+    const itens = chaves(unidades);
+    if (itens.some((u) => "usuario" in u)) problemas.push("A variável UNIDADES tem a lista de professores: o conteúdo de PROFESSORES foi colado no lugar errado.");
+    else if (unidades.length && !itens.some((u) => typeof u.id === "string" && typeof u.nome === "string" && typeof u.senha === "string")) problemas.push("Nenhuma unidade de UNIDADES tem id, nome e senha.");
+  }
+  if (lista) {
+    const itens = chaves(lista);
+    if (itens.some((p) => "lembrete" in p || ("id" in p && !("usuario" in p)))) problemas.push("A variável PROFESSORES tem a lista de unidades: o conteúdo de UNIDADES foi colado no lugar errado.");
+    else if (lista.length && !itens.some((p) => typeof p.usuario === "string" && typeof p.senha === "string")) problemas.push("Nenhum professor de PROFESSORES tem usuario e senha.");
+  }
+  if (unidades && lista) {
+    const ids = new Set(chaves(unidades).map((u) => u.id));
+    for (const p of chaves(lista)) {
+      if (typeof p.usuario === "string" && typeof p.unidade === "string" && p.unidade !== TODAS_AS_UNIDADES && !ids.has(p.unidade)) {
+        problemas.push(`O professor «${p.usuario}» aponta para a unidade «${p.unidade}», que não existe em UNIDADES (ele não consegue entrar).`);
+      }
+    }
+  }
+  return problemas;
+}
+
+let configuracaoAvisada = false;
+/** Registra os problemas uma vez por instância, para aparecerem nos logs do servidor (Vercel > Logs). */
+export function avisarConfiguracao(): string[] {
+  const problemas = problemasDeConfiguracao();
+  if (problemas.length && !configuracaoAvisada) {
+    configuracaoAvisada = true;
+    for (const problema of problemas) console.error(`[configuração] ${problema}`);
+  }
+  return problemas;
+}
+
 export function gerarHashSenha(senha: string): string {
   const sal = randomBytes(16);
   const hash = scryptSync(senha, sal, 32);

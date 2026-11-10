@@ -90,6 +90,14 @@ pizza e rosca, com até 6 séries somadas, em média, contagem, mínimo ou máxi
 como PNG, e a exportação `.xlsx` leva as fórmulas reais, os formatos, as mesclagens, as linhas e colunas
 fixas e uma segunda aba "Gráficos" com as imagens.
 
+### Quando o login ou a lista de unidades não funciona
+
+O servidor confere as variáveis `UNIDADES` e `PROFESSORES` e escreve o problema nos logs (Vercel > Logs,
+linhas que começam com `[configuração]`). Os casos que ele reconhece: JSON quebrado, uma variável colada
+na outra, professor apontando para uma unidade que não existe em `UNIDADES`, entradas sem `id`, `nome`,
+`usuario` ou `senha`. Na aba Provas, a mensagem «Nenhuma unidade foi configurada» passa a dizer o motivo.
+Variável alterada só vale depois de um novo deploy.
+
 ### Adicionar um professor
 
 ```bash

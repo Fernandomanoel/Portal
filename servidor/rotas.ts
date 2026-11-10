@@ -18,6 +18,7 @@ import {
   COOKIE_SESSAO,
   acharUnidade,
   autenticar,
+  avisarConfiguracao,
   gerarHashSenha,
   professorDaVariavel,
   professores,
@@ -670,7 +671,11 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
   // Público: as unidades para escolher na aba Provas (só id e nome; a senha nunca sai do servidor).
   if (partes[0] === "unidades" && partes.length === 1 && metodo === "GET") {
     const dados = todasAsUnidades().sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
-    if (!dados.length) return erro(503, "ERRO_INTERNO", "Nenhuma unidade foi configurada no servidor (variável UNIDADES).");
+    if (!dados.length) {
+      const motivo = avisarConfiguracao().find((p) => p.includes("UNIDADES"));
+      return erro(503, "ERRO_INTERNO", `Nenhuma unidade foi configurada no servidor. ${motivo ?? "Confira a variável UNIDADES."}`);
+    }
+    avisarConfiguracao();
     return json({ dados });
   }
 
@@ -711,8 +716,14 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
       if (!tentativaPermitida(`entrar:${ip}`)) return erro(429, "LIMITE_TENTATIVAS", "Muitas tentativas. Espere alguns minutos.");
       const corpo = await lerCorpoJson(requisicao);
       const professor = await autenticarProfessor(String(corpo?.usuario ?? ""), String(corpo?.senha ?? ""), armazenamento);
-      if (!professor) return erro(401, "CREDENCIAIS_INVALIDAS", "Usuário ou senha incorretos.");
-      if (professor === "SEM_UNIDADE") return erro(403, "SEM_PERMISSAO", "Seu usuário ainda não está ligado a uma unidade. Peça à coordenação para configurar.");
+      if (!professor) {
+        avisarConfiguracao();
+        return erro(401, "CREDENCIAIS_INVALIDAS", "Usuário ou senha incorretos.");
+      }
+      if (professor === "SEM_UNIDADE") {
+        avisarConfiguracao();
+        return erro(403, "SEM_PERMISSAO", "Seu usuário ainda não está ligado a uma unidade. Peça à coordenação para configurar.");
+      }
       limparTentativas(`entrar:${ip}`);
       return json(sessaoDe(professor), 200, { "Set-Cookie": cookieSessao(criarSessao(professor), seguro) });
     }
