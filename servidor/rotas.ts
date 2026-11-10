@@ -7,8 +7,8 @@ import type { Armazenamento } from "./armazenamento.js";
 import type { HistoricoConteudo, RevisaoConteudo } from "../src/types/conteudoProfessor.js";
 import { LIMITES_CONTEUDO } from "../src/types/conteudoProfessor.js";
 import type { Compartilhamento, ListaAcompanhamento } from "../src/types/lista.js";
-import { PERMISSOES_PADRAO, normalizarPermissoes, type PermissaoId, type UsuarioFixo } from "../src/types/acesso.js";
-import { caminhoUsuario, lerUsuario, listarUsuarios, semSenha, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
+import { PERMISSOES_PADRAO, normalizarPermissoes, type AjusteFixo, type PermissaoId, type UsuarioFixo } from "../src/types/acesso.js";
+import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, semSenha, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
 import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
 import { caminhoConteudo, comentarioValido, slugValido, validarConteudo } from "./conteudos.js";
 import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
@@ -131,8 +131,24 @@ function ipDe(requisicao: Request) {
 async function professorDa(requisicao: Request, armazenamento: Armazenamento): Promise<Professor | null> {
   const sessao = lerSessaoBruta(lerCookie(requisicao.headers.get("cookie"), COOKIE_SESSAO));
   if (!sessao) return null;
-  if (sessao.origem === "variavel") return professorDaVariavel(sessao.usuario);
+  if (sessao.origem === "variavel") {
+    const daVariavel = professorDaVariavel(sessao.usuario);
+    return daVariavel && comAjuste(daVariavel, await lerAjuste(armazenamento, daVariavel.usuario));
+  }
   return professorCadastrado(await lerUsuario(armazenamento, sessao.usuario));
+}
+
+/**
+ * Aplica o ajuste que o administrador fez pela tela a um professor da variável: bloqueio,
+ * unidades e permissões. Administrador da variável nunca é ajustado, para ninguém se trancar fora.
+ */
+function comAjuste(professor: Professor, ajuste: AjusteFixo | null): Professor | null {
+  if (!ajuste || professor.administrador) return professor;
+  if (!ajuste.ativo) return null;
+  const existentes = todasAsUnidades().map((u) => u.id);
+  const unidades = ajuste.unidades.includes(TODAS_AS_UNIDADES) ? [TODAS_AS_UNIDADES] : ajuste.unidades.filter((u) => existentes.includes(u));
+  if (!unidades.length) return null;
+  return { ...professor, unidade: unidades[0], unidades, permissoes: normalizarPermissoes(ajuste.permissoes) };
 }
 
 function professorCadastrado(usuario: UsuarioGuardado | null): Professor | null {
@@ -154,7 +170,8 @@ function professorCadastrado(usuario: UsuarioGuardado | null): Professor | null 
 /** Usuário e senha da tela de login: primeiro a variável PROFESSORES, depois quem foi criado pela tela. */
 async function autenticarProfessor(usuario: string, senha: string, armazenamento: Armazenamento): Promise<Professor | "SEM_UNIDADE" | null> {
   const daVariavel = autenticar(usuario, senha);
-  if (daVariavel) return daVariavel;
+  if (daVariavel === "SEM_UNIDADE") return daVariavel;
+  if (daVariavel) return comAjuste(daVariavel, await lerAjuste(armazenamento, daVariavel.usuario));
   const nome = usuario.trim().toLowerCase();
   const guardado = usuarioValido(nome) ? await lerUsuario(armazenamento, nome) : null;
   const confere = senhaDoCadastroConfere(senha, guardado?.senha);
@@ -415,7 +432,23 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
   };
 
   if (partes.length === 1 && metodo === "GET") {
-    const fixos: UsuarioFixo[] = professores().map((p) => ({ usuario: p.usuario, nome: p.nome || p.usuario, unidade: p.unidade, administrador: p.administrador === true }));
+    const fixos: UsuarioFixo[] = await Promise.all(
+      professores().map(async (p) => {
+        const administrador = p.administrador === true;
+        const ajuste = administrador ? null : await lerAjuste(armazenamento, p.usuario);
+        return {
+          usuario: p.usuario,
+          nome: p.nome || p.usuario,
+          unidade: p.unidade,
+          administrador,
+          unidades: ajuste?.unidades ?? [p.unidade],
+          permissoes: normalizarPermissoes(ajuste?.permissoes ?? (administrador ? [...PERMISSOES_PADRAO, "usuarios"] : PERMISSOES_PADRAO)),
+          ativo: ajuste?.ativo ?? true,
+          ajustado: ajuste !== null,
+          ajustavel: !administrador && usuarioValido(p.usuario.toLowerCase()),
+        };
+      }),
+    );
     return json({ dados: (await listarUsuarios(armazenamento)).map(semSenha), fixos, unidades: todasAsUnidades() });
   }
 
@@ -437,6 +470,33 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
     const novo: UsuarioGuardado = { usuario, nome, senha: gerarHashSenha(senha), ...acesso, ativo: true, criadoEm: new Date().toISOString(), criadoPor: quem.nome };
     await armazenamento.salvarJson(caminhoUsuario(usuario), novo);
     return json(semSenha(novo), 201);
+  }
+
+  // Professor da variável PROFESSORES: a tela ajusta unidades, permissões e bloqueio; nome e senha continuam na Vercel.
+  if (partes.length === 3 && partes[1] === "fixos" && metodo === "PATCH") {
+    const nomeAlvo = partes[2].toLowerCase();
+    const fixo = professores().find((p) => p.usuario.toLowerCase() === nomeAlvo);
+    if (!fixo) return erro(404, "NAO_ENCONTRADO", "Usuário não encontrado.");
+    if (fixo.administrador === true) return erro(403, "SEM_PERMISSAO", "O acesso de um administrador só muda pela variável PROFESSORES, na Vercel.");
+    if (!usuarioValido(nomeAlvo)) return erro(422, "VALIDATION_ERROR", "Este usuário tem um nome fora do padrão e só muda pela Vercel.");
+    if (nomeAlvo === quem.usuario.toLowerCase()) return erro(422, "VALIDATION_ERROR", "Você não pode ajustar o próprio usuário.");
+    const atual = await lerAjuste(armazenamento, nomeAlvo);
+    const emVigor = { unidades: atual?.unidades ?? [fixo.unidade], permissoes: normalizarPermissoes(atual?.permissoes ?? PERMISSOES_PADRAO) };
+    if (dentroDoMeuAlcance(emVigor)) return erro(403, "SEM_PERMISSAO", "Este usuário tem mais acesso do que o seu: só quem tem o mesmo alcance, ou mais, pode alterá-lo.");
+
+    const corpo = (await lerCorpoJson(requisicao)) ?? {};
+    if (corpo.padrao === true) {
+      await armazenamento.apagar([caminhoAjuste(nomeAlvo)]);
+      return new Response(null, { status: 204 });
+    }
+    const acesso = validarAcesso({ unidades: corpo.unidades ?? emVigor.unidades, permissoes: corpo.permissoes ?? emVigor.permissoes }, unidades);
+    if (typeof acesso === "string") return erro(422, "VALIDATION_ERROR", acesso);
+    const negado = dentroDoMeuAlcance(acesso);
+    if (negado) return erro(403, "SEM_PERMISSAO", negado);
+    if (corpo.ativo !== undefined && typeof corpo.ativo !== "boolean") return erro(422, "VALIDATION_ERROR", "Valor inválido para «ativo».");
+    const ajuste: AjusteFixo = { usuario: fixo.usuario, ...acesso, ativo: (corpo.ativo as boolean | undefined) ?? atual?.ativo ?? true, alteradoEm: new Date().toISOString(), alteradoPor: quem.nome };
+    await armazenamento.salvarJson(caminhoAjuste(nomeAlvo), ajuste);
+    return json(ajuste);
   }
 
   const alvo = (partes[1] ?? "").toLowerCase();

@@ -30,6 +30,7 @@ import { TextosClassicosPage } from "@/pages/digitacao/textosClassicos/TextosCla
 import { GuiadoJogoPage } from "@/pages/guiado/GuiadoJogoPage";
 import { GuiadoTutorialPage } from "@/pages/guiado/GuiadoTutorialPage";
 import { GuiadoVitrinePage } from "@/pages/guiado/GuiadoVitrinePage";
+import { ProfessorAcompanhamentoPage } from "@/pages/professor/ProfessorAcompanhamentoPage";
 import { ProfessorConteudoPage } from "@/pages/professor/ProfessorConteudoPage";
 import { ProfessorConteudosPage } from "@/pages/professor/ProfessorConteudosPage";
 import { ProfessorEnvioPage } from "@/pages/professor/ProfessorEnvioPage";
@@ -37,6 +38,8 @@ import { ProfessorEnviosPage } from "@/pages/professor/ProfessorEnviosPage";
 import { ProfessorLayout } from "@/pages/professor/ProfessorLayout";
 import { ProfessorListaPage } from "@/pages/professor/ProfessorListaPage";
 import { ProfessorListasPage } from "@/pages/professor/ProfessorListasPage";
+import { ProfessorMensagensPage } from "@/pages/professor/ProfessorMensagensPage";
+import { ProfessorPacotesPage } from "@/pages/professor/ProfessorPacotesPage";
 import { ProfessorUsuariosPage } from "@/pages/professor/ProfessorUsuariosPage";
 import { ProvasPage } from "@/pages/ProvasPage";
 import { QuizPage } from "@/pages/QuizPage";
@@ -110,6 +113,9 @@ const roteador = criarRoteador([
           { path: "conteudos/:curso", element: <ProfessorConteudoPage /> },
           { path: "listas", element: <ProfessorListasPage /> },
           { path: "listas/:id", element: <ProfessorListaPage /> },
+          { path: "acompanhamento", element: <ProfessorAcompanhamentoPage /> },
+          { path: "pacotes", element: <ProfessorPacotesPage /> },
+          { path: "mensagens", element: <ProfessorMensagensPage /> },
           { path: "usuarios", element: <ProfessorUsuariosPage /> },
         ],
       },

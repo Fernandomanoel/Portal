@@ -289,3 +289,7 @@
     grid-template-columns: 1fr;
   }
 }
+
+.grade[hidden] {
+  display: none;
+}

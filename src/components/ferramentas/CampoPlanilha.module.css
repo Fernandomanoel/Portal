@@ -1,0 +1,54 @@
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.botao {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.botao:hover {
+  background: var(--brand-deepest);
+}
+
+.botao[aria-busy="true"] {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* O input fica fora da vista, mas no fluxo do teclado: o foco aparece no botão. */
+.entrada {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.campo:focus-within .botao {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.ajuda {
+  max-width: 70ch;
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.ajuda strong {
+  color: var(--ink);
+}

@@ -1,4 +1,4 @@
-import type { UsuarioCadastrado } from "../src/types/acesso.js";
+import type { AjusteFixo, UsuarioCadastrado } from "../src/types/acesso.js";
 import { LIMITES_USUARIO, normalizarPermissoes, usuarioValido } from "../src/types/acesso.js";
 import { TODAS_AS_UNIDADES } from "../src/types/unidade.js";
 import type { Armazenamento } from "./armazenamento.js";
@@ -21,6 +21,12 @@ export async function listarUsuarios(armazenamento: Armazenamento): Promise<Usua
   const lidos = await Promise.all(itens.map((i) => armazenamento.lerJson<UsuarioGuardado>(i.caminho)));
   return lidos.filter((u): u is UsuarioGuardado => u !== null).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 }
+
+/** Ajustes dos professores da variável PROFESSORES (unidades, permissões, bloqueio), um arquivo por usuário. */
+export const caminhoAjuste = (usuario: string) => `ajustes/${usuario.toLowerCase()}.json`;
+
+export const lerAjuste = (armazenamento: Armazenamento, usuario: string) =>
+  usuarioValido(usuario.toLowerCase()) ? armazenamento.lerJson<AjusteFixo>(caminhoAjuste(usuario)) : Promise.resolve(null);
 
 export const semSenha = ({ senha: _senha, ...resto }: UsuarioGuardado): UsuarioCadastrado => resto;
 
