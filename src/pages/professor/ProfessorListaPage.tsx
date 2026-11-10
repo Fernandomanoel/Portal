@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { GradeLista, MenuNovaColuna } from "@/components/listas/GradeLista";
+import { GraficosLista } from "@/components/listas/GraficosLista";
 import { MenuSuspenso } from "@/components/listas/MenuSuspenso";
 import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import { gravarLista, obterLista } from "@/lib/apiListas";
@@ -62,6 +63,9 @@ export function ProfessorListaPage() {
   const [rascunho, definirRascunho] = useState<ListaAcompanhamento | null>(null);
   const [linhaAtiva, definirLinhaAtiva] = useState<string | null>(null);
   const [selecao, definirSelecao] = useState<Selecao | null>(null);
+  const [aba, definirAba] = useState<"dados" | "graficos">("dados");
+  const [novoGrafico, definirNovoGrafico] = useState(false);
+  const consumirNovoGrafico = useCallback(() => definirNovoGrafico(false), []);
   const [aviso, definirAviso] = useState<string | null>(null);
   const [unidades, definirUnidades] = useState<Unidade[]>([]);
 
@@ -289,6 +293,7 @@ export function ProfessorListaPage() {
         </p>
       )}
 
+      {aba === "dados" && (
       <div className={estilos.ferramentas} role="toolbar" aria-label="Editar a lista">
         <div className={estilos.grupo} role="group" aria-label="Inserir">
           <button
@@ -323,6 +328,19 @@ export function ProfessorListaPage() {
               </>
             }
           />
+          )}
+          {!somenteLeitura && (
+            <button
+              type="button"
+              className={estilos.botao}
+              onClick={() => {
+                definirNovoGrafico(true);
+                definirAba("graficos");
+              }}
+            >
+              <Icone nome="grafico" tamanho={16} />
+              Gráfico
+            </button>
           )}
           {podeCompartilhar && (
             <MenuSuspenso
@@ -454,6 +472,7 @@ export function ProfessorListaPage() {
           </button>
         </div>
       </div>
+      )}
 
       {rascunho && (
         <div className={`${estilos.faixa} ${estilos.faixaAviso}`} role="status">
@@ -532,7 +551,9 @@ export function ProfessorListaPage() {
         </p>
       )}
 
-      {lista.colunas.length === 0 ? (
+      {aba === "graficos" ? (
+        <GraficosLista lista={lista} alterar={alterar} somenteLeitura={somenteLeitura} criarAoAbrir={novoGrafico} aoConsumirCriar={consumirNovoGrafico} />
+      ) : lista.colunas.length === 0 ? (
         <EstadoVazio icone="tabela" titulo="Nenhuma coluna" texto="Use o botão + no canto da grade para criar a primeira: texto, marca, Sim/Não ou lista de opções." />
       ) : (
         <>
@@ -543,6 +564,16 @@ export function ProfessorListaPage() {
       )}
 
       <footer className={estilos.rodape}>
+        <div className={estilos.abas} role="tablist" aria-label="O que mostrar">
+          <button type="button" role="tab" aria-selected={aba === "dados"} onClick={() => definirAba("dados")}>
+            <Icone nome="tabela" tamanho={14} />
+            Dados
+          </button>
+          <button type="button" role="tab" aria-selected={aba === "graficos"} onClick={() => definirAba("graficos")}>
+            <Icone nome="grafico" tamanho={14} />
+            Gráficos{lista.graficos?.length ? ` (${lista.graficos.length})` : ""}
+          </button>
+        </div>
         <span className="tabular">
           {nLinhas} {nLinhas === 1 ? "linha" : "linhas"} · {lista.colunas.length} {lista.colunas.length === 1 ? "coluna" : "colunas"}
         </span>

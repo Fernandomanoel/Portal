@@ -115,7 +115,7 @@ function textoDaCelula(valor: ValorCelula | undefined, tipo: string) {
 
 const celulaTexto = (ref: string, s: number, t: string) => `<c r="${ref}" s="${s}" t="inlineStr"><is><t xml:space="preserve">${escapar(t)}</t></is></c>`;
 
-function planilhaXml(lista: ListaAcompanhamento, estilos: RegistroDeEstilos, temGraficos: boolean) {
+function planilhaXml(lista: ListaAcompanhamento, estilos: RegistroDeEstilos) {
   const { colunas, linhas } = lista;
   const calc = calculadora(lista);
   const indiceM = indiceMesclagens(lista);
@@ -183,7 +183,7 @@ function planilhaXml(lista: ListaAcompanhamento, estilos: RegistroDeEstilos, tem
   const celulaSuperior = `${letraColuna(x)}${y + 1}`;
   const painel = x > 0 ? `<pane xSplit="${x}" ySplit="${y}" topLeftCell="${celulaSuperior}" activePane="bottomRight" state="frozen"/><selection pane="bottomRight" activeCell="${celulaSuperior}" sqref="${celulaSuperior}"/>` : `<pane ySplit="${y}" topLeftCell="A${y + 1}" activePane="bottomLeft" state="frozen"/>`;
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetViews><sheetView workbookViewId="0">${painel}</sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ""}<sheetData><row r="1" ht="22" customHeight="1">${cabecalho}</row>${corpo}</sheetData>${mescladas.length ? `<mergeCells count="${mescladas.length}">${mescladas.map((m) => `<mergeCell ref="${m}"/>`).join("")}</mergeCells>` : ""}${temGraficos ? '<drawing r:id="rId1"/>' : ""}</worksheet>`;
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetViews><sheetView workbookViewId="0">${painel}</sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/>${cols ? `<cols>${cols}</cols>` : ""}<sheetData><row r="1" ht="22" customHeight="1">${cabecalho}</row>${corpo}</sheetData>${mescladas.length ? `<mergeCells count="${mescladas.length}">${mescladas.map((m) => `<mergeCell ref="${m}"/>`).join("")}</mergeCells>` : ""}</worksheet>`;
 }
 
 const nomeDaAba = (titulo: string) => titulo.replace(/[[\]:*?/\\]/g, " ").trim().slice(0, 31) || "Lista";
@@ -206,14 +206,14 @@ function crc32(bytes: Uint8Array) {
   return (c ^ 0xffffffff) >>> 0;
 }
 
-function zipGuardado(arquivos: { nome: string; conteudo: string }[]) {
+function zipGuardado(arquivos: { nome: string; conteudo: string | Uint8Array }[]) {
   const codificador = new TextEncoder();
   const partes: Uint8Array[] = [];
   const central: Uint8Array[] = [];
   let deslocamento = 0;
   for (const arquivo of arquivos) {
     const nome = codificador.encode(arquivo.nome);
-    const dados = codificador.encode(arquivo.conteudo);
+    const dados = typeof arquivo.conteudo === "string" ? codificador.encode(arquivo.conteudo) : arquivo.conteudo;
     const crc = crc32(dados);
     const local = new DataView(new ArrayBuffer(30));
     local.setUint32(0, 0x04034b50, true);
@@ -248,14 +248,40 @@ function zipGuardado(arquivos: { nome: string; conteudo: string }[]) {
   return new Blob([...partes, ...central, new Uint8Array(fim.buffer)] as BlobPart[], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
 }
 
-export function listaParaXlsx(lista: ListaAcompanhamento) {
+export interface ImagemGrafico {
+  titulo: string;
+  /** PNG já gerado, em 2× (1280 × 720). */
+  png: Uint8Array;
+}
+
+const EMU = 9525;
+
+/** Segunda aba, «Gráficos», com cada gráfico como imagem (a mesma do botão «Baixar PNG»). */
+function abaDeGraficos(imagens: ImagemGrafico[]) {
+  const ancoras = imagens
+    .map((img, i) => {
+      const linha = i * 17;
+      return `<xdr:oneCellAnchor><xdr:from><xdr:col>0</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>${linha}</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:ext cx="${640 * EMU}" cy="${360 * EMU}"/><xdr:pic><xdr:nvPicPr><xdr:cNvPr id="${i + 2}" name="Gráfico ${i + 1}" descr="${escapar(img.titulo)}"/><xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr><xdr:blipFill><a:blip r:embed="rId${i + 1}"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill><xdr:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${640 * EMU}" cy="${360 * EMU}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr></xdr:pic><xdr:clientData/></xdr:oneCellAnchor>`;
+    })
+    .join("");
+  return [
+    { nome: "xl/worksheets/sheet2.xml", conteudo: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheetData/><drawing r:id="rId1"/></worksheet>` },
+    { nome: "xl/worksheets/_rels/sheet2.xml.rels", conteudo: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/></Relationships>` },
+    { nome: "xl/drawings/drawing1.xml", conteudo: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">${ancoras}</xdr:wsDr>` },
+    { nome: "xl/drawings/_rels/drawing1.xml.rels", conteudo: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${imagens.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/grafico${i + 1}.png"/>`).join("")}</Relationships>` },
+    ...imagens.map((img, i) => ({ nome: `xl/media/grafico${i + 1}.png`, conteudo: img.png })),
+  ];
+}
+
+export function listaParaXlsx(lista: ListaAcompanhamento, imagens: ImagemGrafico[] = []) {
   const estilos = new RegistroDeEstilos();
-  const sheet = planilhaXml(lista, estilos, false);
+  const sheet = planilhaXml(lista, estilos);
+  const comGraficos = imagens.length > 0;
   return zipGuardado([
     {
       nome: "[Content_Types].xml",
       conteudo: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`,
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>${comGraficos ? '<Default Extension="png" ContentType="image/png"/>' : ""}<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>${comGraficos ? '<Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>' : ""}<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`,
     },
     {
       nome: "_rels/.rels",
@@ -265,22 +291,31 @@ export function listaParaXlsx(lista: ListaAcompanhamento) {
     {
       nome: "xl/workbook.xml",
       conteudo: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="${escapar(nomeDaAba(lista.titulo))}" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="${escapar(nomeDaAba(lista.titulo))}" sheetId="1" r:id="rId1"/>${comGraficos ? '<sheet name="Gráficos" sheetId="2" r:id="rId3"/>' : ""}</sheets></workbook>`,
     },
     {
       nome: "xl/_rels/workbook.xml.rels",
       conteudo: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`,
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>${comGraficos ? '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/>' : ""}</Relationships>`,
     },
     { nome: "xl/styles.xml", conteudo: estilos.xml() },
     { nome: "xl/worksheets/sheet1.xml", conteudo: sheet },
+    ...(comGraficos ? abaDeGraficos(imagens) : []),
   ]);
 }
 
-export function baixarXlsx(lista: ListaAcompanhamento) {
+export async function baixarXlsx(lista: ListaAcompanhamento) {
   const data = new Date().toISOString().slice(0, 10);
   const nome = `${lista.titulo.replace(/[\\/:*?"<>|]/g, "").trim() || "lista"}-${data}.xlsx`;
-  const url = URL.createObjectURL(listaParaXlsx(lista));
+  // Os gráficos vão junto como imagens, numa aba «Gráficos» (mesma imagem do botão «Baixar PNG»).
+  const [{ svgParaPng }, { dadosDoGrafico, svgDoGrafico, TEMA_CLARO }, { calculadora }] = await Promise.all([import("./exportarGrafico"), import("./graficoLista"), import("./formulas")]);
+  const calc = calculadora(lista);
+  const imagens: ImagemGrafico[] = [];
+  for (const g of lista.graficos ?? []) {
+    const png = await svgParaPng(svgDoGrafico(g, dadosDoGrafico(lista, calc, g), { tema: TEMA_CLARO }));
+    imagens.push({ titulo: g.titulo, png: new Uint8Array(await png.arrayBuffer()) });
+  }
+  const url = URL.createObjectURL(listaParaXlsx(lista, imagens));
   const link = document.createElement("a");
   link.href = url;
   link.download = nome;

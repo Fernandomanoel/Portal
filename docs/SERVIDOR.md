@@ -72,6 +72,24 @@ compartilhada com **todas as unidades** ou com **unidades escolhidas**, só para
 edição. A unidade dona sempre edita, compartilha e apaga; quem só recebe vê (ou edita, se liberado), mas
 não muda o compartilhamento nem apaga. Quem não alcança a unidade dona nem recebeu a lista não a enxerga.
 
+### Grade, fórmulas e gráficos das listas
+
+A lista é uma grade no estilo planilha. Além de texto, opção, caixa de marcação e pessoa, ela tem colunas
+**número** (formato número, moeda ou percentual, casas decimais e total no rodapé: soma, média, mínimo,
+máximo ou contagem) e **data** (guardada como `yyyy-mm-dd`). Uma célula que começa com `=` é fórmula
+(`=SOMA(C1:C10)`, `=SE(B2>3;"alto";"baixo")`, `MÉDIA`, `CONT.SE`, `SOMASE`, `ARRED`, `SEERRO`...; `;` separa
+argumentos e `,` é o decimal). As funções também existem em inglês. Endereços contam de A1 na primeira
+coluna e primeira linha, e linhas de título de bloco contam como linha. O cálculo roda no navegador
+(`src/lib/formulas.ts`, sem `eval`); o servidor só guarda o texto da fórmula e valida o formato.
+
+Cor de fundo, negrito, itálico, alinhamento e bordas são por célula. Dá para mesclar células dentro de um
+bloco, fixar até 5 linhas e 3 colunas, e copiar e colar blocos (Ctrl+C e Ctrl+V, também de outra planilha).
+
+Os **gráficos** ficam na própria lista (`graficos`, até 12): colunas, barras, empilhadas, linhas, área,
+pizza e rosca, com até 6 séries somadas, em média, contagem, mínimo ou máximo por categoria. Cada um baixa
+como PNG, e a exportação `.xlsx` leva as fórmulas reais, os formatos, as mesclagens, as linhas e colunas
+fixas e uma segunda aba "Gráficos" com as imagens.
+
 ### Adicionar um professor
 
 ```bash
