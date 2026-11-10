@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="320" y="32" font-size="15" fill="#1f2937" font-weight="700" text-anchor="middle">Cada emoção tem intensidades diferentes</text>
+  <text x="380" y="60" font-size="10.5" fill="#6b7280">fraca</text>
+  <line x1="420" y1="56" x2="560" y2="56" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="560,56 552.8,59.5 552.8,52.5" fill="#94a3b8"/>
+  <text x="568" y="60" font-size="10.5" fill="#6b7280">forte</text>
+  <text x="30" y="108" font-size="13" fill="#1f2937" font-weight="700">Raiva</text>
+  <rect x="120" y="86" width="118" height="40" rx="8" fill="#fee2e2"/>
+  <text x="179" y="111" font-size="11.5" fill="#1f2937" font-weight="700" text-anchor="middle">incômodo</text>
+  <rect x="246" y="86" width="118" height="40" rx="8" fill="#fecaca"/>
+  <text x="305" y="111" font-size="11.5" fill="#1f2937" font-weight="700" text-anchor="middle">irritação</text>
+  <rect x="372" y="86" width="118" height="40" rx="8" fill="#f87171"/>
+  <text x="431" y="111" font-size="11.5" fill="#ffffff" font-weight="700" text-anchor="middle">raiva</text>
+  <rect x="498" y="86" width="118" height="40" rx="8" fill="#dc2626"/>
+  <text x="557" y="111" font-size="11.5" fill="#ffffff" font-weight="700" text-anchor="middle">fúria</text>
+  <text x="30" y="174" font-size="13" fill="#1f2937" font-weight="700">Medo</text>
+  <rect x="120" y="152" width="118" height="40" rx="8" fill="#ede9fe"/>
+  <text x="179" y="177" font-size="11.5" fill="#1f2937" font-weight="700" text-anchor="middle">receio</text>
+  <rect x="246" y="152" width="118" height="40" rx="8" fill="#ddd6fe"/>
+  <text x="305" y="177" font-size="11.5" fill="#1f2937" font-weight="700" text-anchor="middle">preocupação</text>
+  <rect x="372" y="152" width="118" height="40" rx="8" fill="#a78bfa"/>
+  <text x="431" y="177" font-size="11.5" fill="#ffffff" font-weight="700" text-anchor="middle">medo</text>
+  <rect x="498" y="152" width="118" height="40" rx="8" fill="#6d28d9"/>
+  <text x="557" y="177" font-size="11.5" fill="#ffffff" font-weight="700" text-anchor="middle">pânico</text>
+  <text x="30" y="240" font-size="13" fill="#1f2937" font-weight="700">Tristeza</text>
+  <rect x="120" y="218" width="118" height="40" rx="8" fill="#dbeafe"/>
+  <text x="179" y="243" font-size="11.5" fill="#1f2937" font-weight="700" text-anchor="middle">chateação</text>
+  <rect x="246" y="218" width="118" height="40" rx="8" fill="#bfdbfe"/>
+  <text x="305" y="243" font-size="11.5" fill="#1f2937" font-weight="700" text-anchor="middle">desânimo</text>
+  <rect x="372" y="218" width="118" height="40" rx="8" fill="#60a5fa"/>
+  <text x="431" y="243" font-size="11.5" fill="#ffffff" font-weight="700" text-anchor="middle">tristeza</text>
+  <rect x="498" y="218" width="118" height="40" rx="8" fill="#1d4ed8"/>
+  <text x="557" y="243" font-size="11.5" fill="#ffffff" font-weight="700" text-anchor="middle">desespero</text>
+  <text x="30" y="306" font-size="13" fill="#1f2937" font-weight="700">Alegria</text>
+  <rect x="120" y="284" width="118" height="40" rx="8" fill="#fef9c3"/>
+  <text x="179" y="309" font-size="11.5" fill="#1f2937" font-weight="700" text-anchor="middle">tranquilidade</text>
+  <rect x="246" y="284" width="118" height="40" rx="8" fill="#fde68a"/>
+  <text x="305" y="309" font-size="11.5" fill="#1f2937" font-weight="700" text-anchor="middle">contentamento</text>
+  <rect x="372" y="284" width="118" height="40" rx="8" fill="#fbbf24"/>
+  <text x="431" y="309" font-size="11.5" fill="#ffffff" font-weight="700" text-anchor="middle">alegria</text>
+  <rect x="498" y="284" width="118" height="40" rx="8" fill="#d97706"/>
+  <text x="557" y="309" font-size="11.5" fill="#ffffff" font-weight="700" text-anchor="middle">euforia</text>
+  <rect x="26" y="344" width="588" height="40" rx="10" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="320" y="369" font-size="11.5" fill="#4c1d95" font-weight="700" text-anchor="middle">Dar o nome certo ("estou irritado", e não "estou com ódio") já baixa a intensidade.</text>
+</svg>

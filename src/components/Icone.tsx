@@ -57,6 +57,16 @@ export type NomeIcone =
   | "tabela"
   | "copiar"
   | "negrito"
+  | "italico"
+  | "alinhar-esquerda"
+  | "alinhar-centro"
+  | "alinhar-direita"
+  | "bordas"
+  | "mesclar"
+  | "congelar"
+  | "grafico"
+  | "grafico-pizza"
+  | "grafico-linha"
   | "pincel"
   | "mais-opcoes";
 
@@ -342,6 +352,43 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
     </>
   ),
   negrito: <path d="M7.5 5h5.5a3.5 3.5 0 0 1 0 7H7.5Zm0 7h6.5a3.5 3.5 0 0 1 0 7H7.5Z" />,
+  italico: <path d="M10 5h7M7 19h7m0-14-4 14" />,
+  "alinhar-esquerda": <path d="M4 6h16M4 10h10M4 14h16M4 18h10" />,
+  "alinhar-centro": <path d="M4 6h16M7 10h10M4 14h16M7 18h10" />,
+  "alinhar-direita": <path d="M4 6h16M10 10h10M4 14h16M10 18h10" />,
+  bordas: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="1.5" />
+      <path d="M12 4v16M4 12h16" />
+    </>
+  ),
+  mesclar: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="1.5" />
+      <path d="M8 12h8m-8 0 2.2-2.2M8 12l2.2 2.2M16 12l-2.2-2.2m2.2 2.2-2.2 2.2" />
+    </>
+  ),
+  congelar: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="1.5" />
+      <path d="M4 9.5h16M9.5 4v16" strokeWidth="2.6" />
+    </>
+  ),
+  grafico: (
+    <>
+      <path d="M4 4v16h16" />
+      <rect x="7.5" y="12" width="3" height="5" />
+      <rect x="12.5" y="8" width="3" height="9" />
+      <rect x="17" y="13.5" width="2" height="3.5" />
+    </>
+  ),
+  "grafico-pizza": (
+    <>
+      <circle cx="12" cy="12" r="8" />
+      <path d="M12 12V4m0 8 6.5 4.5" />
+    </>
+  ),
+  "grafico-linha": <path d="M4 4v16h16M7 15l4-4 3 3 5-6" />,
   pincel: (
     <>
       <path d="M14.5 4.5 19.5 9.5 11 18l-5-5Z" />

@@ -1,3 +1,5 @@
+import type { PermissaoId } from "./acesso.js";
+
 /**
  * Formatos trocados entre a prova, a área do professor e o servidor
  * (`servidor/`). Um arquivo só para os dois lados não divergirem.
@@ -64,6 +66,13 @@ export interface Professor {
   nome: string;
   /** Id da unidade do professor; `*` é a coordenação, que vê todas. */
   unidade: string;
+  /** Só em usuário cadastrado pela tela: as unidades liberadas (`*` = todas). Sem isso vale `unidade`. */
+  unidades?: string[];
+  /** Sem isso valem as permissões padrão. */
+  permissoes?: PermissaoId[];
+  /** Professor da variável PROFESSORES com `"administrador": true`: pode gerenciar usuários. */
+  administrador?: boolean;
+  origem?: "variavel" | "cadastro";
 }
 
 /** Mesmo formato de `LancarNotaInput` em contrato/api.ts. */

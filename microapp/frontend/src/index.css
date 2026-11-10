@@ -1,0 +1,124 @@
+@import "tailwindcss";
+@import "./fontes.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Paleta do Portal (src/styles/tokens.css): azul de marca e neutros frios. */
+  --color-navy-50: #eef2fb;
+  --color-navy-100: #dde5fb;
+  --color-navy-200: #b9caf8;
+  --color-navy-300: #96b1ff;
+  --color-navy-400: #7fa0ff;
+  --color-navy-500: #4f7cff;
+  --color-navy-600: #3d69ee;
+  --color-navy-700: #1e40af;
+  --color-navy-800: #16327a;
+  --color-navy-900: #0f2358;
+  --color-navy-950: #0a1840;
+
+  --color-slate-50: #f4f6fb;
+  --color-slate-100: #eef2fb;
+  --color-slate-200: #e6e9f2;
+  --color-slate-300: #d3dae9;
+  --color-slate-400: #838b9c;
+  --color-slate-500: #5c6373;
+  --color-slate-600: #4a5262;
+  --color-slate-700: #353b49;
+  --color-slate-800: #1f2530;
+  --color-slate-900: #181c24;
+  --color-slate-950: #101319;
+}
+
+html {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #f4f6fb;
+  color: #2b2b2b;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dark body {
+  background: #101319;
+  color: #f8fafc;
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+}
+
+.app-shell {
+  min-height: 100svh;
+  width: 100%;
+  background-color: #f4f6fb;
+}
+
+html.dark .app-shell {
+  background-color: #101319;
+}
+
+.field {
+  @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition
+    placeholder:text-slate-400
+    focus:border-navy-500 focus:ring-2 focus:ring-navy-500/20
+    dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50 dark:placeholder:text-slate-500
+    dark:focus:border-navy-400 dark:focus:ring-navy-400/20;
+}
+
+.btn-primary {
+  @apply inline-flex w-full items-center justify-center gap-2 rounded-xl bg-navy-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-200
+    hover:bg-navy-900 hover:shadow-md
+    disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-100 disabled:shadow-none
+    dark:bg-navy-600 dark:hover:bg-navy-500 dark:disabled:bg-slate-700 dark:disabled:text-slate-500;
+}
+
+.btn-secondary {
+  @apply inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition duration-200
+    hover:bg-slate-50 hover:shadow-md
+    disabled:cursor-not-allowed disabled:opacity-50
+    dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800;
+}
+
+.card {
+  @apply rounded-xl border border-slate-200 bg-white p-5 sm:p-6
+    dark:border-slate-800 dark:bg-slate-900;
+}
+
+.page-title {
+  @apply text-2xl font-bold tracking-tight text-slate-900 dark:text-white;
+}
+
+.page-subtitle {
+  @apply text-sm leading-relaxed text-slate-500 dark:text-slate-400;
+}
+
+.badge {
+  @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold;
+}
+
+.dropzone {
+  @apply relative min-h-[220px] rounded-2xl border-2 border-dashed p-12 text-center transition-all duration-200 sm:min-h-[260px] sm:p-16;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Archivo", var(--font-sans);
+}

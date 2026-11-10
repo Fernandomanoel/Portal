@@ -6,7 +6,9 @@ import { DIAS_GUARDADOS, LIMITE_ARQUIVO_MB } from "../src/types/envio.js";
 import type { Armazenamento } from "./armazenamento.js";
 import type { HistoricoConteudo, RevisaoConteudo } from "../src/types/conteudoProfessor.js";
 import { LIMITES_CONTEUDO } from "../src/types/conteudoProfessor.js";
-import type { ListaAcompanhamento } from "../src/types/lista.js";
+import type { Compartilhamento, ListaAcompanhamento } from "../src/types/lista.js";
+import { PERMISSOES_PADRAO, normalizarPermissoes, type PermissaoId, type UsuarioFixo } from "../src/types/acesso.js";
+import { caminhoUsuario, lerUsuario, listarUsuarios, semSenha, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
 import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
 import { caminhoConteudo, comentarioValido, slugValido, validarConteudo } from "./conteudos.js";
 import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
@@ -16,16 +18,22 @@ import {
   COOKIE_SESSAO,
   acharUnidade,
   autenticar,
+  avisarConfiguracao,
+  gerarHashSenha,
+  professorDaVariavel,
+  professores,
+  senhaDoCadastroConfere,
   autenticarUnidade,
   criarFicha,
   lerFicha,
+  lembretesDasUnidades,
   todasAsUnidades,
   unidadePadrao,
   cookieApagado,
   cookieSessao,
   criarSessao,
   lerCookie,
-  lerSessao,
+  lerSessaoBruta,
   limparTentativas,
   tentativaPermitida,
 } from "./seguranca.js";
@@ -119,40 +127,103 @@ function ipDe(requisicao: Request) {
   return requisicao.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || requisicao.headers.get("x-real-ip") || "local";
 }
 
-function professorDa(requisicao: Request): Professor | null {
-  return lerSessao(lerCookie(requisicao.headers.get("cookie"), COOKIE_SESSAO));
+/** Quem está logado, com unidades e permissões lidas de novo a cada requisição: mudar o cadastro vale na hora. */
+async function professorDa(requisicao: Request, armazenamento: Armazenamento): Promise<Professor | null> {
+  const sessao = lerSessaoBruta(lerCookie(requisicao.headers.get("cookie"), COOKIE_SESSAO));
+  if (!sessao) return null;
+  if (sessao.origem === "variavel") return professorDaVariavel(sessao.usuario);
+  return professorCadastrado(await lerUsuario(armazenamento, sessao.usuario));
 }
+
+function professorCadastrado(usuario: UsuarioGuardado | null): Professor | null {
+  if (!usuario || !usuario.ativo) return null;
+  // Unidade que deixou de existir sai do acesso; sem nenhuma, o usuário não entra.
+  const existentes = todasAsUnidades().map((u) => u.id);
+  const unidades = usuario.unidades.includes(TODAS_AS_UNIDADES) ? [TODAS_AS_UNIDADES] : usuario.unidades.filter((u) => existentes.includes(u));
+  if (!unidades.length) return null;
+  return {
+    usuario: usuario.usuario,
+    nome: usuario.nome,
+    unidade: unidades[0],
+    unidades,
+    permissoes: normalizarPermissoes(usuario.permissoes),
+    origem: "cadastro",
+  };
+}
+
+/** Usuário e senha da tela de login: primeiro a variável PROFESSORES, depois quem foi criado pela tela. */
+async function autenticarProfessor(usuario: string, senha: string, armazenamento: Armazenamento): Promise<Professor | "SEM_UNIDADE" | null> {
+  const daVariavel = autenticar(usuario, senha);
+  if (daVariavel) return daVariavel;
+  const nome = usuario.trim().toLowerCase();
+  const guardado = usuarioValido(nome) ? await lerUsuario(armazenamento, nome) : null;
+  const confere = senhaDoCadastroConfere(senha, guardado?.senha);
+  if (!guardado || !confere || !guardado.ativo) return null;
+  return professorCadastrado(guardado) ?? "SEM_UNIDADE";
+}
+
+// ------------------------------------------------------------------ acesso
+
+/** Permissões em vigor: as do cadastro, ou as padrão (professor da variável) mais gerenciar usuários se for administrador. */
+function permissoesDe(professor: Professor): PermissaoId[] {
+  const base = professor.permissoes ?? PERMISSOES_PADRAO;
+  return normalizarPermissoes(professor.administrador ? [...base, "usuarios"] : base);
+}
+const temPermissao = (professor: Professor, id: PermissaoId) => permissoesDe(professor).includes(id);
+const semPermissao = () => erro(403, "SEM_PERMISSAO", "Seu usuário não tem acesso a esta área. Fale com quem administra o portal.");
+
+/** Unidades que o professor alcança: `null` = todas; senão a lista de ids. */
+function escopo(professor: Professor): string[] | null {
+  const ids = professor.unidades ?? [professor.unidade];
+  return ids.includes(TODAS_AS_UNIDADES) ? null : ids;
+}
+const noEscopo = (professor: Professor, unidade: string | null | undefined) => {
+  const e = escopo(professor);
+  return e === null || (unidade != null && e.includes(unidade));
+};
+/** Mais de uma unidade (ou todas): escolhe qual olhar, como a coordenação. */
+const escolheUnidade = (professor: Professor) => (escopo(professor)?.length ?? 2) !== 1;
 
 // ------------------------------------------------------------------ unidades
 
 /** Envios e listas criados antes das unidades não têm o campo: valem como a unidade padrão. */
 const unidadeDe = (recurso: { unidade?: string }) => recurso.unidade ?? unidadePadrao();
 
-const coordenacao = (professor: Professor) => professor.unidade === TODAS_AS_UNIDADES;
-
-/** Cada professor só toca no que é da sua unidade; a coordenação toca em tudo. */
-const podeVer = (professor: Professor, recurso: { unidade?: string }) => coordenacao(professor) || unidadeDe(recurso) === professor.unidade;
+/** Cada professor só toca no que é das suas unidades; quem alcança todas, toca em tudo. */
+const podeVer = (professor: Professor, recurso: { unidade?: string }) => noEscopo(professor, unidadeDe(recurso));
 
 /**
- * Unidade em que o professor está trabalhando agora: a dele, ou, na coordenação,
- * a que ela escolheu (?unidade=). `null` na coordenação sem escolha = todas.
+ * Unidade em que o professor está trabalhando agora: a única que ele alcança, ou, com
+ * várias, a que escolheu (?unidade=). `null` sem escolha = todas as que ele alcança.
  */
 function unidadeAtiva(professor: Professor, url: URL): string | null | "invalida" {
-  if (!coordenacao(professor)) return professor.unidade;
+  const e = escopo(professor);
+  if (e && e.length === 1) return e[0];
   const pedida = url.searchParams.get("unidade");
   if (!pedida || pedida === TODAS_AS_UNIDADES) return null;
-  return acharUnidade(pedida) ? pedida : "invalida";
+  if (!acharUnidade(pedida) || (e && !e.includes(pedida))) return "invalida";
+  return pedida;
 }
 
 function sessaoDe(professor: Professor): SessaoProfessor {
   const todas = todasAsUnidades();
-  const coord = coordenacao(professor);
+  const e = escopo(professor);
+  const escolhe = escolheUnidade(professor);
+  const doEscopo = e === null ? todas : todas.filter((u) => e.includes(u.id));
+  const permissoes = permissoesDe(professor);
+  const lembretes = permissoes.includes("provas") ? lembretesDasUnidades() : {};
+  const unico = e && e.length === 1 ? e[0] : "";
   return {
     usuario: professor.usuario,
     nome: professor.nome,
-    coordenacao: coord,
-    unidade: coord ? { id: TODAS_AS_UNIDADES, nome: "Todas as unidades" } : (acharUnidade(professor.unidade) ?? { id: professor.unidade, nome: professor.unidade }),
-    unidades: coord ? todas : [],
+    coordenacao: escolhe,
+    unidade: escolhe
+      ? { id: TODAS_AS_UNIDADES, nome: e === null ? "Todas as unidades" : "Todas as minhas unidades" }
+      : (acharUnidade(unico) ?? { id: unico, nome: unico }),
+    unidades: escolhe ? doEscopo : [],
+    senhasProvas: escolhe ? Object.fromEntries(Object.entries(lembretes).filter(([id]) => doEscopo.some((u) => u.id === id))) : unico in lembretes ? { [unico]: lembretes[unico] } : {},
+    todasAsUnidades: e === null,
+    permissoes,
   };
 }
 
@@ -295,6 +366,129 @@ function recibo(envio: Envio): ReciboEnvio {
 
 // ----------------------------------------------------------------- limpeza
 
+// ------------------------------------------------------------------ listas
+
+/** Lista da unidade dona, ou compartilhada com ela (todas, ou unidades escolhidas), aparece na visão dessa unidade. */
+function vistaPelaUnidade(lista: { unidade?: string; compartilhamento?: Compartilhamento }, unidade: string) {
+  const comp = lista.compartilhamento;
+  return unidadeDe(lista) === unidade || comp?.com === "todas" || !!comp?.unidades.includes(unidade);
+}
+
+/**
+ * O que o professor faz numa lista. Vê quem alcança a unidade dona ou uma unidade com quem ela foi
+ * compartilhada. Edita quem tem «listas_editar» e é da dona, ou recebeu com edição liberada.
+ * Administra (compartilhar, apagar) só quem é da dona, ou alcança todas.
+ */
+function acessoLista(professor: Professor, lista: { unidade?: string; compartilhamento?: Compartilhamento }) {
+  const e = escopo(professor);
+  const daDona = noEscopo(professor, unidadeDe(lista));
+  const comp = lista.compartilhamento;
+  const recebe = !!comp && (e === null || comp.com === "todas" || e.some((u) => comp.unidades.includes(u)));
+  const podeEditar = temPermissao(professor, "listas_editar");
+  return {
+    ver: temPermissao(professor, "listas") && (daDona || recebe),
+    editar: podeEditar && (daDona || (recebe && !!comp?.edicao)),
+    administrar: podeEditar && daDona,
+  };
+}
+
+const comAcesso = (professor: Professor, lista: ListaAcompanhamento): ListaAcompanhamento => {
+  const { editar, administrar } = acessoLista(professor, lista);
+  return { ...lista, acesso: { editar, administrar } };
+};
+
+// ------------------------------------------------------------------ usuários
+
+async function rotearUsuarios(requisicao: Request, partes: string[], quem: Professor, armazenamento: Armazenamento): Promise<Response> {
+  const metodo = requisicao.method;
+  const unidades = todasAsUnidades().map((u) => u.id);
+  const meuEscopo = escopo(quem);
+  const minhasPermissoes = permissoesDe(quem);
+
+  /** Quem cria não dá o que não tem: nem unidade fora do seu alcance, nem permissão que não possui. */
+  const dentroDoMeuAlcance = (acesso: { unidades: string[]; permissoes: PermissaoId[] }) => {
+    if (meuEscopo !== null && (acesso.unidades.includes(TODAS_AS_UNIDADES) || acesso.unidades.some((u) => !meuEscopo.includes(u)))) {
+      return "Você não pode liberar unidades que o seu próprio usuário não alcança.";
+    }
+    if (acesso.permissoes.some((p) => !minhasPermissoes.includes(p))) return "Você não pode liberar permissões que o seu próprio usuário não tem.";
+    return null;
+  };
+
+  if (partes.length === 1 && metodo === "GET") {
+    const fixos: UsuarioFixo[] = professores().map((p) => ({ usuario: p.usuario, nome: p.nome || p.usuario, unidade: p.unidade, administrador: p.administrador === true }));
+    return json({ dados: (await listarUsuarios(armazenamento)).map(semSenha), fixos, unidades: todasAsUnidades() });
+  }
+
+  if (partes.length === 1 && metodo === "POST") {
+    const corpo = (await lerCorpoJson(requisicao)) ?? {};
+    const usuario = String(corpo.usuario ?? "").trim().toLowerCase();
+    if (!usuarioValido(usuario)) return erro(422, "VALIDATION_ERROR", "O usuário usa de 3 a 30 letras minúsculas, números, ponto, hífen ou sublinhado.");
+    if (professores().some((p) => p.usuario.toLowerCase() === usuario) || (await lerUsuario(armazenamento, usuario))) {
+      return erro(409, "CONFLITO", "Já existe um usuário com esse nome de acesso.");
+    }
+    const nome = validarNome(corpo);
+    if (!nome) return erro(422, "VALIDATION_ERROR", "Informe o nome do usuário.");
+    const senha = validarSenhaNova(corpo.senha);
+    if (!senha) return erro(422, "VALIDATION_ERROR", "A senha precisa ter de 8 a 100 caracteres.");
+    const acesso = validarAcesso(corpo, unidades);
+    if (typeof acesso === "string") return erro(422, "VALIDATION_ERROR", acesso);
+    const negado = dentroDoMeuAlcance(acesso);
+    if (negado) return erro(403, "SEM_PERMISSAO", negado);
+    const novo: UsuarioGuardado = { usuario, nome, senha: gerarHashSenha(senha), ...acesso, ativo: true, criadoEm: new Date().toISOString(), criadoPor: quem.nome };
+    await armazenamento.salvarJson(caminhoUsuario(usuario), novo);
+    return json(semSenha(novo), 201);
+  }
+
+  const alvo = (partes[1] ?? "").toLowerCase();
+  if (partes.length !== 2 || !usuarioValido(alvo)) return erro(404, "NAO_ENCONTRADO", "Usuário não encontrado.");
+  const guardado = await lerUsuario(armazenamento, alvo);
+  if (!guardado) return erro(404, "NAO_ENCONTRADO", "Usuário não encontrado.");
+  const euMesmo = alvo === quem.usuario.toLowerCase();
+  // Quem tem menos alcance não mexe em quem tem mais (trocar a senha dele seria entrar no lugar dele).
+  if (!euMesmo && dentroDoMeuAlcance({ unidades: guardado.unidades, permissoes: guardado.permissoes })) {
+    return erro(403, "SEM_PERMISSAO", "Este usuário tem mais acesso do que o seu: só quem tem o mesmo alcance, ou mais, pode alterá-lo.");
+  }
+
+  if (metodo === "DELETE") {
+    if (euMesmo) return erro(422, "VALIDATION_ERROR", "Você não pode apagar o próprio usuário.");
+    await armazenamento.apagar([caminhoUsuario(alvo)]);
+    return new Response(null, { status: 204 });
+  }
+
+  if (metodo === "PATCH") {
+    const corpo = (await lerCorpoJson(requisicao)) ?? {};
+    const atualizado: UsuarioGuardado = { ...guardado, alteradoEm: new Date().toISOString() };
+    if (corpo.nome !== undefined) {
+      const nome = validarNome(corpo);
+      if (!nome) return erro(422, "VALIDATION_ERROR", "Informe o nome do usuário.");
+      atualizado.nome = nome;
+    }
+    if (corpo.senha !== undefined) {
+      const senha = validarSenhaNova(corpo.senha);
+      if (!senha) return erro(422, "VALIDATION_ERROR", "A senha precisa ter de 8 a 100 caracteres.");
+      atualizado.senha = gerarHashSenha(senha);
+    }
+    if (corpo.unidades !== undefined || corpo.permissoes !== undefined) {
+      const acesso = validarAcesso({ unidades: corpo.unidades ?? guardado.unidades, permissoes: corpo.permissoes ?? guardado.permissoes }, unidades);
+      if (typeof acesso === "string") return erro(422, "VALIDATION_ERROR", acesso);
+      const negado = dentroDoMeuAlcance(acesso);
+      if (negado) return erro(403, "SEM_PERMISSAO", negado);
+      if (euMesmo && !acesso.permissoes.includes("usuarios")) return erro(422, "VALIDATION_ERROR", "Você não pode tirar de si mesmo a permissão de gerenciar usuários.");
+      atualizado.unidades = acesso.unidades;
+      atualizado.permissoes = acesso.permissoes;
+    }
+    if (corpo.ativo !== undefined) {
+      if (typeof corpo.ativo !== "boolean") return erro(422, "VALIDATION_ERROR", "Valor inválido para «ativo».");
+      if (euMesmo && !corpo.ativo) return erro(422, "VALIDATION_ERROR", "Você não pode desativar o próprio usuário.");
+      atualizado.ativo = corpo.ativo;
+    }
+    await armazenamento.salvarJson(caminhoUsuario(alvo), atualizado);
+    return json(semSenha(atualizado));
+  }
+
+  return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
+}
+
 /** Apaga envios e arquivos com mais de DIAS_GUARDADOS dias. Devolve quantos envios saíram. */
 export async function limpar(armazenamento: Armazenamento, agora = new Date()) {
   const corte = dia(new Date(agora.getTime() - DIAS_GUARDADOS * DIA_MS));
@@ -327,7 +521,7 @@ async function listarEnvios(url: URL, professor: Professor, armazenamento: Armaz
     .trim();
 
   const filtrados = envios
-    .filter((envio) => ativa === null || unidadeDe(envio) === ativa)
+    .filter((envio) => (ativa === null ? noEscopo(professor, unidadeDe(envio)) : unidadeDe(envio) === ativa))
     .map((envio) => ({ ...envio, unidade: unidadeDe(envio) ?? undefined }))
     .filter((envio) => !provaId || envio.provaId === provaId)
     .filter(
@@ -477,7 +671,11 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
   // Público: as unidades para escolher na aba Provas (só id e nome; a senha nunca sai do servidor).
   if (partes[0] === "unidades" && partes.length === 1 && metodo === "GET") {
     const dados = todasAsUnidades().sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
-    if (!dados.length) return erro(503, "ERRO_INTERNO", "Nenhuma unidade foi configurada no servidor (variável UNIDADES).");
+    if (!dados.length) {
+      const motivo = avisarConfiguracao().find((p) => p.includes("UNIDADES"));
+      return erro(503, "ERRO_INTERNO", `Nenhuma unidade foi configurada no servidor. ${motivo ?? "Confira a variável UNIDADES."}`);
+    }
+    avisarConfiguracao();
     return json({ dados });
   }
 
@@ -498,13 +696,14 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     const ip = ipDe(requisicao);
     if (!tentativaPermitida(`liberar:${ip}`)) return erro(429, "LIMITE_TENTATIVAS", "Muitas tentativas. Espere alguns minutos.");
     const corpo = await lerCorpoJson(requisicao);
-    const professor = autenticar(String(corpo?.usuario ?? ""), String(corpo?.senha ?? ""));
+    const professor = await autenticarProfessor(String(corpo?.usuario ?? ""), String(corpo?.senha ?? ""), armazenamento);
     if (!professor) return erro(401, "CREDENCIAIS_INVALIDAS", "Usuário ou senha do professor incorretos.");
     if (professor === "SEM_UNIDADE") return erro(403, "SEM_PERMISSAO", "Seu usuário ainda não está ligado a uma unidade.");
+    if (!temPermissao(professor, "provas")) return semPermissao();
     // Só libera a máquina quem é da unidade que abriu a prova (ou a coordenação).
     const unidade = lerFicha(corpo?.ficha);
     if (!unidade) return erro(401, "UNIDADE_INVALIDA", "A sessão da unidade terminou. Volte à área de Provas.");
-    if (!coordenacao(professor) && professor.unidade !== unidade.id) {
+    if (!noEscopo(professor, unidade.id)) {
       return erro(403, "SEM_PERMISSAO", `Este professor não é da ${unidade.nome}.`);
     }
     limparTentativas(`liberar:${ip}`);
@@ -516,14 +715,20 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
       const ip = ipDe(requisicao);
       if (!tentativaPermitida(`entrar:${ip}`)) return erro(429, "LIMITE_TENTATIVAS", "Muitas tentativas. Espere alguns minutos.");
       const corpo = await lerCorpoJson(requisicao);
-      const professor = autenticar(String(corpo?.usuario ?? ""), String(corpo?.senha ?? ""));
-      if (!professor) return erro(401, "CREDENCIAIS_INVALIDAS", "Usuário ou senha incorretos.");
-      if (professor === "SEM_UNIDADE") return erro(403, "SEM_PERMISSAO", "Seu usuário ainda não está ligado a uma unidade. Peça à coordenação para configurar.");
+      const professor = await autenticarProfessor(String(corpo?.usuario ?? ""), String(corpo?.senha ?? ""), armazenamento);
+      if (!professor) {
+        avisarConfiguracao();
+        return erro(401, "CREDENCIAIS_INVALIDAS", "Usuário ou senha incorretos.");
+      }
+      if (professor === "SEM_UNIDADE") {
+        avisarConfiguracao();
+        return erro(403, "SEM_PERMISSAO", "Seu usuário ainda não está ligado a uma unidade. Peça à coordenação para configurar.");
+      }
       limparTentativas(`entrar:${ip}`);
       return json(sessaoDe(professor), 200, { "Set-Cookie": cookieSessao(criarSessao(professor), seguro) });
     }
     if (metodo === "DELETE") return new Response(null, { status: 204, headers: { "Set-Cookie": cookieApagado(seguro) } });
-    const professor = professorDa(requisicao);
+    const professor = await professorDa(requisicao, armazenamento);
     return professor ? json(sessaoDe(professor)) : erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
   }
 
@@ -532,13 +737,14 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
   if (partes[0] === "limpeza") {
     const segredo = process.env.CRON_SECRET;
     const peloAgendador = segredo && requisicao.headers.get("authorization") === `Bearer ${segredo}`;
-    if (!peloAgendador && !professorDa(requisicao)) return erro(401, "NAO_AUTENTICADO", "Sem permissão.");
+    if (!peloAgendador && !(await professorDa(requisicao, armazenamento))) return erro(401, "NAO_AUTENTICADO", "Sem permissão.");
     return json({ apagados: await limpar(armazenamento) });
   }
 
   if (partes[0] === "envios") {
-    const professor = professorDa(requisicao);
+    const professor = await professorDa(requisicao, armazenamento);
     if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    if (!temPermissao(professor, "provas")) return semPermissao();
 
     if (partes.length === 1 && metodo === "GET") return listarEnvios(url, professor, armazenamento);
 
@@ -561,66 +767,92 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
   }
 
   if (partes[0] === "listas") {
-    const professor = professorDa(requisicao);
+    const professor = await professorDa(requisicao, armazenamento);
     if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    if (!temPermissao(professor, "listas")) return semPermissao();
 
     const ativa = unidadeAtiva(professor, url);
     if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
 
     if (partes.length === 1 && metodo === "GET") {
-      return json({ dados: (await listarListas(armazenamento)).filter((l) => ativa === null || (l.unidade ?? unidadePadrao()) === ativa) });
+      const todas = await listarListas(armazenamento);
+      const visiveis = todas.filter((l) => acessoLista(professor, l).ver && (ativa === null || vistaPelaUnidade(l, ativa)));
+      return json({ dados: visiveis.map((l) => ({ ...l, acesso: { editar: acessoLista(professor, l).editar, administrar: acessoLista(professor, l).administrar } })) });
     }
     if (partes.length === 1 && metodo === "POST") {
-      // A coordenação precisa dizer em qual unidade a lista nasce.
-      if (ativa === null) return erro(422, "VALIDATION_ERROR", "Escolha uma unidade antes de criar a lista.");
+      if (!temPermissao(professor, "listas_editar")) return semPermissao();
       const corpo = await lerCorpoJson(requisicao);
+      // Sem unidade escolhida só nasce lista da rede (para todas), e só por quem alcança todas as unidades.
+      const paraTodas = ativa === null;
+      if (paraTodas && !(escopo(professor) === null && corpo?.paraTodas === true)) {
+        return erro(422, "VALIDATION_ERROR", "Escolha uma unidade antes de criar a lista.");
+      }
       const origemId = typeof corpo?.duplicarDe === "string" ? corpo.duplicarDe : null;
       let origem: ListaAcompanhamento | undefined;
       if (origemId) {
         if (!idListaValido(origemId)) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
         origem = (await armazenamento.lerJson<ListaAcompanhamento>(caminhoLista(origemId))) ?? undefined;
-        if (!origem || !podeVer(professor, origem)) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
+        if (!origem || !acessoLista(professor, origem).ver) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
       }
-      const lista = novaLista(professor, ativa, origem);
+      const lista = novaLista(professor, paraTodas ? TODAS_AS_UNIDADES : ativa, origem);
       await armazenamento.salvarJson(caminhoLista(lista.id), lista);
-      return json(lista, 201);
+      return json(comAcesso(professor, lista), 201);
     }
 
     const id = partes[1] ?? "";
     if (partes.length !== 2 || !idListaValido(id)) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
     const lida = await armazenamento.lerJson<ListaAcompanhamento>(caminhoLista(id));
-    // Lista de outra unidade responde como se não existisse.
-    const atual = lida && podeVer(professor, lida) ? lida : null;
+    // Lista que o professor não alcança responde como se não existisse.
+    const atual = lida && acessoLista(professor, lida).ver ? lida : null;
 
-    if (metodo === "GET") return atual ? json(atual) : erro(404, "NAO_ENCONTRADO", "Lista não encontrada. Ela pode ter sido apagada.");
+    if (metodo === "GET") return atual ? json(comAcesso(professor, atual)) : erro(404, "NAO_ENCONTRADO", "Lista não encontrada. Ela pode ter sido apagada.");
     if (metodo === "DELETE") {
-      if (atual) await armazenamento.apagar([caminhoLista(id)]);
+      if (atual) {
+        // Apagar é de quem é da unidade dona: a unidade que só recebeu o compartilhamento não leva a lista embora.
+        if (!acessoLista(professor, atual).administrar) return erro(403, "SEM_PERMISSAO", "Só a unidade dona da lista pode apagá-la.");
+        await armazenamento.apagar([caminhoLista(id)]);
+      }
       return new Response(null, { status: 204 });
     }
     if (metodo === "PUT") {
       if (!atual) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada. Ela pode ter sido apagada.");
-      const conferida = validarLista(await lerCorpoJson(requisicao));
+      const acesso = acessoLista(professor, atual);
+      if (!acesso.editar) return erro(403, "SEM_PERMISSAO", "Você só pode ver esta lista, não editar.");
+      const conferida = validarLista(await lerCorpoJson(requisicao), todasAsUnidades().map((u) => u.id));
       if (typeof conferida === "string") return erro(422, "VALIDATION_ERROR", conferida);
       // Outro professor gravou depois que esta tela abriu a lista: devolve a versão dele em vez de sobrescrever.
       if (conferida.versao !== atual.versao) {
-        return json({ error: { code: "CONFLITO", message: `${atual.alteradaPor} alterou esta lista enquanto você editava.` }, atual }, 409);
+        return json({ error: { code: "CONFLITO", message: `${atual.alteradaPor} alterou esta lista enquanto você editava.` }, atual: comAcesso(professor, atual) }, 409);
       }
+      // Mudar com quem a lista é compartilhada é só da unidade dona; quem apenas recebe não mexe nisso.
+      const compartilhamento = acesso.administrar && conferida.compartilhamento !== undefined ? (conferida.compartilhamento ?? undefined) : atual.compartilhamento;
+      const { acesso: _acesso, ...guardada } = atual;
       const gravada: ListaAcompanhamento = {
-        ...atual,
+        ...guardada,
         ...conferida.lista,
+        compartilhamento,
         versao: atual.versao + 1,
         alteradaPor: professor.nome,
         alteradaEm: new Date().toISOString(),
       };
       await armazenamento.salvarJson(caminhoLista(id), gravada);
-      return json(gravada);
+      return json(comAcesso(professor, gravada));
     }
+  }
+
+  // Usuários: criados e editados por quem tem a permissão «usuarios» (administrador).
+  if (partes[0] === "usuarios") {
+    const professor = await professorDa(requisicao, armazenamento);
+    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    if (!temPermissao(professor, "usuarios")) return semPermissao();
+    return rotearUsuarios(requisicao, partes, professor, armazenamento);
   }
 
   // Conteúdos dos cursos: uma «wiki» editada por qualquer professor, com o histórico de versões.
   if (partes[0] === "conteudos") {
-    const professor = professorDa(requisicao);
+    const professor = await professorDa(requisicao, armazenamento);
     if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    if (!temPermissao(professor, "conteudos")) return semPermissao();
     const slug = partes[1] ?? "";
     if (partes.length !== 2 || !slugValido(slug)) return erro(404, "NAO_ENCONTRADO", "Conteúdo não encontrado.");
     const historico = (await armazenamento.lerJson<HistoricoConteudo>(caminhoConteudo(slug))) ?? { slug, revisoes: [] };

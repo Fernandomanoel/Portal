@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="320" y="32" font-size="15" fill="#1f2937" font-weight="700" text-anchor="middle">Check-list de abertura do consultório</text>
+  <rect x="60" y="46" width="520" height="322" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <rect x="76" y="60" width="488" height="20" rx="6" fill="#ccfbf1"/>
+  <text x="86" y="74" font-size="11.5" fill="#134e4a" font-weight="700">Ambiente</text>
+  <rect x="88" y="83" width="15" height="15" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <path d="M91 92 l4 4 l8 -9" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="112" y="95" font-size="11" fill="#1f2937">Sala limpa e organizada</text>
+  <rect x="88" y="102" width="15" height="15" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <path d="M91 111 l4 4 l8 -9" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="112" y="114" font-size="11" fill="#1f2937">Maca com lençol descartável novo</text>
+  <rect x="88" y="121" width="15" height="15" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <path d="M91 130 l4 4 l8 -9" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="112" y="133" font-size="11" fill="#1f2937">Lixeiras forradas e separadas</text>
+  <rect x="88" y="140" width="15" height="15" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <path d="M91 149 l4 4 l8 -9" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="112" y="152" font-size="11" fill="#1f2937">Pia com sabão e papel toalha</text>
+  <rect x="76" y="166" width="488" height="20" rx="6" fill="#ccfbf1"/>
+  <text x="86" y="180" font-size="11.5" fill="#134e4a" font-weight="700">Materiais</text>
+  <rect x="88" y="189" width="15" height="15" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <path d="M91 198 l4 4 l8 -9" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="112" y="201" font-size="11" fill="#1f2937">Termômetro, esfigmomanômetro, estetoscópio</text>
+  <rect x="88" y="208" width="15" height="15" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <path d="M91 217 l4 4 l8 -9" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="112" y="220" font-size="11" fill="#1f2937">Balança e fita métrica</text>
+  <rect x="88" y="227" width="15" height="15" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="112" y="239" font-size="11" fill="#b45309" font-weight="700">Álcool 70% e luvas</text>
+  <text x="500" y="239" font-size="10" fill="#d97706" font-weight="700">faltando</text>
+  <rect x="88" y="246" width="15" height="15" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="112" y="258" font-size="11" fill="#b45309" font-weight="700">Abaixadores e gaze</text>
+  <text x="500" y="258" font-size="10" fill="#d97706" font-weight="700">faltando</text>
+  <rect x="76" y="272" width="488" height="20" rx="6" fill="#ccfbf1"/>
+  <text x="86" y="286" font-size="11.5" fill="#134e4a" font-weight="700">Documentos</text>
+  <rect x="88" y="295" width="15" height="15" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <path d="M91 304 l4 4 l8 -9" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="112" y="307" font-size="11" fill="#1f2937">Agenda do dia conferida</text>
+  <rect x="88" y="314" width="15" height="15" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <path d="M91 323 l4 4 l8 -9" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="112" y="326" font-size="11" fill="#1f2937">Prontuários separados</text>
+  <rect x="88" y="333" width="15" height="15" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="112" y="345" font-size="11" fill="#b45309" font-weight="700">Receituário e atestados em estoque</text>
+  <text x="500" y="345" font-size="10" fill="#d97706" font-weight="700">faltando</text>
+</svg>

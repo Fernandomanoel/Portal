@@ -1816,6 +1816,33 @@ export const ATIVIDADES: Curso[] = [
     sigla: "AM",
     cor: "#0d9488",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Auxiliar Médico — Agendamento de Consultas",
+        descricao: "Do pedido à reconfirmação: ficha, agenda do dia, encaixe de pedidos e cancelamentos.",
+        caminho: "Auxiliar Médico/auxiliar-medico-agendamento-de-consultas",
+      },
+      {
+        titulo: "Auxiliar Médico — Atendimento ao Cidadão",
+        descricao: "Prioridades, escuta ativa, linguagem simples, sigilo e reclamações.",
+        caminho: "Auxiliar Médico/auxiliar-medico-atendimento-ao-cidadao",
+      },
+      {
+        titulo: "Auxiliar Médico — Secretariado Médico",
+        descricao: "Rotina do dia, prontuário, limite com os documentos do médico e arquivo.",
+        caminho: "Auxiliar Médico/auxiliar-medico-secretariado-medico",
+      },
+      {
+        titulo: "Auxiliar Médico — Check-list do Consultório",
+        descricao: "Abertura, materiais, higiene das mãos, resíduos e check-list de fechamento.",
+        caminho: "Auxiliar Médico/auxiliar-medico-check-list-do-consultorio",
+      },
+      {
+        titulo: "Auxiliar Médico — Simulado: Paciente Alterado ou que Não Sabe Explicar",
+        descricao: "Situação real em decisões: paciente aflito, confusão repentina, sinais de alerta e registro.",
+        caminho: "Auxiliar Médico/auxiliar-medico-simulado-paciente-alterado",
+      },
+    ],
   },
   {
     slug: "recepcionista-saude",
@@ -1843,6 +1870,33 @@ export const ATIVIDADES: Curso[] = [
     sigla: "IE",
     cor: "#7c3aed",
     materiais: [],
+    atividades: [
+      {
+        titulo: "Inteligência Emocional — Conhecendo as Emoções",
+        descricao: "As seis emoções básicas, os sinais no corpo, a intensidade e a sua emoção da semana.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-conhecendo-as-emocoes",
+      },
+      {
+        titulo: "Inteligência Emocional — Conhecendo a Si Mesmo",
+        descricao: "Perfis de energia social, gatilhos e o seu diário emocional.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-conhecendo-a-si-mesmo",
+      },
+      {
+        titulo: "Inteligência Emocional — Lidando com Cada Emoção",
+        descricao: "Regra do PARE, respiração quadrada e o que ajuda em cada emoção.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-lidando-com-cada-emocao",
+      },
+      {
+        titulo: "Inteligência Emocional — Situações com Outras Pessoas",
+        descricao: "O que dizer e como reagir com colegas extrovertidos, introvertidos e ambivertidos.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-situacoes-com-pessoas",
+      },
+      {
+        titulo: "Inteligência Emocional — Locais, Ambientes e Mediação",
+        descricao: "O tom de cada ambiente, atendimento a pessoas alteradas e como mediar um conflito no trabalho.",
+        caminho: "Inteligência Emocional/inteligencia-emocional-locais-e-ambientes",
+      },
+    ],
   },
   {
     slug: "lideranca",

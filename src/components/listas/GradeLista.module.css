@@ -4,11 +4,11 @@
 .rolagem {
   --linha-grade: color-mix(in oklab, var(--line) 75%, transparent);
   --hover-linha: color-mix(in oklab, var(--ink) 3.5%, transparent);
-  width: fit-content;
-  max-width: 100%;
-  max-height: min(72vh, 960px);
+  flex: 1;
+  min-height: 0;
+  width: 100%;
   overflow: auto;
-  border-top: 1px solid var(--linha-grade);
+  border-top: 1px solid var(--line-strong);
   scrollbar-color: var(--line-strong) transparent;
   overscroll-behavior: contain;
 }
@@ -39,6 +39,23 @@
   height: 34px;
   background: var(--surface);
   text-align: left;
+}
+
+/* Linha de letras (A, B, C…) acima dos títulos, como nas planilhas. */
+.grade thead .letras th {
+  height: 22px;
+  background: var(--surface-soft);
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  text-align: center;
+}
+
+.grade thead .titulos th {
+  top: 22px;
+  border-bottom: 1px solid var(--line-strong);
+  background: color-mix(in oklab, var(--ink) 2.5%, var(--surface));
+  font-weight: 600;
 }
 
 .canto {
@@ -168,12 +185,18 @@
 
 /* ---------- Calha com o número da linha + primeira coluna fixa ---------- */
 
+/* Coluna dos números de linha: faixa cinza, como a das planilhas. */
 .alca {
   position: sticky;
   left: 0;
   z-index: 2;
   width: 56px;
-  border-right-color: transparent !important;
+}
+
+.grade tbody .alca,
+.grade tfoot .alca,
+.grade thead .alca {
+  background: var(--surface-soft);
 }
 
 .fixa {
@@ -185,11 +208,10 @@
 .alcaBotao {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 4px;
   width: 56px;
   height: 36px;
-  padding-right: var(--space-2);
   border: 0;
   background: none;
   color: var(--ink-faint);
@@ -241,6 +263,98 @@
 .cor-vermelho {
   --fundo-linha: color-mix(in oklab, var(--danger) 12%, var(--surface));
 }
+
+.cor-cinza {
+  --fundo-linha: color-mix(in oklab, var(--ink) 7%, var(--surface));
+}
+
+/* Cor de uma célula só: as mesmas misturas da cor de linha, declaradas na própria célula. */
+.cel-azul {
+  --fundo-linha: color-mix(in oklab, var(--brand) 16%, var(--surface)) !important;
+}
+
+.cel-verde {
+  --fundo-linha: color-mix(in oklab, var(--success) 17%, var(--surface)) !important;
+}
+
+.cel-amarelo {
+  --fundo-linha: color-mix(in oklab, oklch(0.86 0.17 95) 34%, var(--surface)) !important;
+}
+
+.cel-vermelho {
+  --fundo-linha: color-mix(in oklab, var(--danger) 16%, var(--surface)) !important;
+}
+
+.cel-cinza {
+  --fundo-linha: color-mix(in oklab, var(--ink) 11%, var(--surface)) !important;
+}
+
+.celNegrito {
+  font-weight: 700;
+}
+
+.celItalico {
+  font-style: italic;
+}
+
+.bordaForte {
+  box-shadow: inset 0 0 0 2px var(--ink-soft);
+}
+
+.semBorda {
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+/* Células escolhidas em área: um véu azul por cima da cor da célula. */
+.selecionada {
+  background-image: linear-gradient(color-mix(in oklab, var(--brand) 18%, transparent), color-mix(in oklab, var(--brand) 18%, transparent));
+}
+
+.emArea input,
+.emArea select {
+  user-select: none;
+}
+
+.mesclada {
+  vertical-align: middle;
+}
+
+.erroFormula {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.letraBotao {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.letraBotao:hover {
+  background: color-mix(in oklab, var(--brand) 12%, transparent);
+  color: var(--brand-deep);
+}
+
+.letraBotao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+}
+
+.letraAtiva {
+  color: var(--brand-deep);
+  font-weight: 700;
+}
+
+.totalRotulo {
+  color: var(--ink-faint);
+  font-weight: 500;
+}
+
 
 .negrito .texto,
 .negrito .select {

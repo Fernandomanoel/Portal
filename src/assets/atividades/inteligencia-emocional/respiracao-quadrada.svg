@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="320" y="32" font-size="15" fill="#1f2937" font-weight="700" text-anchor="middle">Respiração quadrada: 4 tempos em cada lado</text>
+  <rect x="26" y="48" width="588" height="330" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <rect x="140" y="100" width="220" height="220" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+  <line x1="150" y1="96" x2="350" y2="96" stroke="#7c3aed" stroke-width="3"/>
+  <polygon points="350,96 342.8,99.5 342.8,92.5" fill="#7c3aed"/>
+  <line x1="364" y1="110" x2="364" y2="310" stroke="#7c3aed" stroke-width="3"/>
+  <polygon points="364,310 360.5,302.8 367.5,302.8" fill="#7c3aed"/>
+  <line x1="350" y1="324" x2="150" y2="324" stroke="#7c3aed" stroke-width="3"/>
+  <polygon points="150,324 157.2,320.5 157.2,327.5" fill="#7c3aed"/>
+  <line x1="136" y1="310" x2="136" y2="110" stroke="#7c3aed" stroke-width="3"/>
+  <polygon points="136,110 139.5,117.2 132.5,117.2" fill="#7c3aed"/>
+  <text x="250" y="86" font-size="12.5" fill="#1f2937" font-weight="700" text-anchor="middle">Puxe o ar — 4</text>
+  <text x="384" y="214" font-size="12.5" font-weight="700" fill="#1f2937" transform="rotate(90 384 214)" text-anchor="middle">Segure — 4</text>
+  <text x="250" y="346" font-size="12.5" fill="#1f2937" font-weight="700" text-anchor="middle">Solte o ar — 4</text>
+  <text x="116" y="214" font-size="12.5" font-weight="700" fill="#1f2937" transform="rotate(-90 116 214)" text-anchor="middle">Segure — 4</text>
+  <text x="250" y="206" font-size="16" fill="#4c1d95" font-weight="700" text-anchor="middle">Repita</text>
+  <text x="250" y="228" font-size="16" fill="#4c1d95" font-weight="700" text-anchor="middle">4 vezes</text>
+  <text x="420" y="120" font-size="12.5" fill="#1f2937" font-weight="700">Quando usar</text>
+  <circle cx="426" cy="146" r="4" fill="#7c3aed"/>
+  <text x="438" y="150" font-size="10.5" fill="#1f2937">antes de uma prova</text>
+  <circle cx="426" cy="172" r="4" fill="#7c3aed"/>
+  <text x="438" y="176" font-size="10.5" fill="#1f2937">antes de falar em público</text>
+  <circle cx="426" cy="198" r="4" fill="#7c3aed"/>
+  <text x="438" y="202" font-size="10.5" fill="#1f2937">depois de uma discussão</text>
+  <circle cx="426" cy="224" r="4" fill="#7c3aed"/>
+  <text x="438" y="228" font-size="10.5" fill="#1f2937">quando o coração acelera</text>
+  <text x="420" y="278" font-size="10.5" fill="#6b7280">Conte devagar, por dentro.</text>
+  <text x="420" y="296" font-size="10.5" fill="#6b7280">Se ficar tonto, encurte para 3.</text>
+</svg>

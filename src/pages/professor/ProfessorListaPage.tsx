@@ -3,12 +3,17 @@ import { Link, useParams } from "react-router-dom";
 
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
-import { GradeLista } from "@/components/listas/GradeLista";
+import { GradeLista, MenuNovaColuna } from "@/components/listas/GradeLista";
+import { GraficosLista } from "@/components/listas/GraficosLista";
+import { MenuSuspenso } from "@/components/listas/MenuSuspenso";
+import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import { gravarLista, obterLista } from "@/lib/apiListas";
-import { ErroApi } from "@/lib/apiProvas";
-import { formatarLinha, mesclar } from "@/lib/editarLista";
+import { ErroApi, listarUnidades } from "@/lib/apiProvas";
+import { formatarLinha, inserirLinha, inserirTitulo, mesclar } from "@/lib/editarLista";
+import { areaDaSelecao, areaUnica, desmesclarArea, erroDeMesclagem, estilarArea, estiloDaArea, mesclarArea, sanear, type Selecao } from "@/lib/gradeLista";
 import { rotas } from "@/lib/rotas";
-import { CORES_LINHA, LIMITES_LISTA, type ListaAcompanhamento } from "@/types/lista";
+import { CORES_LINHA, LIMITES_LISTA, type Compartilhamento, type CorLinha, type ListaAcompanhamento } from "@/types/lista";
+import { TODAS_AS_UNIDADES, type Unidade } from "@/types/unidade";
 import { dataHora, hora } from "./formato";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorListaPage.module.css";
@@ -46,6 +51,8 @@ function apagarRascunho(id: string) {
 }
 
 export function ProfessorListaPage() {
+  // A lista é uma tela de trabalho: sem menu nem rodapé do portal, com a grade ocupando a janela.
+  useEntrarEmTelaImersiva();
   const { id = "" } = useParams();
   const { sessaoVencida } = useProfessor();
   const [lista, definirLista] = useState<ListaAcompanhamento | null>(null);
@@ -55,7 +62,12 @@ export function ProfessorListaPage() {
   const [conflito, definirConflito] = useState<ListaAcompanhamento | null>(null);
   const [rascunho, definirRascunho] = useState<ListaAcompanhamento | null>(null);
   const [linhaAtiva, definirLinhaAtiva] = useState<string | null>(null);
+  const [selecao, definirSelecao] = useState<Selecao | null>(null);
+  const [aba, definirAba] = useState<"dados" | "graficos">("dados");
+  const [novoGrafico, definirNovoGrafico] = useState(false);
+  const consumirNovoGrafico = useCallback(() => definirNovoGrafico(false), []);
   const [aviso, definirAviso] = useState<string | null>(null);
+  const [unidades, definirUnidades] = useState<Unidade[]>([]);
 
   const atual = useRef<ListaAcompanhamento | null>(null);
   const sujo = useRef(false);
@@ -65,6 +77,10 @@ export function ProfessorListaPage() {
   const conflitoAberto = useRef(false);
   /** Última versão que se sabe estar no servidor: é a base para juntar com as alterações de outro professor. */
   const base = useRef<ListaAcompanhamento | null>(null);
+
+  useEffect(() => {
+    void listarUnidades().then(definirUnidades).catch(() => {});
+  }, []);
 
   const trocarLista = useCallback((nova: ListaAcompanhamento) => {
     atual.current = nova;
@@ -112,7 +128,7 @@ export function ProfessorListaPage() {
       // O que foi editado enquanto a gravação viajava continua na tela; só a versão e a autoria vêm do servidor.
       base.current = gravada;
       const naTela = atual.current ?? gravada;
-      trocarLista({ ...naTela, versao: gravada.versao, alteradaPor: gravada.alteradaPor, alteradaEm: gravada.alteradaEm });
+      trocarLista({ ...naTela, versao: gravada.versao, alteradaPor: gravada.alteradaPor, alteradaEm: gravada.alteradaEm, acesso: gravada.acesso });
       apagarRascunho(enviar.id);
       definirMensagem(null);
       definirSituacao(sujo.current ? "pendente" : "salvo");
@@ -154,8 +170,10 @@ export function ProfessorListaPage() {
 
   const alterar = useCallback(
     (mudar: (l: ListaAcompanhamento) => ListaAcompanhamento) => {
-      if (!atual.current) return;
-      trocarLista(mudar(atual.current));
+      // Quem só pode ver a lista não altera nada, nem por atalho.
+      if (!atual.current || atual.current.acesso?.editar === false) return;
+      // `sanear` tira o que ficou sem sentido (mesclagem de linha apagada, congelamento maior que a lista).
+      trocarLista(sanear(mudar(atual.current)));
       sujo.current = true;
       if (!conflitoAberto.current) agendar();
     },
@@ -219,14 +237,25 @@ export function ProfessorListaPage() {
 
   const linhaSelecionada = lista.linhas.find((l) => l.id === linhaAtiva) ?? null;
 
+  const nLinhas = lista.linhas.filter((l) => l.titulo === undefined).length;
+  const somenteLeitura = lista.acesso?.editar === false;
+  const area = selecao && !somenteLeitura ? areaDaSelecao(selecao) : null;
+  const estiloSel = area ? estiloDaArea(lista, area) : {};
+  const podeMesclar = !!area && !areaUnica(area) && erroDeMesclagem(lista, area) === null;
+  const temMesclagem = !!lista.mesclagens?.length;
+  const podeCompartilhar = lista.acesso?.administrar === true;
+  const nomeUnidade = (id: string) => (id === TODAS_AS_UNIDADES ? "todas as unidades" : (unidades.find((u) => u.id === id)?.nome ?? id));
+
   return (
     <div className={estilos.pagina}>
-      <Link to={rotas.professorListas()} className={estilos.voltar}>
-        <Icone nome="seta-esquerda" tamanho={16} />
-        Listas
-      </Link>
-
-      <header className={estilos.topo}>
+      <header className={estilos.barraTopo}>
+        <Link to={rotas.professorListas()} className={estilos.voltarBotao}>
+          <Icone nome="seta-esquerda" tamanho={18} />
+          <span>Voltar às listas</span>
+        </Link>
+        <span className={estilos.folha} aria-hidden="true">
+          <Icone nome="tabela" tamanho={22} />
+        </span>
         <div className={estilos.tituloBloco}>
           <label htmlFor="titulo-lista" className="sr-only">
             Nome da lista
@@ -236,20 +265,214 @@ export function ProfessorListaPage() {
             className={estilos.titulo}
             value={lista.titulo}
             maxLength={LIMITES_LISTA.titulo}
+            readOnly={somenteLeitura}
             onChange={(e) => alterar((l) => ({ ...l, titulo: e.target.value }))}
             onBlur={(e) => !e.target.value.trim() && alterar((l) => ({ ...l, titulo: "Sem título" }))}
           />
           <p className={estilos.meta}>
-            <span className="tabular">
-              {lista.linhas.filter((l) => l.titulo === undefined).length} {lista.linhas.filter((l) => l.titulo === undefined).length === 1 ? "linha" : "linhas"} · {lista.colunas.length} {lista.colunas.length === 1 ? "coluna" : "colunas"}
-            </span>
-            <span>
-              Alterada por {lista.alteradaPor}, <span className="tabular">{dataHora(lista.alteradaEm)}</span>
-            </span>
+            {lista.unidade ? `Da ${lista.unidade === TODAS_AS_UNIDADES ? "rede (todas as unidades)" : `unidade ${nomeUnidade(lista.unidade)}`} · ` : ""}
+            {lista.compartilhamento ? `compartilhada com ${lista.compartilhamento.com === "todas" ? "todas as unidades" : lista.compartilhamento.unidades.map(nomeUnidade).join(", ")} · ` : ""}
+            alterada por {lista.alteradaPor}, <span className="tabular">{dataHora(lista.alteradaEm)}</span>
           </p>
         </div>
         <Situacao situacao={situacao} mensagem={mensagem} aoTentar={() => void salvar()} />
+        <button
+          type="button"
+          className={`${estilos.botao} ${estilos.exportar}`}
+          onClick={() => void import("@/lib/exportarLista").then(({ baixarXlsx }) => baixarXlsx(atual.current ?? lista))}
+        >
+          <Icone nome="baixar" tamanho={16} />
+          Exportar .xlsx
+        </button>
       </header>
+
+      {somenteLeitura && (
+        <p className={`${estilos.faixa} ${estilos.faixaInfo}`} role="status">
+          <Icone nome="cadeado" tamanho={18} />
+          Você pode ver esta lista, mas não editar. Se precisar mudar algo, fale com quem cuida dela.
+        </p>
+      )}
+
+      {aba === "dados" && (
+      <div className={estilos.ferramentas} role="toolbar" aria-label="Editar a lista">
+        <div className={estilos.grupo} role="group" aria-label="Inserir">
+          <button
+            type="button"
+            className={estilos.botao}
+            disabled={somenteLeitura || lista.linhas.length >= LIMITES_LISTA.linhas}
+            onClick={() => alterar((l) => inserirLinha(l))}
+          >
+            <Icone nome="mais" tamanho={16} />
+            Linha
+          </button>
+          <button
+            type="button"
+            className={estilos.botao}
+            disabled={somenteLeitura || lista.linhas.length >= LIMITES_LISTA.linhas}
+            onClick={() => alterar((l) => inserirTitulo(l, l.linhas.length))}
+          >
+            <Icone nome="tabela" tamanho={16} />
+            Título de bloco
+          </button>
+          {!somenteLeitura && (
+          <MenuNovaColuna
+            lista={lista}
+            alterar={alterar}
+            rotulo="Nova coluna"
+            classeGatilho={estilos.botao}
+            gatilho={
+              <>
+                <Icone nome="mais" tamanho={16} />
+                Coluna
+                <Icone nome="seta-baixo" tamanho={13} />
+              </>
+            }
+          />
+          )}
+          {!somenteLeitura && (
+            <button
+              type="button"
+              className={estilos.botao}
+              onClick={() => {
+                definirNovoGrafico(true);
+                definirAba("graficos");
+              }}
+            >
+              <Icone nome="grafico" tamanho={16} />
+              Gráfico
+            </button>
+          )}
+          {podeCompartilhar && (
+            <MenuSuspenso
+              rotulo="Compartilhar a lista"
+              classeGatilho={estilos.botao}
+              gatilho={
+                <>
+                  <Icone nome="pessoas" tamanho={16} />
+                  Compartilhar
+                  <Icone nome="seta-baixo" tamanho={13} />
+                </>
+              }
+            >
+              {() => <PainelCompartilhar lista={lista} unidades={unidades} aoMudar={(c) => alterar((l) => ({ ...l, compartilhamento: c }))} />}
+            </MenuSuspenso>
+          )}
+        </div>
+
+        <div className={estilos.grupo} role="group" aria-label={area ? "Formatar as células selecionadas" : "Selecione células para formatar"}>
+          <span className={estilos.rotuloGrupo}>
+            <Icone nome="pincel" tamanho={15} />
+            {area ? (areaUnica(area) ? "Célula" : "Células selecionadas") : "Formatar células"}
+          </span>
+          <button type="button" className={`${estilos.amostra} ${estilos.semCor}`} aria-label="Sem cor de fundo" aria-pressed={!!area && !estiloSel.fundo} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { fundo: null }))} />
+          {CORES_LINHA.map(({ cor, rotulo }) => (
+            <button key={cor} type="button" className={`${estilos.amostra} ${estilos[`amostra-${cor}`]}`} aria-label={`Fundo ${rotulo.toLowerCase()}`} aria-pressed={estiloSel.fundo === cor} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { fundo: cor as CorLinha }))} />
+          ))}
+          <button type="button" className={`${estilos.botao} ${estilos.icone}`} aria-label="Negrito na célula" aria-pressed={!!estiloSel.negrito} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { negrito: !estiloSel.negrito }))}>
+            <Icone nome="negrito" tamanho={16} />
+          </button>
+          <button type="button" className={`${estilos.botao} ${estilos.icone}`} aria-label="Itálico" aria-pressed={!!estiloSel.italico} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { italico: !estiloSel.italico }))}>
+            <Icone nome="italico" tamanho={16} />
+          </button>
+          {(["esquerda", "centro", "direita"] as const).map((a) => (
+            <button key={a} type="button" className={`${estilos.botao} ${estilos.icone}`} aria-label={`Alinhar à ${a === "centro" ? "o centro" : a}`} aria-pressed={estiloSel.alinhar === a} disabled={!area} onClick={() => area && alterar((l) => estilarArea(l, area, { alinhar: estiloSel.alinhar === a ? null : a }))}>
+              <Icone nome={`alinhar-${a}`} tamanho={16} />
+            </button>
+          ))}
+          <MenuSuspenso rotulo="Bordas da célula" classeGatilho={`${estilos.botao} ${estilos.icone}`} gatilho={<Icone nome="bordas" tamanho={16} />}>
+            {(fechar) => (
+              <div className={estilos.menuBordas}>
+                {([["todas", "Contorno forte"], ["nenhuma", "Sem linhas"], [null, "Padrão da grade"]] as const).map(([valor, rotulo]) => (
+                  <button key={rotulo} type="button" disabled={!area} aria-pressed={(estiloSel.bordas ?? null) === valor} onClick={() => { fechar(); if (area) alterar((l) => estilarArea(l, area, { bordas: valor })); }}>
+                    {rotulo}
+                  </button>
+                ))}
+              </div>
+            )}
+          </MenuSuspenso>
+        </div>
+
+        <div className={estilos.grupo} role="group" aria-label="Grade">
+          <button type="button" className={estilos.botao} disabled={somenteLeitura || !(podeMesclar || (area && temMesclagem))} title={area && !areaUnica(area) && !podeMesclar ? (erroDeMesclagem(lista, area) ?? undefined) : "Selecione duas ou mais células"} onClick={() => area && alterar((l) => (podeMesclar ? mesclarArea(l, area) : desmesclarArea(l, area)))}>
+            <Icone nome="mesclar" tamanho={16} />
+            {podeMesclar || !temMesclagem ? "Mesclar" : "Desfazer mescla"}
+          </button>
+          <MenuSuspenso
+            rotulo="Fixar linhas e colunas"
+            classeGatilho={estilos.botao}
+            gatilho={
+              <>
+                <Icone nome="congelar" tamanho={16} />
+                Fixar
+                <Icone nome="seta-baixo" tamanho={13} />
+              </>
+            }
+          >
+            {() => (
+              <div className={estilos.menuFixar}>
+                <label>
+                  <span>Linhas de cima</span>
+                  <select value={lista.congelar?.linhas ?? 0} disabled={somenteLeitura} onChange={(e) => alterar((l) => ({ ...l, congelar: { linhas: Number(e.target.value), colunas: l.congelar?.colunas ?? 1 } }))}>
+                    {[0, 1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n === 0 ? "Nenhuma" : n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Colunas da esquerda</span>
+                  <select value={lista.congelar?.colunas ?? 1} disabled={somenteLeitura} onChange={(e) => alterar((l) => ({ ...l, congelar: { linhas: l.congelar?.linhas ?? 0, colunas: Number(e.target.value) } }))}>
+                    {[0, 1, 2, 3].map((n) => (
+                      <option key={n} value={n}>
+                        {n === 0 ? "Nenhuma" : n}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <p>O cabeçalho (letras e títulos) fica sempre fixo.</p>
+              </div>
+            )}
+          </MenuSuspenso>
+        </div>
+
+        <div className={estilos.grupo} role="group" aria-label={linhaSelecionada ? "Formatar a linha selecionada" : "Selecione uma linha para formatar"}>
+          <span className={estilos.rotuloGrupo}>
+            <Icone nome="pincel" tamanho={15} />
+            {linhaSelecionada ? (linhaSelecionada.titulo !== undefined ? "Título" : "Linha selecionada") : "Formatar linha"}
+          </span>
+          <button
+            type="button"
+            className={`${estilos.amostra} ${estilos.semCor}`}
+            aria-label="Sem cor"
+            aria-pressed={!!linhaSelecionada && !linhaSelecionada.cor}
+            disabled={somenteLeitura || !linhaSelecionada}
+            onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor: null }))}
+          />
+          {CORES_LINHA.map(({ cor, rotulo }) => (
+            <button
+              key={cor}
+              type="button"
+              className={`${estilos.amostra} ${estilos[`amostra-${cor}`]}`}
+              aria-label={rotulo}
+              aria-pressed={linhaSelecionada?.cor === cor}
+              disabled={somenteLeitura || !linhaSelecionada}
+              onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor }))}
+            />
+          ))}
+          <button
+            type="button"
+            className={`${estilos.botao} ${estilos.icone}`}
+            aria-label="Negrito"
+            aria-pressed={!!linhaSelecionada?.negrito}
+            disabled={somenteLeitura || !linhaSelecionada}
+            onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { negrito: !linhaSelecionada.negrito }))}
+          >
+            <Icone nome="negrito" tamanho={16} />
+          </button>
+        </div>
+      </div>
+      )}
 
       {rascunho && (
         <div className={`${estilos.faixa} ${estilos.faixaAviso}`} role="status">
@@ -328,64 +551,34 @@ export function ProfessorListaPage() {
         </p>
       )}
 
-      <div className={estilos.ferramentas} role="toolbar" aria-label="Editar a lista">
-        <div className={estilos.grupo} role="group" aria-label={linhaSelecionada ? "Formatar a linha selecionada" : "Selecione uma linha para formatar"}>
-          <span className={estilos.rotuloGrupo}>
-            <Icone nome="pincel" tamanho={15} />
-            {linhaSelecionada ? (linhaSelecionada.titulo !== undefined ? "Título" : "Linha selecionada") : "Formatar linha"}
-          </span>
-          <button
-            type="button"
-            className={`${estilos.amostra} ${estilos.semCor}`}
-            aria-label="Sem cor"
-            aria-pressed={!!linhaSelecionada && !linhaSelecionada.cor}
-            disabled={!linhaSelecionada}
-            onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor: null }))}
-          />
-          {CORES_LINHA.map(({ cor, rotulo }) => (
-            <button
-              key={cor}
-              type="button"
-              className={`${estilos.amostra} ${estilos[`amostra-${cor}`]}`}
-              aria-label={rotulo}
-              aria-pressed={linhaSelecionada?.cor === cor}
-              disabled={!linhaSelecionada}
-              onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor }))}
-            />
-          ))}
-          <button
-            type="button"
-            className={`${estilos.botao} ${estilos.icone}`}
-            aria-label="Negrito"
-            aria-pressed={!!linhaSelecionada?.negrito}
-            disabled={!linhaSelecionada}
-            onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { negrito: !linhaSelecionada.negrito }))}
-          >
-            <Icone nome="negrito" tamanho={16} />
-          </button>
-        </div>
-
-        <button
-          type="button"
-          className={`${estilos.botao} ${estilos.exportar}`}
-          onClick={() => void import("@/lib/exportarLista").then(({ baixarXlsx }) => baixarXlsx(atual.current ?? lista))}
-        >
-          <Icone nome="baixar" tamanho={16} />
-          Exportar .xlsx
-        </button>
-      </div>
-
-      {lista.colunas.length === 0 ? (
+      {aba === "graficos" ? (
+        <GraficosLista lista={lista} alterar={alterar} somenteLeitura={somenteLeitura} criarAoAbrir={novoGrafico} aoConsumirCriar={consumirNovoGrafico} />
+      ) : lista.colunas.length === 0 ? (
         <EstadoVazio icone="tabela" titulo="Nenhuma coluna" texto="Use o botão + no canto da grade para criar a primeira: texto, marca, Sim/Não ou lista de opções." />
       ) : (
         <>
-          <GradeLista lista={lista} alterar={alterar} linhaAtiva={linhaAtiva} definirLinhaAtiva={definirLinhaAtiva} />
+          <fieldset className={estilos.areaGrade} disabled={somenteLeitura}>
+            <GradeLista lista={lista} alterar={alterar} linhaAtiva={linhaAtiva} definirLinhaAtiva={definirLinhaAtiva} selecao={selecao} definirSelecao={definirSelecao} />
+          </fieldset>
         </>
       )}
 
-      <p className={estilos.dica}>
-        Salva sozinho (ou Ctrl+S) · Setas e Enter andam entre as células · Clique no título de uma coluna para renomear, mudar o tipo ou apagar; arraste a borda para alargar · O + à direita cria colunas
-      </p>
+      <footer className={estilos.rodape}>
+        <div className={estilos.abas} role="tablist" aria-label="O que mostrar">
+          <button type="button" role="tab" aria-selected={aba === "dados"} onClick={() => definirAba("dados")}>
+            <Icone nome="tabela" tamanho={14} />
+            Dados
+          </button>
+          <button type="button" role="tab" aria-selected={aba === "graficos"} onClick={() => definirAba("graficos")}>
+            <Icone nome="grafico" tamanho={14} />
+            Gráficos{lista.graficos?.length ? ` (${lista.graficos.length})` : ""}
+          </button>
+        </div>
+        <span className="tabular">
+          {nLinhas} {nLinhas === 1 ? "linha" : "linhas"} · {lista.colunas.length} {lista.colunas.length === 1 ? "coluna" : "colunas"}
+        </span>
+        <span>Salva sozinho (ou Ctrl+S) · Setas e Enter andam entre as células · Clique no título da coluna para renomear, mudar o tipo ou apagar</span>
+      </footer>
     </div>
   );
 }
@@ -408,5 +601,60 @@ function Situacao({ situacao, mensagem, aoTentar }: { situacao: Situacao; mensag
       {situacao === "salvo" ? <Icone nome="check" tamanho={15} /> : <span className={estilos.ponto} aria-hidden="true" />}
       {texto}
     </p>
+  );
+}
+
+/** Com quem a lista é compartilhada, como num site do SharePoint: só a unidade dona, todas, ou as escolhidas. */
+function PainelCompartilhar({ lista, unidades, aoMudar }: { lista: ListaAcompanhamento; unidades: Unidade[]; aoMudar: (c: Compartilhamento | undefined) => void }) {
+  const atual = lista.compartilhamento;
+  const modo = !atual ? "dona" : atual.com;
+  const outras = unidades.filter((u) => u.id !== lista.unidade);
+  const escolher = (m: "dona" | "todas" | "unidades") => {
+    if (m === "dona") aoMudar(undefined);
+    else if (m === "todas") aoMudar({ com: "todas", unidades: [], edicao: atual?.edicao ?? false });
+    else aoMudar({ com: "unidades", unidades: atual?.unidades.length ? atual.unidades : outras.slice(0, 1).map((u) => u.id), edicao: atual?.edicao ?? false });
+  };
+  return (
+    <div className={estilos.compartilhar}>
+      <p className={estilos.compartilharTitulo}>Quem enxerga esta lista</p>
+      {(
+        [
+          ["dona", lista.unidade === TODAS_AS_UNIDADES ? "Só quem acessa todas as unidades" : "Só a unidade dona"],
+          ["todas", "Todas as unidades"],
+          ["unidades", "Unidades escolhidas"],
+        ] as const
+      ).map(([valor, rotulo]) => (
+        <label key={valor} className={estilos.compartilharOpcao}>
+          <input type="radio" name="compartilhar" checked={modo === valor} onChange={() => escolher(valor)} />
+          {rotulo}
+        </label>
+      ))}
+      {modo === "unidades" && (
+        <div className={estilos.compartilharUnidades} role="group" aria-label="Unidades que recebem">
+          {outras.map((u) => (
+            <label key={u.id} className={estilos.compartilharOpcao}>
+              <input
+                type="checkbox"
+                checked={atual?.unidades.includes(u.id) ?? false}
+                onChange={() => {
+                  const ids = atual?.unidades ?? [];
+                  const novas = ids.includes(u.id) ? ids.filter((x) => x !== u.id) : [...ids, u.id];
+                  // Sem nenhuma unidade marcada, volta a ser só da dona.
+                  aoMudar(novas.length ? { com: "unidades", unidades: novas, edicao: atual?.edicao ?? false } : undefined);
+                }}
+              />
+              {u.nome}
+            </label>
+          ))}
+        </div>
+      )}
+      {atual && (
+        <label className={`${estilos.compartilharOpcao} ${estilos.compartilharEdicao}`}>
+          <input type="checkbox" checked={atual.edicao} onChange={() => aoMudar({ ...atual, edicao: !atual.edicao })} />
+          Quem recebe também pode editar
+        </label>
+      )}
+      <p className={estilos.compartilharNota}>A unidade dona sempre edita, compartilha e apaga. Quem só recebe vê (ou edita, se marcado), mas não apaga.</p>
+    </div>
   );
 }

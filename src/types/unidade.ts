@@ -1,3 +1,5 @@
+import type { PermissaoId } from "./acesso";
+
 /** Unidade (escola/filial): quem usa o portal se identifica por ela com a senha da aba Provas. */
 export interface Unidade {
   id: string;
@@ -17,10 +19,16 @@ export interface SessaoProfessor {
   usuario: string;
   nome: string;
   unidade: Unidade;
-  /** Coordenação: enxerga todas as unidades. */
+  /** Escolhe a unidade que olha: coordenação (todas) ou usuário com mais de uma unidade. */
   coordenacao: boolean;
   /** Só na coordenação: todas as unidades cadastradas. */
   unidades: Unidade[];
+  /** Senha da aba Provas, por id de unidade, para quem esqueceu: só as unidades que têm lembrete cadastrado (a do professor; na coordenação, todas). */
+  senhasProvas: Record<string, string>;
+  /** Alcança todas as unidades, as de hoje e as futuras (e não só uma lista delas). */
+  todasAsUnidades: boolean;
+  /** O que este usuário pode usar na área do professor. */
+  permissoes: PermissaoId[];
 }
 
 export const TODAS_AS_UNIDADES = "*";

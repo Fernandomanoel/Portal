@@ -1,0 +1,108 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: microapp_postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Defina POSTGRES_USER no .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:?Defina POSTGRES_DB no .env}
+    # Só localhost no host — containers usam a rede interna (db:5432)
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro
+    networks:
+      - microapp_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  evolution_api:
+    image: evoapicloud/evolution-api:v2.3.7
+    container_name: microapp_evolution
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_URL=http://localhost:8080
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY:?Defina EVOLUTION_API_KEY no .env}
+      - DATABASE_ENABLED=true
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/evolution_db?schema=public
+      - DATABASE_CONNECTION_CLIENT_NAME=microapp_evolution
+      - DATABASE_SAVE_DATA_INSTANCE=true
+      - CACHE_REDIS_ENABLED=false
+      - CACHE_LOCAL_ENABLED=true
+      - CONFIG_SESSION_PHONE_CLIENT=Chrome
+      - CONFIG_SESSION_PHONE_NAME=Chrome
+      - QRCODE_LIMIT=30
+      - LANGUAGE=pt-BR
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - evolution_instances:/evolution/instances
+    networks:
+      - microapp_net
+
+  backend:
+    build: ./backend
+    container_name: microapp_backend
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - SECRET_KEY=${SECRET_KEY:?Defina SECRET_KEY no .env}
+      - EVOLUTION_API_URL=http://evolution_api:8080
+      - EVOLUTION_API_KEY=${EVOLUTION_API_KEY:?Defina EVOLUTION_API_KEY no .env}
+      - EVOLUTION_INSTANCE_NAME=${EVOLUTION_INSTANCE_NAME:-hub_escola}
+      # Vazio por padrão para não sobrescrever CORS_ORIGINS do .env.
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      - CORS_ALLOW_LAN=${CORS_ALLOW_LAN:-true}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:?Defina ADMIN_EMAIL no .env}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:?Defina ADMIN_PASSWORD no .env}
+    depends_on:
+      db:
+        condition: service_healthy
+      evolution_api:
+        condition: service_started
+    # entrypoint.sh: alembic upgrade head e em seguida uvicorn
+    networks:
+      - microapp_net
+
+  frontend:
+    build: ./frontend
+    container_name: microapp_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:8000/api/v1}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - microapp_net
+
+networks:
+  microapp_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  evolution_instances:

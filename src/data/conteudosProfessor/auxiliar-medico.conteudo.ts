@@ -10,6 +10,7 @@ const conteudo: ConteudoCurso = {
         "O médico diagnostica, prescreve e conduz o tratamento. O auxiliar executa tarefas de apoio, e não pratica atos privativos da medicina (diagnosticar, prescrever, interpretar exames como conclusão). Postura ética: sigilo absoluto das informações do paciente, respeito, pontualidade e higiene pessoal.",
       ],
       pontos: ["Dizer o que não cabe ao auxiliar.", "Explicar por que o sigilo é obrigatório."],
+      atividades: ["auxiliar-medico-secretariado-medico"],
     },
     {
       titulo: "Recepção, agenda e prontuário",
@@ -17,6 +18,7 @@ const conteudo: ConteudoCurso = {
         "A recepção cuida do acolhimento, da conferência de documentos e do convênio, do agendamento de consultas e retornos e da organização das filas por horário e prioridade (idosos, gestantes, pessoas com deficiência e casos de urgência têm atendimento prioritário). O prontuário é o registro de todas as informações do paciente: guarde com segurança, com acesso restrito. A LGPD protege dados de saúde, que são sensíveis.",
       ],
       pontos: ["Organizar uma agenda de consultas.", "Explicar a importância do prontuário e da confidencialidade."],
+      atividades: ["auxiliar-medico-agendamento-de-consultas", "auxiliar-medico-atendimento-ao-cidadao", "auxiliar-medico-secretariado-medico"],
     },
     {
       titulo: "Sinais vitais e medidas básicas",
@@ -33,6 +35,7 @@ const conteudo: ConteudoCurso = {
         "Lavagem das mãos antes e depois de cada paciente, uso de EPIs quando necessário, limpeza e desinfecção de maca, instrumentos e superfícies e descarte correto do lixo (comum, infectante e perfurocortante) fazem parte da rotina. O consultório deve estar pronto antes da consulta: materiais, formulários e equipamentos testados.",
       ],
       pontos: ["Lavar as mãos na técnica correta.", "Separar os resíduos por tipo."],
+      atividades: ["auxiliar-medico-check-list-do-consultorio"],
     },
     {
       titulo: "Primeiros socorros e comunicação com o paciente",
@@ -40,6 +43,7 @@ const conteudo: ConteudoCurso = {
         "Em urgências (desmaio, queda, crise convulsiva, engasgo), a conduta é manter a calma, chamar imediatamente o médico ou a equipe e o serviço de emergência (SAMU, 192), e prestar apenas o auxílio básico que sabe. Na comunicação, use linguagem simples, escute com atenção, explique o procedimento e respeite o medo e o pudor do paciente.",
       ],
       pontos: ["Dizer a quem acionar em uma emergência.", "Explicar um procedimento ao paciente em linguagem simples."],
+      atividades: ["auxiliar-medico-simulado-paciente-alterado", "auxiliar-medico-atendimento-ao-cidadao"],
     },
   ],
   glossario: [

@@ -189,3 +189,38 @@
   color: #fff;
 }
 
+
+.acoesTopo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.novaSecundaria {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--brand-deep);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--brand-deep);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.novaSecundaria:hover:not(:disabled) {
+  background: var(--brand-tint);
+}
+
+.novaSecundaria:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.origem {
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}

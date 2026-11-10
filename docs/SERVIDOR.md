@@ -43,6 +43,61 @@ A saída é um objeto JSON; `UNIDADES` é a lista desses objetos. O `id` (letras
 minúsculas, números e hífen) é o que os professores usam em `unidade`. Trocar a
 senha de uma unidade = gerar outro objeto e substituir na variável.
 
+Com `--lembrete` no fim do comando, o objeto leva também `lembrete`: a senha em texto,
+que a área do professor mostra (escondida, com botão Mostrar) a quem esqueceu. Só vai
+para professor logado, da própria unidade (a coordenação vê a da unidade escolhida), e
+nunca para a lista pública de unidades. É uma troca consciente: quem tem esse login lê
+a senha. Sem `lembrete`, nada aparece.
+
+### Usuários criados pela tela (diretoria, coordenação, apoio)
+
+Além dos professores da variável, existe a aba **Usuários** na área do professor. Quem tem a
+permissão «Gerenciar usuários» cria logins escolhendo **de quais unidades** a pessoa é (uma, várias
+ou todas, inclusive as futuras) e **o que ela acessa**: provas enviadas e correção, conteúdos, listas
+(só ver, ou criar e editar) e gerenciar usuários. Eles ficam em `usuarios/<usuario>.json` no
+armazenamento, com a senha só em hash; as mudanças valem na hora (desativar derruba o acesso).
+
+- **O primeiro administrador** vem da variável: gere o professor com `--admin`
+  (`npm run professor:senha -- fernando "Fernando" 'senha-forte' '*' --admin`) ou acrescente
+  `"administrador":true` ao objeto dele em `PROFESSORES`. É só isso que ele ganha a mais.
+- Quem cria não libera o que não tem: nem unidade fora do próprio alcance, nem permissão que não possui,
+  e não altera quem tem mais acesso do que ele. Ninguém desativa ou apaga o próprio usuário.
+- Professores da variável `PROFESSORES` continuam valendo, com as permissões padrão (provas, conteúdos
+  e listas), e só mudam pela Vercel.
+
+### Listas compartilhadas entre unidades
+
+Cada lista tem uma **unidade dona** (ou a **rede**, criada por quem alcança todas as unidades) e pode ser
+compartilhada com **todas as unidades** ou com **unidades escolhidas**, só para leitura ou também para
+edição. A unidade dona sempre edita, compartilha e apaga; quem só recebe vê (ou edita, se liberado), mas
+não muda o compartilhamento nem apaga. Quem não alcança a unidade dona nem recebeu a lista não a enxerga.
+
+### Grade, fórmulas e gráficos das listas
+
+A lista é uma grade no estilo planilha: uma lista nova já nasce de A a Z com 100 linhas, e quem precisar de mais acrescenta (limite de 60 colunas e 1000 linhas). Além de texto, opção, caixa de marcação e pessoa, ela tem colunas
+**número** (formato número, moeda ou percentual, casas decimais e total no rodapé: soma, média, mínimo,
+máximo ou contagem) e **data** (guardada como `yyyy-mm-dd`). Uma célula que começa com `=` é fórmula
+(`=SOMA(C1:C10)`, `=SE(B2>3;"alto";"baixo")`, `MÉDIA`, `CONT.SE`, `SOMASE`, `ARRED`, `SEERRO`...; `;` separa
+argumentos e `,` é o decimal). As funções também existem em inglês. Endereços contam de A1 na primeira
+coluna e primeira linha, e linhas de título de bloco contam como linha. O cálculo roda no navegador
+(`src/lib/formulas.ts`, sem `eval`); o servidor só guarda o texto da fórmula e valida o formato.
+
+Cor de fundo, negrito, itálico, alinhamento e bordas são por célula. Dá para mesclar células dentro de um
+bloco, fixar até 5 linhas e 3 colunas, e copiar e colar blocos (Ctrl+C e Ctrl+V, também de outra planilha).
+
+Os **gráficos** ficam na própria lista (`graficos`, até 12): colunas, barras, empilhadas, linhas, área,
+pizza e rosca, com até 6 séries somadas, em média, contagem, mínimo ou máximo por categoria. Cada um baixa
+como PNG, e a exportação `.xlsx` leva as fórmulas reais, os formatos, as mesclagens, as linhas e colunas
+fixas e uma segunda aba "Gráficos" com as imagens.
+
+### Quando o login ou a lista de unidades não funciona
+
+O servidor confere as variáveis `UNIDADES` e `PROFESSORES` e escreve o problema nos logs (Vercel > Logs,
+linhas que começam com `[configuração]`). Os casos que ele reconhece: JSON quebrado, uma variável colada
+na outra, professor apontando para uma unidade que não existe em `UNIDADES`, entradas sem `id`, `nome`,
+`usuario` ou `senha`. Na aba Provas, a mensagem «Nenhuma unidade foi configurada» passa a dizer o motivo.
+Variável alterada só vale depois de um novo deploy.
+
 ### Adicionar um professor
 
 ```bash

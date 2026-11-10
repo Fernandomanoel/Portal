@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="320" y="32" font-size="15" fill="#1f2937" font-weight="700" text-anchor="middle">Mesma situação, três reações: crítica em público</text>
+  <rect x="26" y="48" width="188" height="330" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="120" cy="85" r="15" fill="#fcd9b6" stroke="#1f2937" stroke-width="2.5"/>
+  <path d="M95 170 V133 A25 25 0 0 1 145 133 V170 Z" fill="#fb923c" stroke="#1f2937" stroke-width="2.5"/>
+  <text x="120" y="194" font-size="13.5" fill="#1f2937" font-weight="700" text-anchor="middle">Extrovertido</text>
+  <text x="120" y="222" font-size="10" fill="#6b7280" text-anchor="middle">tende a</text>
+  <text x="120" y="240" font-size="11" fill="#1f2937" text-anchor="middle">responder na hora,</text>
+  <text x="120" y="256" font-size="11" fill="#1f2937" text-anchor="middle">em voz alta</text>
+  <rect x="38" y="280" width="164" height="70" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="120" y="308" font-size="10.5" fill="#14532d" font-weight="700" text-anchor="middle">Ajuda: contar até 4</text>
+  <text x="120" y="326" font-size="10.5" fill="#14532d" font-weight="700" text-anchor="middle">e falar depois</text>
+  <rect x="226" y="48" width="188" height="330" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="320" cy="85" r="15" fill="#fcd9b6" stroke="#1f2937" stroke-width="2.5"/>
+  <path d="M295 170 V133 A25 25 0 0 1 345 133 V170 Z" fill="#a78bfa" stroke="#1f2937" stroke-width="2.5"/>
+  <text x="320" y="194" font-size="13.5" fill="#1f2937" font-weight="700" text-anchor="middle">Ambivertido</text>
+  <text x="320" y="222" font-size="10" fill="#6b7280" text-anchor="middle">tende a</text>
+  <text x="320" y="240" font-size="11" fill="#1f2937" text-anchor="middle">oscilar: às vezes</text>
+  <text x="320" y="256" font-size="11" fill="#1f2937" text-anchor="middle">fala, às vezes cala</text>
+  <rect x="238" y="280" width="164" height="70" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="320" y="308" font-size="10.5" fill="#14532d" font-weight="700" text-anchor="middle">Ajuda: escolher</text>
+  <text x="320" y="326" font-size="10.5" fill="#14532d" font-weight="700" text-anchor="middle">antes como agir</text>
+  <rect x="426" y="48" width="188" height="330" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="520" cy="85" r="15" fill="#fcd9b6" stroke="#1f2937" stroke-width="2.5"/>
+  <path d="M495 170 V133 A25 25 0 0 1 545 133 V170 Z" fill="#38bdf8" stroke="#1f2937" stroke-width="2.5"/>
+  <text x="520" y="194" font-size="13.5" fill="#1f2937" font-weight="700" text-anchor="middle">Introvertido</text>
+  <text x="520" y="222" font-size="10" fill="#6b7280" text-anchor="middle">tende a</text>
+  <text x="520" y="240" font-size="11" fill="#1f2937" text-anchor="middle">calar e remoer</text>
+  <text x="520" y="256" font-size="11" fill="#1f2937" text-anchor="middle">a crítica por dias</text>
+  <rect x="438" y="280" width="164" height="70" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+  <text x="520" y="308" font-size="10.5" fill="#14532d" font-weight="700" text-anchor="middle">Ajuda: pedir conversa</text>
+  <text x="520" y="326" font-size="10.5" fill="#14532d" font-weight="700" text-anchor="middle">a sós, por escrito</text>
+</svg>

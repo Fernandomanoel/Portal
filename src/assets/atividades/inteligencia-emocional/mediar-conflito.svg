@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" font-family="Segoe UI, system-ui, -apple-system, sans-serif">
+  <defs>
+    <filter id="sombra" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="fundoDesktop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a6b"/><stop offset="0.55" stop-color="#1d4ed8"/><stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="#eef2f7"/>
+  <text x="320" y="32" font-size="15" fill="#1f2937" font-weight="700" text-anchor="middle">Mediar um conflito entre duas pessoas</text>
+  <circle cx="110" cy="96.5" r="16.5" fill="#fcd9b6" stroke="#1f2937" stroke-width="2.5"/>
+  <path d="M82.5 190 V149.3 A27.5 27.5 0 0 1 137.5 149.3 V190 Z" fill="#fb923c" stroke="#1f2937" stroke-width="2.5"/>
+  <circle cx="530" cy="96.5" r="16.5" fill="#fcd9b6" stroke="#1f2937" stroke-width="2.5"/>
+  <path d="M502.5 190 V149.3 A27.5 27.5 0 0 1 557.5 149.3 V190 Z" fill="#38bdf8" stroke="#1f2937" stroke-width="2.5"/>
+  <circle cx="320" cy="98" r="18" fill="#fcd9b6" stroke="#1f2937" stroke-width="2.5"/>
+  <path d="M290 200 V155.6 A30 30 0 0 1 350 155.6 V200 Z" fill="#a78bfa" stroke="#1f2937" stroke-width="2.5"/>
+  <text x="320" y="214" font-size="10.5" fill="#4c1d95" font-weight="700" text-anchor="middle">mediador</text>
+  <line x1="260" y1="130" x2="170" y2="130" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="170,130 177.2,126.5 177.2,133.5" fill="#94a3b8"/>
+  <line x1="380" y1="130" x2="470" y2="130" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="470,130 462.8,133.5 462.8,126.5" fill="#94a3b8"/>
+  <text x="110" y="214" font-size="10.5" fill="#1f2937" font-weight="700" text-anchor="middle">Parte A</text>
+  <text x="530" y="214" font-size="10.5" fill="#1f2937" font-weight="700" text-anchor="middle">Parte B</text>
+  <rect x="26" y="232" width="108" height="146" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="80" cy="262" r="16" fill="#7c3aed"/>
+  <text x="80" y="268" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">1</text>
+  <text x="80" y="300" font-size="10.32258064516129" fill="#1f2937" font-weight="700" text-anchor="middle">Separe e acalme</text>
+  <text x="80" y="322" font-size="10" fill="#6b7280" text-anchor="middle">local reservado,</text>
+  <text x="80" y="337" font-size="10" fill="#6b7280" text-anchor="middle">sem plateia</text>
+  <line x1="136" y1="305" x2="144" y2="305" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="144,305 136.8,308.5 136.8,301.5" fill="#94a3b8"/>
+  <rect x="146" y="232" width="108" height="146" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="200" cy="262" r="16" fill="#7c3aed"/>
+  <text x="200" y="268" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">2</text>
+  <text x="200" y="300" font-size="12.5" fill="#1f2937" font-weight="700" text-anchor="middle">Ouça cada um</text>
+  <text x="200" y="322" font-size="10" fill="#6b7280" text-anchor="middle">sem interromper</text>
+  <text x="200" y="337" font-size="10" fill="#6b7280" text-anchor="middle">nem tomar partido</text>
+  <line x1="256" y1="305" x2="264" y2="305" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="264,305 256.8,308.5 256.8,301.5" fill="#94a3b8"/>
+  <rect x="266" y="232" width="108" height="146" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="320" cy="262" r="16" fill="#7c3aed"/>
+  <text x="320" y="268" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">3</text>
+  <text x="320" y="300" font-size="10.32258064516129" fill="#1f2937" font-weight="700" text-anchor="middle">Resuma os fatos</text>
+  <text x="320" y="322" font-size="10" fill="#6b7280" text-anchor="middle">sem culpados:</text>
+  <text x="320" y="337" font-size="7.4074074074074066" fill="#6b7280" text-anchor="middle">"o que aconteceu foi..."</text>
+  <line x1="376" y1="305" x2="384" y2="305" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="384,305 376.8,308.5 376.8,301.5" fill="#94a3b8"/>
+  <rect x="386" y="232" width="108" height="146" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="440" cy="262" r="16" fill="#7c3aed"/>
+  <text x="440" y="268" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">4</text>
+  <text x="440" y="300" font-size="11.059907834101383" fill="#1f2937" font-weight="700" text-anchor="middle">Busquem juntos</text>
+  <text x="440" y="322" font-size="10" fill="#6b7280" text-anchor="middle">o que cada um</text>
+  <text x="440" y="337" font-size="10" fill="#6b7280" text-anchor="middle">pode fazer</text>
+  <line x1="496" y1="305" x2="504" y2="305" stroke="#94a3b8" stroke-width="2"/>
+  <polygon points="504,305 496.8,308.5 496.8,301.5" fill="#94a3b8"/>
+  <rect x="506" y="232" width="108" height="146" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+  <circle cx="560" cy="262" r="16" fill="#7c3aed"/>
+  <text x="560" y="268" font-size="15" fill="#ffffff" font-weight="700" text-anchor="middle">5</text>
+  <text x="560" y="300" font-size="10.32258064516129" fill="#1f2937" font-weight="700" text-anchor="middle">Combine e volte</text>
+  <text x="560" y="322" font-size="10" fill="#6b7280" text-anchor="middle">o acordo e quando</text>
+  <text x="560" y="337" font-size="8.465608465608465" fill="#6b7280" text-anchor="middle">vão conversar de novo</text>
+</svg>

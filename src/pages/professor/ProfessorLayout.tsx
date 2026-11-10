@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState, type FormEvent } from "react";
-import { NavLink, Outlet, useOutletContext } from "react-router-dom";
+import { Navigate, NavLink, Outlet, useMatch, useOutletContext } from "react-router-dom";
 
 import { Icone } from "@/components/Icone";
 import { ErroApi, entrar, sair, sessaoAtual } from "@/lib/apiProvas";
@@ -22,10 +22,30 @@ export function useProfessor() {
   return useOutletContext<ContextoProfessor>();
 }
 
+/** Lembrete da senha da aba Provas: escondida até pedir, só para quem esqueceu. A coordenação vê a da unidade escolhida. */
+function SenhaProvas({ professor, unidade }: { professor: SessaoProfessor; unidade: string | null }) {
+  const [visivel, definirVisivel] = useState(false);
+  const senha = unidade ? professor.senhasProvas?.[unidade] : undefined;
+  if (!senha) return null;
+  return (
+    <p className={estilos.senhaProvas}>
+      <Icone nome="cadeado" tamanho={16} />
+      <span>Senha da aba Provas:</span>
+      {visivel ? <code>{senha}</code> : <span aria-hidden="true">••••••••</span>}
+      <button type="button" aria-pressed={visivel} onClick={() => definirVisivel(!visivel)}>
+        {visivel ? "Esconder" : "Mostrar"}
+      </button>
+    </p>
+  );
+}
+
 /** Toda a área do professor passa por aqui: sem sessão, só o login aparece. */
 export function ProfessorLayout() {
   const [estado, definirEstado] = useState<Estado>({ fase: "conferindo" });
   const [escolhida, definirEscolhida] = useState<string | null>(() => unidadeAtiva());
+  // O editor de listas é tela cheia, com o próprio «Voltar às listas»: a barra da área do professor sai.
+  const noEditor = useMatch("/professor/listas/:id") !== null;
+  const naRaiz = useMatch({ path: "/professor", end: true }) !== null;
 
   useEffect(() => {
     let ativo = true;
@@ -50,63 +70,87 @@ export function ProfessorLayout() {
   }
 
   const { professor } = estado;
+  const permissoes = professor.permissoes ?? [];
+  const pode = (id: string) => (permissoes as string[]).includes(id);
+  // A página inicial é a das provas: quem não tem essa permissão vai para a primeira área que pode usar.
+  if (naRaiz && !pode("provas")) {
+    const destino = pode("conteudos") ? rotas.professorConteudos() : pode("listas") ? rotas.professorListas() : pode("usuarios") ? rotas.professorUsuarios() : null;
+    if (destino) return <Navigate to={destino} replace />;
+  }
   const unidadeAtual = professor.coordenacao ? escolhida : professor.unidade.id;
   return (
     <>
-      <div className={estilos.barra}>
-        <p className={estilos.quem}>
-          <Icone nome="pessoas" tamanho={18} />
-          <span>
-            Área do professor · <strong>{professor.nome}</strong>
-          </span>
-          {professor.coordenacao ? (
-            <label className={estilos.unidadeSeletor}>
-              <span className="sr-only">Unidade</span>
-              <select
-                value={escolhida ?? ""}
-                onChange={(e) => {
-                  const id = e.target.value || null;
-                  definirUnidadeAtiva(id);
-                  definirEscolhida(id);
-                }}
-              >
-                <option value="">Todas as unidades</option>
-                {professor.unidades.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.nome}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ) : (
-            <span className={estilos.unidade}>{professor.unidade.nome}</span>
-          )}
-        </p>
-        <nav className={estilos.abas} aria-label="Área do professor">
-          <NavLink to={rotas.professor()} end className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-            <Icone nome="prova" tamanho={16} />
-            Provas enviadas
-          </NavLink>
-          <NavLink to={rotas.professorConteudos()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-            <Icone nome="livro" tamanho={16} />
-            Conteúdos
-          </NavLink>
-          <NavLink to={rotas.professorListas()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-            <Icone nome="tabela" tamanho={16} />
-            Listas
-          </NavLink>
-        </nav>
-        <button
-          type="button"
-          className={estilos.sair}
-          onClick={() => {
-            void sair().finally(() => definirEstado({ fase: "fora" }));
-          }}
-        >
-          <Icone nome="sair" tamanho={16} />
-          Sair
-        </button>
-      </div>
+      {!noEditor && (
+        <>
+          <div className={estilos.barra}>
+            <p className={estilos.quem}>
+              <Icone nome="pessoas" tamanho={18} />
+              <span>
+                Área do professor · <strong>{professor.nome}</strong>
+              </span>
+              {professor.coordenacao ? (
+                <label className={estilos.unidadeSeletor}>
+                  <span className="sr-only">Unidade</span>
+                  <select
+                    value={escolhida ?? ""}
+                    onChange={(e) => {
+                      const id = e.target.value || null;
+                      definirUnidadeAtiva(id);
+                      definirEscolhida(id);
+                    }}
+                  >
+                    <option value="">{professor.unidade.nome}</option>
+                    {professor.unidades.map((u) => (
+                      <option key={u.id} value={u.id}>
+                        {u.nome}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <span className={estilos.unidade}>{professor.unidade.nome}</span>
+              )}
+            </p>
+            <nav className={estilos.abas} aria-label="Área do professor">
+              {pode("provas") && (
+                <NavLink to={rotas.professor()} end className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="prova" tamanho={16} />
+                  Provas enviadas
+                </NavLink>
+              )}
+              {pode("conteudos") && (
+                <NavLink to={rotas.professorConteudos()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="livro" tamanho={16} />
+                  Conteúdos
+                </NavLink>
+              )}
+              {pode("listas") && (
+                <NavLink to={rotas.professorListas()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="tabela" tamanho={16} />
+                  Listas
+                </NavLink>
+              )}
+              {pode("usuarios") && (
+                <NavLink to={rotas.professorUsuarios()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="pessoas" tamanho={16} />
+                  Usuários
+                </NavLink>
+              )}
+            </nav>
+            <button
+              type="button"
+              className={estilos.sair}
+              onClick={() => {
+                void sair().finally(() => definirEstado({ fase: "fora" }));
+              }}
+            >
+              <Icone nome="sair" tamanho={16} />
+              Sair
+            </button>
+          </div>
+          <SenhaProvas professor={professor} unidade={unidadeAtual} />
+        </>
+      )}
       {/* Trocar de unidade remonta a página: tudo é buscado de novo, já filtrado. */}
       <Fragment key={unidadeAtual ?? "todas"}>
         <Outlet context={{ professor, unidadeAtual, sessaoVencida } satisfies ContextoProfessor} />
