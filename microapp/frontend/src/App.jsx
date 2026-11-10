@@ -1,0 +1,112 @@
+import React, { useEffect, useState } from 'react';
+import { Login } from './features/auth/Login';
+import { ImportarPlanilha } from './features/whatsapp/ImportarPlanilha';
+import { DispararLembretes } from './features/whatsapp/DispararLembretes';
+import { CadastroUsuario } from './features/admin/CadastroUsuario';
+import { CadastroMateria } from './features/admin/CadastroMateria';
+import { Auditoria } from './features/admin/Auditoria';
+import { ConectarWhatsapp } from './features/whatsapp/ConectarWhatsapp';
+import { AcompanhamentoModulos } from './features/acompanhamento/AcompanhamentoModulos';
+import { Alunos } from './features/alunos/Alunos';
+import { RelatorioProvas } from './features/provas/RelatorioProvas';
+import { GestaoPacotes } from './features/pacotes/GestaoPacotes';
+import { Header } from './components/Header';
+import { NavTabs } from './components/NavTabs';
+import { useSessao } from './hooks/useSessao';
+import { useWhatsappStatus } from './hooks/useWhatsappStatus';
+
+export default function App() {
+  const { usuario, validandoSessao, definirUsuario, logout } = useSessao();
+  const { conectado: whatsappConectado, atualizarStatus } = useWhatsappStatus(usuario?.id);
+  const [abaAtiva, setAbaAtiva] = useState('conectar');
+  const [menuAberto, setMenuAberto] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    setMenuAberto(false);
+  };
+
+  const irPara = (aba) => {
+    setAbaAtiva(aba);
+    setMenuAberto(false);
+  };
+
+  useEffect(() => {
+    if (!usuario) return;
+    if (abaAtiva === 'auditoria' && usuario.cargo !== 'ADM') {
+      setAbaAtiva('conectar');
+    }
+    if (
+      abaAtiva === 'pacotes' &&
+      !['ADM', 'DIRETOR', 'PROFESSOR', 'ASSISTENTE'].includes(usuario.cargo)
+    ) {
+      setAbaAtiva('conectar');
+    }
+  }, [abaAtiva, usuario]);
+
+  if (validandoSessao) {
+    return (
+      <div className="app-shell flex items-center justify-center text-sm text-slate-500 dark:text-slate-400">
+        Validando sessão...
+      </div>
+    );
+  }
+
+  if (!usuario) {
+    return <Login onLoginSuccess={definirUsuario} />;
+  }
+
+  const ehAdmin = ['ADM', 'DIRETOR'].includes(usuario.cargo);
+  const ehAdmSistema = usuario.cargo === 'ADM';
+  const podeVerProvas = ['ADM', 'DIRETOR', 'PROFESSOR', 'ASSISTENTE'].includes(usuario.cargo);
+  const podeVerPacotes = podeVerProvas;
+
+  return (
+    <div className="app-shell font-sans text-slate-900 dark:text-slate-50">
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+        <Header
+          usuario={usuario}
+          onLogout={handleLogout}
+          menuAberto={menuAberto}
+          onToggleMenu={() => setMenuAberto((aberto) => !aberto)}
+        />
+      </header>
+
+      <div className="md:flex">
+        <NavTabs
+          cargoUsuario={usuario.cargo}
+          abaAtiva={abaAtiva}
+          onNavigate={irPara}
+          menuAberto={menuAberto}
+          whatsappConectado={whatsappConectado}
+        />
+
+      <main className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-6 sm:px-8 sm:py-8">
+        {abaAtiva === 'conectar' ? (
+          <ConectarWhatsapp onStatusChange={(status) => atualizarStatus(status === 'CONNECTED')} />
+        ) : null}
+        {abaAtiva === 'planilha' ? (
+          <ImportarPlanilha
+            whatsappConectado={whatsappConectado}
+            onIrParaConexao={() => irPara('conectar')}
+          />
+        ) : null}
+        {abaAtiva === 'alunos' ? <Alunos cargoUsuario={usuario.cargo} /> : null}
+        {abaAtiva === 'provas' && podeVerProvas ? <RelatorioProvas /> : null}
+        {abaAtiva === 'pacotes' && podeVerPacotes ? <GestaoPacotes /> : null}
+        {abaAtiva === 'materias' && ehAdmin ? <CadastroMateria /> : null}
+        {abaAtiva === 'lembretes' ? (
+          <DispararLembretes
+            whatsappConectado={whatsappConectado}
+            onIrParaConexao={() => irPara('conectar')}
+            cargoUsuario={usuario.cargo}
+          />
+        ) : null}
+        {abaAtiva === 'modulos' ? <AcompanhamentoModulos /> : null}
+        {abaAtiva === 'usuarios' && ehAdmin ? <CadastroUsuario /> : null}
+        {abaAtiva === 'auditoria' && ehAdmSistema ? <Auditoria /> : null}
+      </main>
+      </div>
+    </div>
+  );
+}
