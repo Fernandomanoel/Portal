@@ -49,6 +49,29 @@ para professor logado, da própria unidade (a coordenação vê a da unidade esc
 nunca para a lista pública de unidades. É uma troca consciente: quem tem esse login lê
 a senha. Sem `lembrete`, nada aparece.
 
+### Usuários criados pela tela (diretoria, coordenação, apoio)
+
+Além dos professores da variável, existe a aba **Usuários** na área do professor. Quem tem a
+permissão «Gerenciar usuários» cria logins escolhendo **de quais unidades** a pessoa é (uma, várias
+ou todas, inclusive as futuras) e **o que ela acessa**: provas enviadas e correção, conteúdos, listas
+(só ver, ou criar e editar) e gerenciar usuários. Eles ficam em `usuarios/<usuario>.json` no
+armazenamento, com a senha só em hash; as mudanças valem na hora (desativar derruba o acesso).
+
+- **O primeiro administrador** vem da variável: gere o professor com `--admin`
+  (`npm run professor:senha -- fernando "Fernando" 'senha-forte' '*' --admin`) ou acrescente
+  `"administrador":true` ao objeto dele em `PROFESSORES`. É só isso que ele ganha a mais.
+- Quem cria não libera o que não tem: nem unidade fora do próprio alcance, nem permissão que não possui,
+  e não altera quem tem mais acesso do que ele. Ninguém desativa ou apaga o próprio usuário.
+- Professores da variável `PROFESSORES` continuam valendo, com as permissões padrão (provas, conteúdos
+  e listas), e só mudam pela Vercel.
+
+### Listas compartilhadas entre unidades
+
+Cada lista tem uma **unidade dona** (ou a **rede**, criada por quem alcança todas as unidades) e pode ser
+compartilhada com **todas as unidades** ou com **unidades escolhidas**, só para leitura ou também para
+edição. A unidade dona sempre edita, compartilha e apaga; quem só recebe vê (ou edita, se liberado), mas
+não muda o compartilhamento nem apaga. Quem não alcança a unidade dona nem recebeu a lista não a enxerga.
+
 ### Adicionar um professor
 
 ```bash

@@ -26,7 +26,7 @@ O portal sobe em `http://localhost:5173`.
 | `npm run build:servidor` | Servidor físico em `dist-servidor/servidor.mjs` |
 | `npm run servidor` | Sobe o servidor físico (site + `/api`) |
 | `npm run unidade:senha` | Gera a senha da aba Provas de uma unidade para `UNIDADES` |
-| `npm run professor:senha` | Gera o login de um professor (e a unidade dele) para `PROFESSORES` |
+| `npm run professor:senha` | Gera o login de um professor (e a unidade dele) para `PROFESSORES`; com `--admin` ele pode criar usuários pela tela |
 | `npm run preview` | Serve o build de produção |
 | `npm run lint` | oxlint |
 | `npm run ilustracoes -- <filtro>` | Gera as ilustrações SVG das atividades em `src/assets/atividades/` |

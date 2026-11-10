@@ -43,10 +43,29 @@ export interface LinhaLista {
   titulo?: string;
 }
 
+/**
+ * Com quem a lista é compartilhada além da unidade dona, como numa lista do SharePoint.
+ * `todas`: todas as unidades; `unidades`: só as escolhidas. `edicao`: quem recebe também edita.
+ */
+export interface Compartilhamento {
+  com: "todas" | "unidades";
+  unidades: string[];
+  edicao: boolean;
+}
+
+/** O que quem abriu a lista pode fazer nela. Calculado pelo servidor a cada resposta, nunca guardado. */
+export interface AcessoLista {
+  editar: boolean;
+  /** Mudar o compartilhamento e apagar: só quem é da unidade dona (ou de todas). */
+  administrar: boolean;
+}
+
 export interface ListaAcompanhamento {
   id: string;
-  /** Unidade dona da lista. Listas antigas não têm: valem como a unidade padrão. */
+  /** Unidade dona da lista; `*` = lista da rede, criada por quem enxerga todas. Listas antigas não têm: valem como a unidade padrão. */
   unidade?: string;
+  compartilhamento?: Compartilhamento;
+  acesso?: AcessoLista;
   titulo: string;
   colunas: ColunaLista[];
   linhas: LinhaLista[];
@@ -61,6 +80,9 @@ export interface ListaAcompanhamento {
 export interface ResumoLista {
   id: string;
   unidade?: string;
+  compartilhamento?: Compartilhamento;
+  /** Calculado pelo servidor para quem pediu a lista. */
+  acesso?: AcessoLista;
   titulo: string;
   colunas: number;
   linhas: number;

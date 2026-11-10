@@ -1,6 +1,7 @@
 import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 
 import type { Professor } from "../src/types/envio.js";
+import type { PermissaoId } from "../src/types/acesso.js";
 import { TODAS_AS_UNIDADES, type Unidade } from "../src/types/unidade.js";
 
 /**
@@ -14,7 +15,7 @@ interface ProfessorCadastrado extends Professor {
   senha: string;
 }
 
-function professores(): ProfessorCadastrado[] {
+export function professores(): ProfessorCadastrado[] {
   const bruto = process.env.PROFESSORES;
   if (!bruto) return [];
   try {
@@ -53,7 +54,12 @@ export function autenticar(usuario: string, senha: string): Professor | "SEM_UNI
   const confere = senhaConfere(senha, professor?.senha ?? HASH_FALSO);
   if (!professor || !confere) return null;
   if (!unidadeValida(professor.unidade)) return "SEM_UNIDADE";
-  return { usuario: professor.usuario, nome: professor.nome || professor.usuario, unidade: professor.unidade };
+  return { usuario: professor.usuario, nome: professor.nome || professor.usuario, unidade: professor.unidade, administrador: professor.administrador === true, origem: "variavel" };
+}
+
+/** Confere usuário e senha de quem foi criado pela tela; usuário inexistente também passa pelo scrypt. */
+export function senhaDoCadastroConfere(senha: string, hash: string | undefined): boolean {
+  return senhaConfere(senha, hash ?? HASH_FALSO);
 }
 
 // ----------------------------------------------------------------- unidades
@@ -120,11 +126,13 @@ function assinar(conteudo: string) {
 }
 
 export function criarSessao(professor: Professor): string {
-  const conteudo = Buffer.from(JSON.stringify({ ...professor, expira: Date.now() + DURACAO_SESSAO_MS })).toString("base64url");
+  // A sessão só guarda quem é e de onde veio o cadastro; unidades e permissões são lidas de novo a cada requisição.
+  const conteudo = Buffer.from(JSON.stringify({ usuario: professor.usuario, o: professor.origem === "cadastro" ? "c" : "v", expira: Date.now() + DURACAO_SESSAO_MS })).toString("base64url");
   return `${conteudo}.${assinar(conteudo)}`;
 }
 
-export function lerSessao(token: string | undefined): Professor | null {
+/** Só confere a assinatura e a validade; quem resolve o usuário (variável ou cadastro) é a rota. */
+export function lerSessaoBruta(token: string | undefined): { usuario: string; origem: "variavel" | "cadastro" } | null {
   if (!token) return null;
   const [conteudo, assinatura] = token.split(".");
   if (!conteudo || !assinatura) return null;
@@ -132,17 +140,22 @@ export function lerSessao(token: string | undefined): Professor | null {
   const recebida = Buffer.from(assinatura);
   if (esperada.length !== recebida.length || !timingSafeEqual(esperada, recebida)) return null;
   try {
-    const dado = JSON.parse(Buffer.from(conteudo, "base64url").toString()) as Professor & { expira: number };
-    if (dado.expira < Date.now()) return null;
-    // Professor removido da variável perde o acesso sem esperar a sessão expirar;
-    // a unidade vem da variável, então mudar o professor de unidade vale na hora.
-    const atual = professores().find((p) => p.usuario === dado.usuario);
-    if (!atual || !unidadeValida(atual.unidade)) return null;
-    return { usuario: dado.usuario, nome: dado.nome, unidade: atual.unidade };
+    const dado = JSON.parse(Buffer.from(conteudo, "base64url").toString()) as { usuario?: string; o?: string; expira?: number };
+    if (typeof dado.usuario !== "string" || typeof dado.expira !== "number" || dado.expira < Date.now()) return null;
+    return { usuario: dado.usuario, origem: dado.o === "c" ? "cadastro" : "variavel" };
   } catch {
     return null;
   }
 }
+
+/** Professor da variável, resolvido pelo nome: removido da variável perde o acesso na hora. */
+export function professorDaVariavel(usuario: string): Professor | null {
+  const atual = professores().find((p) => p.usuario === usuario);
+  if (!atual || !unidadeValida(atual.unidade)) return null;
+  return { usuario: atual.usuario, nome: atual.nome || atual.usuario, unidade: atual.unidade, administrador: atual.administrador === true, origem: "variavel" };
+}
+
+export type { PermissaoId };
 
 // A ficha da unidade é o que o aluno carrega depois de digitar a senha da aba Provas.
 const DURACAO_FICHA_MS = 12 * 60 * 60 * 1000;

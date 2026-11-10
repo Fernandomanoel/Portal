@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useState, type FormEvent } from "react";
-import { NavLink, Outlet, useMatch, useOutletContext } from "react-router-dom";
+import { Navigate, NavLink, Outlet, useMatch, useOutletContext } from "react-router-dom";
 
 import { Icone } from "@/components/Icone";
 import { ErroApi, entrar, sair, sessaoAtual } from "@/lib/apiProvas";
@@ -45,6 +45,7 @@ export function ProfessorLayout() {
   const [escolhida, definirEscolhida] = useState<string | null>(() => unidadeAtiva());
   // O editor de listas é tela cheia, com o próprio «Voltar às listas»: a barra da área do professor sai.
   const noEditor = useMatch("/professor/listas/:id") !== null;
+  const naRaiz = useMatch({ path: "/professor", end: true }) !== null;
 
   useEffect(() => {
     let ativo = true;
@@ -69,6 +70,13 @@ export function ProfessorLayout() {
   }
 
   const { professor } = estado;
+  const permissoes = professor.permissoes ?? [];
+  const pode = (id: string) => (permissoes as string[]).includes(id);
+  // A página inicial é a das provas: quem não tem essa permissão vai para a primeira área que pode usar.
+  if (naRaiz && !pode("provas")) {
+    const destino = pode("conteudos") ? rotas.professorConteudos() : pode("listas") ? rotas.professorListas() : pode("usuarios") ? rotas.professorUsuarios() : null;
+    if (destino) return <Navigate to={destino} replace />;
+  }
   const unidadeAtual = professor.coordenacao ? escolhida : professor.unidade.id;
   return (
     <>
@@ -91,7 +99,7 @@ export function ProfessorLayout() {
                       definirEscolhida(id);
                     }}
                   >
-                    <option value="">Todas as unidades</option>
+                    <option value="">{professor.unidade.nome}</option>
                     {professor.unidades.map((u) => (
                       <option key={u.id} value={u.id}>
                         {u.nome}
@@ -104,18 +112,30 @@ export function ProfessorLayout() {
               )}
             </p>
             <nav className={estilos.abas} aria-label="Área do professor">
-              <NavLink to={rotas.professor()} end className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-                <Icone nome="prova" tamanho={16} />
-                Provas enviadas
-              </NavLink>
-              <NavLink to={rotas.professorConteudos()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-                <Icone nome="livro" tamanho={16} />
-                Conteúdos
-              </NavLink>
-              <NavLink to={rotas.professorListas()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-                <Icone nome="tabela" tamanho={16} />
-                Listas
-              </NavLink>
+              {pode("provas") && (
+                <NavLink to={rotas.professor()} end className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="prova" tamanho={16} />
+                  Provas enviadas
+                </NavLink>
+              )}
+              {pode("conteudos") && (
+                <NavLink to={rotas.professorConteudos()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="livro" tamanho={16} />
+                  Conteúdos
+                </NavLink>
+              )}
+              {pode("listas") && (
+                <NavLink to={rotas.professorListas()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="tabela" tamanho={16} />
+                  Listas
+                </NavLink>
+              )}
+              {pode("usuarios") && (
+                <NavLink to={rotas.professorUsuarios()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="pessoas" tamanho={16} />
+                  Usuários
+                </NavLink>
+              )}
             </nav>
             <button
               type="button"

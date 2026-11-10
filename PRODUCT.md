@@ -84,6 +84,11 @@ conteúdo próximo de zero para quem não é programador.
   As edições ficam em `conteudos/<curso>.json` no armazenamento (não expiram); o
   texto original do arquivo `.conteudo.ts` é a versão 0. Duas pessoas editando ao
   mesmo tempo: quem salva depois recebe aviso (409) em vez de sobrescrever.
+- Aba «Usuários» (só para administradores): cria logins fora das unidades, com permissões por área
+  (provas, conteúdos, listas ver/editar, gerenciar usuários) e as unidades que cada um alcança (uma,
+  várias ou todas). Pensado para quem tem cargo alto e precisa ver e enviar listas a todas as unidades.
+  As listas têm unidade dona e podem ser compartilhadas com todas ou algumas unidades, só leitura ou com
+  edição, como no SharePoint.
 - Várias unidades usam o mesmo portal sem misturar os dados. Na aba Provas
   escolhe-se a unidade na lista e digita-se a senha dela: o servidor confere e devolve
   uma ficha assinada que o envio da prova leva junto, então as provas vão para a

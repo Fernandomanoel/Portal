@@ -37,6 +37,7 @@ import { ProfessorEnviosPage } from "@/pages/professor/ProfessorEnviosPage";
 import { ProfessorLayout } from "@/pages/professor/ProfessorLayout";
 import { ProfessorListaPage } from "@/pages/professor/ProfessorListaPage";
 import { ProfessorListasPage } from "@/pages/professor/ProfessorListasPage";
+import { ProfessorUsuariosPage } from "@/pages/professor/ProfessorUsuariosPage";
 import { ProvasPage } from "@/pages/ProvasPage";
 import { QuizPage } from "@/pages/QuizPage";
 
@@ -109,6 +110,7 @@ const roteador = criarRoteador([
           { path: "conteudos/:curso", element: <ProfessorConteudoPage /> },
           { path: "listas", element: <ProfessorListasPage /> },
           { path: "listas/:id", element: <ProfessorListaPage /> },
+          { path: "usuarios", element: <ProfessorUsuariosPage /> },
         ],
       },
 

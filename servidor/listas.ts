@@ -8,6 +8,7 @@ import {
   LARGURA_PADRAO,
   LIMITES_LISTA,
   type ColunaLista,
+  type Compartilhamento,
   type LinhaLista,
   type ListaAcompanhamento,
   type ResumoLista,
@@ -32,13 +33,15 @@ const idParte = (v: unknown): v is string => typeof v === "string" && /^[a-zA-Z0
 const texto = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : "");
 
 export function resumir(lista: ListaAcompanhamento): ResumoLista {
-  const { id, titulo, colunas, linhas, alteradaPor, alteradaEm, unidade } = lista;
-  return { id, titulo, unidade, colunas: colunas.length, linhas: linhas.filter((l) => l.titulo === undefined).length, alteradaPor, alteradaEm };
+  const { id, titulo, colunas, linhas, alteradaPor, alteradaEm, unidade, compartilhamento } = lista;
+  return { id, titulo, unidade, compartilhamento, colunas: colunas.length, linhas: linhas.filter((l) => l.titulo === undefined).length, alteradaPor, alteradaEm };
 }
 
 export function novaLista(professor: Professor, unidade: string | null, origem?: ListaAcompanhamento): ListaAcompanhamento {
   const agora = new Date().toISOString();
-  const autoria = { unidade: unidade ?? undefined, versao: 1, criadaPor: professor.nome, criadaEm: agora, alteradaPor: professor.nome, alteradaEm: agora };
+  // Lista da rede (unidade "*") nasce visível para todas; a de uma unidade nasce só dela, e a cópia não herda o compartilhamento.
+  const compartilhamento: Compartilhamento | undefined = unidade === "*" ? { com: "todas", unidades: [], edicao: false } : undefined;
+  const autoria = { unidade: unidade ?? undefined, compartilhamento, versao: 1, criadaPor: professor.nome, criadaEm: agora, alteradaPor: professor.nome, alteradaEm: agora };
   if (origem) {
     return { ...origem, ...autoria, id: novoId("lst_", 12), titulo: `${origem.titulo} (cópia)`.slice(0, LIMITES_LISTA.titulo) };
   }
@@ -61,7 +64,10 @@ export function novaLista(professor: Professor, unidade: string | null, origem?:
  * campos conhecidos, valores coerentes com o tipo da coluna, dentro dos limites.
  * Devolve uma mensagem quando não dá para aproveitar.
  */
-export function validarLista(corpo: Record<string, unknown> | null): { lista: Pick<ListaAcompanhamento, "titulo" | "colunas" | "linhas">; versao: number } | string {
+export function validarLista(
+  corpo: Record<string, unknown> | null,
+  unidadesValidas: string[] = [],
+): { lista: Pick<ListaAcompanhamento, "titulo" | "colunas" | "linhas">; versao: number; compartilhamento: Compartilhamento | null | undefined } | string {
   if (!corpo) return "Lista em formato inválido.";
   const versao = Number(corpo.versao);
   if (!Number.isInteger(versao) || versao < 1) return "Lista sem versão.";
@@ -108,7 +114,24 @@ export function validarLista(corpo: Record<string, unknown> | null): { lista: Pi
     if (bruta.negrito === true) linha.negrito = true;
     linhas.push(linha);
   }
-  return { lista: { titulo, colunas, linhas }, versao };
+  const compartilhamento = validarCompartilhamento(corpo.compartilhamento, unidadesValidas);
+  if (typeof compartilhamento === "string") return compartilhamento;
+  return { lista: { titulo, colunas, linhas }, versao, compartilhamento };
+}
+
+/**
+ * `undefined`: a tela não mandou (mantém o que está guardado); `null`: parou de compartilhar.
+ * `unidades` só guarda ids que existem.
+ */
+export function validarCompartilhamento(bruto: unknown, unidadesValidas: string[]): Compartilhamento | null | undefined | string {
+  if (bruto === undefined) return undefined;
+  if (bruto === null) return null;
+  if (typeof bruto !== "object") return "Compartilhamento inválido.";
+  const { com, unidades, edicao } = bruto as Record<string, unknown>;
+  if (com !== "todas" && com !== "unidades") return "Compartilhamento inválido.";
+  const ids = com === "unidades" && Array.isArray(unidades) ? [...new Set(unidades.filter((u): u is string => typeof u === "string" && unidadesValidas.includes(u)))] : [];
+  if (com === "unidades" && !ids.length) return "Escolha ao menos uma unidade para compartilhar.";
+  return { com, unidades: ids, edicao: edicao === true };
 }
 
 export async function listarListas(armazenamento: Armazenamento): Promise<ResumoLista[]> {

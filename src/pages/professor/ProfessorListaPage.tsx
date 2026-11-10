@@ -4,12 +4,14 @@ import { Link, useParams } from "react-router-dom";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { GradeLista, MenuNovaColuna } from "@/components/listas/GradeLista";
+import { MenuSuspenso } from "@/components/listas/MenuSuspenso";
 import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
 import { gravarLista, obterLista } from "@/lib/apiListas";
-import { ErroApi } from "@/lib/apiProvas";
+import { ErroApi, listarUnidades } from "@/lib/apiProvas";
 import { formatarLinha, inserirLinha, inserirTitulo, mesclar } from "@/lib/editarLista";
 import { rotas } from "@/lib/rotas";
-import { CORES_LINHA, LIMITES_LISTA, type ListaAcompanhamento } from "@/types/lista";
+import { CORES_LINHA, LIMITES_LISTA, type Compartilhamento, type ListaAcompanhamento } from "@/types/lista";
+import { TODAS_AS_UNIDADES, type Unidade } from "@/types/unidade";
 import { dataHora, hora } from "./formato";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorListaPage.module.css";
@@ -59,6 +61,7 @@ export function ProfessorListaPage() {
   const [rascunho, definirRascunho] = useState<ListaAcompanhamento | null>(null);
   const [linhaAtiva, definirLinhaAtiva] = useState<string | null>(null);
   const [aviso, definirAviso] = useState<string | null>(null);
+  const [unidades, definirUnidades] = useState<Unidade[]>([]);
 
   const atual = useRef<ListaAcompanhamento | null>(null);
   const sujo = useRef(false);
@@ -68,6 +71,10 @@ export function ProfessorListaPage() {
   const conflitoAberto = useRef(false);
   /** Última versão que se sabe estar no servidor: é a base para juntar com as alterações de outro professor. */
   const base = useRef<ListaAcompanhamento | null>(null);
+
+  useEffect(() => {
+    void listarUnidades().then(definirUnidades).catch(() => {});
+  }, []);
 
   const trocarLista = useCallback((nova: ListaAcompanhamento) => {
     atual.current = nova;
@@ -115,7 +122,7 @@ export function ProfessorListaPage() {
       // O que foi editado enquanto a gravação viajava continua na tela; só a versão e a autoria vêm do servidor.
       base.current = gravada;
       const naTela = atual.current ?? gravada;
-      trocarLista({ ...naTela, versao: gravada.versao, alteradaPor: gravada.alteradaPor, alteradaEm: gravada.alteradaEm });
+      trocarLista({ ...naTela, versao: gravada.versao, alteradaPor: gravada.alteradaPor, alteradaEm: gravada.alteradaEm, acesso: gravada.acesso });
       apagarRascunho(enviar.id);
       definirMensagem(null);
       definirSituacao(sujo.current ? "pendente" : "salvo");
@@ -157,7 +164,8 @@ export function ProfessorListaPage() {
 
   const alterar = useCallback(
     (mudar: (l: ListaAcompanhamento) => ListaAcompanhamento) => {
-      if (!atual.current) return;
+      // Quem só pode ver a lista não altera nada, nem por atalho.
+      if (!atual.current || atual.current.acesso?.editar === false) return;
       trocarLista(mudar(atual.current));
       sujo.current = true;
       if (!conflitoAberto.current) agendar();
@@ -223,6 +231,9 @@ export function ProfessorListaPage() {
   const linhaSelecionada = lista.linhas.find((l) => l.id === linhaAtiva) ?? null;
 
   const nLinhas = lista.linhas.filter((l) => l.titulo === undefined).length;
+  const somenteLeitura = lista.acesso?.editar === false;
+  const podeCompartilhar = lista.acesso?.administrar === true;
+  const nomeUnidade = (id: string) => (id === TODAS_AS_UNIDADES ? "todas as unidades" : (unidades.find((u) => u.id === id)?.nome ?? id));
 
   return (
     <div className={estilos.pagina}>
@@ -243,11 +254,14 @@ export function ProfessorListaPage() {
             className={estilos.titulo}
             value={lista.titulo}
             maxLength={LIMITES_LISTA.titulo}
+            readOnly={somenteLeitura}
             onChange={(e) => alterar((l) => ({ ...l, titulo: e.target.value }))}
             onBlur={(e) => !e.target.value.trim() && alterar((l) => ({ ...l, titulo: "Sem título" }))}
           />
           <p className={estilos.meta}>
-            Alterada por {lista.alteradaPor}, <span className="tabular">{dataHora(lista.alteradaEm)}</span>
+            {lista.unidade ? `Da ${lista.unidade === TODAS_AS_UNIDADES ? "rede (todas as unidades)" : `unidade ${nomeUnidade(lista.unidade)}`} · ` : ""}
+            {lista.compartilhamento ? `compartilhada com ${lista.compartilhamento.com === "todas" ? "todas as unidades" : lista.compartilhamento.unidades.map(nomeUnidade).join(", ")} · ` : ""}
+            alterada por {lista.alteradaPor}, <span className="tabular">{dataHora(lista.alteradaEm)}</span>
           </p>
         </div>
         <Situacao situacao={situacao} mensagem={mensagem} aoTentar={() => void salvar()} />
@@ -261,12 +275,19 @@ export function ProfessorListaPage() {
         </button>
       </header>
 
+      {somenteLeitura && (
+        <p className={`${estilos.faixa} ${estilos.faixaInfo}`} role="status">
+          <Icone nome="cadeado" tamanho={18} />
+          Você pode ver esta lista, mas não editar. Se precisar mudar algo, fale com quem cuida dela.
+        </p>
+      )}
+
       <div className={estilos.ferramentas} role="toolbar" aria-label="Editar a lista">
         <div className={estilos.grupo} role="group" aria-label="Inserir">
           <button
             type="button"
             className={estilos.botao}
-            disabled={lista.linhas.length >= LIMITES_LISTA.linhas}
+            disabled={somenteLeitura || lista.linhas.length >= LIMITES_LISTA.linhas}
             onClick={() => alterar((l) => inserirLinha(l))}
           >
             <Icone nome="mais" tamanho={16} />
@@ -275,12 +296,13 @@ export function ProfessorListaPage() {
           <button
             type="button"
             className={estilos.botao}
-            disabled={lista.linhas.length >= LIMITES_LISTA.linhas}
+            disabled={somenteLeitura || lista.linhas.length >= LIMITES_LISTA.linhas}
             onClick={() => alterar((l) => inserirTitulo(l, l.linhas.length))}
           >
             <Icone nome="tabela" tamanho={16} />
             Título de bloco
           </button>
+          {!somenteLeitura && (
           <MenuNovaColuna
             lista={lista}
             alterar={alterar}
@@ -294,6 +316,22 @@ export function ProfessorListaPage() {
               </>
             }
           />
+          )}
+          {podeCompartilhar && (
+            <MenuSuspenso
+              rotulo="Compartilhar a lista"
+              classeGatilho={estilos.botao}
+              gatilho={
+                <>
+                  <Icone nome="pessoas" tamanho={16} />
+                  Compartilhar
+                  <Icone nome="seta-baixo" tamanho={13} />
+                </>
+              }
+            >
+              {() => <PainelCompartilhar lista={lista} unidades={unidades} aoMudar={(c) => alterar((l) => ({ ...l, compartilhamento: c }))} />}
+            </MenuSuspenso>
+          )}
         </div>
 
         <div className={estilos.grupo} role="group" aria-label={linhaSelecionada ? "Formatar a linha selecionada" : "Selecione uma linha para formatar"}>
@@ -306,7 +344,7 @@ export function ProfessorListaPage() {
             className={`${estilos.amostra} ${estilos.semCor}`}
             aria-label="Sem cor"
             aria-pressed={!!linhaSelecionada && !linhaSelecionada.cor}
-            disabled={!linhaSelecionada}
+            disabled={somenteLeitura || !linhaSelecionada}
             onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor: null }))}
           />
           {CORES_LINHA.map(({ cor, rotulo }) => (
@@ -316,7 +354,7 @@ export function ProfessorListaPage() {
               className={`${estilos.amostra} ${estilos[`amostra-${cor}`]}`}
               aria-label={rotulo}
               aria-pressed={linhaSelecionada?.cor === cor}
-              disabled={!linhaSelecionada}
+              disabled={somenteLeitura || !linhaSelecionada}
               onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { cor }))}
             />
           ))}
@@ -325,7 +363,7 @@ export function ProfessorListaPage() {
             className={`${estilos.botao} ${estilos.icone}`}
             aria-label="Negrito"
             aria-pressed={!!linhaSelecionada?.negrito}
-            disabled={!linhaSelecionada}
+            disabled={somenteLeitura || !linhaSelecionada}
             onClick={() => linhaSelecionada && alterar((l) => formatarLinha(l, linhaSelecionada.id, { negrito: !linhaSelecionada.negrito }))}
           >
             <Icone nome="negrito" tamanho={16} />
@@ -414,7 +452,9 @@ export function ProfessorListaPage() {
         <EstadoVazio icone="tabela" titulo="Nenhuma coluna" texto="Use o botão + no canto da grade para criar a primeira: texto, marca, Sim/Não ou lista de opções." />
       ) : (
         <>
-          <GradeLista lista={lista} alterar={alterar} linhaAtiva={linhaAtiva} definirLinhaAtiva={definirLinhaAtiva} />
+          <fieldset className={estilos.areaGrade} disabled={somenteLeitura}>
+            <GradeLista lista={lista} alterar={alterar} linhaAtiva={linhaAtiva} definirLinhaAtiva={definirLinhaAtiva} />
+          </fieldset>
         </>
       )}
 
@@ -446,5 +486,60 @@ function Situacao({ situacao, mensagem, aoTentar }: { situacao: Situacao; mensag
       {situacao === "salvo" ? <Icone nome="check" tamanho={15} /> : <span className={estilos.ponto} aria-hidden="true" />}
       {texto}
     </p>
+  );
+}
+
+/** Com quem a lista é compartilhada, como num site do SharePoint: só a unidade dona, todas, ou as escolhidas. */
+function PainelCompartilhar({ lista, unidades, aoMudar }: { lista: ListaAcompanhamento; unidades: Unidade[]; aoMudar: (c: Compartilhamento | undefined) => void }) {
+  const atual = lista.compartilhamento;
+  const modo = !atual ? "dona" : atual.com;
+  const outras = unidades.filter((u) => u.id !== lista.unidade);
+  const escolher = (m: "dona" | "todas" | "unidades") => {
+    if (m === "dona") aoMudar(undefined);
+    else if (m === "todas") aoMudar({ com: "todas", unidades: [], edicao: atual?.edicao ?? false });
+    else aoMudar({ com: "unidades", unidades: atual?.unidades.length ? atual.unidades : outras.slice(0, 1).map((u) => u.id), edicao: atual?.edicao ?? false });
+  };
+  return (
+    <div className={estilos.compartilhar}>
+      <p className={estilos.compartilharTitulo}>Quem enxerga esta lista</p>
+      {(
+        [
+          ["dona", lista.unidade === TODAS_AS_UNIDADES ? "Só quem acessa todas as unidades" : "Só a unidade dona"],
+          ["todas", "Todas as unidades"],
+          ["unidades", "Unidades escolhidas"],
+        ] as const
+      ).map(([valor, rotulo]) => (
+        <label key={valor} className={estilos.compartilharOpcao}>
+          <input type="radio" name="compartilhar" checked={modo === valor} onChange={() => escolher(valor)} />
+          {rotulo}
+        </label>
+      ))}
+      {modo === "unidades" && (
+        <div className={estilos.compartilharUnidades} role="group" aria-label="Unidades que recebem">
+          {outras.map((u) => (
+            <label key={u.id} className={estilos.compartilharOpcao}>
+              <input
+                type="checkbox"
+                checked={atual?.unidades.includes(u.id) ?? false}
+                onChange={() => {
+                  const ids = atual?.unidades ?? [];
+                  const novas = ids.includes(u.id) ? ids.filter((x) => x !== u.id) : [...ids, u.id];
+                  // Sem nenhuma unidade marcada, volta a ser só da dona.
+                  aoMudar(novas.length ? { com: "unidades", unidades: novas, edicao: atual?.edicao ?? false } : undefined);
+                }}
+              />
+              {u.nome}
+            </label>
+          ))}
+        </div>
+      )}
+      {atual && (
+        <label className={`${estilos.compartilharOpcao} ${estilos.compartilharEdicao}`}>
+          <input type="checkbox" checked={atual.edicao} onChange={() => aoMudar({ ...atual, edicao: !atual.edicao })} />
+          Quem recebe também pode editar
+        </label>
+      )}
+      <p className={estilos.compartilharNota}>A unidade dona sempre edita, compartilha e apaga. Quem só recebe vê (ou edita, se marcado), mas não apaga.</p>
+    </div>
   );
 }
