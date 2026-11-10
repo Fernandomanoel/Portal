@@ -30,7 +30,7 @@ A troca entre Blob e disco é a interface `Armazenamento`
 | `DADOS_DIR` | não | Servidor físico e dev: pasta dos dados. Padrão `./dados`. |
 | `PORTA` | não | Servidor físico: porta. Padrão 8080. |
 | `SITE_DIR` | não | Servidor físico: pasta do site. Padrão `dist`. |
-| `VITE_URL_ANALISADOR_PACOTES` | não | Endereço do Analisador de pacotes, o sistema de gestão que roda na rede da escola (ex.: `http://192.168.0.10:5173`). Com ela, a área do professor ganha um link que abre esse sistema em outra aba; sem ela, o link não aparece. É lida no build do site, então trocar o valor pede um novo deploy. |
+| `VITE_URL_GESTAO` | não | Endereço do sistema de gestão (WhatsApp e cadastros) que roda na rede da escola (ex.: `http://192.168.0.10:5173`). Com ela, a área do professor ganha um link que abre esse sistema em outra aba; sem ela, o link não aparece. É lida no build do site, então trocar o valor pede um novo deploy. |
 
 No `npm run dev`, as variáveis vêm do `.env.local` (fora do git).
 

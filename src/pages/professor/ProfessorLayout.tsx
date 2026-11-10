@@ -9,7 +9,7 @@ import type { SessaoProfessor } from "@/types/unidade";
 import estilos from "./ProfessorLayout.module.css";
 
 // Sistema de gestão que roda na rede da escola (Docker). Sem a variável, o link não aparece.
-const URL_ANALISADOR_PACOTES: string | undefined = import.meta.env.VITE_URL_ANALISADOR_PACOTES;
+const URL_GESTAO: string | undefined = import.meta.env.VITE_URL_GESTAO;
 
 type Estado = { fase: "conferindo" } | { fase: "fora"; aviso?: string } | { fase: "dentro"; professor: SessaoProfessor };
 
@@ -143,10 +143,18 @@ export function ProfessorLayout() {
                 <Icone nome="grafico" tamanho={16} />
                 Analisador de contratos
               </NavLink>
-              {URL_ANALISADOR_PACOTES && (
-                <a href={URL_ANALISADOR_PACOTES} target="_blank" rel="noreferrer" className={estilos.aba}>
+              <NavLink to={rotas.professorPacotes()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                <Icone nome="planilha" tamanho={16} />
+                Analisador de pacotes
+              </NavLink>
+              <NavLink to={rotas.professorPosProva()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                <Icone nome="check" tamanho={16} />
+                Notas de pós-prova
+              </NavLink>
+              {URL_GESTAO && (
+                <a href={URL_GESTAO} target="_blank" rel="noreferrer" className={estilos.aba}>
                   <Icone nome="link" tamanho={16} />
-                  Analisador de pacotes
+                  Sistema de gestão
                 </a>
               )}
             </nav>

@@ -38,6 +38,8 @@ import { ProfessorEnviosPage } from "@/pages/professor/ProfessorEnviosPage";
 import { ProfessorLayout } from "@/pages/professor/ProfessorLayout";
 import { ProfessorListaPage } from "@/pages/professor/ProfessorListaPage";
 import { ProfessorListasPage } from "@/pages/professor/ProfessorListasPage";
+import { ProfessorPacotesPage } from "@/pages/professor/ProfessorPacotesPage";
+import { ProfessorPosProvaPage } from "@/pages/professor/ProfessorPosProvaPage";
 import { ProfessorUsuariosPage } from "@/pages/professor/ProfessorUsuariosPage";
 import { ProvasPage } from "@/pages/ProvasPage";
 import { QuizPage } from "@/pages/QuizPage";
@@ -113,6 +115,8 @@ const roteador = criarRoteador([
           { path: "listas/:id", element: <ProfessorListaPage /> },
           { path: "usuarios", element: <ProfessorUsuariosPage /> },
           { path: "analisador-contratos", element: <ProfessorAnalisadorPage /> },
+          { path: "analisador-pacotes", element: <ProfessorPacotesPage /> },
+          { path: "pos-prova", element: <ProfessorPosProvaPage /> },
         ],
       },
 

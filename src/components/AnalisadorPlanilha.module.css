@@ -1,0 +1,273 @@
+.entrada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-7) var(--space-5);
+  border: 2px dashed var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--ink-soft);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out), background-color 140ms var(--ease-out);
+}
+
+.entrada:hover {
+  border-color: var(--brand);
+  background: var(--brand-tint);
+}
+
+.entrada:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.entrada strong {
+  color: var(--ink);
+  font-size: var(--text-md);
+}
+
+.entrada span {
+  max-width: 52ch;
+  font-size: var(--text-sm);
+}
+
+.entrada input {
+  margin-top: var(--space-2);
+  max-width: 100%;
+  font: inherit;
+  font-size: var(--text-sm);
+}
+
+.erro {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--danger-tint);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.erro svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.arquivo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-right: auto;
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.primario,
+.secundario {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 140ms var(--ease-out), color 140ms var(--ease-out);
+}
+
+.primario {
+  border: 0;
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+}
+
+.primario:hover {
+  background: var(--brand-deepest);
+}
+
+.secundario {
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+}
+
+.secundario:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.primario:focus-visible,
+.secundario:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---------- Conteúdo do relatório: as páginas usam estas classes dentro de `children` ---------- */
+
+.relatorio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.resumo {
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.resumo strong {
+  color: var(--ink);
+}
+
+.secao h2 {
+  margin-bottom: var(--space-3);
+  font-size: var(--text-lg);
+}
+
+.rolagem {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.tabela th,
+.tabela td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tabela th {
+  background: var(--surface-soft);
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tabela tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabela .numero {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.selo {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.bom {
+  background: var(--success-tint);
+  color: var(--success);
+}
+
+.ruim {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.neutro {
+  background: var(--brand-tint);
+  color: var(--brand-deep);
+}
+
+.observacao {
+  margin-top: var(--space-1);
+  color: var(--warning);
+  font-size: var(--text-xs);
+}
+
+.caixa {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  font-size: var(--text-sm);
+}
+
+.caixa h2 {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-base);
+}
+
+.caixa ul {
+  margin: 0;
+  padding-left: var(--space-5);
+  color: var(--ink-soft);
+}
+
+.atencao {
+  background: var(--warning-tint);
+}
+
+.atencao h2,
+.atencao ul {
+  color: var(--warning);
+}
+
+/* Cabeçalho de linha (nome do aluno) lê como dado, não como título de coluna. */
+.tabela tbody th {
+  background: none;
+  color: var(--ink);
+  font-size: inherit;
+  font-weight: 600;
+  white-space: normal;
+}
+
+/* Na impressão (e no "Salvar como PDF" do navegador) só o relatório aparece. */
+@media print {
+  :global(body *) {
+    visibility: hidden;
+  }
+
+  .relatorio,
+  .relatorio * {
+    visibility: visible;
+  }
+
+  .relatorio {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .rolagem {
+    overflow: visible;
+  }
+
+  .tabela tr {
+    break-inside: avoid;
+  }
+}
