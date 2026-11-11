@@ -199,6 +199,27 @@ cada 6 horas. Para o servidor voltar sozinho depois de uma queda de energia,
 rode por um gerenciador de serviço (systemd, pm2, NSSM no Windows). Faça backup
 de `DADOS_DIR` se as notas precisarem durar mais que 7 dias.
 
+### Docker (o jeito mais simples de rodar na escola)
+
+O `Dockerfile` e o `docker-compose.yml` da raiz empacotam o servidor físico acima: o site e a API num
+contêiner só, com os dados no volume `portal_dados` (nada de Vercel nem de cota do Blob).
+
+1. No computador da escola, instale o Docker Desktop (ou Docker Engine).
+2. Copie `.env.docker.exemplo` para `.env` e preencha: `SEGREDO_SESSAO`, `UNIDADES`, `PROFESSORES` (os mesmos
+   JSON da Vercel, com as senhas em hash; cada um numa linha, sem aspas em volta) e, se quiser, `UNIDADE_PADRAO`.
+3. `docker compose up -d --build` e abra `http://localhost:8080`. Nos outros computadores da escola, use
+   `http://IP-DO-COMPUTADOR:8080` (libere a porta no firewall do Windows).
+4. **WhatsApp automático (opcional):** `docker compose -f docker-compose.yml -f docker-compose.whatsapp.yml up -d --build`
+   sobe também a Evolution API (porta 8081). Preencha `EVOLUTION_API_KEY` e `EVOLUTION_DB_SENHA` no `.env`; no
+   portal, em Mensagens > Envio automático, use `http://localhost:8081` (ou o IP do computador) e a chave.
+   Como o portal passa a ser aberto por `http://`, o navegador deixa de bloquear a conversa com a Evolution.
+
+Cuidados: o computador precisa ficar ligado; os dados ficam só nele, então faça backup do volume (por exemplo
+`docker run --rm -v portal_dados:/d -v "$PWD":/b alpine tar czf /b/portal-dados.tgz -C /d .`); sem HTTPS, o
+acesso é só pela rede da escola (de fora, só com um túnel); o `.env` nunca vai para o repositório. Os dados
+da Vercel não migram sozinhos: o portal em Docker começa vazio, com os usuários e unidades das variáveis.
+Depois de mudar um `.prova.ts`, rode `docker compose up -d --build` de novo.
+
 Depois de mudar qualquer `.prova.ts`, rode os dois builds de novo: o gabarito
 entra no servidor no build.
 

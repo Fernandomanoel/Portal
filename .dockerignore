@@ -1,0 +1,14 @@
+node_modules
+dist
+dist-servidor
+dist-ssr
+dados
+.git
+.github
+.vscode
+.env
+.env.*
+!.env.docker.exemplo
+*.log
+# Outro sistema, com os próprios contêineres: não faz parte do portal.
+microapp

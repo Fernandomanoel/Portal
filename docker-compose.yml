@@ -1,0 +1,24 @@
+# Portal da escola rodando em um computador da escola, sem a Vercel e sem cota de Blob:
+# os dados (usuários, listas, envios, histórico) ficam no volume `portal_dados`.
+#
+#   1. cp .env.docker.exemplo .env   e preencha (senhas só em hash; veja docs/SERVIDOR.md)
+#   2. docker compose up -d --build
+#   3. abrir http://localhost:8080 (ou http://IP-DO-COMPUTADOR:8080 nos outros computadores)
+#
+# Envio automático de WhatsApp (opcional), com o arquivo a mais:
+#   docker compose -f docker-compose.yml -f docker-compose.whatsapp.yml up -d --build
+
+services:
+  portal:
+    build: .
+    container_name: portal
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${PORTA_DO_PORTAL:-8080}:8080"
+    volumes:
+      - portal_dados:/dados
+
+volumes:
+  portal_dados:
