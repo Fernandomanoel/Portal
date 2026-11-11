@@ -596,8 +596,10 @@ export async function limpar(armazenamento: Armazenamento, agora = new Date()) {
 async function listarEnvios(url: URL, professor: Professor, armazenamento: Armazenamento) {
   const ativa = unidadeAtiva(professor, url);
   if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
-  await limpar(armazenamento);
-  const itens = (await armazenamento.listar("envios/")).filter((item) => item.caminho.endsWith(".json"));
+  // A limpeza que apaga de verdade roda uma vez por dia (cron). Aqui só se escondem os vencidos, pela data no
+  // caminho: cada listagem no Blob conta como operação avançada, e a cota gratuita é pequena.
+  const corte = dia(new Date(Date.now() - DIAS_GUARDADOS * DIA_MS));
+  const itens = (await armazenamento.listar("envios/")).filter((item) => item.caminho.endsWith(".json") && (item.caminho.split("/")[1] ?? "") >= corte);
   const envios = (await Promise.all(itens.map((item) => armazenamento.lerJson<Envio>(item.caminho)))).filter(
     (envio): envio is Envio => envio !== null,
   );

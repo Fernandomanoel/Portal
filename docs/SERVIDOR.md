@@ -135,6 +135,17 @@ navegador** (`src/lib/evolution.ts`), aberto nesse computador:
   modelo e o resultado por aluno (nome e número) em `disparos/<data>/<id>.json`, por unidade. Fica por
   `DIAS_HISTORICO_DISPAROS` (90) dias e sai na limpeza diária.
 
+### Cota do Vercel Blob (plano gratuito)
+
+O Blob do plano Hobby tem cota mensal: 2 mil operações avançadas (gravar, copiar, **listar**) e 10 mil
+simples (ler). Passou disso, a Vercel recusa novas operações até a virada do mês ou até o upgrade, e tudo que
+usa o Blob responde «Erro no servidor (código ...)». Para gastar pouco:
+
+- cada gravação e cada listagem é uma operação avançada: a tela de provas enviadas **não** roda mais a
+  limpeza ao abrir (só esconde os envios vencidos pela data no caminho; quem apaga é o cron diário das 7h);
+- o autosave das listas espera 4 s de pausa antes de gravar (o rascunho fica no navegador nesse intervalo);
+- veja o consumo em Vercel > Storage > Blob > Usage, ou em Settings > Usage.
+
 ### Quando o login ou a lista de unidades não funciona
 
 O servidor confere as variáveis `UNIDADES` e `PROFESSORES` e escreve o problema nos logs (Vercel > Logs,
