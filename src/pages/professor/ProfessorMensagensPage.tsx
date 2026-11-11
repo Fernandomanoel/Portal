@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { Icone } from "@/components/Icone";
 import { CampoPlanilha } from "@/components/ferramentas/CampoPlanilha";
+import { DisparoAutomatico } from "@/components/ferramentas/DisparoAutomatico";
+import { HistoricoDisparos } from "@/components/ferramentas/HistoricoDisparos";
 import type { Tabela } from "@/lib/lerPlanilha";
 import {
   LIMITE_MODELO,
@@ -55,6 +57,7 @@ export function ProfessorMensagensPage() {
   const [turno, definirTurno] = useState<Turno | "TODOS">("TODOS");
   const [abertos, definirAbertos] = useState<Set<string>>(new Set());
   const [copiado, definirCopiado] = useState("");
+  const [versaoHistorico, definirVersaoHistorico] = useState(0);
 
   const modelo = modelos[tipo];
   const escolhido = TIPOS.find((t) => t.id === tipo)!;
@@ -97,7 +100,7 @@ export function ProfessorMensagensPage() {
     <>
       <CabecalhoPagina
         titulo="Mensagens para alunos"
-        texto="Envie a planilha de controle e o portal monta a mensagem de cada aluno. Cada botão abre o WhatsApp com o texto pronto para você conferir e enviar; nada é disparado sozinho."
+        texto="Envie a planilha de controle e o portal monta a mensagem de cada aluno. Você pode abrir o WhatsApp aluno por aluno, com o texto pronto, ou disparar para todos de uma vez pelo envio automático."
       />
 
       <div className={estilos.tipos} role="radiogroup" aria-label="Tipo de mensagem">
@@ -223,6 +226,8 @@ export function ProfessorMensagensPage() {
             })}
           </ul>
 
+          <DisparoAutomatico key={tipo} tipo={tipo} modelo={modelo} destinatarios={visiveis} aoRegistrar={() => definirVersaoHistorico((v) => v + 1)} />
+
           {semTelefone.length > 0 && (
             <section className={estilos.semTelefone} aria-labelledby="sem-telefone">
               <h2 id="sem-telefone">Sem telefone válido</h2>
@@ -236,6 +241,8 @@ export function ProfessorMensagensPage() {
           )}
         </>
       )}
+
+      <HistoricoDisparos versao={versaoHistorico} />
     </>
   );
 }

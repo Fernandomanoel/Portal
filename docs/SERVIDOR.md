@@ -115,6 +115,26 @@ o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servi
   WhatsApp (`wa.me`) com o texto pronto. O envio é manual, um aluno por vez: o portal não usa a Evolution
   API nem dispara em massa. O texto editado fica guardado no navegador de quem editou.
 
+### Envio automático de mensagens (Evolution API)
+
+A aba Mensagens também dispara para todos de uma vez pela **Evolution API**, o serviço que fica ligado ao
+WhatsApp (o mesmo do `microapp/`, imagem `evoapicloud/evolution-api:v2.3.7`, porta 8080). Ela roda num
+computador da escola, que o servidor do portal na Vercel não alcança; por isso **quem fala com ela é o
+navegador** (`src/lib/evolution.ts`), aberto nesse computador:
+
+- Endereço (padrão `http://localhost:8080`), chave (`AUTHENTICATION_API_KEY`) e nome da conexão ficam só no
+  `localStorage` de quem configurou. Não são variáveis da Vercel nem passam pelo servidor do portal.
+- De um site https o navegador só chama `http://` em `localhost`. Para disparar de outro computador, a
+  Evolution precisa de um endereço https (um túnel, por exemplo). A Evolution precisa aceitar a origem do
+  portal no CORS (`CORS_ORIGIN`, que por padrão aceita todas), e o navegador pode pedir permissão para
+  acessar a rede local.
+- Fluxo: verificar conexão, conectar por QR Code, disparar com confirmação. Pausa de 4 a 6 s entre envios,
+  30 s a cada 40, conferência da conexão a cada 10, tentativa no telefone do aluno e depois no do
+  responsável. Dá para cancelar; fechar a aba interrompe. O lembrete por turno aceita uma imagem.
+- **Histórico** (`GET`/`POST /api/disparos`, permissão `mensagens`): cada disparo guarda quem fez, quando, o
+  modelo e o resultado por aluno (nome e número) em `disparos/<data>/<id>.json`, por unidade. Fica por
+  `DIAS_HISTORICO_DISPAROS` (90) dias e sai na limpeza diária.
+
 ### Quando o login ou a lista de unidades não funciona
 
 O servidor confere as variáveis `UNIDADES` e `PROFESSORES` e escreve o problema nos logs (Vercel > Logs,
