@@ -143,6 +143,11 @@ na outra, professor apontando para uma unidade que não existe em `UNIDADES`, en
 `usuario` ou `senha`. Na aba Provas, a mensagem «Nenhuma unidade foi configurada» passa a dizer o motivo.
 Variável alterada só vale depois de um novo deploy.
 
+O login de quem está na variável `PROFESSORES` **não depende do armazenamento**: o administrador nunca o
+consulta, e para os demais, se o Blob falhar (ou não estiver ligado ao projeto), vale o acesso padrão e o
+erro vai para o log. Já os usuários criados pela tela, os ajustes, as listas e os envios precisam do Blob
+(Storage > Blob, ligado ao projeto): sem ele, essas áreas respondem «Erro no servidor (código ...)».
+
 ### Adicionar um professor
 
 ```bash
