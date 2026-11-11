@@ -135,9 +135,25 @@ async function professorDa(requisicao: Request, armazenamento: Armazenamento): P
   if (!sessao) return null;
   if (sessao.origem === "variavel") {
     const daVariavel = professorDaVariavel(sessao.usuario);
-    return daVariavel && comAjuste(daVariavel, await lerAjuste(armazenamento, daVariavel.usuario));
+    return daVariavel && comAjuste(daVariavel, await ajusteDe(armazenamento, daVariavel));
   }
   return professorCadastrado(await lerUsuario(armazenamento, sessao.usuario));
+}
+
+/**
+ * Ajuste feito pela tela para um professor da variável. O administrador nunca é ajustado, então o
+ * login dele não depende do armazenamento. Se o armazenamento falhar (Blob fora do ar ou não ligado
+ * ao projeto), vale o acesso padrão da variável e o problema vai para o log: login não pode cair
+ * por causa de um ajuste opcional, e sem armazenamento não há dado de aluno ao alcance de ninguém.
+ */
+async function ajusteDe(armazenamento: Armazenamento, professor: Professor): Promise<AjusteFixo | null> {
+  if (professor.administrador) return null;
+  try {
+    return await lerAjuste(armazenamento, professor.usuario);
+  } catch (falha) {
+    console.error(`[configuração] Não foi possível ler o ajuste de «${professor.usuario}» (confira se o Blob está ligado ao projeto):`, falha);
+    return null;
+  }
 }
 
 /**
@@ -173,9 +189,17 @@ function professorCadastrado(usuario: UsuarioGuardado | null): Professor | null 
 async function autenticarProfessor(usuario: string, senha: string, armazenamento: Armazenamento): Promise<Professor | "SEM_UNIDADE" | null> {
   const daVariavel = autenticar(usuario, senha);
   if (daVariavel === "SEM_UNIDADE") return daVariavel;
-  if (daVariavel) return comAjuste(daVariavel, await lerAjuste(armazenamento, daVariavel.usuario));
+  if (daVariavel) return comAjuste(daVariavel, await ajusteDe(armazenamento, daVariavel));
   const nome = usuario.trim().toLowerCase();
-  const guardado = usuarioValido(nome) ? await lerUsuario(armazenamento, nome) : null;
+  let guardado: UsuarioGuardado | null = null;
+  if (usuarioValido(nome)) {
+    try {
+      guardado = await lerUsuario(armazenamento, nome);
+    } catch (falha) {
+      // Sem armazenamento não há usuário criado pela tela: responde como usuário inexistente, não como erro do servidor.
+      console.error("[configuração] Não foi possível ler os usuários criados pela tela (confira se o Blob está ligado ao projeto):", falha);
+    }
+  }
   const confere = senhaDoCadastroConfere(senha, guardado?.senha);
   if (!guardado || !confere || !guardado.ativo) return null;
   return professorCadastrado(guardado) ?? "SEM_UNIDADE";
@@ -572,8 +596,10 @@ export async function limpar(armazenamento: Armazenamento, agora = new Date()) {
 async function listarEnvios(url: URL, professor: Professor, armazenamento: Armazenamento) {
   const ativa = unidadeAtiva(professor, url);
   if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
-  await limpar(armazenamento);
-  const itens = (await armazenamento.listar("envios/")).filter((item) => item.caminho.endsWith(".json"));
+  // A limpeza que apaga de verdade roda uma vez por dia (cron). Aqui só se escondem os vencidos, pela data no
+  // caminho: cada listagem no Blob conta como operação avançada, e a cota gratuita é pequena.
+  const corte = dia(new Date(Date.now() - DIAS_GUARDADOS * DIA_MS));
+  const itens = (await armazenamento.listar("envios/")).filter((item) => item.caminho.endsWith(".json") && (item.caminho.split("/")[1] ?? "") >= corte);
   const envios = (await Promise.all(itens.map((item) => armazenamento.lerJson<Envio>(item.caminho)))).filter(
     (envio): envio is Envio => envio !== null,
   );

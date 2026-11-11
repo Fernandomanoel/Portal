@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import {
+  EVENTO_RANKING,
   obterRanking,
   registrarResultado,
   ultimoApelidoUsado,
@@ -40,7 +41,16 @@ export function PainelRanking({
   const [apelido, definirApelido] = useState("");
 
   useEffect(() => {
-    if (!somenteFormulario) definirRanking(obterRanking(jogoId));
+    if (somenteFormulario) return;
+    const atualizar = () => definirRanking(obterRanking(jogoId));
+    atualizar();
+    // Outra aba (ou o professor zerando o placar) muda o armazenamento: a lista acompanha.
+    window.addEventListener("storage", atualizar);
+    window.addEventListener(EVENTO_RANKING, atualizar);
+    return () => {
+      window.removeEventListener("storage", atualizar);
+      window.removeEventListener(EVENTO_RANKING, atualizar);
+    };
   }, [jogoId, somenteFormulario]);
 
   useEffect(() => {

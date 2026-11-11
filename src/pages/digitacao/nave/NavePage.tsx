@@ -225,6 +225,7 @@ export function NavePage() {
   return (
     <div className={estilos.pagina}>
       <TopoJogo
+        chaveProgresso={CHAVE_PROGRESSO}
         titulo="Esquadrão Hiper"
         icone="raio"
         medidas={[

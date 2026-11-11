@@ -135,6 +135,28 @@ navegador** (`src/lib/evolution.ts`), aberto nesse computador:
   modelo e o resultado por aluno (nome e número) em `disparos/<data>/<id>.json`, por unidade. Fica por
   `DIAS_HISTORICO_DISPAROS` (90) dias e sai na limpeza diária.
 
+### Cota do Vercel Blob (plano gratuito)
+
+O Blob do plano Hobby tem cota mensal: 2 mil operações avançadas (gravar, copiar, **listar**) e 10 mil
+simples (ler). Passou disso, a Vercel recusa novas operações até a virada do mês ou até o upgrade, e tudo que
+usa o Blob responde «Erro no servidor (código ...)». Para gastar pouco:
+
+- cada gravação e cada listagem é uma operação avançada: a tela de provas enviadas **não** roda mais a
+  limpeza ao abrir (só esconde os envios vencidos pela data no caminho; quem apaga é o cron diário das 7h);
+- o autosave das listas espera 4 s de pausa antes de gravar (o rascunho fica no navegador nesse intervalo);
+- veja o consumo em Vercel > Storage > Blob > Usage, ou em Settings > Usage.
+
+### Digitação (ranking e progresso) e Histórico dos alunos
+
+- **Ranking e progresso dos jogos ficam no navegador** de cada computador (`localStorage`), não no portal: o
+  placar de um PC não aparece em outro. A aba **Digitação** (permissão `digitacao`) zera os rankings e o
+  progresso *deste* computador; cada jogo também tem o botão «Recomeçar do zero», que apaga só o progresso
+  dele. Um ranking único para a turma toda exigiria guardar no servidor, o que gasta operações do Blob.
+- **Histórico** (`src/lib/historicoAluno.ts`, permissão `historico`): monta o texto do acompanhamento
+  educacional a partir de escolhas (desempenho, dificuldade, personalidade, frequência, comportamento,
+  situação do contrato) ou da observação do primeiro dia, com o gênero do texto, outra redação sugerida,
+  «Arrumar espaços e pontuação» e troca de gênero de um texto pronto. Roda no navegador; nada é guardado.
+
 ### Quando o login ou a lista de unidades não funciona
 
 O servidor confere as variáveis `UNIDADES` e `PROFESSORES` e escreve o problema nos logs (Vercel > Logs,
@@ -142,6 +164,11 @@ linhas que começam com `[configuração]`). Os casos que ele reconhece: JSON qu
 na outra, professor apontando para uma unidade que não existe em `UNIDADES`, entradas sem `id`, `nome`,
 `usuario` ou `senha`. Na aba Provas, a mensagem «Nenhuma unidade foi configurada» passa a dizer o motivo.
 Variável alterada só vale depois de um novo deploy.
+
+O login de quem está na variável `PROFESSORES` **não depende do armazenamento**: o administrador nunca o
+consulta, e para os demais, se o Blob falhar (ou não estiver ligado ao projeto), vale o acesso padrão e o
+erro vai para o log. Já os usuários criados pela tela, os ajustes, as listas e os envios precisam do Blob
+(Storage > Blob, ligado ao projeto): sem ele, essas áreas respondem «Erro no servidor (código ...)».
 
 ### Adicionar um professor
 

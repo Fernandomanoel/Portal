@@ -218,6 +218,7 @@ export function BaloesPage() {
   return (
     <div className={`${estilos.pagina} ${estilos[periodo]}`}>
       <TopoJogo
+        chaveProgresso={CHAVE_PROGRESSO}
         titulo="Balões de Letras"
         icone="balao"
         medidas={[

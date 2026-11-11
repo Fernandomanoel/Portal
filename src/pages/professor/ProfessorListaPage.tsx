@@ -20,7 +20,8 @@ import estilos from "./ProfessorListaPage.module.css";
 
 type Situacao = "salvo" | "pendente" | "salvando" | "erro" | "conflito";
 
-const ESPERA_SALVAR_MS = 800;
+// Cada gravação é uma operação do Blob, que tem cota mensal: espera uma pausa maior antes de gravar. O rascunho local cobre o intervalo.
+const ESPERA_SALVAR_MS = 4000;
 // Outro professor pode estar na mesma lista: sem edição pendente, a tela busca a versão nova.
 const ATUALIZAR_A_CADA_MS = 20_000;
 const chaveRascunho = (id: string) => `lista-rascunho:${id}`;
