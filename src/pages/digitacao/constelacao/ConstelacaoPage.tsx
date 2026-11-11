@@ -246,6 +246,7 @@ export function ConstelacaoPage() {
   return (
     <div className={estilos.pagina}>
       <TopoJogo
+        chaveProgresso={CHAVE_PROGRESSO}
         titulo="Constelação"
         icone="estrela"
         medidas={[

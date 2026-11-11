@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { BotaoRecomecar } from "@/components/digitacao/BotaoRecomecar";
 import { Icone } from "@/components/Icone";
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
 import { useEntrarEmTelaImersiva } from "@/hooks/TelaImersiva";
@@ -300,6 +301,7 @@ export function SonicPage() {
           <Icone nome="raio" tamanho={22} />
           Sonic Digital Pro
         </h1>
+        <BotaoRecomecar chave={CHAVE_PROGRESSO} />
         <nav className={estilos.mapa} aria-label={`Fases: ${feitas} de ${FASES.length} concluídas`}>
           {FASES.map((f, i) => {
             const aberta = podeAcessar(estado.conclusoes, i);

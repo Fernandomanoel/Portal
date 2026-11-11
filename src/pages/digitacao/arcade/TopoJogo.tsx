@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
+import { BotaoRecomecar } from "@/components/digitacao/BotaoRecomecar";
 import { Icone, type NomeIcone } from "@/components/Icone";
 import { rotas } from "@/lib/rotas";
 import estilos from "./TopoJogo.module.css";
@@ -11,7 +12,7 @@ export interface Medida {
 }
 
 /** Voltar, título e o placar ao vivo do jogo, no topo da tela cheia. */
-export function TopoJogo({ titulo, icone, medidas }: { titulo: string; icone: NomeIcone; medidas: Medida[] }) {
+export function TopoJogo({ titulo, icone, medidas, chaveProgresso }: { titulo: string; icone: NomeIcone; medidas: Medida[]; chaveProgresso?: string }) {
   return (
     <header className={estilos.topo}>
       <Link to={rotas.digitacao()} className={estilos.voltar}>
@@ -30,6 +31,7 @@ export function TopoJogo({ titulo, icone, medidas }: { titulo: string; icone: No
           </div>
         ))}
       </dl>
+      {chaveProgresso && <BotaoRecomecar chave={chaveProgresso} />}
     </header>
   );
 }

@@ -238,6 +238,7 @@ export function PuloPage() {
   return (
     <div className={estilos.pagina}>
       <TopoJogo
+        chaveProgresso={CHAVE_PROGRESSO}
         titulo="Pulo das Palavras"
         icone="pulo"
         medidas={[

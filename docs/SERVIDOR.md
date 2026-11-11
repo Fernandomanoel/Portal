@@ -146,6 +146,17 @@ usa o Blob responde «Erro no servidor (código ...)». Para gastar pouco:
 - o autosave das listas espera 4 s de pausa antes de gravar (o rascunho fica no navegador nesse intervalo);
 - veja o consumo em Vercel > Storage > Blob > Usage, ou em Settings > Usage.
 
+### Digitação (ranking e progresso) e Histórico dos alunos
+
+- **Ranking e progresso dos jogos ficam no navegador** de cada computador (`localStorage`), não no portal: o
+  placar de um PC não aparece em outro. A aba **Digitação** (permissão `digitacao`) zera os rankings e o
+  progresso *deste* computador; cada jogo também tem o botão «Recomeçar do zero», que apaga só o progresso
+  dele. Um ranking único para a turma toda exigiria guardar no servidor, o que gasta operações do Blob.
+- **Histórico** (`src/lib/historicoAluno.ts`, permissão `historico`): monta o texto do acompanhamento
+  educacional a partir de escolhas (desempenho, dificuldade, personalidade, frequência, comportamento,
+  situação do contrato) ou da observação do primeiro dia, com o gênero do texto, outra redação sugerida,
+  «Arrumar espaços e pontuação» e troca de gênero de um texto pronto. Roda no navegador; nada é guardado.
+
 ### Quando o login ou a lista de unidades não funciona
 
 O servidor confere as variáveis `UNIDADES` e `PROFESSORES` e escreve o problema nos logs (Vercel > Logs,

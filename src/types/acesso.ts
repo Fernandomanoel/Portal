@@ -11,6 +11,8 @@ export const PERMISSOES = [
   { id: "listas", rotulo: "Listas: ver", descricao: "Abrir as listas das unidades liberadas e as compartilhadas com elas." },
   { id: "listas_editar", rotulo: "Listas: criar e editar", descricao: "Criar listas, editar e compartilhar com outras unidades." },
   { id: "acompanhamento", rotulo: "Acompanhamento de módulos", descricao: "Calcular se o aluno está atrasado nos módulos em relação às parcelas e às faltas." },
+  { id: "digitacao", rotulo: "Digitação: zerar ranking e progresso", descricao: "Zerar o ranking e o progresso dos jogos de digitação deste computador." },
+  { id: "historico", rotulo: "Histórico dos alunos", descricao: "Montar e formatar o texto de acompanhamento educacional de cada aluno." },
   { id: "pacotes", rotulo: "Analisador de pacotes", descricao: "Analisar a planilha de agendamentos (atrasado, em dia, adiantado)." },
   { id: "mensagens", rotulo: "Mensagens para alunos", descricao: "Montar avisos de faltas e lembretes e abrir no WhatsApp." },
   { id: "usuarios", rotulo: "Gerenciar usuários", descricao: "Criar usuários e definir o que cada um acessa." },
@@ -21,7 +23,7 @@ export type PermissaoId = (typeof PERMISSOES)[number]["id"];
 export const IDS_PERMISSAO: PermissaoId[] = PERMISSOES.map((p) => p.id);
 
 /** Professores da variável PROFESSORES, e quem o administrador não marcar nada: tudo, menos gerenciar usuários. */
-export const PERMISSOES_PADRAO: PermissaoId[] = ["provas", "conteudos", "listas", "listas_editar", "acompanhamento", "pacotes", "mensagens"];
+export const PERMISSOES_PADRAO: PermissaoId[] = ["provas", "conteudos", "listas", "listas_editar", "acompanhamento", "pacotes", "mensagens", "digitacao", "historico"];
 
 /** Editar lista pressupõe poder ver. */
 export function normalizarPermissoes(lista: unknown): PermissaoId[] {
