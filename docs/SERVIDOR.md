@@ -157,6 +157,20 @@ usa o Blob responde «Erro no servidor (código ...)». Para gastar pouco:
   situação do contrato) ou da observação do primeiro dia, com o gênero do texto, outra redação sugerida,
   «Arrumar espaços e pontuação» e troca de gênero de um texto pronto. Roda no navegador; nada é guardado.
 
+### Disparador simples (sem banco, só dispara)
+
+`public/disparador/index.html` (endereço `/disparador/`) é uma página só, sem servidor próprio e sem nada
+guardado: ela conversa direto com a Evolution API, lê a planilha (Nome Aluno, Telefone Aluno, Telefone
+Responsável, Status Contrato), monta a mensagem com `{nome}` e dispara com as mesmas pausas do portal
+(4 a 6 s entre envios, 30 s a cada 40, conferência da conexão a cada 10). Tem cancelar, tela de resultado e
+baixar `.csv`. A chave, a planilha e os resultados ficam só na memória da aba; «Limpar tudo» apaga a chave.
+
+- A Evolution precisa estar no computador de quem dispara (`http://localhost:8081` no compose do WhatsApp).
+  Chrome e Edge aceitam essa conversa mesmo com a página em https; pode aparecer um aviso de «acesso à rede local».
+- A Evolution precisa aceitar a origem da página (CORS). Se o navegador acusar bloqueio, ajuste a configuração
+  de CORS da Evolution.
+- Não envia imagem. Os envios são de texto, um por vez, pela conexão do WhatsApp escolhido.
+
 ### Quando o login ou a lista de unidades não funciona
 
 O servidor confere as variáveis `UNIDADES` e `PROFESSORES` e escreve o problema nos logs (Vercel > Logs,

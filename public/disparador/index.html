@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disparador de mensagens</title>
+<style>
+  :root { --ink:#1f2328; --soft:#5b6470; --line:#d8dde4; --brand:#1e3a8a; --danger:#b42318; --ok:#067647; --bg:#f5f7fa; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--ink); background:var(--bg); }
+  main { max-width: 880px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1.05rem; margin: 0 0 12px; }
+  section { background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:16px; }
+  label { display:flex; flex-direction:column; gap:4px; font-size:.9rem; font-weight:600; margin-bottom:10px; }
+  input, textarea { font:inherit; font-weight:400; padding:8px 10px; border:1px solid var(--line); border-radius:8px; }
+  textarea { resize: vertical; }
+  button { font:inherit; font-weight:600; padding:8px 14px; border-radius:8px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+  button.principal { background:var(--brand); color:#fff; border-color:var(--brand); }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .linha { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .suave { color:var(--soft); font-size:.9rem; margin:6px 0; }
+  .aviso { background:#fff7e6; border:1px solid #f5d08a; color:#7a4b00; padding:10px 12px; border-radius:8px; font-size:.9rem; }
+  .erro { color:var(--danger); font-weight:600; }
+  .ok { color:var(--ok); font-weight:600; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; margin-top:10px; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
+  #qr img { width:220px; height:220px; border:1px solid var(--line); border-radius:8px; background:#fff; }
+  #qr { display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+  #qr[hidden] { display:none; }
+  .grade { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:0 14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Disparador de mensagens (WhatsApp)</h1>
+  <p class="suave">Esta página não guarda nada: a chave, a planilha e os resultados ficam só aqui, na memória. Ao fechar a aba, tudo some.</p>
+  <div class="aviso">Não feche esta aba durante o disparo. O envio é feito por esta página, então ela precisa ficar aberta do início ao fim.</div>
+
+  <section>
+    <h2>1. Conexão com o WhatsApp</h2>
+    <div class="grade">
+      <label>Endereço da Evolution API
+        <input id="url" value="http://localhost:8081" autocomplete="off">
+      </label>
+      <label>Nome da conexão
+        <input id="instancia" value="portal" autocomplete="off">
+      </label>
+      <label>Chave (API key)
+        <input id="chave" type="password" autocomplete="off">
+      </label>
+    </div>
+    <div class="linha">
+      <button id="btnConectar">Verificar / conectar</button>
+      <span id="estado" class="suave"></span>
+    </div>
+    <div id="qr" hidden>
+      <img id="qrImg" alt="QR Code para conectar o WhatsApp">
+      <p id="qrTxt" class="suave"></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Planilha de alunos</h2>
+    <input id="arquivo" type="file" accept=".xlsx,.xls,.csv">
+    <p class="suave">Colunas: <b>Nome Aluno</b> (ou Aluno), <b>Telefone Aluno</b> e <b>Telefone Responsável</b> (opcional). Se existir a coluna <b>Status Contrato</b>, só entram os que estiverem <b>Ativo</b>.</p>
+    <p id="resumoPlanilha" class="suave"></p>
+  </section>
+
+  <section>
+    <h2>3. Mensagem</h2>
+    <textarea id="modelo" rows="4">Olá, {nome}! Informamos que não haverá aula nesta data. Qualquer dúvida, responda esta mensagem.</textarea>
+    <p class="suave">Use <b>{nome}</b> para o primeiro nome do aluno. Só texto, sem imagem.</p>
+  </section>
+
+  <section>
+    <h2>4. Disparo</h2>
+    <div class="linha">
+      <button id="btnDisparar" class="principal" disabled>Disparar</button>
+      <button id="btnCancelar" disabled>Cancelar</button>
+      <span id="progresso" class="suave"></span>
+    </div>
+    <div id="resultado"></div>
+    <div class="linha" style="margin-top:12px">
+      <button id="btnCsv" disabled>Baixar resultado (.csv)</button>
+      <button id="btnLimpar">Limpar tudo</button>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  // Pausas contra bloqueio do número, as mesmas do portal: 4 a 6 s entre envios, 30 s a cada 40.
+  const RITMO = { entreMs: 4000, variacaoMs: 2000, loteACada: 40, pausaLoteMs: 30000, conferirACada: 10, digitandoMs: 1500 };
+  const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
+  const semAcento = (s) => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+
+  let destinatarios = [];
+  let resultados = [];
+  let cancelar = false;
+  let rodando = false;
+  let conectado = false;
+
+  const base = () => $("url").value.trim().replace(/\/+$/, "");
+  const instancia = () => $("instancia").value.trim().replace(/[^a-zA-Z0-9_-]/g, "_") || "portal";
+
+  async function chamar(caminho, opcoes = {}) {
+    let resposta;
+    try {
+      resposta = await fetch(base() + caminho, {
+        method: opcoes.metodo || "GET",
+        headers: { apikey: $("chave").value.trim(), ...(opcoes.corpo ? { "Content-Type": "application/json" } : {}) },
+        body: opcoes.corpo ? JSON.stringify(opcoes.corpo) : undefined,
+        signal: AbortSignal.timeout(opcoes.tempo || 20000),
+      });
+    } catch {
+      throw new Error("Não consegui falar com a Evolution. Confira o endereço, se ela está ligada, e se o navegador permitiu o acesso à rede local (um aviso pode aparecer no topo da janela).");
+    }
+    let dados = null;
+    try { dados = await resposta.json(); } catch { /* resposta sem JSON */ }
+    return { status: resposta.status, dados };
+  }
+
+  async function estadoDaConexao() {
+    const { status, dados } = await chamar(`/instance/connectionState/${instancia()}`);
+    if (status === 401 || status === 403) throw new Error("A Evolution recusou a chave. Confira a AUTHENTICATION_API_KEY.");
+    if (status === 404) return "sem_instancia";
+    const d = (Array.isArray(dados) ? dados[0] : dados) || {};
+    const estado = String((d.instance && d.instance.state) || d.state || "close").toLowerCase();
+    return estado === "open" || estado === "connected" ? "conectado" : "desconectado";
+  }
+
+  function mostrarEstado(estado) {
+    const texto = { conectado: "WhatsApp conectado", desconectado: "WhatsApp desconectado", sem_instancia: "Conexão ainda não criada" }[estado];
+    $("estado").innerHTML = `<span class="${estado === "conectado" ? "ok" : "erro"}">${texto}</span>`;
+    conectado = estado === "conectado";
+    $("btnDisparar").disabled = !conectado || destinatarios.filter((d) => d.canais.length).length === 0 || rodando;
+  }
+
+  function imagemDoQr(dados) {
+    const d = (Array.isArray(dados) ? dados[0] : dados) || {};
+    const q = d.qrcode || {};
+    for (const valor of [d.base64, q.base64, d.code, q.code]) {
+      if (typeof valor !== "string" || !valor) continue;
+      if (valor.startsWith("data:image")) return valor;
+      if (valor.startsWith("iVBOR") || valor.startsWith("/9j/") || valor.length > 80) return `data:image/png;base64,${valor}`;
+    }
+    return null;
+  }
+
+  async function conectar() {
+    $("btnConectar").disabled = true;
+    try {
+      let estado = await estadoDaConexao();
+      if (estado === "sem_instancia") {
+        const c = await chamar("/instance/create", { metodo: "POST", corpo: { instanceName: instancia(), qrcode: true, integration: "WHATSAPP-BAILEYS" }, tempo: 30000 });
+        if (![200, 201, 403, 409].includes(c.status)) throw new Error("Não consegui criar a conexão na Evolution.");
+      }
+      estado = await estadoDaConexao();
+      if (estado !== "conectado") {
+        const r = await chamar(`/instance/connect/${instancia()}`, { tempo: 25000 });
+        const imagem = imagemDoQr(r.dados);
+        if (imagem) {
+          $("qrImg").src = imagem;
+          $("qrTxt").textContent = "No celular, abra o WhatsApp, vá em Dispositivos conectados, toque em Conectar dispositivo e aponte para o código. Esta página avisa sozinha quando conectar.";
+          $("qr").hidden = false;
+        }
+        // Espera o celular ler o QR Code (até 2 minutos).
+        for (let i = 0; i < 40 && estado !== "conectado"; i += 1) {
+          await esperar(3000);
+          estado = await estadoDaConexao();
+        }
+      }
+      $("qr").hidden = true;
+      mostrarEstado(estado);
+    } catch (falha) {
+      $("estado").innerHTML = `<span class="erro">${falha.message}</span>`;
+    } finally {
+      $("btnConectar").disabled = false;
+    }
+  }
+
+  function telefone(bruto) {
+    let d = String(bruto ?? "").replace(/\D/g, "");
+    if (!d) return null;
+    if (d.startsWith("0") && (d.length === 11 || d.length === 12)) d = d.replace(/^0+/, "");
+    if (d.startsWith("55") && (d.length === 12 || d.length === 13)) return d;
+    if (d.length === 10 || d.length === 11) return "55" + d;
+    return null;
+  }
+
+  function lerDestinatarios(linhas) {
+    const cab = (linhas[0] || []).map(semAcento);
+    const coluna = (nomes) => { for (const n of nomes) { const i = cab.indexOf(semAcento(n)); if (i >= 0) return i; } return -1; };
+    const cNome = coluna(["Nome Aluno", "Aluno", "Nome do Aluno"]);
+    if (cNome < 0) throw new Error('Falta a coluna "Nome Aluno" ou "Aluno" na planilha.');
+    const cAluno = coluna(["Telefone Aluno"]);
+    const cResp = coluna(["Telefone Responsável", "Telefone Responsavel"]);
+    const cStatus = coluna(["Status Contrato"]);
+    const lista = [];
+    let inativos = 0;
+    for (const linha of linhas.slice(1)) {
+      const nome = String(linha[cNome] ?? "").trim();
+      if (!nome) continue;
+      if (cStatus >= 0 && String(linha[cStatus] ?? "").trim() !== "Ativo") { inativos += 1; continue; }
+      const canais = [];
+      const aluno = cAluno >= 0 ? telefone(linha[cAluno]) : null;
+      const resp = cResp >= 0 ? telefone(linha[cResp]) : null;
+      if (aluno) canais.push({ numero: aluno, de: "aluno" });
+      if (resp && resp !== aluno) canais.push({ numero: resp, de: "responsável" });
+      lista.push({ nome, canais });
+    }
+    return { lista, inativos };
+  }
+
+  $("arquivo").addEventListener("change", async (evento) => {
+    const arquivo = evento.target.files[0];
+    if (!arquivo) return;
+    try {
+      const planilha = XLSX.read(await arquivo.arrayBuffer(), { type: "array" });
+      const aba = planilha.Sheets[planilha.SheetNames[0]];
+      const linhas = XLSX.utils.sheet_to_json(aba, { header: 1, defval: "", raw: false });
+      const { lista, inativos } = lerDestinatarios(linhas);
+      destinatarios = lista;
+      const comTel = lista.filter((d) => d.canais.length).length;
+      $("resumoPlanilha").innerHTML = `<b>${lista.length}</b> aluno(s) na planilha · <b>${comTel}</b> com telefone válido · ${lista.length - comTel} sem telefone${inativos ? ` · ${inativos} com contrato não ativo ficaram de fora` : ""}.`;
+      resultados = [];
+      renderizar();
+      $("btnCsv").disabled = true;
+      $("btnDisparar").disabled = rodando || comTel === 0 || !conectado;
+    } catch (falha) {
+      destinatarios = [];
+      $("resumoPlanilha").innerHTML = `<span class="erro">${falha.message || "Não consegui ler a planilha."}</span>`;
+    }
+  });
+
+  const primeiroNome = (nome) => {
+    const p = nome.trim().split(/\s+/)[0] || "";
+    return p.charAt(0).toLocaleUpperCase("pt-BR") + p.slice(1).toLocaleLowerCase("pt-BR");
+  };
+  const montar = (d) => $("modelo").value.replaceAll("{nome}", primeiroNome(d.nome));
+
+  async function enviar(numero, texto) {
+    try {
+      const r = await chamar(`/message/sendText/${instancia()}`, {
+        metodo: "POST",
+        tempo: 15000 + RITMO.digitandoMs,
+        corpo: { number: numero, text: texto, options: { delay: RITMO.digitandoMs, presence: "composing" }, textMessage: { text: texto } },
+      });
+      return r.status === 200 || r.status === 201;
+    } catch {
+      return false;
+    }
+  }
+
+  async function pausaAntes(tentativas) {
+    if (tentativas === 0) return;
+    const lote = tentativas % RITMO.loteACada === 0 ? RITMO.pausaLoteMs : 0;
+    let resta = RITMO.entreMs + Math.floor(Math.random() * (RITMO.variacaoMs + 1)) + lote;
+    while (resta > 0 && !cancelar) {
+      const passo = Math.min(250, resta);
+      await esperar(passo);
+      resta -= passo;
+    }
+  }
+
+  async function disparar() {
+    const comTel = destinatarios.filter((d) => d.canais.length);
+    if (!comTel.length) return;
+    const minutos = Math.max(1, Math.ceil((comTel.length * (RITMO.entreMs + RITMO.variacaoMs / 2 + RITMO.digitandoMs)) / 60000));
+    if (!confirm(`Enviar a mensagem para ${comTel.length} aluno(s)? Leva cerca de ${minutos} minuto(s).`)) return;
+
+    rodando = true;
+    cancelar = false;
+    resultados = [];
+    $("btnDisparar").disabled = true;
+    $("btnCancelar").disabled = false;
+    $("btnCsv").disabled = true;
+    window.onbeforeunload = () => "O disparo está em andamento.";
+
+    let tentativas = 0;
+    let fim = "completo";
+    const pendentes = new Set(destinatarios.map((_, i) => i));
+    for (const [indice, d] of destinatarios.entries()) {
+      pendentes.delete(indice);
+      if (cancelar) { fim = "cancelado"; break; }
+      if (!d.canais.length) {
+        resultados.push({ nome: d.nome, numero: "", canal: "", status: "sem telefone" });
+        renderizar();
+        continue;
+      }
+      if (tentativas > 0 && tentativas % RITMO.conferirACada === 0) {
+        const estado = await estadoDaConexao().catch(() => "desconectado");
+        if (estado !== "conectado") { fim = "desconectado"; break; }
+      }
+      await pausaAntes(tentativas);
+      if (cancelar) { fim = "cancelado"; break; }
+
+      $("progresso").textContent = `${tentativas + 1} de ${comTel.length} · agora: ${d.nome}`;
+      const texto = montar(d);
+      let usado = d.canais[0];
+      let enviado = false;
+      for (const canal of d.canais) {
+        usado = canal;
+        if (await enviar(canal.numero, texto)) { enviado = true; break; }
+      }
+      resultados.push({ nome: d.nome, numero: usado.numero, canal: usado.de, status: enviado ? "enviada" : "falhou" });
+      tentativas += 1;
+      renderizar();
+
+      if (!enviado && (await estadoDaConexao().catch(() => "desconectado")) !== "conectado") { fim = "desconectado"; break; }
+    }
+
+    // Quem ficou para trás (cancelado ou conexão caída) aparece como não enviado.
+    for (const indice of pendentes) {
+      const d = destinatarios[indice];
+      if (d.canais.length) resultados.push({ nome: d.nome, numero: d.canais[0].numero, canal: d.canais[0].de, status: "não enviada" });
+    }
+
+    rodando = false;
+    window.onbeforeunload = null;
+    $("btnCancelar").disabled = true;
+    const enviadas = resultados.filter((r) => r.status === "enviada").length;
+    const falhas = resultados.filter((r) => r.status === "falhou").length;
+    const texto = { completo: "Disparo concluído.", cancelado: "Disparo cancelado.", desconectado: "Disparo interrompido: o WhatsApp desconectou." }[fim];
+    $("progresso").innerHTML = `<b>${texto}</b> ${enviadas} enviada(s), ${falhas} com falha.`;
+    $("btnCsv").disabled = resultados.length === 0;
+    renderizar();
+    mostrarEstado(fim === "desconectado" ? "desconectado" : "conectado");
+  }
+
+  function renderizar() {
+    if (!resultados.length) {
+      $("resultado").innerHTML = destinatarios.length ? `<p class="suave">${destinatarios.length} aluno(s) na lista. Nenhum disparo feito ainda.</p>` : "";
+      return;
+    }
+    const linhas = resultados.map((r) => `<tr><td>${escapar(r.nome)}</td><td>${r.numero ? escapar(r.numero) : "—"}${r.canal ? ` (${r.canal})` : ""}</td><td>${escapar(r.status)}</td></tr>`).join("");
+    $("resultado").innerHTML = `<table><thead><tr><th>Aluno</th><th>Número</th><th>Situação</th></tr></thead><tbody>${linhas}</tbody></table>`;
+  }
+
+  const escapar = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  function baixarCsv() {
+    const linhas = [["Aluno", "Número", "Canal", "Situação"], ...resultados.map((r) => [r.nome, r.numero, r.canal, r.status])];
+    const csv = "﻿" + linhas.map((l) => l.map((c) => `"${String(c ?? "").replaceAll('"', '""')}"`).join(";")).join("\r\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `disparo-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-")}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function limpar() {
+    if (rodando) return;
+    destinatarios = [];
+    resultados = [];
+    $("chave").value = "";
+    $("arquivo").value = "";
+    $("resumoPlanilha").textContent = "";
+    $("progresso").textContent = "";
+    $("estado").textContent = "";
+    $("qr").hidden = true;
+    $("btnDisparar").disabled = true;
+    $("btnCsv").disabled = true;
+    conectado = false;
+    renderizar();
+  }
+
+  $("btnConectar").addEventListener("click", conectar);
+  $("btnDisparar").addEventListener("click", () => void disparar());
+  $("btnCancelar").addEventListener("click", () => { cancelar = true; $("progresso").textContent = "Cancelando…"; });
+  $("btnCsv").addEventListener("click", baixarCsv);
+  $("btnLimpar").addEventListener("click", limpar);
+})();
+</script>
+</body>
+</html>
