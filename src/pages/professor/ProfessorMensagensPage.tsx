@@ -226,8 +226,6 @@ export function ProfessorMensagensPage() {
             })}
           </ul>
 
-          <DisparoAutomatico key={tipo} tipo={tipo} modelo={modelo} destinatarios={visiveis} aoRegistrar={() => definirVersaoHistorico((v) => v + 1)} />
-
           {semTelefone.length > 0 && (
             <section className={estilos.semTelefone} aria-labelledby="sem-telefone">
               <h2 id="sem-telefone">Sem telefone válido</h2>
@@ -241,6 +239,9 @@ export function ProfessorMensagensPage() {
           )}
         </>
       )}
+
+      {/* Sempre visível: é aqui que o link do instalador da Evolution liga o portal, antes de qualquer planilha. */}
+      <DisparoAutomatico key={tipo} tipo={tipo} modelo={modelo} destinatarios={visiveis} aoRegistrar={() => definirVersaoHistorico((v) => v + 1)} />
 
       <HistoricoDisparos versao={versaoHistorico} />
     </>

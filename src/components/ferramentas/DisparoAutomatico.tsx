@@ -12,6 +12,7 @@ import {
   esperar,
   estadoDaConexao,
   guardarConfig,
+  importarConfigDoLink,
   lerConfig,
   lerImagem,
   pausaAntesDoProximo,
@@ -37,7 +38,8 @@ const ROTULO_ESTADO: Record<Estado, string> = { conectado: "WhatsApp conectado",
 const ROTULO_FIM: Record<RegistroDisparo["fim"], string> = { completo: "Disparo concluído.", cancelado: "Disparo cancelado.", desconectado: "Disparo interrompido: o WhatsApp desconectou." };
 
 export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: Props) {
-  const [config, definirConfig] = useState<ConfigEvolution>(lerConfig);
+  // Abrir o link do instalador já liga o portal à Evolution; sem link, vale o que ficou guardado neste navegador.
+  const [config, definirConfig] = useState<ConfigEvolution>(() => importarConfigDoLink() ?? lerConfig());
   const [estado, definirEstado] = useState<Estado | null>(null);
   const [qr, definirQr] = useState<{ imagem: string | null; codigo: string | null } | null>(null);
   const [ocupado, definirOcupado] = useState(false);
@@ -49,6 +51,9 @@ export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: 
   const comTelefone = destinatarios.filter((d) => d.canais.length > 0);
   const enviando = fase.nome === "enviando";
   const pronto = config.url.trim() !== "" && config.chave.trim() !== "";
+  // Configurado, a tela fica enxuta: só o estado do WhatsApp. Os campos aparecem em «Alterar» ou quando falta algo.
+  const [alterando, definirAlterando] = useState(false);
+  const mostrarCampos = !pronto || alterando;
 
   const mudar = (parte: Partial<ConfigEvolution>) => {
     const nova = { ...config, ...parte };
@@ -71,7 +76,7 @@ export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: 
     }
   }
 
-  const verificar = () => tentar(async () => definirEstado(await estadoDaConexao(config)));
+  const verificar = (alvo: ConfigEvolution = config) => tentar(async () => definirEstado(await estadoDaConexao(alvo)));
   const pedirQr = () =>
     tentar(async () => {
       const resposta = await conectar(config);
@@ -84,6 +89,30 @@ export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: 
       definirEstado("desconectado");
       definirQr(null);
     });
+
+  // Já configurado: confere o estado do WhatsApp ao abrir a tela, sem precisar clicar.
+  useEffect(() => {
+    if (pronto) void verificar();
+    // Só na abertura: depois, quem confere é o botão.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Link do instalador aberto na mesma aba (só muda o trecho do endereço, a página não recarrega): liga na hora.
+  useEffect(() => {
+    const aoMudar = () => {
+      const nova = importarConfigDoLink();
+      if (!nova) return;
+      definirConfig(nova);
+      definirAlterando(false);
+      definirEstado(null);
+      definirQr(null);
+      void verificar(nova);
+    };
+    window.addEventListener("hashchange", aoMudar);
+    return () => window.removeEventListener("hashchange", aoMudar);
+    // O ouvinte só precisa do que `verificar` recebe como argumento.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Com o QR Code na tela, confere sozinho se o celular já leu.
   useEffect(() => {
@@ -169,23 +198,49 @@ export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: 
     <section className={estilos.painel} aria-labelledby="titulo-disparo">
       <h2 id="titulo-disparo">Envio automático</h2>
       <p className={estilos.suave}>
-        Dispara para todos de uma vez pela Evolution API, o serviço da escola que fica ligado ao WhatsApp. Funciona no computador onde ela está instalada, com esta página aberta até o fim. O endereço e a chave ficam guardados só neste navegador.
+        Dispara para todos de uma vez pela Evolution API, o serviço da escola que fica ligado ao WhatsApp. Funciona no computador onde ela está instalada, com esta página aberta até o fim.
       </p>
 
-      <div className={estilos.grade}>
-        <label className={estilos.campo}>
-          <span>Endereço da Evolution API</span>
-          <input value={config.url} onChange={(e) => mudar({ url: e.target.value })} placeholder="http://localhost:8080" disabled={enviando} autoComplete="off" />
-        </label>
-        <label className={estilos.campo}>
-          <span>Chave (API key)</span>
-          <input type="password" value={config.chave} onChange={(e) => mudar({ chave: e.target.value })} disabled={enviando} autoComplete="off" />
-        </label>
-        <label className={estilos.campo}>
-          <span>Nome da conexão</span>
-          <input value={config.instancia} onChange={(e) => mudar({ instancia: e.target.value })} maxLength={40} disabled={enviando} autoComplete="off" />
-        </label>
-      </div>
+      {mostrarCampos ? (
+        <>
+          {!pronto && (
+            <p className={estilos.suave}>
+              Ainda não ligada. Rode o instalador da pasta <code>evolution</code> neste computador (<code>instalar.bat</code> no Windows) e abra o link que ele gera: a ligação fica pronta. Ou preencha à mão:
+            </p>
+          )}
+          <div className={estilos.grade}>
+            <label className={estilos.campo}>
+              <span>Endereço da Evolution API</span>
+              <input value={config.url} onChange={(e) => mudar({ url: e.target.value })} placeholder="http://localhost:8081" disabled={enviando} autoComplete="off" />
+            </label>
+            <label className={estilos.campo}>
+              <span>Chave (API key)</span>
+              <input type="password" value={config.chave} onChange={(e) => mudar({ chave: e.target.value })} disabled={enviando} autoComplete="off" />
+            </label>
+          </div>
+          <details className={estilos.avancado}>
+            <summary>Avançado</summary>
+            <label className={estilos.campo}>
+              <span>Nome da conexão</span>
+              <input value={config.instancia} onChange={(e) => mudar({ instancia: e.target.value })} maxLength={40} disabled={enviando} autoComplete="off" />
+            </label>
+          </details>
+          {pronto && (
+            <div className={estilos.linha}>
+              <button type="button" className={estilos.acao} onClick={() => definirAlterando(false)}>
+                Pronto
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <p className={estilos.suave}>
+          Ligada à Evolution em <code>{config.url}</code>.{" "}
+          <button type="button" className={estilos.ligacao} onClick={() => definirAlterando(true)} disabled={enviando}>
+            Alterar
+          </button>
+        </p>
+      )}
 
       <div className={estilos.linha}>
         {estado && (
@@ -275,6 +330,7 @@ export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: 
             Disparar para {comTelefone.length} aluno(s)
           </button>
           {estado !== "conectado" && <span className={estilos.suave}>Conecte o WhatsApp para liberar o disparo.</span>}
+          {estado === "conectado" && comTelefone.length === 0 && <span className={estilos.suave}>Escolha a planilha acima para liberar o disparo.</span>}
         </div>
       )}
 

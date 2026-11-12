@@ -5,8 +5,7 @@
 #   2. docker compose up -d --build
 #   3. abrir http://localhost:8080 (ou http://IP-DO-COMPUTADOR:8080 nos outros computadores)
 #
-# Envio automático de WhatsApp (opcional), com o arquivo a mais:
-#   docker compose -f docker-compose.yml -f docker-compose.whatsapp.yml up -d --build
+# O WhatsApp (Evolution API) tem instalação própria e permanente: veja a pasta evolution/.
 
 services:
   portal:

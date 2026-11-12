@@ -117,20 +117,26 @@ o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servi
 
 ### Envio automático de mensagens (Evolution API)
 
-A aba Mensagens também dispara para todos de uma vez pela **Evolution API**, o serviço que fica ligado ao
-WhatsApp (o mesmo do `microapp/`, imagem `evoapicloud/evolution-api:v2.3.7`, porta 8080). Ela roda num
-computador da escola, que o servidor do portal na Vercel não alcança; por isso **quem fala com ela é o
-navegador** (`src/lib/evolution.ts`), aberto nesse computador:
+A aba Mensagens dispara para todos de uma vez pela **Evolution API**, o serviço que fica ligado ao WhatsApp.
+Ela roda num computador da escola, que o servidor do portal na Vercel não alcança; por isso **quem fala com
+ela é o navegador** (`src/lib/evolution.ts`), aberto nesse computador.
 
-- Endereço (padrão `http://localhost:8080`), chave (`AUTHENTICATION_API_KEY`) e nome da conexão ficam só no
-  `localStorage` de quem configurou. Não são variáveis da Vercel nem passam pelo servidor do portal.
-- De um site https o navegador só chama `http://` em `localhost`. Para disparar de outro computador, a
-  Evolution precisa de um endereço https (um túnel, por exemplo). A Evolution precisa aceitar a origem do
-  portal no CORS (`CORS_ORIGIN`, que por padrão aceita todas), e o navegador pode pedir permissão para
-  acessar a rede local.
-- Fluxo: verificar conexão, conectar por QR Code, disparar com confirmação. Pausa de 4 a 6 s entre envios,
-  30 s a cada 40, conferência da conexão a cada 10, tentativa no telefone do aluno e depois no do
-  responsável. Dá para cancelar; fechar a aba interrompe. O lembrete por turno aceita uma imagem.
+**Instalação (uma vez só, depois fica no ar para sempre):** a pasta `evolution/` tem o Docker da API e um
+instalador (`instalar.bat` no Windows, `instalar.sh` no Linux e Mac). Ele gera a chave, sobe a Evolution com
+`restart: always` (volta sozinha depois de queda de energia ou reinício) e cria `evolution/ligacao.txt`: um link
+do portal com `#evolution=<base64url>`, que leva endereço, chave e nome da conexão. Abrir o link neste
+computador **liga o portal à Evolution sozinho**: a configuração fica no `localStorage` do navegador e o
+trecho com a chave sai do endereço da página na hora. A chave não vai para a Vercel nem para o servidor do
+portal. Instalar de novo, ou rodar com `--atualizar`, não muda a chave nem apaga a conexão do WhatsApp. Detalhes
+em `evolution/LEIA-ME.md`.
+
+- Com a ligação feita, a tela mostra só o estado do WhatsApp (conferido ao abrir); endereço, chave e nome da
+  conexão ficam em «Alterar».
+- De um site https o navegador só chama `http://` em `localhost`, e pode pedir permissão para acessar a rede
+  local. Para disparar de outro computador, a Evolution precisa de um endereço https (um túnel, por exemplo).
+- Fluxo: conectar por QR Code, disparar com confirmação. Pausa de 4 a 6 s entre envios, 30 s a cada 40,
+  conferência da conexão a cada 10, tentativa no telefone do aluno e depois no do responsável. Dá para
+  cancelar; fechar a aba interrompe. O lembrete por turno aceita uma imagem.
 - **Histórico** (`GET`/`POST /api/disparos`, permissão `mensagens`): cada disparo guarda quem fez, quando, o
   modelo e o resultado por aluno (nome e número) em `disparos/<data>/<id>.json`, por unidade. Fica por
   `DIAS_HISTORICO_DISPAROS` (90) dias e sai na limpeza diária.
@@ -159,13 +165,13 @@ usa o Blob responde «Erro no servidor (código ...)». Para gastar pouco:
 
 ### Disparador simples (sem banco, só dispara)
 
-`public/disparador/index.html` (endereço `/disparador/`) é uma página só, sem servidor próprio e sem nada
+`public/disparador/index.html` (endereço `/disparador/index.html`) é uma página só, sem servidor próprio e sem nada
 guardado: ela conversa direto com a Evolution API, lê a planilha (Nome Aluno, Telefone Aluno, Telefone
 Responsável, Status Contrato), monta a mensagem com `{nome}` e dispara com as mesmas pausas do portal
 (4 a 6 s entre envios, 30 s a cada 40, conferência da conexão a cada 10). Tem cancelar, tela de resultado e
 baixar `.csv`. A chave, a planilha e os resultados ficam só na memória da aba; «Limpar tudo» apaga a chave.
 
-- A Evolution precisa estar no computador de quem dispara (`http://localhost:8081` no compose do WhatsApp).
+- A Evolution precisa estar no computador de quem dispara (`http://localhost:8081`, instalada pela pasta `evolution/`). O link do instalador também preenche esta página, só na memória.
   Chrome e Edge aceitam essa conversa mesmo com a página em https; pode aparecer um aviso de «acesso à rede local».
 - A Evolution precisa aceitar a origem da página (CORS). Se o navegador acusar bloqueio, ajuste a configuração
   de CORS da Evolution.
@@ -223,10 +229,8 @@ contêiner só, com os dados no volume `portal_dados` (nada de Vercel nem de cot
    JSON da Vercel, com as senhas em hash; cada um numa linha, sem aspas em volta) e, se quiser, `UNIDADE_PADRAO`.
 3. `docker compose up -d --build` e abra `http://localhost:8080`. Nos outros computadores da escola, use
    `http://IP-DO-COMPUTADOR:8080` (libere a porta no firewall do Windows).
-4. **WhatsApp automático (opcional):** `docker compose -f docker-compose.yml -f docker-compose.whatsapp.yml up -d --build`
-   sobe também a Evolution API (porta 8081). Preencha `EVOLUTION_API_KEY` e `EVOLUTION_DB_SENHA` no `.env`; no
-   portal, em Mensagens > Envio automático, use `http://localhost:8081` (ou o IP do computador) e a chave.
-   Como o portal passa a ser aberto por `http://`, o navegador deixa de bloquear a conversa com a Evolution.
+4. **WhatsApp automático (opcional):** tem instalação própria, na pasta `evolution/` (veja a seção acima): rode
+   `instalar.bat` e abra o link que ele gera. O portal em Docker e a Evolution são independentes.
 
 Cuidados: o computador precisa ficar ligado; os dados ficam só nele, então faça backup do volume (por exemplo
 `docker run --rm -v portal_dados:/d -v "$PWD":/b alpine tar czf /b/portal-dados.tgz -C /d .`); sem HTTPS, o

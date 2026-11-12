@@ -374,6 +374,21 @@
   $("btnCancelar").addEventListener("click", () => { cancelar = true; $("progresso").textContent = "Cancelando…"; });
   $("btnCsv").addEventListener("click", baixarCsv);
   $("btnLimpar").addEventListener("click", limpar);
+
+  // Link do instalador da Evolution (#evolution=...): preenche os campos só na memória, sem guardar nada,
+  // tira a chave do endereço da página e já confere a conexão.
+  try {
+    const achado = /[#&]evolution=([A-Za-z0-9_-]+)/.exec(location.hash);
+    if (achado) {
+      const b64 = achado[1].replace(/-/g, "+").replace(/_/g, "/");
+      const dado = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64 + "=".repeat((4 - (b64.length % 4)) % 4)), (c) => c.charCodeAt(0))));
+      if (dado.url) $("url").value = dado.url;
+      if (dado.chave) $("chave").value = dado.chave;
+      if (dado.instancia) $("instancia").value = dado.instancia;
+      history.replaceState(null, "", location.pathname + location.search);
+      if (dado.chave) void conectar();
+    }
+  } catch { /* link inválido: os campos ficam como estão */ }
 })();
 </script>
 </body>

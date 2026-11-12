@@ -13,7 +13,7 @@ export interface ConfigEvolution {
   instancia: string;
 }
 
-export const CONFIG_INICIAL: ConfigEvolution = { url: "http://localhost:8080", chave: "", instancia: "portal" };
+export const CONFIG_INICIAL: ConfigEvolution = { url: "http://localhost:8081", chave: "", instancia: "portal" };
 
 const CHAVE_ARMAZENADA = "portal:mensagens:evolution";
 
@@ -31,6 +31,30 @@ export function guardarConfig(config: ConfigEvolution) {
     localStorage.setItem(CHAVE_ARMAZENADA, JSON.stringify(config));
   } catch {
     // Sem armazenamento (janela anônima): vale só enquanto a página estiver aberta.
+  }
+}
+
+/**
+ * O instalador da Evolution (pasta `evolution/`) gera um link do portal com `#evolution=<base64url>`, um JSON com
+ * endereço, chave e nome da conexão. Quem abre o link já fica ligado: a configuração é guardada neste navegador e
+ * o trecho com a chave sai do endereço da página na hora, para não ficar à vista nem ser copiado junto.
+ */
+export function importarConfigDoLink(): ConfigEvolution | null {
+  try {
+    const achado = /[#&]evolution=([A-Za-z0-9_-]+)/.exec(window.location.hash);
+    if (!achado) return null;
+    const base64 = achado[1].replace(/-/g, "+").replace(/_/g, "/");
+    const bytes = Uint8Array.from(atob(base64 + "=".repeat((4 - (base64.length % 4)) % 4)), (c) => c.charCodeAt(0));
+    const dado = JSON.parse(new TextDecoder().decode(bytes)) as Partial<ConfigEvolution>;
+    const url = new URL(String(dado.url ?? ""));
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    const config: ConfigEvolution = { url: url.origin, chave: String(dado.chave ?? "").trim(), instancia: instanciaLimpa(String(dado.instancia ?? "portal")) };
+    if (!config.chave) return null;
+    guardarConfig(config);
+    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    return config;
+  } catch {
+    return null;
   }
 }
 
