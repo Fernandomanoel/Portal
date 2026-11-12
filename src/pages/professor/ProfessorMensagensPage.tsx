@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { Icone } from "@/components/Icone";
+import { useProfessor } from "./ProfessorLayout";
 import { CampoPlanilha } from "@/components/ferramentas/CampoPlanilha";
 import { DisparoAutomatico } from "@/components/ferramentas/DisparoAutomatico";
 import { HistoricoDisparos } from "@/components/ferramentas/HistoricoDisparos";
@@ -50,6 +51,9 @@ function modeloGuardado(tipo: TipoMensagem): string {
 const telefoneBr = (numero: string) => numero.replace(/^55(\d{2})(\d{4,5})(\d{4})$/, "($1) $2-$3");
 
 export function ProfessorMensagensPage() {
+  // O envio automático (API) só aparece para o administrador e para quem ele liberou.
+  const { professor } = useProfessor();
+  const podeEnviarAutomatico = professor.permissoes.includes("whatsapp");
   const [tipo, definirTipo] = useState<TipoMensagem>("faltas");
   const [modelos, definirModelos] = useState<Record<TipoMensagem, string>>(() => ({ faltas: modeloGuardado("faltas"), aviso: modeloGuardado("aviso") }));
   const [tabela, definirTabela] = useState<Tabela | null>(null);
@@ -100,7 +104,7 @@ export function ProfessorMensagensPage() {
     <>
       <CabecalhoPagina
         titulo="Mensagens para alunos"
-        texto="Envie a planilha de controle e o portal monta a mensagem de cada aluno. Você pode abrir o WhatsApp aluno por aluno, com o texto pronto, ou disparar para todos de uma vez pelo envio automático."
+        texto="Envie a planilha de controle e o portal monta a mensagem de cada aluno. Cada botão abre o WhatsApp com o texto pronto para você conferir e enviar."
       />
 
       <div className={estilos.tipos} role="radiogroup" aria-label="Tipo de mensagem">
@@ -240,10 +244,10 @@ export function ProfessorMensagensPage() {
         </>
       )}
 
-      {/* Sempre visível: é aqui que o link do instalador da Evolution liga o portal, antes de qualquer planilha. */}
-      <DisparoAutomatico key={tipo} tipo={tipo} modelo={modelo} destinatarios={visiveis} aoRegistrar={() => definirVersaoHistorico((v) => v + 1)} />
+      {/* Só com a permissão «whatsapp». Sempre visível para quem tem: é aqui que o link do instalador da Evolution liga o portal, antes de qualquer planilha. */}
+      {podeEnviarAutomatico && <DisparoAutomatico key={tipo} tipo={tipo} modelo={modelo} destinatarios={visiveis} aoRegistrar={() => definirVersaoHistorico((v) => v + 1)} />}
 
-      <HistoricoDisparos versao={versaoHistorico} />
+      {podeEnviarAutomatico && <HistoricoDisparos versao={versaoHistorico} />}
     </>
   );
 }

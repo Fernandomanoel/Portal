@@ -165,17 +165,24 @@ usa o Blob responde «Erro no servidor (código ...)». Para gastar pouco:
 
 ### Disparador simples (sem banco, só dispara)
 
-`public/disparador/index.html` (endereço `/disparador/index.html`) é uma página só, sem servidor próprio e sem nada
-guardado: ela conversa direto com a Evolution API, lê a planilha (Nome Aluno, Telefone Aluno, Telefone
-Responsável, Status Contrato), monta a mensagem com `{nome}` e dispara com as mesmas pausas do portal
-(4 a 6 s entre envios, 30 s a cada 40, conferência da conexão a cada 10). Tem cancelar, tela de resultado e
-baixar `.csv`. A chave, a planilha e os resultados ficam só na memória da aba; «Limpar tudo» apaga a chave.
+`evolution/disparador/index.html` é uma página só, **local** (não vai para o site publicado, para não ficar
+aberta a qualquer pessoa): abre-se o arquivo no navegador do computador onde a Evolution roda. Ela conversa
+direto com a Evolution API, lê a planilha (Nome Aluno, Telefone Aluno, Telefone Responsável, Status Contrato),
+monta a mensagem com `{nome}` e dispara com as mesmas pausas do portal (4 a 6 s entre envios, 30 s a cada 40,
+conferência da conexão a cada 10). Tem cancelar, tela de resultado e baixar `.csv`. A chave, a planilha e os
+resultados ficam só na memória da aba; «Limpar tudo» apaga a chave. Aceita o link `#evolution=` do instalador.
 
-- A Evolution precisa estar no computador de quem dispara (`http://localhost:8081`, instalada pela pasta `evolution/`). O link do instalador também preenche esta página, só na memória.
-  Chrome e Edge aceitam essa conversa mesmo com a página em https; pode aparecer um aviso de «acesso à rede local».
-- A Evolution precisa aceitar a origem da página (CORS). Se o navegador acusar bloqueio, ajuste a configuração
-  de CORS da Evolution.
+- A Evolution precisa estar no computador de quem dispara (`http://localhost:8081`, instalada pela pasta `evolution/`).
+- A leitura da planilha usa uma biblioteca carregada da internet (CDN).
 - Não envia imagem. Os envios são de texto, um por vez, pela conexão do WhatsApp escolhido.
+
+### Quem vê o envio automático (permissão `whatsapp`)
+
+O painel **Envio automático** da aba Mensagens e o **Histórico de disparos** só aparecem para o **administrador**
+e para quem ele liberar, na tela Usuários, com a permissão «Envio automático de WhatsApp (API)». Ela **não** está
+no acesso padrão: professores da variável `PROFESSORES` e usuários criados antes não a recebem sozinhos. Quem
+não a tem continua usando a aba Mensagens com o botão de WhatsApp aluno por aluno. As rotas `/api/disparos`
+recusam (403) quem não tem a permissão, mesmo que chame a API direto. Liberar o envio inclui a aba Mensagens.
 
 ### Quando o login ou a lista de unidades não funciona
 

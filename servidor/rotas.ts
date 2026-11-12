@@ -210,7 +210,8 @@ async function autenticarProfessor(usuario: string, senha: string, armazenamento
 /** Permissões em vigor: as do cadastro, ou as padrão (professor da variável) mais gerenciar usuários se for administrador. */
 function permissoesDe(professor: Professor): PermissaoId[] {
   const base = professor.permissoes ?? PERMISSOES_PADRAO;
-  return normalizarPermissoes(professor.administrador ? [...base, "usuarios"] : base);
+  // O administrador sempre alcança o envio automático; os demais só se ele liberar na tela Usuários.
+  return normalizarPermissoes(professor.administrador ? [...base, "usuarios", "whatsapp"] : base);
 }
 const temPermissao = (professor: Professor, id: PermissaoId) => permissoesDe(professor).includes(id);
 const semPermissao = () => erro(403, "SEM_PERMISSAO", "Seu usuário não tem acesso a esta área. Fale com quem administra o portal.");
@@ -836,7 +837,7 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
   if (partes[0] === "disparos" && partes.length === 1) {
     const professor = await professorDa(requisicao, armazenamento);
     if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
-    if (!temPermissao(professor, "mensagens")) return semPermissao();
+    if (!temPermissao(professor, "whatsapp")) return semPermissao();
     const ativa = unidadeAtiva(professor, url);
     if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
     if (metodo === "GET") {
