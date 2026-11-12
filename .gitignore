@@ -38,3 +38,4 @@ dados/
 dist-servidor/
 .env
 __pycache__/
+backups/

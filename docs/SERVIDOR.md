@@ -117,29 +117,32 @@ o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servi
 
 ### Envio automático de mensagens (Evolution API)
 
-A aba Mensagens dispara para todos de uma vez pela **Evolution API**, o serviço que fica ligado ao WhatsApp.
-Ela roda num computador da escola, que o servidor do portal na Vercel não alcança; por isso **quem fala com
-ela é o navegador** (`src/lib/evolution.ts`), aberto nesse computador.
+A aba Mensagens dispara para todos de uma vez pelo WhatsApp da escola, usando a **Evolution API**. O navegador
+**não fala com a Evolution**: pede ao portal (`/api/whatsapp/*`, módulo `servidor/whatsapp.ts`), que guarda a
+chave, confere a sessão e a permissão `whatsapp`, valida cada envio (número, tamanho do texto, tipo e tamanho
+da imagem) e repassa. A Evolution fica na rede interna do servidor, sem porta aberta, e a chave nunca chega ao
+navegador nem ao `localStorage`.
 
-**Instalação (uma vez só, depois fica no ar para sempre):** a pasta `evolution/` tem o Docker da API e um
-instalador (`instalar.bat` no Windows, `instalar.sh` no Linux e Mac). Ele gera a chave, sobe a Evolution com
-`restart: always` (volta sozinha depois de queda de energia ou reinício) e cria `evolution/ligacao.txt`: um link
-do portal com `#evolution=<base64url>`, que leva endereço, chave e nome da conexão. Abrir o link neste
-computador **liga o portal à Evolution sozinho**: a configuração fica no `localStorage` do navegador e o
-trecho com a chave sai do endereço da página na hora. A chave não vai para a Vercel nem para o servidor do
-portal. Instalar de novo, ou rodar com `--atualizar`, não muda a chave nem apaga a conexão do WhatsApp. Detalhes
-em `evolution/LEIA-ME.md`.
-
-- Com a ligação feita, a tela mostra só o estado do WhatsApp (conferido ao abrir); endereço, chave e nome da
-  conexão ficam em «Alterar».
-- De um site https o navegador só chama `http://` em `localhost`, e pode pedir permissão para acessar a rede
-  local. Para disparar de outro computador, a Evolution precisa de um endereço https (um túnel, por exemplo).
+- **Variáveis do servidor:** `EVOLUTION_API_KEY` (obrigatória; sem ela a tela avisa que o WhatsApp não foi
+  ligado), `EVOLUTION_URL` (padrão `http://evolution_api:8080`, o serviço do compose) e `EVOLUTION_INSTANCE`
+  (padrão `portal`).
+- **Onde isso roda:** precisa de um servidor sempre ligado, com a Evolution ao lado. É o `docker-compose.yml` da
+  raiz, descrito em `docs/VPS.md`. Na Vercel não há Evolution (função que liga e desliga não mantém o WhatsApp
+  conectado): lá a tela mostra «não foi ligado».
 - Fluxo: conectar por QR Code, disparar com confirmação. Pausa de 4 a 6 s entre envios, 30 s a cada 40,
-  conferência da conexão a cada 10, tentativa no telefone do aluno e depois no do responsável. Dá para
-  cancelar; fechar a aba interrompe. O lembrete por turno aceita uma imagem.
-- **Histórico** (`GET`/`POST /api/disparos`, permissão `mensagens`): cada disparo guarda quem fez, quando, o
-  modelo e o resultado por aluno (nome e número) em `disparos/<data>/<id>.json`, por unidade. Fica por
-  `DIAS_HISTORICO_DISPAROS` (90) dias e sai na limpeza diária.
+  conferência da conexão a cada 10, tentativa no telefone do aluno e depois no do responsável. O ritmo é
+  conduzido pela página: dá para cancelar, e fechar a aba interrompe. O lembrete por turno aceita uma imagem.
+- **Histórico** (`GET`/`POST /api/disparos`): cada disparo guarda quem fez, quando, o modelo e o resultado por
+  aluno (nome e número) em `disparos/<data>/<id>.json`, por unidade, por `DIAS_HISTORICO_DISPAROS` (90) dias.
+
+### Quem vê o envio automático (permissão `whatsapp`)
+
+O painel **Envio automático** da aba Mensagens e o **Histórico de disparos** só aparecem para o **administrador**
+e para quem ele liberar, na tela Usuários, com a permissão «Envio automático de WhatsApp (API)». Ela **não** está
+no acesso padrão: professores da variável `PROFESSORES` e usuários criados antes não a recebem sozinhos. Quem
+não a tem continua usando a aba Mensagens com o botão de WhatsApp aluno por aluno. As rotas `/api/whatsapp/*` e
+`/api/disparos` recusam (403) quem não tem a permissão, mesmo que chame a API direto. Liberar o envio inclui a
+aba Mensagens.
 
 ### Cota do Vercel Blob (plano gratuito)
 
@@ -162,27 +165,6 @@ usa o Blob responde «Erro no servidor (código ...)». Para gastar pouco:
   educacional a partir de escolhas (desempenho, dificuldade, personalidade, frequência, comportamento,
   situação do contrato) ou da observação do primeiro dia, com o gênero do texto, outra redação sugerida,
   «Arrumar espaços e pontuação» e troca de gênero de um texto pronto. Roda no navegador; nada é guardado.
-
-### Disparador simples (sem banco, só dispara)
-
-`evolution/disparador/index.html` é uma página só, **local** (não vai para o site publicado, para não ficar
-aberta a qualquer pessoa): abre-se o arquivo no navegador do computador onde a Evolution roda. Ela conversa
-direto com a Evolution API, lê a planilha (Nome Aluno, Telefone Aluno, Telefone Responsável, Status Contrato),
-monta a mensagem com `{nome}` e dispara com as mesmas pausas do portal (4 a 6 s entre envios, 30 s a cada 40,
-conferência da conexão a cada 10). Tem cancelar, tela de resultado e baixar `.csv`. A chave, a planilha e os
-resultados ficam só na memória da aba; «Limpar tudo» apaga a chave. Aceita o link `#evolution=` do instalador.
-
-- A Evolution precisa estar no computador de quem dispara (`http://localhost:8081`, instalada pela pasta `evolution/`).
-- A leitura da planilha usa uma biblioteca carregada da internet (CDN).
-- Não envia imagem. Os envios são de texto, um por vez, pela conexão do WhatsApp escolhido.
-
-### Quem vê o envio automático (permissão `whatsapp`)
-
-O painel **Envio automático** da aba Mensagens e o **Histórico de disparos** só aparecem para o **administrador**
-e para quem ele liberar, na tela Usuários, com a permissão «Envio automático de WhatsApp (API)». Ela **não** está
-no acesso padrão: professores da variável `PROFESSORES` e usuários criados antes não a recebem sozinhos. Quem
-não a tem continua usando a aba Mensagens com o botão de WhatsApp aluno por aluno. As rotas `/api/disparos`
-recusam (403) quem não tem a permissão, mesmo que chame a API direto. Liberar o envio inclui a aba Mensagens.
 
 ### Quando o login ou a lista de unidades não funciona
 
@@ -226,24 +208,12 @@ cada 6 horas. Para o servidor voltar sozinho depois de uma queda de energia,
 rode por um gerenciador de serviço (systemd, pm2, NSSM no Windows). Faça backup
 de `DADOS_DIR` se as notas precisarem durar mais que 7 dias.
 
-### Docker (o jeito mais simples de rodar na escola)
+### Servidor completo (VPS com Docker)
 
-O `Dockerfile` e o `docker-compose.yml` da raiz empacotam o servidor físico acima: o site e a API num
-contêiner só, com os dados no volume `portal_dados` (nada de Vercel nem de cota do Blob).
-
-1. No computador da escola, instale o Docker Desktop (ou Docker Engine).
-2. Copie `.env.docker.exemplo` para `.env` e preencha: `SEGREDO_SESSAO`, `UNIDADES`, `PROFESSORES` (os mesmos
-   JSON da Vercel, com as senhas em hash; cada um numa linha, sem aspas em volta) e, se quiser, `UNIDADE_PADRAO`.
-3. `docker compose up -d --build` e abra `http://localhost:8080`. Nos outros computadores da escola, use
-   `http://IP-DO-COMPUTADOR:8080` (libere a porta no firewall do Windows).
-4. **WhatsApp automático (opcional):** tem instalação própria, na pasta `evolution/` (veja a seção acima): rode
-   `instalar.bat` e abra o link que ele gera. O portal em Docker e a Evolution são independentes.
-
-Cuidados: o computador precisa ficar ligado; os dados ficam só nele, então faça backup do volume (por exemplo
-`docker run --rm -v portal_dados:/d -v "$PWD":/b alpine tar czf /b/portal-dados.tgz -C /d .`); sem HTTPS, o
-acesso é só pela rede da escola (de fora, só com um túnel); o `.env` nunca vai para o repositório. Os dados
-da Vercel não migram sozinhos: o portal em Docker começa vazio, com os usuários e unidades das variáveis.
-Depois de mudar um `.prova.ts`, rode `docker compose up -d --build` de novo.
+O `Dockerfile` e o `docker-compose.yml` da raiz sobem o portal, a Evolution (WhatsApp) e o Caddy (HTTPS
+automático) num servidor só, com os dados em volumes e sem depender da Vercel nem do Blob. O passo a passo, com
+firewall, backup e o que nunca fazer, está em **`docs/VPS.md`**; `./instalar-vps.sh` cria o `.env` com as
+chaves e confere tudo antes de subir.
 
 Depois de mudar qualquer `.prova.ts`, rode os dois builds de novo: o gabarito
 entra no servidor no build.

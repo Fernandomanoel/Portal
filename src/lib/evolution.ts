@@ -1,150 +1,29 @@
 /**
- * Conversa com a Evolution API (o serviço que fica ligado ao WhatsApp) direto do
- * navegador. A Evolution roda num computador da escola, então o portal publicado
- * não a alcança pelo servidor: quem dispara é a página, aberta nesse computador
- * (ou em qualquer um, se a Evolution tiver endereço https). O endereço e a chave
- * ficam só no navegador de quem configurou; nunca vão para o servidor do portal.
- * Chamadas e pausas seguem o sistema de gestão de onde o disparador veio.
+ * Envio automático de WhatsApp. O navegador não fala com a Evolution API: pede ao portal (`/api/whatsapp/*`), que
+ * guarda a chave no servidor, confere a sessão e a permissão `whatsapp` e repassa. Aqui ficam as chamadas ao
+ * portal e as pausas do disparo (contra bloqueio do número), que seguem o sistema de gestão de onde o disparador veio.
  */
+import { chamar, comJson } from "./apiProvas";
 
-export interface ConfigEvolution {
-  url: string;
-  chave: string;
-  instancia: string;
-}
-
-export const CONFIG_INICIAL: ConfigEvolution = { url: "http://localhost:8081", chave: "", instancia: "portal" };
-
-const CHAVE_ARMAZENADA = "portal:mensagens:evolution";
-
-export function lerConfig(): ConfigEvolution {
-  try {
-    const bruto = JSON.parse(localStorage.getItem(CHAVE_ARMAZENADA) ?? "null") as Partial<ConfigEvolution> | null;
-    return { ...CONFIG_INICIAL, ...(bruto ?? {}) };
-  } catch {
-    return CONFIG_INICIAL;
-  }
-}
-
-export function guardarConfig(config: ConfigEvolution) {
-  try {
-    localStorage.setItem(CHAVE_ARMAZENADA, JSON.stringify(config));
-  } catch {
-    // Sem armazenamento (janela anônima): vale só enquanto a página estiver aberta.
-  }
-}
-
-/**
- * O instalador da Evolution (pasta `evolution/`) gera um link do portal com `#evolution=<base64url>`, um JSON com
- * endereço, chave e nome da conexão. Quem abre o link já fica ligado: a configuração é guardada neste navegador e
- * o trecho com a chave sai do endereço da página na hora, para não ficar à vista nem ser copiado junto.
- */
-export function importarConfigDoLink(): ConfigEvolution | null {
-  try {
-    const achado = /[#&]evolution=([A-Za-z0-9_-]+)/.exec(window.location.hash);
-    if (!achado) return null;
-    const base64 = achado[1].replace(/-/g, "+").replace(/_/g, "/");
-    const bytes = Uint8Array.from(atob(base64 + "=".repeat((4 - (base64.length % 4)) % 4)), (c) => c.charCodeAt(0));
-    const dado = JSON.parse(new TextDecoder().decode(bytes)) as Partial<ConfigEvolution>;
-    const url = new URL(String(dado.url ?? ""));
-    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
-    const config: ConfigEvolution = { url: url.origin, chave: String(dado.chave ?? "").trim(), instancia: instanciaLimpa(String(dado.instancia ?? "portal")) };
-    if (!config.chave) return null;
-    guardarConfig(config);
-    window.history.replaceState(null, "", window.location.pathname + window.location.search);
-    return config;
-  } catch {
-    return null;
-  }
-}
-
-export const instanciaLimpa = (nome: string) => nome.trim().replace(/[^a-zA-Z0-9_-]/g, "_") || CONFIG_INICIAL.instancia;
+export type Estado = "conectado" | "desconectado" | "sem_instancia";
 
 /** Pausas contra bloqueio do número: entre envios, a cada lote, e a conferência periódica da conexão. */
 export const RITMO = { entreMs: 4000, variacaoMs: 2000, loteACada: 40, pausaLoteMs: 30000, conferirACada: 10, digitandoMs: 1500 } as const;
 
-export class ErroEvolution extends Error {}
-
-const FORA_DO_AR =
-  "Não foi possível falar com a Evolution API. Confira se ela está ligada neste computador, se o endereço e a chave estão certos e se o navegador tem permissão para acessar a rede local.";
-
-async function pedir(config: ConfigEvolution, caminho: string, opcoes: { metodo?: string; corpo?: unknown; tempoMs?: number } = {}): Promise<{ status: number; dados: unknown }> {
-  const base = config.url.trim().replace(/\/+$/, "");
-  let resposta: Response;
-  try {
-    resposta = await fetch(`${base}${caminho}`, {
-      method: opcoes.metodo ?? "GET",
-      headers: { apikey: config.chave.trim(), ...(opcoes.corpo ? { "Content-Type": "application/json" } : {}) },
-      body: opcoes.corpo ? JSON.stringify(opcoes.corpo) : undefined,
-      signal: AbortSignal.timeout(opcoes.tempoMs ?? 20000),
-    });
-  } catch {
-    throw new ErroEvolution(FORA_DO_AR);
-  }
-  let dados: unknown = null;
-  try {
-    dados = await resposta.json();
-  } catch {
-    dados = null;
-  }
-  return { status: resposta.status, dados };
+export interface SituacaoWhatsapp {
+  /** O servidor tem a chave da Evolution (variável EVOLUTION_API_KEY). */
+  configurado: boolean;
+  estado: Estado;
 }
 
-const objeto = (v: unknown): Record<string, unknown> => (v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : Array.isArray(v) && v[0] && typeof v[0] === "object" ? (v[0] as Record<string, unknown>) : {});
+export const situacaoDoWhatsapp = () => chamar<SituacaoWhatsapp>("whatsapp/estado");
 
-export type Estado = "conectado" | "desconectado" | "sem_instancia";
+export const estadoDaConexao = async (): Promise<Estado> => (await situacaoDoWhatsapp()).estado;
 
-export async function estadoDaConexao(config: ConfigEvolution): Promise<Estado> {
-  const { status, dados } = await pedir(config, `/instance/connectionState/${instanciaLimpa(config.instancia)}`);
-  if (status === 401 || status === 403) throw new ErroEvolution("A Evolution API recusou a chave. Confira a chave (AUTHENTICATION_API_KEY).");
-  if (status === 404) return "sem_instancia";
-  if (status !== 200) return "desconectado";
-  const d = objeto(dados);
-  const estado = String(objeto(d.instance).state ?? d.state ?? "close").toLowerCase();
-  return estado === "open" || estado === "connected" ? "conectado" : "desconectado";
-}
+/** Garante a conexão e devolve o QR Code para ler no celular (ou `conectado`, se já estiver). */
+export const conectar = () => chamar<{ estado: Estado; imagem: string | null; codigo: string | null }>("whatsapp/conectar", comJson("POST", {}));
 
-function qrDe(dados: unknown): { imagem: string | null; codigo: string | null } {
-  const d = objeto(dados);
-  const q = objeto(d.qrcode);
-  const candidatos = [d.base64, q.base64, d.code, q.code, typeof d.qrcode === "string" ? d.qrcode : null];
-  let imagem: string | null = null;
-  for (const valor of candidatos) {
-    if (typeof valor !== "string" || !valor) continue;
-    if (valor.startsWith("data:image")) imagem = valor;
-    else if (valor.startsWith("iVBOR") || valor.startsWith("/9j/") || (valor.length > 80 && !valor.startsWith("2@"))) imagem = `data:image/png;base64,${valor}`;
-    if (imagem) break;
-  }
-  const pareamento = [d.pairingCode, q.pairingCode].find((v): v is string => typeof v === "string" && v.trim() !== "");
-  return { imagem, codigo: pareamento?.trim() ?? null };
-}
-
-/** Garante a instância e devolve o QR Code para ler no celular (ou `conectado`, se já estiver). */
-export async function conectar(config: ConfigEvolution): Promise<{ estado: Estado; imagem: string | null; codigo: string | null }> {
-  const nome = instanciaLimpa(config.instancia);
-  let estado = await estadoDaConexao(config);
-  if (estado === "conectado") return { estado, imagem: null, codigo: null };
-  let qr = { imagem: null as string | null, codigo: null as string | null };
-  if (estado === "sem_instancia") {
-    const criada = await pedir(config, "/instance/create", { metodo: "POST", corpo: { instanceName: nome, qrcode: true, integration: "WHATSAPP-BAILEYS" }, tempoMs: 30000 });
-    if (![200, 201, 403, 409].includes(criada.status)) throw new ErroEvolution("A Evolution API não conseguiu criar a instância do WhatsApp.");
-    qr = qrDe(criada.dados);
-  }
-  for (let tentativa = 0; tentativa < 8 && !qr.imagem; tentativa += 1) {
-    const resposta = await pedir(config, `/instance/connect/${nome}`, { tempoMs: 25000 });
-    if (resposta.status === 200 || resposta.status === 201) qr = qrDe(resposta.dados);
-    if (qr.imagem) break;
-    estado = await estadoDaConexao(config);
-    if (estado === "conectado") return { estado, imagem: null, codigo: null };
-    await esperar(1500);
-  }
-  if (!qr.imagem && !qr.codigo) throw new ErroEvolution("A Evolution API não devolveu o QR Code. Tente de novo em alguns segundos.");
-  return { estado: "desconectado", ...qr };
-}
-
-export async function desconectar(config: ConfigEvolution): Promise<void> {
-  await pedir(config, `/instance/logout/${instanciaLimpa(config.instancia)}`, { metodo: "DELETE" });
-}
+export const desconectar = () => chamar<{ ok: boolean }>("whatsapp/desconectar", comJson("POST", {}));
 
 export interface Imagem {
   /** Conteúdo em base64, sem o prefixo `data:`. */
@@ -154,21 +33,10 @@ export interface Imagem {
 }
 
 /** Envia para um número; com imagem, o texto vai como legenda. `true` se a Evolution aceitou. */
-export async function enviar(config: ConfigEvolution, numero: string, texto: string, imagem?: Imagem | null): Promise<boolean> {
-  const nome = instanciaLimpa(config.instancia);
+export async function enviar(numero: string, texto: string, imagem?: Imagem | null): Promise<boolean> {
   try {
-    const resposta = imagem
-      ? await pedir(config, `/message/sendMedia/${nome}`, {
-          metodo: "POST",
-          tempoMs: 60000,
-          corpo: { number: numero, mediatype: "image", mimetype: imagem.tipo, caption: texto, media: `data:${imagem.tipo};base64,${imagem.base64}`, fileName: imagem.nome, delay: RITMO.digitandoMs },
-        })
-      : await pedir(config, `/message/sendText/${nome}`, {
-          metodo: "POST",
-          tempoMs: 15000 + RITMO.digitandoMs,
-          corpo: { number: numero, text: texto, options: { delay: RITMO.digitandoMs, presence: "composing" }, textMessage: { text: texto } },
-        });
-    return resposta.status === 200 || resposta.status === 201;
+    const resposta = await chamar<{ ok: boolean }>("whatsapp/enviar", comJson("POST", { numero, texto, ...(imagem ? { imagem } : {}) }));
+    return resposta.ok === true;
   } catch {
     return false;
   }

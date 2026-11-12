@@ -8,6 +8,15 @@ import type { HistoricoConteudo, RevisaoConteudo } from "../src/types/conteudoPr
 import { LIMITES_CONTEUDO } from "../src/types/conteudoProfessor.js";
 import type { Compartilhamento, ListaAcompanhamento } from "../src/types/lista.js";
 import { PERMISSOES_PADRAO, normalizarPermissoes, type AjusteFixo, type PermissaoId, type UsuarioFixo } from "../src/types/acesso.js";
+import {
+  ErroWhatsapp,
+  conectar as conectarWhatsapp,
+  desconectar as desconectarWhatsapp,
+  enviar as enviarWhatsapp,
+  estadoDaConexao as estadoDoWhatsapp,
+  validarEnvio,
+  whatsappConfigurado,
+} from "./whatsapp.js";
 import { caminhoDisparo, novoIdDisparo, validarDisparo } from "./disparos.js";
 import { DIAS_HISTORICO_DISPAROS, type RegistroDisparo } from "../src/types/disparo.js";
 import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, semSenha, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
@@ -833,7 +842,35 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     return json({ apagados: await limpar(armazenamento) });
   }
 
-  // Histórico dos disparos de WhatsApp: o envio sai do navegador para a Evolution API; aqui só fica o registro.
+  // Ponte com a Evolution API (WhatsApp): só quem tem a permissão «whatsapp». A chave fica no servidor e o
+  // navegador nunca fala com a Evolution direto; aqui se confere a sessão, a permissão e o formato de cada envio.
+  if (partes[0] === "whatsapp") {
+    const professor = await professorDa(requisicao, armazenamento);
+    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    if (!temPermissao(professor, "whatsapp")) return semPermissao();
+    try {
+      if (partes[1] === "estado" && metodo === "GET") {
+        const configurado = whatsappConfigurado();
+        return json({ configurado, estado: configurado ? await estadoDoWhatsapp() : "sem_instancia" });
+      }
+      if (partes[1] === "conectar" && metodo === "POST") return json(await conectarWhatsapp());
+      if (partes[1] === "desconectar" && metodo === "POST") {
+        await desconectarWhatsapp();
+        return json({ ok: true });
+      }
+      if (partes[1] === "enviar" && metodo === "POST") {
+        const valido = validarEnvio(await lerCorpoJson(requisicao));
+        if (typeof valido === "string") return erro(422, "VALIDATION_ERROR", valido);
+        return json({ ok: await enviarWhatsapp(valido.numero, valido.texto, valido.imagem) });
+      }
+    } catch (falha) {
+      if (falha instanceof ErroWhatsapp) return erro(falha.status, "ERRO_INTERNO", falha.message);
+      throw falha;
+    }
+    return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
+  }
+
+  // Histórico dos disparos de WhatsApp: o envio é feito pela ponte acima; aqui só fica o registro.
   if (partes[0] === "disparos" && partes.length === 1) {
     const professor = await professorDa(requisicao, armazenamento);
     if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
