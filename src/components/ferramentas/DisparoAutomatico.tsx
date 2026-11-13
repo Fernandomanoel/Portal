@@ -4,6 +4,7 @@ import { Icone } from "@/components/Icone";
 import { registrarDisparo } from "@/lib/apiDisparos";
 import { ErroApi } from "@/lib/apiProvas";
 import {
+  ErroEvolution,
   LIMITE_IMAGEM_MB,
   RITMO,
   conectar,
@@ -11,11 +12,15 @@ import {
   enviar,
   esperar,
   estadoDaConexao,
+  guardarConfig,
+  instanciaLimpa,
+  lerConfig,
   lerImagem,
   pausaAntesDoProximo,
   situacaoDoWhatsapp,
   type Estado,
   type Imagem,
+  type Modo,
 } from "@/lib/evolution";
 import { montarMensagem, type Destinatario, type TipoMensagem } from "@/lib/mensagensAlunos";
 import type { ItemDisparo, RegistroDisparo } from "@/types/disparo";
@@ -35,7 +40,9 @@ const ROTULO_ESTADO: Record<Estado, string> = { conectado: "WhatsApp conectado",
 const ROTULO_FIM: Record<RegistroDisparo["fim"], string> = { completo: "Disparo concluído.", cancelado: "Disparo cancelado.", desconectado: "Disparo interrompido: o WhatsApp desconectou." };
 
 export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: Props) {
-  // O portal guarda a chave da Evolution no servidor: aqui não há endereço nem chave para preencher.
+  // Modo servidor: o portal tem a chave da Evolution. Modo local: endereço e chave ficam neste navegador.
+  const [modo, definirModo] = useState<Modo | null>(null);
+  const [config, definirConfig] = useState(lerConfig);
   const [configurado, definirConfigurado] = useState<boolean | null>(null);
   const [estado, definirEstado] = useState<Estado | null>(null);
   const [qr, definirQr] = useState<{ imagem: string | null; codigo: string | null } | null>(null);
@@ -55,7 +62,7 @@ export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: 
     try {
       return await acao();
     } catch (falha) {
-      definirErro(falha instanceof ErroApi ? falha.message : "Algo deu errado ao falar com o servidor.");
+      definirErro(falha instanceof ErroApi || falha instanceof ErroEvolution ? falha.message : "Algo deu errado ao falar com o WhatsApp.");
       return undefined;
     } finally {
       definirOcupado(false);
@@ -65,9 +72,15 @@ export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: 
   const verificar = () =>
     tentar(async () => {
       const situacao = await situacaoDoWhatsapp();
+      definirModo(situacao.modo);
       definirConfigurado(situacao.configurado);
       definirEstado(situacao.configurado ? situacao.estado : null);
     });
+  const salvarConfig = () => {
+    guardarConfig({ url: config.url.trim(), chave: config.chave.trim(), instancia: instanciaLimpa(config.instancia) });
+    definirConfig(lerConfig());
+    return verificar();
+  };
   const pedirQr = () =>
     tentar(async () => {
       const resposta = await conectar();
@@ -172,14 +185,37 @@ export function DisparoAutomatico({ tipo, modelo, destinatarios, aoRegistrar }: 
     <section className={estilos.painel} aria-labelledby="titulo-disparo">
       <h2 id="titulo-disparo">Envio automático</h2>
       <p className={estilos.suave}>
-        Dispara para todos de uma vez pelo WhatsApp da escola, ligado ao servidor do portal. Mantenha esta página aberta até o fim do disparo.
+        Dispara para todos de uma vez pelo WhatsApp da escola. Mantenha esta página aberta até o fim do disparo.
+        {modo === "local" && " Abra o portal no computador da escola, onde a Evolution API está ligada."}
       </p>
 
-      {configurado === false && (
-        <p className={estilos.erro} role="alert">
-          <Icone nome="alerta" tamanho={16} />
-          O WhatsApp ainda não foi ligado neste servidor. Quem instalou o portal precisa definir a variável EVOLUTION_API_KEY (veja a seção «VPS» em docs/SERVIDOR.md).
-        </p>
+      {modo === "local" && (
+        <form
+          className={estilos.grade}
+          onSubmit={(e) => {
+            e.preventDefault();
+            void salvarConfig();
+          }}
+        >
+          <label className={estilos.campo}>
+            Endereço da Evolution API
+            <input type="text" value={config.url} onChange={(e) => definirConfig({ ...config, url: e.target.value })} disabled={enviando} autoComplete="off" />
+          </label>
+          <label className={estilos.campo}>
+            Chave (AUTHENTICATION_API_KEY)
+            <input type="password" value={config.chave} onChange={(e) => definirConfig({ ...config, chave: e.target.value })} disabled={enviando} autoComplete="off" />
+          </label>
+          <label className={estilos.campo}>
+            Nome da conexão
+            <input type="text" value={config.instancia} onChange={(e) => definirConfig({ ...config, instancia: e.target.value })} disabled={enviando} autoComplete="off" />
+          </label>
+          <div className={estilos.linha}>
+            <button type="submit" className={estilos.acao} disabled={ocupado || enviando || !config.chave.trim()}>
+              Salvar neste computador
+            </button>
+            {!configurado && <span className={estilos.suave}>A chave fica guardada só neste navegador.</span>}
+          </div>
+        </form>
       )}
 
       <div className={estilos.linha}>

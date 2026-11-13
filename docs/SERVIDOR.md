@@ -117,18 +117,20 @@ o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servi
 
 ### Envio automático de mensagens (Evolution API)
 
-A aba Mensagens dispara para todos de uma vez pelo WhatsApp da escola, usando a **Evolution API**. O navegador
-**não fala com a Evolution**: pede ao portal (`/api/whatsapp/*`, módulo `servidor/whatsapp.ts`), que guarda a
-chave, confere a sessão e a permissão `whatsapp`, valida cada envio (número, tamanho do texto, tipo e tamanho
-da imagem) e repassa. A Evolution fica na rede interna do servidor, sem porta aberta, e a chave nunca chega ao
-navegador nem ao `localStorage`.
+A aba Mensagens dispara para todos de uma vez pelo WhatsApp da escola, usando a **Evolution API**. O painel
+escolhe sozinho entre dois modos, perguntando ao portal (`GET /api/whatsapp/estado`) se ele tem a chave:
 
-- **Variáveis do servidor:** `EVOLUTION_API_KEY` (obrigatória; sem ela a tela avisa que o WhatsApp não foi
-  ligado), `EVOLUTION_URL` (padrão `http://evolution_api:8080`, o serviço do compose) e `EVOLUTION_INSTANCE`
-  (padrão `portal`).
-- **Onde isso roda:** precisa de um servidor sempre ligado, com a Evolution ao lado. É o `docker-compose.yml` da
-  raiz, descrito em `docs/VPS.md`. Na Vercel não há Evolution (função que liga e desliga não mantém o WhatsApp
-  conectado): lá a tela mostra «não foi ligado».
+- **Modo servidor** (`EVOLUTION_API_KEY` definida no servidor): o navegador pede ao portal (`/api/whatsapp/*`,
+  módulo `servidor/whatsapp.ts`), que guarda a chave, confere a sessão e a permissão `whatsapp`, valida cada
+  envio e repassa à Evolution. A chave nunca chega ao navegador. É o modo do `docker-compose.yml` da raiz
+  (`docs/VPS.md`), com a Evolution na rede interna. Variáveis: `EVOLUTION_API_KEY`, `EVOLUTION_URL` (padrão
+  `http://evolution_api:8080`) e `EVOLUTION_INSTANCE` (padrão `portal`).
+- **Modo local** (sem a chave no servidor, caso do portal na Vercel): a página, aberta **no computador da escola**
+  onde a Evolution roda, fala direto com ela em `http://localhost:8081`. Endereço, chave
+  (`AUTHENTICATION_API_KEY`) e nome da conexão (`portal`) são preenchidos uma vez no painel e ficam só no
+  `localStorage` desse navegador; não vão ao servidor. Nenhum código do portal roda no computador da escola: só a
+  Evolution. De outro aparelho não funciona (o `localhost` seria ele mesmo). A permissão `whatsapp` só decide quem
+  vê o painel; a chave guardada no navegador é de quem a digitou.
 - Fluxo: conectar por QR Code, disparar com confirmação. Pausa de 4 a 6 s entre envios, 30 s a cada 40,
   conferência da conexão a cada 10, tentativa no telefone do aluno e depois no do responsável. O ritmo é
   conduzido pela página: dá para cancelar, e fechar a aba interrompe. O lembrete por turno aceita uma imagem.
