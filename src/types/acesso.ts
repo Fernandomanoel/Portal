@@ -13,7 +13,6 @@ export const PERMISSOES = [
   { id: "acompanhamento", rotulo: "Acompanhamento de módulos", descricao: "Calcular se o aluno está atrasado nos módulos em relação às parcelas e às faltas." },
   { id: "historico", rotulo: "Histórico dos alunos", descricao: "Montar e formatar o texto de acompanhamento educacional de cada aluno." },
   { id: "pacotes", rotulo: "Analisador de pacotes", descricao: "Analisar a planilha de agendamentos (atrasado, em dia, adiantado)." },
-  { id: "mensagens", rotulo: "Mensagens para alunos", descricao: "Montar avisos de faltas e lembretes e abrir no WhatsApp." },
   { id: "usuarios", rotulo: "Gerenciar usuários", descricao: "Criar usuários e definir o que cada um acessa." },
 ] as const;
 
@@ -22,7 +21,7 @@ export type PermissaoId = (typeof PERMISSOES)[number]["id"];
 export const IDS_PERMISSAO: PermissaoId[] = PERMISSOES.map((p) => p.id);
 
 /** Professores da variável PROFESSORES: tudo, menos gerenciar usuários (só o administrador e quem ele liberar). */
-export const PERMISSOES_PADRAO: PermissaoId[] = ["provas", "conteudos", "listas", "listas_editar", "acompanhamento", "pacotes", "mensagens", "historico"];
+export const PERMISSOES_PADRAO: PermissaoId[] = ["provas", "conteudos", "listas", "listas_editar", "acompanhamento", "pacotes", "historico"];
 
 /** Editar lista pressupõe poder ver. */
 export function normalizarPermissoes(lista: unknown): PermissaoId[] {
