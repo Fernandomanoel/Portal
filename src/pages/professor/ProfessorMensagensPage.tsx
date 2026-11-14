@@ -2,10 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { Icone } from "@/components/Icone";
-import { useProfessor } from "./ProfessorLayout";
 import { CampoPlanilha } from "@/components/ferramentas/CampoPlanilha";
-import { DisparoAutomatico } from "@/components/ferramentas/DisparoAutomatico";
-import { HistoricoDisparos } from "@/components/ferramentas/HistoricoDisparos";
 import type { Tabela } from "@/lib/lerPlanilha";
 import {
   LIMITE_MODELO,
@@ -51,9 +48,6 @@ function modeloGuardado(tipo: TipoMensagem): string {
 const telefoneBr = (numero: string) => numero.replace(/^55(\d{2})(\d{4,5})(\d{4})$/, "($1) $2-$3");
 
 export function ProfessorMensagensPage() {
-  // O envio automático (API) só aparece para o administrador e para quem ele liberou.
-  const { professor } = useProfessor();
-  const podeEnviarAutomatico = professor.permissoes.includes("whatsapp");
   const [tipo, definirTipo] = useState<TipoMensagem>("faltas");
   const [modelos, definirModelos] = useState<Record<TipoMensagem, string>>(() => ({ faltas: modeloGuardado("faltas"), aviso: modeloGuardado("aviso") }));
   const [tabela, definirTabela] = useState<Tabela | null>(null);
@@ -61,7 +55,6 @@ export function ProfessorMensagensPage() {
   const [turno, definirTurno] = useState<Turno | "TODOS">("TODOS");
   const [abertos, definirAbertos] = useState<Set<string>>(new Set());
   const [copiado, definirCopiado] = useState("");
-  const [versaoHistorico, definirVersaoHistorico] = useState(0);
 
   const modelo = modelos[tipo];
   const escolhido = TIPOS.find((t) => t.id === tipo)!;
@@ -244,10 +237,6 @@ export function ProfessorMensagensPage() {
         </>
       )}
 
-      {/* Só com a permissão «whatsapp». Sempre visível para quem tem: é aqui que o link do instalador da Evolution liga o portal, antes de qualquer planilha. */}
-      {podeEnviarAutomatico && <DisparoAutomatico key={tipo} tipo={tipo} modelo={modelo} destinatarios={visiveis} aoRegistrar={() => definirVersaoHistorico((v) => v + 1)} />}
-
-      {podeEnviarAutomatico && <HistoricoDisparos versao={versaoHistorico} />}
     </>
   );
 }

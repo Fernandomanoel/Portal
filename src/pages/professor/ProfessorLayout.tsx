@@ -142,12 +142,6 @@ export function ProfessorLayout() {
                   Histórico
                 </NavLink>
               )}
-              {pode("digitacao") && (
-                <NavLink to={rotas.professorDigitacao()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
-                  <Icone nome="digitacao" tamanho={16} />
-                  Digitação
-                </NavLink>
-              )}
               {pode("pacotes") && (
               <NavLink to={rotas.professorPacotes()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
                 <Icone nome="relogio" tamanho={16} />

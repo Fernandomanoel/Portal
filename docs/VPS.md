@@ -1,14 +1,14 @@
 # Portal completo em um servidor (VPS)
 
-Tudo roda num servidor só, na internet: o portal, a conexão com o WhatsApp (Evolution API) e os dados. O
+Tudo roda num servidor só, na internet: o portal e os dados. O
 computador da escola só abre o site no navegador; nada fica instalado nele.
 
 ```
-internet ──HTTPS──> Caddy ──> Portal ──> Evolution (WhatsApp)
-                              └─ dados      └─ nunca exposta à internet
+internet ──HTTPS──> Caddy ──> Portal
+                              └─ dados
 ```
 
-Só o Caddy abre portas (80 e 443). A Evolution não tem porta aberta e a chave dela fica só no servidor.
+Só o Caddy abre portas (80 e 443); o portal não tem porta aberta para fora.
 
 ## O que contratar
 
@@ -35,9 +35,7 @@ Só o Caddy abre portas (80 e 443). A Evolution não tem porta aberta e a chave 
 4. Abra o `.env` (`nano .env`) e cole as linhas **`UNIDADES=`** e **`PROFESSORES=`** (os JSON com as senhas em hash,
    cada um numa linha só, sem aspas em volta). Salve (Ctrl+O, Enter) e saia (Ctrl+X).
 5. Rode `./instalar-vps.sh` de novo. Ele confere o `.env`, sobe tudo e espera o portal responder.
-6. Abra `https://SEU-ENDERECO/professor`, entre como administrador, vá em **Mensagens > Envio automático**,
-   clique em **Conectar com QR Code** e leia com o celular da escola (WhatsApp > Dispositivos conectados >
-   Conectar dispositivo). Só na primeira vez.
+6. Abra `https://SEU-ENDERECO/professor` e entre como administrador para conferir.
 
 ## Firewall
 
@@ -51,9 +49,8 @@ ufw allow OpenSSH && ufw allow 80 && ufw allow 443 && ufw enable
 | Quero | Comando (na pasta do projeto) |
 | --- | --- |
 | Ver se está tudo no ar | `docker compose ps` |
-| Ver o que aconteceu | `docker compose logs --tail 100 portal` (ou `caddy`, `evolution_api`) |
+| Ver o que aconteceu | `docker compose logs --tail 100 portal` (ou `caddy`) |
 | Atualizar o portal | `git pull` e depois `docker compose up -d --build` (use a mesma `GIT_SSH_COMMAND`) |
-| Atualizar a Evolution | `docker compose pull evolution_api && docker compose up -d` |
 | Fazer backup | `./backup.sh` (guarda em `backups/`, mantém 14) |
 | Backup todo dia às 3h | `crontab -e` e acrescente `0 3 * * * /caminho/do/Portal/backup.sh` |
 
@@ -62,8 +59,8 @@ Depois de mudar um `.prova.ts`, rode `docker compose up -d --build` de novo: o g
 ## O que nunca fazer
 
 - **`docker compose down -v`**, `docker volume prune` e `docker system prune --volumes` apagam os volumes: os dados
-  do portal e a conexão do WhatsApp.
-- Compartilhar o `.env`: ele tem a chave que comanda o WhatsApp e o segredo do login. Quem acessa o servidor
+  do portal.
+- Compartilhar o `.env`: ele tem o segredo do login. Quem acessa o servidor
   (SSH) acessa tudo.
 
 ## Cuidados
@@ -74,14 +71,8 @@ Depois de mudar um `.prova.ts`, rode `docker compose up -d --build` de novo: o g
   (preferir chave a senha) passam a ser sua responsabilidade.
 - **Dados de alunos:** como o servidor guarda nomes, telefones e notas, vale ter o acordo de tratamento de
   dados (LGPD) com a escola.
-- **WhatsApp:** a Evolution usa uma conexão que a empresa não autoriza oficialmente; em disparos grandes ou
-  repetidos o número pode ser bloqueado. O portal mantém pausas entre os envios para reduzir o risco, mas ele
-  não some. Para uso comercial, o caminho seguro é a API oficial do WhatsApp (Meta).
 
 ## Se der problema
 
 - *O endereço não abre:* confira o DNS (o nome aponta para o IP certo?) e as portas 80 e 443 no firewall e no
   painel do provedor. `docker compose logs caddy` mostra o certificado.
-- *«O WhatsApp ainda não foi ligado neste servidor»:* falta `EVOLUTION_API_KEY` no `.env`; rode o instalador.
-- *«O servidor não conseguiu falar com a Evolution API»:* `docker compose ps` e `docker compose logs evolution_api`.
-- *O WhatsApp pede o QR Code de novo:* o celular saiu de *Dispositivos conectados*; leia o código outra vez.

@@ -11,11 +11,9 @@ export const PERMISSOES = [
   { id: "listas", rotulo: "Listas: ver", descricao: "Abrir as listas das unidades liberadas e as compartilhadas com elas." },
   { id: "listas_editar", rotulo: "Listas: criar e editar", descricao: "Criar listas, editar e compartilhar com outras unidades." },
   { id: "acompanhamento", rotulo: "Acompanhamento de módulos", descricao: "Calcular se o aluno está atrasado nos módulos em relação às parcelas e às faltas." },
-  { id: "digitacao", rotulo: "Digitação: zerar ranking e progresso", descricao: "Zerar o ranking e o progresso dos jogos de digitação deste computador." },
   { id: "historico", rotulo: "Histórico dos alunos", descricao: "Montar e formatar o texto de acompanhamento educacional de cada aluno." },
   { id: "pacotes", rotulo: "Analisador de pacotes", descricao: "Analisar a planilha de agendamentos (atrasado, em dia, adiantado)." },
   { id: "mensagens", rotulo: "Mensagens para alunos", descricao: "Montar avisos de faltas e lembretes e abrir no WhatsApp." },
-  { id: "whatsapp", rotulo: "Envio automático de WhatsApp (API)", descricao: "Conectar o WhatsApp da escola e disparar para todos de uma vez, com histórico. Só o administrador vê; libere com cuidado." },
   { id: "usuarios", rotulo: "Gerenciar usuários", descricao: "Criar usuários e definir o que cada um acessa." },
 ] as const;
 
@@ -23,14 +21,13 @@ export type PermissaoId = (typeof PERMISSOES)[number]["id"];
 
 export const IDS_PERMISSAO: PermissaoId[] = PERMISSOES.map((p) => p.id);
 
-/** Professores da variável PROFESSORES: tudo, menos gerenciar usuários e o envio automático de WhatsApp (só o administrador e quem ele liberar). */
-export const PERMISSOES_PADRAO: PermissaoId[] = ["provas", "conteudos", "listas", "listas_editar", "acompanhamento", "pacotes", "mensagens", "digitacao", "historico"];
+/** Professores da variável PROFESSORES: tudo, menos gerenciar usuários (só o administrador e quem ele liberar). */
+export const PERMISSOES_PADRAO: PermissaoId[] = ["provas", "conteudos", "listas", "listas_editar", "acompanhamento", "pacotes", "mensagens", "historico"];
 
-/** Editar lista pressupõe poder ver; o envio automático vive dentro da aba Mensagens. */
+/** Editar lista pressupõe poder ver. */
 export function normalizarPermissoes(lista: unknown): PermissaoId[] {
   const ids = new Set((Array.isArray(lista) ? lista : []).filter((p): p is PermissaoId => IDS_PERMISSAO.includes(p as PermissaoId)));
   if (ids.has("listas_editar")) ids.add("listas");
-  if (ids.has("whatsapp")) ids.add("mensagens");
   return IDS_PERMISSAO.filter((p) => ids.has(p));
 }
 

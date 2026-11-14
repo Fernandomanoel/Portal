@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { Icone } from "@/components/Icone";
+import { ProvasLock } from "@/components/provas/ProvasLock";
 import { JOGOS_COM_PROGRESSO, limparProgresso, limparTodoProgresso, temProgresso } from "@/lib/progressoDigitacao";
 import { EVENTO_RANKING, totalDeRegistros, zerarRanking, zerarTodosOsRankings } from "@/lib/rankingDigitacao";
 import { ENSAIOS } from "@/pages/digitacao/letrasIngles/dados";
-import estilos from "./ProfessorDigitacaoPage.module.css";
+import estilos from "./DigitacaoConfigPage.module.css";
 
 const JOGOS_DO_RANKING = [
   { id: "digitacao-textos-classicos", titulo: "Textos Clássicos" },
@@ -20,8 +21,26 @@ const JOGOS_DO_RANKING = [
 
 type Pedido = { tipo: "ranking"; id: string; titulo: string } | { tipo: "progresso"; chave: string; titulo: string } | { tipo: "tudo" } | null;
 
-/** O ranking e o progresso dos jogos ficam no navegador de cada computador: aqui o professor zera os deste computador. */
-export function ProfessorDigitacaoPage() {
+/**
+ * Zerar ranking e progresso é coisa do instrutor: a tela só abre com a senha da área de provas da unidade.
+ * O desbloqueio vale só enquanto a página está aberta (nada é guardado) e não mexe na ficha usada nas provas.
+ */
+export function DigitacaoConfigPage() {
+  const [liberado, definirLiberado] = useState(false);
+  if (!liberado) {
+    return (
+      <ProvasLock
+        titulo="Configurações da digitação"
+        texto="Só o instrutor pode zerar o ranking e o progresso dos jogos. Escolha a unidade e digite a senha da área de provas."
+        aoEntrar={() => definirLiberado(true)}
+      />
+    );
+  }
+  return <PainelConfiguracao />;
+}
+
+/** O ranking e o progresso dos jogos ficam no navegador de cada computador: aqui o instrutor zera os deste computador. */
+function PainelConfiguracao() {
   const [, atualizar] = useState(0);
   const [pedido, definirPedido] = useState<Pedido>(null);
   const [feito, definirFeito] = useState("");

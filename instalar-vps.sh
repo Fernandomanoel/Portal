@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prepara o portal completo (site + WhatsApp) em um VPS Linux (Ubuntu ou Debian), dentro da pasta do projeto.
+# Prepara o portal completo (site + API) em um VPS Linux (Ubuntu ou Debian), dentro da pasta do projeto.
 # Pode rodar de novo quantas vezes quiser: não troca as chaves que já existem.
 #   1ª vez: cria o .env com as chaves e para pedindo que você preencha UNIDADES e PROFESSORES.
 #   2ª vez: confere o .env e sobe tudo.
@@ -25,7 +25,7 @@ if [ ! -f .env ]; then
   PADRAO="${IP:+${IP//./-}.sslip.io}"
   read -r -p "Endereço do portal (domínio) [${PADRAO:-portal.exemplo.com.br}]: " DOM
   DOM="${DOM:-${PADRAO:-portal.exemplo.com.br}}"
-  sed -i "s|^DOMINIO=.*|DOMINIO=${DOM}|; s|^SEGREDO_SESSAO=.*|SEGREDO_SESSAO=$(gerar 24)|; s|^EVOLUTION_API_KEY=.*|EVOLUTION_API_KEY=$(gerar 24)|; s|^EVOLUTION_DB_SENHA=.*|EVOLUTION_DB_SENHA=$(gerar 16)|" .env
+  sed -i "s|^DOMINIO=.*|DOMINIO=${DOM}|; s|^SEGREDO_SESSAO=.*|SEGREDO_SESSAO=$(gerar 24)|" .env
   echo
   echo "Criei o .env com as chaves geradas (não compartilhe esse arquivo)."
   echo "Falta você colar, no .env, as linhas UNIDADES= e PROFESSORES= (os JSON com as senhas em hash)."
@@ -56,7 +56,7 @@ ids = {u.get("id") for u in un}
 for p in pr:
     if p.get("unidade") not in ids and p.get("unidade") != "*":
         print(f"O professor «{p.get('usuario')}» aponta para uma unidade que não existe em UNIDADES."); sys.exit(1)
-for nome in ("SEGREDO_SESSAO", "EVOLUTION_API_KEY", "EVOLUTION_DB_SENHA", "DOMINIO"):
+for nome in ("SEGREDO_SESSAO", "DOMINIO"):
     if not env.get(nome) or env[nome].startswith("troque-") or env[nome].endswith("exemplo.com.br"):
         print(f"{nome} ainda está com o valor de exemplo."); sys.exit(1)
 print(".env conferido.")
@@ -74,4 +74,4 @@ if [ "${SEM_DOCKER:-}" != "1" ]; then
 fi
 echo
 echo "Pronto: https://$(valor DOMINIO)/"
-echo "Entre em /professor como administrador, abra Mensagens > Envio automático e leia o QR Code com o WhatsApp da escola."
+echo "Entre em /professor como administrador para conferir o acesso."

@@ -1,7 +1,7 @@
-# Portal completo em um servidor (VPS): site + API + WhatsApp (Evolution), com HTTPS automático.
-# Só o Caddy abre portas para a internet (80 e 443); o portal e a Evolution ficam na rede interna.
-# Os dados ficam em volumes. Não use `docker compose down -v`: ele apaga os volumes, inclusive a conexão do
-# WhatsApp. Passo a passo: docs/VPS.md (e `./instalar-vps.sh`).
+# Portal completo em um servidor (VPS): site + API, com HTTPS automático.
+# Só o Caddy abre portas para a internet (80 e 443); o portal fica na rede interna.
+# Os dados ficam em volumes. Não use `docker compose down -v`: ele apaga os volumes, inclusive os dados do
+# portal. Passo a passo: docs/VPS.md (e `./instalar-vps.sh`).
 
 name: portal
 
@@ -33,60 +33,10 @@ services:
       UNIDADES: "${UNIDADES:?Defina UNIDADES no .env}"
       PROFESSORES: "${PROFESSORES:?Defina PROFESSORES no .env}"
       UNIDADE_PADRAO: "${UNIDADE_PADRAO:-}"
-      # A chave da Evolution fica só aqui, no servidor: o navegador nunca a vê.
-      EVOLUTION_URL: http://evolution_api:8080
-      EVOLUTION_API_KEY: "${EVOLUTION_API_KEY:?Defina EVOLUTION_API_KEY no .env}"
-      EVOLUTION_INSTANCE: portal
     volumes:
       - portal_dados:/dados
-    depends_on:
-      - evolution_api
-
-  evolution_db:
-    image: postgres:15-alpine
-    container_name: portal_evolution_db
-    restart: always
-    environment:
-      POSTGRES_USER: evolution
-      POSTGRES_PASSWORD: "${EVOLUTION_DB_SENHA:?Defina EVOLUTION_DB_SENHA no .env}"
-      POSTGRES_DB: evolution_db
-    volumes:
-      - evolution_pg:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U evolution -d evolution_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-  evolution_api:
-    image: evoapicloud/evolution-api:v2.3.7
-    container_name: portal_evolution
-    restart: always
-    # Sem `ports`: a Evolution não é alcançável de fora. Só o portal fala com ela.
-    environment:
-      - SERVER_URL=http://evolution_api:8080
-      - AUTHENTICATION_TYPE=apikey
-      - "AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY:?Defina EVOLUTION_API_KEY no .env}"
-      - DATABASE_ENABLED=true
-      - DATABASE_PROVIDER=postgresql
-      - DATABASE_CONNECTION_URI=postgresql://evolution:${EVOLUTION_DB_SENHA}@evolution_db:5432/evolution_db?schema=public
-      - DATABASE_CONNECTION_CLIENT_NAME=portal
-      - DATABASE_SAVE_DATA_INSTANCE=true
-      - CACHE_REDIS_ENABLED=false
-      - CACHE_LOCAL_ENABLED=true
-      - CONFIG_SESSION_PHONE_CLIENT=Chrome
-      - CONFIG_SESSION_PHONE_NAME=Chrome
-      - QRCODE_LIMIT=30
-      - LANGUAGE=pt-BR
-    depends_on:
-      evolution_db:
-        condition: service_healthy
-    volumes:
-      - evolution_instances:/evolution/instances
 
 volumes:
   portal_dados:
   caddy_dados:
   caddy_config:
-  evolution_pg:
-  evolution_instances:

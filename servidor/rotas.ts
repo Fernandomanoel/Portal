@@ -8,17 +8,6 @@ import type { HistoricoConteudo, RevisaoConteudo } from "../src/types/conteudoPr
 import { LIMITES_CONTEUDO } from "../src/types/conteudoProfessor.js";
 import type { Compartilhamento, ListaAcompanhamento } from "../src/types/lista.js";
 import { PERMISSOES_PADRAO, normalizarPermissoes, type AjusteFixo, type PermissaoId, type UsuarioFixo } from "../src/types/acesso.js";
-import {
-  ErroWhatsapp,
-  conectar as conectarWhatsapp,
-  desconectar as desconectarWhatsapp,
-  enviar as enviarWhatsapp,
-  estadoDaConexao as estadoDoWhatsapp,
-  validarEnvio,
-  whatsappConfigurado,
-} from "./whatsapp.js";
-import { caminhoDisparo, novoIdDisparo, validarDisparo } from "./disparos.js";
-import { DIAS_HISTORICO_DISPAROS, type RegistroDisparo } from "../src/types/disparo.js";
 import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, semSenha, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
 import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
 import { caminhoConteudo, comentarioValido, slugValido, validarConteudo } from "./conteudos.js";
@@ -219,8 +208,7 @@ async function autenticarProfessor(usuario: string, senha: string, armazenamento
 /** Permissões em vigor: as do cadastro, ou as padrão (professor da variável) mais gerenciar usuários se for administrador. */
 function permissoesDe(professor: Professor): PermissaoId[] {
   const base = professor.permissoes ?? PERMISSOES_PADRAO;
-  // O administrador sempre alcança o envio automático; os demais só se ele liberar na tela Usuários.
-  return normalizarPermissoes(professor.administrador ? [...base, "usuarios", "whatsapp"] : base);
+  return normalizarPermissoes(professor.administrador ? [...base, "usuarios"] : base);
 }
 const temPermissao = (professor: Professor, id: PermissaoId) => permissoesDe(professor).includes(id);
 const semPermissao = () => erro(403, "SEM_PERMISSAO", "Seu usuário não tem acesso a esta área. Fale com quem administra o portal.");
@@ -594,10 +582,7 @@ export async function limpar(armazenamento: Armazenamento, agora = new Date()) {
     // Data no caminho manda; sem ela (arquivo estranho na pasta), vale a data de criação.
     return /^\d{4}-\d{2}-\d{2}$/.test(data) ? data < corte : dia(item.criadoEm) < corte;
   });
-  // O histórico de disparos (nome e telefone de alunos) tem prazo próprio, mais longo.
-  const corteDisparos = dia(new Date(agora.getTime() - DIAS_HISTORICO_DISPAROS * DIA_MS));
-  const disparosVelhos = (await armazenamento.listar("disparos/")).filter((item) => (item.caminho.split("/")[1] ?? "") < corteDisparos);
-  await armazenamento.apagar([...velhos, ...disparosVelhos].map((item) => item.caminho));
+  await armazenamento.apagar(velhos.map((item) => item.caminho));
   return velhos.filter((item) => item.caminho.startsWith("envios/")).length;
 }
 
@@ -840,61 +825,6 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     const peloAgendador = segredo && requisicao.headers.get("authorization") === `Bearer ${segredo}`;
     if (!peloAgendador && !(await professorDa(requisicao, armazenamento))) return erro(401, "NAO_AUTENTICADO", "Sem permissão.");
     return json({ apagados: await limpar(armazenamento) });
-  }
-
-  // Ponte com a Evolution API (WhatsApp): só quem tem a permissão «whatsapp». A chave fica no servidor e o
-  // navegador nunca fala com a Evolution direto; aqui se confere a sessão, a permissão e o formato de cada envio.
-  if (partes[0] === "whatsapp") {
-    const professor = await professorDa(requisicao, armazenamento);
-    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
-    if (!temPermissao(professor, "whatsapp")) return semPermissao();
-    try {
-      if (partes[1] === "estado" && metodo === "GET") {
-        const configurado = whatsappConfigurado();
-        return json({ configurado, estado: configurado ? await estadoDoWhatsapp() : "sem_instancia" });
-      }
-      if (partes[1] === "conectar" && metodo === "POST") return json(await conectarWhatsapp());
-      if (partes[1] === "desconectar" && metodo === "POST") {
-        await desconectarWhatsapp();
-        return json({ ok: true });
-      }
-      if (partes[1] === "enviar" && metodo === "POST") {
-        const valido = validarEnvio(await lerCorpoJson(requisicao));
-        if (typeof valido === "string") return erro(422, "VALIDATION_ERROR", valido);
-        return json({ ok: await enviarWhatsapp(valido.numero, valido.texto, valido.imagem) });
-      }
-    } catch (falha) {
-      if (falha instanceof ErroWhatsapp) return erro(falha.status, "ERRO_INTERNO", falha.message);
-      throw falha;
-    }
-    return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
-  }
-
-  // Histórico dos disparos de WhatsApp: o envio é feito pela ponte acima; aqui só fica o registro.
-  if (partes[0] === "disparos" && partes.length === 1) {
-    const professor = await professorDa(requisicao, armazenamento);
-    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
-    if (!temPermissao(professor, "whatsapp")) return semPermissao();
-    const ativa = unidadeAtiva(professor, url);
-    if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
-    if (metodo === "GET") {
-      const itens = (await armazenamento.listar("disparos/")).filter((i) => i.caminho.endsWith(".json"));
-      const lidos = (await Promise.all(itens.map((i) => armazenamento.lerJson<RegistroDisparo>(i.caminho)))).filter((r): r is RegistroDisparo => r !== null);
-      const dados = lidos
-        .filter((r) => noEscopo(professor, r.unidade) && (ativa === null || r.unidade === ativa))
-        .sort((a, b) => b.disparadoEm.localeCompare(a.disparadoEm))
-        .slice(0, 100);
-      return json({ dados, diasGuardados: DIAS_HISTORICO_DISPAROS });
-    }
-    if (metodo === "POST") {
-      const valido = validarDisparo(await lerCorpoJson(requisicao));
-      if (typeof valido === "string") return erro(422, "VALIDATION_ERROR", valido);
-      const unidade = ativa ?? escopo(professor)?.[0] ?? TODAS_AS_UNIDADES;
-      const registro: RegistroDisparo = { id: novoIdDisparo(), unidade, ...valido, disparadoPor: professor.nome, disparadoEm: new Date().toISOString() };
-      await armazenamento.salvarJson(caminhoDisparo(registro), registro);
-      return json(registro, 201);
-    }
-    return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
   }
 
   if (partes[0] === "envios") {

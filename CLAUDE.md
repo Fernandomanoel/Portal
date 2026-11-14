@@ -114,8 +114,10 @@ esse `user.name`/`user.email` de volta.
 - Não mudar `lancarNota`/`LancarNotaInput` (contrato de nota do instrutor)
   sem pedido explícito — é o ponto de "IA sugere, instrutor decide". Hoje
   ele é o `PATCH /api/envios/<id>` da área do professor.
-- Envio de prova some em 7 dias (`DIAS_GUARDADOS`) por decisão do usuário —
-  não aumentar sem pedido. Segredos (`PROFESSORES`, `UNIDADES`, `SEGREDO_SESSAO`,
+- Envio de prova some em 3 dias (`DIAS_GUARDADOS`) por decisão do usuário —
+  não aumentar sem pedido. O portal não tem disparador de WhatsApp nem fala com
+  nenhuma API de mensagens (foi removido por decisão do usuário); a aba Mensagens
+  só abre links `wa.me`. Segredos (`PROFESSORES`, `UNIDADES`, `SEGREDO_SESSAO`,
   `CRON_SECRET`) só em variável de ambiente, nunca no repositório.
 - Mudança visual em qualquer tela existente passa pela skill **Impeccable**
   (`impeccable context` antes, `impeccable detect --json` depois),
