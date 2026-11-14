@@ -8,8 +8,6 @@ import type { HistoricoConteudo, RevisaoConteudo } from "../src/types/conteudoPr
 import { LIMITES_CONTEUDO } from "../src/types/conteudoProfessor.js";
 import type { Compartilhamento, ListaAcompanhamento } from "../src/types/lista.js";
 import { PERMISSOES_PADRAO, normalizarPermissoes, type AjusteFixo, type PermissaoId, type UsuarioFixo } from "../src/types/acesso.js";
-import { caminhoDisparo, novoIdDisparo, validarDisparo } from "./disparos.js";
-import { DIAS_HISTORICO_DISPAROS, type RegistroDisparo } from "../src/types/disparo.js";
 import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, semSenha, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
 import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
 import { caminhoConteudo, comentarioValido, slugValido, validarConteudo } from "./conteudos.js";
@@ -584,10 +582,7 @@ export async function limpar(armazenamento: Armazenamento, agora = new Date()) {
     // Data no caminho manda; sem ela (arquivo estranho na pasta), vale a data de criação.
     return /^\d{4}-\d{2}-\d{2}$/.test(data) ? data < corte : dia(item.criadoEm) < corte;
   });
-  // O histórico de disparos (nome e telefone de alunos) tem prazo próprio, mais longo.
-  const corteDisparos = dia(new Date(agora.getTime() - DIAS_HISTORICO_DISPAROS * DIA_MS));
-  const disparosVelhos = (await armazenamento.listar("disparos/")).filter((item) => (item.caminho.split("/")[1] ?? "") < corteDisparos);
-  await armazenamento.apagar([...velhos, ...disparosVelhos].map((item) => item.caminho));
+  await armazenamento.apagar(velhos.map((item) => item.caminho));
   return velhos.filter((item) => item.caminho.startsWith("envios/")).length;
 }
 
@@ -830,33 +825,6 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     const peloAgendador = segredo && requisicao.headers.get("authorization") === `Bearer ${segredo}`;
     if (!peloAgendador && !(await professorDa(requisicao, armazenamento))) return erro(401, "NAO_AUTENTICADO", "Sem permissão.");
     return json({ apagados: await limpar(armazenamento) });
-  }
-
-  // Histórico dos disparos de WhatsApp: o envio sai do navegador para a Evolution API; aqui só fica o registro.
-  if (partes[0] === "disparos" && partes.length === 1) {
-    const professor = await professorDa(requisicao, armazenamento);
-    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
-    if (!temPermissao(professor, "mensagens")) return semPermissao();
-    const ativa = unidadeAtiva(professor, url);
-    if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
-    if (metodo === "GET") {
-      const itens = (await armazenamento.listar("disparos/")).filter((i) => i.caminho.endsWith(".json"));
-      const lidos = (await Promise.all(itens.map((i) => armazenamento.lerJson<RegistroDisparo>(i.caminho)))).filter((r): r is RegistroDisparo => r !== null);
-      const dados = lidos
-        .filter((r) => noEscopo(professor, r.unidade) && (ativa === null || r.unidade === ativa))
-        .sort((a, b) => b.disparadoEm.localeCompare(a.disparadoEm))
-        .slice(0, 100);
-      return json({ dados, diasGuardados: DIAS_HISTORICO_DISPAROS });
-    }
-    if (metodo === "POST") {
-      const valido = validarDisparo(await lerCorpoJson(requisicao));
-      if (typeof valido === "string") return erro(422, "VALIDATION_ERROR", valido);
-      const unidade = ativa ?? escopo(professor)?.[0] ?? TODAS_AS_UNIDADES;
-      const registro: RegistroDisparo = { id: novoIdDisparo(), unidade, ...valido, disparadoPor: professor.nome, disparadoEm: new Date().toISOString() };
-      await armazenamento.salvarJson(caminhoDisparo(registro), registro);
-      return json(registro, 201);
-    }
-    return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
   }
 
   if (partes[0] === "envios") {

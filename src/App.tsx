@@ -19,6 +19,7 @@ import { IngresHubPage } from "@/pages/IngresHubPage";
 import { IngresProvasPage } from "@/pages/IngresProvasPage";
 import { DigitacaoHubPage } from "@/pages/digitacao/DigitacaoHubPage";
 import { RankingGeralPage } from "@/pages/digitacao/RankingGeralPage";
+import { DigitacaoConfigPage } from "@/pages/digitacao/DigitacaoConfigPage";
 import { CavaleirosZodiacoPage } from "@/pages/digitacao/cavaleirosZodiaco/CavaleirosZodiacoPage";
 import { LetrasInglesPage } from "@/pages/digitacao/letrasIngles/LetrasInglesPage";
 import { SonicPage } from "@/pages/digitacao/sonic/SonicPage";
@@ -31,7 +32,6 @@ import { GuiadoJogoPage } from "@/pages/guiado/GuiadoJogoPage";
 import { GuiadoTutorialPage } from "@/pages/guiado/GuiadoTutorialPage";
 import { GuiadoVitrinePage } from "@/pages/guiado/GuiadoVitrinePage";
 import { ProfessorAcompanhamentoPage } from "@/pages/professor/ProfessorAcompanhamentoPage";
-import { ProfessorDigitacaoPage } from "@/pages/professor/ProfessorDigitacaoPage";
 import { ProfessorHistoricoPage } from "@/pages/professor/ProfessorHistoricoPage";
 import { ProfessorConteudoPage } from "@/pages/professor/ProfessorConteudoPage";
 import { ProfessorConteudosPage } from "@/pages/professor/ProfessorConteudosPage";
@@ -89,6 +89,7 @@ const roteador = criarRoteador([
 
       { path: "digitacao", element: <DigitacaoHubPage /> },
       { path: "digitacao/ranking", element: <RankingGeralPage /> },
+      { path: "digitacao/configuracao", element: <DigitacaoConfigPage /> },
       { path: "digitacao/textos-classicos", element: <TextosClassicosPage /> },
       { path: "digitacao/cavaleiros-zodiaco", element: <CavaleirosZodiacoPage /> },
       { path: "digitacao/letras-ingles", element: <LetrasInglesPage /> },
@@ -116,7 +117,6 @@ const roteador = criarRoteador([
           { path: "listas", element: <ProfessorListasPage /> },
           { path: "listas/:id", element: <ProfessorListaPage /> },
           { path: "acompanhamento", element: <ProfessorAcompanhamentoPage /> },
-          { path: "digitacao", element: <ProfessorDigitacaoPage /> },
           { path: "historico", element: <ProfessorHistoricoPage /> },
           { path: "pacotes", element: <ProfessorPacotesPage /> },
           { path: "mensagens", element: <ProfessorMensagensPage /> },

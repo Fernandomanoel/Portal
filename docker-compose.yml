@@ -1,0 +1,42 @@
+# Portal completo em um servidor (VPS): site + API, com HTTPS automático.
+# Só o Caddy abre portas para a internet (80 e 443); o portal fica na rede interna.
+# Os dados ficam em volumes. Não use `docker compose down -v`: ele apaga os volumes, inclusive os dados do
+# portal. Passo a passo: docs/VPS.md (e `./instalar-vps.sh`).
+
+name: portal
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: portal_caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMINIO: "${DOMINIO:?Defina DOMINIO no .env}"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_dados:/data
+      - caddy_config:/config
+    depends_on:
+      - portal
+
+  portal:
+    build: .
+    container_name: portal_app
+    restart: always
+    environment:
+      PORTA: "8080"
+      DADOS_DIR: /dados
+      SEGREDO_SESSAO: "${SEGREDO_SESSAO:?Defina SEGREDO_SESSAO no .env}"
+      UNIDADES: "${UNIDADES:?Defina UNIDADES no .env}"
+      PROFESSORES: "${PROFESSORES:?Defina PROFESSORES no .env}"
+      UNIDADE_PADRAO: "${UNIDADE_PADRAO:-}"
+    volumes:
+      - portal_dados:/dados
+
+volumes:
+  portal_dados:
+  caddy_dados:
+  caddy_config:

@@ -77,7 +77,7 @@ CLAUDE.md           regras para quem (ou o agente que) edita o código
 - **Provas** — 48 provas interativas: o aluno se identifica pelo nome, faz a
   prova (travada em tela cheia quando a prova pede) e envia; a área do
   professor (`/professor`, com login) mostra os envios, os arquivos e as notas
-  por 7 dias
+  por 3 dias
 
 ## Conteúdo
 
@@ -127,4 +127,4 @@ deploy de outro autor) — ver a seção 12 da documentação.
    estrutura para quem escreve o frontend, não para quem recebe a requisição.
 3. **Envio de prova é idempotente.** Uma submissão reenviada por falha de rede
    não vira duas.
-4. **Nada é guardado por mais de 7 dias.** Quem precisa guardar nota baixa antes.
+4. **Nada é guardado por mais de 3 dias.** Quem precisa guardar nota baixa antes.

@@ -67,7 +67,7 @@ conteúdo próximo de zero para quem não é programador.
   aluno trocar de aba, de janela ou sair da tela cheia, bloqueia até um professor
   digitar usuário e senha. O navegador não impede a saída — a trava denuncia e
   bloqueia, e cada saída fica registrada no envio.
-- Envios e arquivos são apagados sozinhos 7 dias depois do envio.
+- Envios e arquivos são apagados sozinhos 3 dias depois do envio.
 - Listas de acompanhamento na área do professor: planilha simples da equipe
   (colunas de texto, marca, Sim/Não e lista de opções; linhas com cor e
   negrito), compartilhada entre todos os professores, salva sozinha, guardada

@@ -2,7 +2,7 @@
 
 O servidor recebe as provas dos alunos, corrige as de múltipla escolha, guarda
 os arquivos anexados e atende a área do professor. Os envios são apagados
-sozinhos depois de 7 dias.
+sozinhos depois de 3 dias.
 
 É um código só (`servidor/rotas.ts`, no formato `Request → Response` da web)
 que roda em três lugares:
@@ -112,28 +112,8 @@ o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servi
   faltas e diz se o aluno está REGULAR, em ATENÇÃO ou PENDENTE, com a conta e a mensagem ao responsável.
 - **Mensagens** (`src/lib/mensagensAlunos.ts`): com a planilha de controle, monta o aviso de faltas (alunos
   ativos com 2 ou mais faltas, descontadas as reposições) ou o lembrete por turno, e cada botão abre o
-  WhatsApp (`wa.me`) com o texto pronto. O envio é manual, um aluno por vez: o portal não usa a Evolution
-  API nem dispara em massa. O texto editado fica guardado no navegador de quem editou.
-
-### Envio automático de mensagens (Evolution API)
-
-A aba Mensagens também dispara para todos de uma vez pela **Evolution API**, o serviço que fica ligado ao
-WhatsApp (o mesmo do `microapp/`, imagem `evoapicloud/evolution-api:v2.3.7`, porta 8080). Ela roda num
-computador da escola, que o servidor do portal na Vercel não alcança; por isso **quem fala com ela é o
-navegador** (`src/lib/evolution.ts`), aberto nesse computador:
-
-- Endereço (padrão `http://localhost:8080`), chave (`AUTHENTICATION_API_KEY`) e nome da conexão ficam só no
-  `localStorage` de quem configurou. Não são variáveis da Vercel nem passam pelo servidor do portal.
-- De um site https o navegador só chama `http://` em `localhost`. Para disparar de outro computador, a
-  Evolution precisa de um endereço https (um túnel, por exemplo). A Evolution precisa aceitar a origem do
-  portal no CORS (`CORS_ORIGIN`, que por padrão aceita todas), e o navegador pode pedir permissão para
-  acessar a rede local.
-- Fluxo: verificar conexão, conectar por QR Code, disparar com confirmação. Pausa de 4 a 6 s entre envios,
-  30 s a cada 40, conferência da conexão a cada 10, tentativa no telefone do aluno e depois no do
-  responsável. Dá para cancelar; fechar a aba interrompe. O lembrete por turno aceita uma imagem.
-- **Histórico** (`GET`/`POST /api/disparos`, permissão `mensagens`): cada disparo guarda quem fez, quando, o
-  modelo e o resultado por aluno (nome e número) em `disparos/<data>/<id>.json`, por unidade. Fica por
-  `DIAS_HISTORICO_DISPAROS` (90) dias e sai na limpeza diária.
+  WhatsApp (`wa.me`) com o texto pronto. O envio é manual, um aluno por vez: o portal não dispara em massa
+  nem conversa com nenhuma API de WhatsApp. O texto editado fica guardado no navegador de quem editou.
 
 ### Cota do Vercel Blob (plano gratuito)
 
@@ -149,8 +129,8 @@ usa o Blob responde «Erro no servidor (código ...)». Para gastar pouco:
 ### Digitação (ranking e progresso) e Histórico dos alunos
 
 - **Ranking e progresso dos jogos ficam no navegador** de cada computador (`localStorage`), não no portal: o
-  placar de um PC não aparece em outro. A aba **Digitação** (permissão `digitacao`) zera os rankings e o
-  progresso *deste* computador; cada jogo também tem o botão «Recomeçar do zero», que apaga só o progresso
+  placar de um PC não aparece em outro. As **configurações do instrutor** (link no pé da página `/digitacao`, só abre com a senha da área de
+  provas da unidade) zeram os rankings e o progresso *deste* computador; cada jogo também tem o botão «Recomeçar do zero», que apaga só o progresso
   dele. Um ranking único para a turma toda exigiria guardar no servidor, o que gasta operações do Blob.
 - **Histórico** (`src/lib/historicoAluno.ts`, permissão `historico`): monta o texto do acompanhamento
   educacional a partir de escolhas (desempenho, dificuldade, personalidade, frequência, comportamento,
@@ -194,10 +174,17 @@ npm run build:servidor   # servidor em dist-servidor/servidor.mjs
 PROFESSORES='[...]' SEGREDO_SESSAO='...' DADOS_DIR=/srv/portal-dados npm run servidor
 ```
 
-Um processo só serve o site e a `/api`. A limpeza dos 7 dias roda ao subir e a
+Um processo só serve o site e a `/api`. A limpeza dos 3 dias roda ao subir e a
 cada 6 horas. Para o servidor voltar sozinho depois de uma queda de energia,
 rode por um gerenciador de serviço (systemd, pm2, NSSM no Windows). Faça backup
-de `DADOS_DIR` se as notas precisarem durar mais que 7 dias.
+de `DADOS_DIR` se as notas precisarem durar mais que 3 dias.
+
+### Servidor completo (VPS com Docker)
+
+O `Dockerfile` e o `docker-compose.yml` da raiz sobem o portal e o Caddy (HTTPS
+automático) num servidor só, com os dados em volumes e sem depender da Vercel nem do Blob. O passo a passo, com
+firewall, backup e o que nunca fazer, está em **`docs/VPS.md`**; `./instalar-vps.sh` cria o `.env` com as
+chaves e confere tudo antes de subir.
 
 Depois de mudar qualquer `.prova.ts`, rode os dois builds de novo: o gabarito
 entra no servidor no build.
@@ -221,7 +208,7 @@ com `message` pronta para mostrar na tela.
 | `PATCH /envios/<id>` | professor | Lança a nota: `{ nota, comentario? }` (0 a 10, uma casa). |
 | `DELETE /envios/<id>` | professor | Apaga o envio e o arquivo. |
 | `GET /envios/<id>/arquivo` | professor | Baixa o arquivo, com o nome do aluno no nome. |
-| `GET\|POST /limpeza` | agendador ou professor | Apaga o que passou de 7 dias. |
+| `GET\|POST /limpeza` | agendador ou professor | Apaga o que passou de 3 dias. |
 | `GET /listas` · `POST /listas` | professor | Listas de acompanhamento: resumo de todas · cria uma (`{ duplicarDe? }` copia outra). |
 | `GET /listas/<id>` · `DELETE /listas/<id>` | professor | A lista inteira · apaga para todos. |
 | `PUT /listas/<id>` | professor | Grava a lista inteira com a `versao` que a tela abriu. Se outro professor gravou antes, responde 409 com `atual` (a versão dele) em vez de sobrescrever; a tela junta as duas quando mexeram em células diferentes. |
@@ -249,7 +236,7 @@ com `message` pronta para mostrar na tela.
   professor apagar. São compartilhadas entre todos os professores, revalidadas
   no servidor (até 60 colunas, 1000 linhas, 500 caracteres por célula) e cada
   gravação registra quem alterou.
-- **Nada passa de 7 dias.** O id do envio começa pela data (`2026-09-24_...`) e os
+- **Nada passa de 3 dias.** O id do envio começa pela data (`2026-09-24_...`) e os
   arquivos ficam em pastas por dia, então a limpeza apaga por idade sem abrir
   nenhum arquivo.
 

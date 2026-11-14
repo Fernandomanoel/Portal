@@ -81,5 +81,5 @@ export interface LancarNotaInput {
   comentario?: string;
 }
 
-export const DIAS_GUARDADOS = 7;
+export const DIAS_GUARDADOS = 3;
 export const LIMITE_ARQUIVO_MB = 4;

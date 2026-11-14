@@ -53,6 +53,13 @@ export function DigitacaoHubPage() {
           <Icone nome="seta-direita" tamanho={18} />
         </span>
       </Link>
+
+      <p className={estilos.configuracao}>
+        <Link to={rotas.digitacaoConfiguracao()}>
+          <Icone nome="cadeado" tamanho={14} />
+          Configurações do instrutor
+        </Link>
+      </p>
     </>
   );
 }

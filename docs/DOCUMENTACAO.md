@@ -44,7 +44,7 @@ instrutor passando arquivo por arquivo.
 | Início | `/` | Entrada com atalhos para as seções. |
 | Atividades | `/atividades` | 65 cursos em 7 categorias. Cada curso tem material de apoio e atividades corrigidas dentro do portal. |
 | Inglês | `/ingles` | Trilha própria: 21 atividades em 7 trilhas (vocabulário, ouvir e ler, frases, Gabi, vida real, textos e redação), mais as provas de inglês. |
-| Digitação | `/digitacao` | Treino de teclado: modo livre, textos clássicos, Cavaleiros do Zodíaco, letras em inglês, Sonic e três jogos de arcade (Balões de Letras, Constelação e Pulo das Palavras) e o Esquadrão Hiper, jogo de nave de arcade em 5 fases com chefes: o aluno pilota com as setas, enche a energia abatendo inimigos e, com Enter, abre o terminal e digita o código de trapaça de um especial (turbo, mísseis, escudo, laser, bomba; os códigos de cada fase ficam em `nave/dados.ts`). Panes no meio do tiroteio pedem uma palavra a tempo, senão custam uma vida. Motor em `src/pages/digitacao/nave/motor.ts`, desenhado em canvas, com velocidade, precisão, erros e ranking (`/digitacao/ranking`). Os jogos de arcade guardam os níveis liberados no navegador; cada um tem os níveis num `dados.ts` em `src/pages/digitacao/<jogo>/`, e a base comum (laço de animação, captura de teclas, mapa de níveis, quadro de fim) fica em `src/pages/digitacao/arcade/`. |
+| Digitação | `/digitacao` | Treino de teclado: modo livre, textos clássicos, Cavaleiros do Zodíaco, letras em inglês, Sonic e três jogos de arcade (Balões de Letras, Constelação e Pulo das Palavras) e o Esquadrão Hiper, jogo de nave de arcade em 5 fases com chefes: o aluno pilota com as setas, enche a energia abatendo inimigos e, com Enter, abre o terminal e digita o código de trapaça de um especial (turbo, mísseis, escudo, laser, bomba; os códigos de cada fase ficam em `nave/dados.ts`). Panes no meio do tiroteio pedem uma palavra a tempo, senão custam uma vida. Motor em `src/pages/digitacao/nave/motor.ts`, desenhado em canvas, com velocidade, precisão, erros e ranking (`/digitacao/ranking`). Os jogos de arcade guardam os níveis liberados no navegador; cada um tem os níveis num `dados.ts` em `src/pages/digitacao/<jogo>/`, e a base comum (laço de animação, captura de teclas, mapa de níveis, quadro de fim) fica em `src/pages/digitacao/arcade/`. Para zerar ranking e progresso deste computador, o instrutor usa o link «Configurações do instrutor» no pé da página (`/digitacao/configuracao`), que só abre com a senha da área de provas da unidade. |
 | Passo a Passo | `/passo-a-passo` | 50 tutoriais guiados (10 de Windows, 10 de Word, 10 de Excel, 10 de PowerPoint, 5 de inteligência artificial e 5 de segurança digital) e 5 jogos de conceito sobre as peças do computador. |
 | Provas | `/provas` | 48 provas interativas organizadas por curso, abertas pela senha de sala do instrutor. |
 | Área do professor | `/professor` | Login por professor: lista de envios, arquivo anexado, respostas e lançamento de nota, e as listas de acompanhamento da equipe (`/professor/listas`). |
@@ -151,7 +151,7 @@ Os formatos de prova são cinco:
    - o arquivo anexado, que pode ser baixado com o nome do aluno.
 4. Lance a nota (0 a 10, uma casa decimal) e, se quiser, um comentário.
 
-> **Atenção:** envios e arquivos são apagados sozinhos **7 dias** depois do
+> **Atenção:** envios e arquivos são apagados sozinhos **3 dias** depois do
 > envio. Quem precisa guardar a nota deve registrá-la antes.
 
 ### Unidades
@@ -377,7 +377,7 @@ O resumo:
   - o envio é idempotente;
   - senhas em hash (scrypt) e limite de tentativas;
   - cookie `HttpOnly` + `SameSite=Strict`;
-  - limpeza automática dos envios com mais de 7 dias.
+  - limpeza automática dos envios com mais de 3 dias.
 - **Variáveis de ambiente.** Os valores nunca vão para o repositório:
   - `UNIDADES` e `UNIDADE_PADRAO`;
   - `PROFESSORES`;
@@ -469,7 +469,7 @@ python3 scripts/planilhas/conferir.py "$(node scripts/planilhas/exportar.mjs)"  
    para `public/` e só linkar.
 7. **Não mudar `lancarNota` / `LancarNotaInput`** sem pedido explícito: é o
    ponto de «a IA sugere, o instrutor decide».
-8. **Não aumentar os 7 dias** de guarda dos envios sem pedido explícito.
+8. **Não aumentar os 3 dias** de guarda dos envios sem pedido explícito.
 9. **Segredos** só em variável de ambiente.
 10. **Gabarito** só no servidor: nunca importar `.prova.ts` em `src/`.
 

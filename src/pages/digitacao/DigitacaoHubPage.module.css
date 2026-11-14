@@ -169,3 +169,26 @@
 .cartaoRanking:hover .setaRanking {
   transform: translateX(3px);
 }
+
+.configuracao {
+  margin-top: var(--space-5);
+  font-size: var(--text-sm);
+}
+
+.configuracao a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.configuracao a:hover {
+  color: var(--ink);
+}
+
+.configuracao a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
