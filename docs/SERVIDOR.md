@@ -68,7 +68,7 @@ armazenamento, com a senha só em hash; as mudanças valem na hora (desativar de
 ### Ajustar professores da variável pela tela
 
 Na aba Usuários, o administrador também ajusta os professores da variável `PROFESSORES`: de quais unidades
-são, o que acessam (inclusive as abas Módulos, Pacotes e Mensagens) e se estão bloqueados. O ajuste fica em
+são, o que acessam (inclusive as abas Módulos, Pacotes e Histórico) e se estão bloqueados. O ajuste fica em
 `ajustes/<usuario>.json` e vale na hora, mesmo para quem já está logado; «Voltar ao padrão» apaga o ajuste.
 Nome, usuário e senha continuam só na Vercel, e um professor com `"administrador": true` nunca é ajustado
 pela tela, para ninguém se trancar do lado de fora.
@@ -98,9 +98,9 @@ pizza e rosca, com até 6 séries somadas, em média, contagem, mínimo ou máxi
 como PNG, e a exportação `.xlsx` leva as fórmulas reais, os formatos, as mesclagens, as linhas e colunas
 fixas e uma segunda aba "Gráficos" com as imagens.
 
-### Pacotes e Mensagens (ferramentas vindas do sistema de gestão)
+### Pacotes e Módulos (ferramentas vindas do sistema de gestão)
 
-Duas abas da área do professor trazem, no padrão do portal, funções do sistema em `microapp/`. As duas
+Duas abas da área do professor trazem, no padrão do portal, funções do sistema em `microapp/`. Elas
 leem a planilha **no navegador** (`src/lib/lerPlanilha.ts`: `.xlsx`, `.xls` e `.csv`, sem biblioteca):
 o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servidor.
 
@@ -110,10 +110,8 @@ o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servi
   feriados nacionais (sem Carnaval e Corpus Christi) e o dia 5/9. O relatório sai em `.csv`.
 - **Módulos** (`src/lib/acompanhamentoModulos.ts`): calculadora que compara parcelas pagas, módulo atual e
   faltas e diz se o aluno está REGULAR, em ATENÇÃO ou PENDENTE, com a conta e a mensagem ao responsável.
-- **Mensagens** (`src/lib/mensagensAlunos.ts`): com a planilha de controle, monta o aviso de faltas (alunos
-  ativos com 2 ou mais faltas, descontadas as reposições) ou o lembrete por turno, e cada botão abre o
-  WhatsApp (`wa.me`) com o texto pronto. O envio é manual, um aluno por vez: o portal não dispara em massa
-  nem conversa com nenhuma API de WhatsApp. O texto editado fica guardado no navegador de quem editou.
+- O portal não tem aba de mensagens nem disparo de WhatsApp. O acompanhamento de módulos só abre o link
+  `wa.me` (`src/lib/mensagensAlunos.ts`) com a mensagem pronta; quem envia é a pessoa, um aluno por vez.
 
 ### Cota do Vercel Blob (plano gratuito)
 
