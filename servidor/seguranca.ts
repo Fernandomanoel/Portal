@@ -242,6 +242,27 @@ export function lerFicha(token: unknown): Unidade | null {
   }
 }
 
+/** Estado assinado que o navegador do aluno carrega e devolve (tentativas das questões): zero operações no Blob. */
+export function criarEstado(chave: string, registro: unknown): string {
+  const conteudo = Buffer.from(JSON.stringify({ c: chave, r: registro, t: "estado" })).toString("base64url");
+  return `${conteudo}.${assinar(conteudo)}`;
+}
+
+export function lerEstado<T>(token: unknown, chave: string): T | null {
+  if (typeof token !== "string") return null;
+  const [conteudo, assinatura] = token.split(".");
+  if (!conteudo || !assinatura) return null;
+  const esperada = Buffer.from(assinar(conteudo));
+  const recebida = Buffer.from(assinatura);
+  if (esperada.length !== recebida.length || !timingSafeEqual(esperada, recebida)) return null;
+  try {
+    const dado = JSON.parse(Buffer.from(conteudo, "base64url").toString()) as { c?: string; r?: T; t?: string };
+    return dado.t === "estado" && dado.c === chave ? (dado.r ?? null) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function cookieSessao(token: string, seguro: boolean): string {
   return [
     `${COOKIE_SESSAO}=${token}`,

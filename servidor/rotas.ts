@@ -11,7 +11,7 @@ import { PERMISSOES_PADRAO, normalizarPermissoes, type AjusteFixo, type Permissa
 import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, semSenha, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
 import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
 import { caminhoConteudo, comentarioValido, slugValido, validarConteudo } from "./conteudos.js";
-import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
+import { caminhoLista, esquecerListas, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
 import { conferirItem } from "../src/lib/correcaoProva.js";
 import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
 import {
@@ -31,8 +31,10 @@ import {
   unidadePadrao,
   cookieApagado,
   cookieSessao,
+  criarEstado,
   criarSessao,
   lerCookie,
+  lerEstado,
   lerSessaoBruta,
   limparTentativas,
   tentativaPermitida,
@@ -336,7 +338,7 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
   // nunca foi testada vale pela resposta do envio.
   let tentativasUsadas: number[] | undefined;
   if (prova.tipo === "autocorrigida") {
-    const registro = await armazenamento.lerJson<RegistroTentativas>(`tentativas/${chave}.json`);
+    const registro = lerEstado<RegistroTentativas>(dados.estado, chave);
     tentativasUsadas = prova.itens.map((_, i) => registro?.itens[i]?.usadas ?? 0);
     if (registro) {
       validacao.respostas = validacao.respostas.map((resposta, i) => {
@@ -392,7 +394,9 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
     apagarEm: new Date(agora.getTime() + DIAS_GUARDADOS * DIA_MS).toISOString(),
   };
 
-  await armazenamento.salvarJson(caminhoEnvio(id), envio);
+  await armazenamento.salvarJson(caminhoEnvio(id), envio)
+
+  esquecerEnvios();
   return json(recibo(envio), 201);
 }
 
@@ -576,17 +580,26 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
 /** Apaga envios e arquivos com mais de DIAS_GUARDADOS dias. Devolve quantos envios saíram. */
 export async function limpar(armazenamento: Armazenamento, agora = new Date()) {
   const corte = dia(new Date(agora.getTime() - DIAS_GUARDADOS * DIA_MS));
-  const itens = [...(await armazenamento.listar("envios/")), ...(await armazenamento.listar("arquivos/")), ...(await armazenamento.listar("tentativas/"))];
+  const itens = [...(await armazenamento.listar("envios/")), ...(await armazenamento.listar("arquivos/"))];
   const velhos = itens.filter((item) => {
     const data = item.caminho.split("/")[1] ?? "";
     // Data no caminho manda; sem ela (arquivo estranho na pasta), vale a data de criação.
     return /^\d{4}-\d{2}-\d{2}$/.test(data) ? data < corte : dia(item.criadoEm) < corte;
   });
-  await armazenamento.apagar(velhos.map((item) => item.caminho));
+  await armazenamento.apagar(velhos.map((item) => item.caminho))
+  esquecerEnvios();
   return velhos.filter((item) => item.caminho.startsWith("envios/")).length;
 }
 
 // ------------------------------------------------------------- professor
+
+// Cada leitura de envio no Blob é uma operação; a lista guardada por 30 s na memória evita reler todos a cada abertura da
+// tela. Toda gravação neste servidor derruba a cópia; em outra instância da função o atraso máximo é o TTL.
+const TTL_CACHE_MS = 30_000;
+let cacheEnvios: { em: number; envios: Envio[] } | null = null;
+const esquecerEnvios = () => {
+  cacheEnvios = null;
+};
 
 async function listarEnvios(url: URL, professor: Professor, armazenamento: Armazenamento) {
   const ativa = unidadeAtiva(professor, url);
@@ -594,10 +607,14 @@ async function listarEnvios(url: URL, professor: Professor, armazenamento: Armaz
   // A limpeza que apaga de verdade roda uma vez por dia (cron). Aqui só se escondem os vencidos, pela data no
   // caminho: cada listagem no Blob conta como operação avançada, e a cota gratuita é pequena.
   const corte = dia(new Date(Date.now() - DIAS_GUARDADOS * DIA_MS));
-  const itens = (await armazenamento.listar("envios/")).filter((item) => item.caminho.endsWith(".json") && (item.caminho.split("/")[1] ?? "") >= corte);
-  const envios = (await Promise.all(itens.map((item) => armazenamento.lerJson<Envio>(item.caminho)))).filter(
-    (envio): envio is Envio => envio !== null,
-  );
+  let envios: Envio[];
+  if (cacheEnvios && Date.now() - cacheEnvios.em < TTL_CACHE_MS) {
+    envios = cacheEnvios.envios;
+  } else {
+    const itens = (await armazenamento.listar("envios/")).filter((item) => item.caminho.endsWith(".json") && (item.caminho.split("/")[1] ?? "") >= corte);
+    envios = (await Promise.all(itens.map((item) => armazenamento.lerJson<Envio>(item.caminho)))).filter((envio): envio is Envio => envio !== null);
+    cacheEnvios = { em: Date.now(), envios };
+  }
 
   const provaId = url.searchParams.get("provaId");
   const busca = (url.searchParams.get("busca") ?? "")
@@ -642,7 +659,8 @@ async function lancarNota(requisicao: Request, id: string, professor: Professor,
     corrigidaEm: new Date().toISOString(),
     corrigidaPor: professor.nome,
   };
-  await armazenamento.salvarJson(caminhoEnvio(id), atualizado);
+  await armazenamento.salvarJson(caminhoEnvio(id), atualizado)
+  esquecerEnvios();
   return json(atualizado);
 }
 
@@ -667,7 +685,8 @@ async function baixarArquivo(id: string, armazenamento: Armazenamento) {
 async function apagarEnvio(id: string, armazenamento: Armazenamento) {
   const envio = await armazenamento.lerJson<Envio>(caminhoEnvio(id));
   if (!envio) return new Response(null, { status: 204 });
-  await armazenamento.apagar([caminhoEnvio(id), ...(envio.arquivo ? [envio.arquivo.caminho] : [])]);
+  await armazenamento.apagar([caminhoEnvio(id), ...(envio.arquivo ? [envio.arquivo.caminho] : [])])
+  esquecerEnvios();
   return new Response(null, { status: 204 });
 }
 
@@ -714,8 +733,7 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     if (!chaveValida(corpo?.chave)) return erro(422, "VALIDATION_ERROR", "Teste sem chave da prova.");
 
     // O limite vale no servidor: recarregar a página ou chamar a rota direto não dá tentativa a mais.
-    const caminho = `tentativas/${corpo.chave}.json`;
-    const registro = (await armazenamento.lerJson<RegistroTentativas>(caminho)) ?? { itens: {} };
+    const registro = lerEstado<RegistroTentativas>(corpo?.estado, corpo.chave) ?? { itens: {} };
     const atual = registro.itens[indice] ?? { usadas: 0, ultima: {}, certo: false };
     if (atual.certo) return erro(422, "VALIDATION_ERROR", "Essa questão já foi respondida certo e está travada.");
     if (atual.usadas >= TENTATIVAS_POR_QUESTAO) {
@@ -725,8 +743,7 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     const valores = valoresDoItem(item, corpo?.valores);
     const resultado = conferirItem(item, valores);
     registro.itens[indice] = { usadas: atual.usadas + 1, ultima: valores, certo: resultado.certo };
-    await armazenamento.salvarJson(caminho, registro);
-    return json({ ...resultado, tentativas: { usadas: atual.usadas + 1, maximo: TENTATIVAS_POR_QUESTAO } });
+    return json({ ...resultado, tentativas: { usadas: atual.usadas + 1, maximo: TENTATIVAS_POR_QUESTAO }, estado: criarEstado(corpo.chave, registro) });
   }
 
   // Público: o aluno envia a prova.
@@ -750,7 +767,8 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
       corrigidaEm: new Date().toISOString(),
       corrigidaPor: "Aluno (resultado provisório aceito)",
     };
-    await armazenamento.salvarJson(caminhoEnvio(id), atualizado);
+    await armazenamento.salvarJson(caminhoEnvio(id), atualizado)
+    esquecerEnvios();
     return json(recibo(atualizado));
   }
 
@@ -882,6 +900,7 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
       }
       const lista = novaLista(professor, paraTodas ? TODAS_AS_UNIDADES : ativa, origem);
       await armazenamento.salvarJson(caminhoLista(lista.id), lista);
+      esquecerListas();
       return json(comAcesso(professor, lista), 201);
     }
 
@@ -897,6 +916,7 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
         // Apagar é de quem é da unidade dona: a unidade que só recebeu o compartilhamento não leva a lista embora.
         if (!acessoLista(professor, atual).administrar) return erro(403, "SEM_PERMISSAO", "Só a unidade dona da lista pode apagá-la.");
         await armazenamento.apagar([caminhoLista(id)]);
+        esquecerListas();
       }
       return new Response(null, { status: 204 });
     }
@@ -922,6 +942,7 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
         alteradaEm: new Date().toISOString(),
       };
       await armazenamento.salvarJson(caminhoLista(id), gravada);
+      esquecerListas();
       return json(comAcesso(professor, gravada));
     }
   }

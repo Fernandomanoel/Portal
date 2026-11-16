@@ -226,7 +226,20 @@ export function validarCompartilhamento(bruto: unknown, unidadesValidas: string[
   return { com, unidades: ids, edicao: edicao === true };
 }
 
+// Cada leitura de lista no Blob é uma operação: o resumo fica 30 s na memória e qualquer gravação aqui o derruba.
+let cacheListas: { em: number; resumos: ResumoLista[] } | null = null;
+export const esquecerListas = () => {
+  cacheListas = null;
+};
+
 export async function listarListas(armazenamento: Armazenamento): Promise<ResumoLista[]> {
+  if (cacheListas && Date.now() - cacheListas.em < 30_000) return cacheListas.resumos;
+  const resumos = await lerResumos(armazenamento);
+  cacheListas = { em: Date.now(), resumos };
+  return resumos;
+}
+
+async function lerResumos(armazenamento: Armazenamento): Promise<ResumoLista[]> {
   const itens = (await armazenamento.listar("listas/")).filter((item) => item.caminho.endsWith(".json"));
   const listas = await Promise.all(itens.map((item) => armazenamento.lerJson<ListaAcompanhamento>(item.caminho)));
   return listas
