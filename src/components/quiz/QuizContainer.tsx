@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useBlocker, useNavigate } from "react-router-dom";
 
 import { useProvaEmAndamento } from "@/hooks/ProvaEmAndamento";
@@ -69,6 +69,8 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
   const [iniciadaEm, definirIniciadaEm] = useState("");
   // Uma chave por prova aberta: reenviar depois de falha de rede não duplica o envio.
   const [chave] = useState(() => crypto.randomUUID());
+  // Tentativas das questões: o servidor assina e o navegador devolve (guardar no Blob gastaria operações).
+  const estado = useRef<string | undefined>(undefined);
   const [escolhas, definirEscolhas] = useState<Record<number, number>>({});
   const [textos, definirTextos] = useState<string[]>(() => Array.from({ length: totalQuestoes }, () => ""));
   const [valores, definirValores] = useState<Record<string, string>[]>(() => Array.from({ length: totalQuestoes }, () => ({})));
@@ -154,7 +156,7 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
           ? prova.perguntas.map((pergunta, i) => (pergunta.tipo === "dissertativa" ? (textos[i] ?? "") : (escolhas[i] ?? null)))
           : Array.from({ length: totalQuestoes }, (_, i) => escolhas[i] ?? null);
     try {
-      const recibo = await enviarProva({ chave, ficha: lerFicha()?.ficha ?? "", provaId, nomeAluno, iniciadaEm, respostas, saidas }, arquivo);
+      const recibo = await enviarProva({ chave, ficha: lerFicha()?.ficha ?? "", provaId, nomeAluno, iniciadaEm, respostas, saidas, estado: estado.current }, arquivo);
       definirFase({ tipo: "enviada", recibo });
     } catch (falha) {
       definirErroEnvio(falha instanceof ErroApi ? falha.message : "Não foi possível enviar. Tente de novo.");
@@ -171,7 +173,8 @@ export function QuizContainer({ prova, provaId, voltarPara }: Props) {
     definirTestando(item);
     definirErroEnvio(null);
     try {
-      const resultado = await verificarItem(provaId, chave, item, valores[item] ?? {});
+      const resultado = await verificarItem(provaId, chave, item, valores[item] ?? {}, estado.current);
+      estado.current = resultado.estado;
       definirResultados((atual) => {
         const proximo = [...atual];
         proximo[item] = resultado;

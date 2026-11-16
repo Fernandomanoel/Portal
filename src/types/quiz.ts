@@ -200,6 +200,8 @@ export interface ResultadoItem {
   mensagem?: string;
   /** Quantos testes a questão já gastou (de `maximo`). */
   tentativas: { usadas: number; maximo: number };
+  /** Estado assinado das tentativas: o navegador devolve no próximo teste e no envio (o servidor não guarda). */
+  estado?: string;
   campos: Record<string, { certo: boolean; mensagem?: string; detalhes?: { descricao: string; ok: boolean }[] }>;
 }
 

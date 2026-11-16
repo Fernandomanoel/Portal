@@ -124,6 +124,12 @@ usa o Blob responde «Erro no servidor (código ...)». Para gastar pouco:
 - cada gravação e cada listagem é uma operação avançada: a tela de provas enviadas **não** roda mais a
   limpeza ao abrir (só esconde os envios vencidos pela data no caminho; quem apaga é o cron diário das 7h);
 - o autosave das listas espera 4 s de pausa antes de gravar (o rascunho fica no navegador nesse intervalo);
+- as tentativas do botão «Testar» das provas autocorrigidas **não vão mais para o Blob**: o servidor devolve um
+  estado assinado (`estado`, com o `SEGREDO_SESSAO`) e o navegador o manda de volta no próximo teste e no envio.
+  Antes eram 1 leitura + 1 gravação por clique; agora zero;
+- a lista de provas enviadas e o resumo das listas ficam **30 s na memória** do servidor (uma gravação aqui derruba
+  a cópia na hora); em outra instância da função a tela pode atrasar até 30 s;
+- a limpeza diária não lista mais `tentativas/` (a pasta deixou de ser usada; o que sobrou nela não é apagado);
 - veja o consumo em Vercel > Storage > Blob > Usage, ou em Settings > Usage.
 
 ### Digitação (ranking e progresso) e Histórico dos alunos

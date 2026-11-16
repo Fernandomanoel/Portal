@@ -50,13 +50,15 @@ export interface DadosEnvio {
   iniciadaEm: string;
   respostas: (number | string | null)[];
   saidas: Envio["saidas"];
+  /** Último `estado` devolvido pelo teste das questões (prova autocorrigida). */
+  estado?: string;
 }
 
 export const obterProva = (id: string) => chamar<ProvaParaAluno>(`provas/${id.split("/").map(encodeURIComponent).join("/")}`);
 
 /** "Testar resposta": o servidor confere a questão e devolve onde errou. */
-export const verificarItem = (provaId: string, chave: string, item: number, valores: Record<string, string>) =>
-  chamar<ResultadoItem>(`provas/${provaId.split("/").map(encodeURIComponent).join("/")}/verificar`, comJson("POST", { chave, item, valores }));
+export const verificarItem = (provaId: string, chave: string, item: number, valores: Record<string, string>, estado?: string) =>
+  chamar<ResultadoItem>(`provas/${provaId.split("/").map(encodeURIComponent).join("/")}/verificar`, comJson("POST", { chave, item, valores, estado }));
 
 export function enviarProva(dados: DadosEnvio, arquivo: File | null) {
   const formulario = new FormData();
