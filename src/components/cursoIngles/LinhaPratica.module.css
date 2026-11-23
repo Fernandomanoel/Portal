@@ -1,0 +1,28 @@
+.linha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.linha[data-estado="ok"] {
+  border-color: var(--success);
+  background: var(--success-tint);
+}
+
+.linha[data-estado="erro"] {
+  border-color: var(--danger);
+  background: var(--danger-tint);
+}
+
+@media (min-width: 640px) {
+  .linha:not(.coluna) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

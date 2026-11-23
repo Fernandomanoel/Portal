@@ -1,0 +1,61 @@
+.mensagem {
+  margin: var(--space-4) 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.mensagem[data-estado="ok"] {
+  background: var(--success-tint);
+  color: var(--success);
+}
+
+.mensagem[data-estado="erro"] {
+  background: var(--danger-tint);
+  color: var(--danger);
+}
+
+.botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.principal,
+.secundario {
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.principal {
+  border: 0;
+  background: var(--brand-deep);
+  color: #fff;
+}
+
+.principal:hover {
+  background: var(--brand-deepest);
+}
+
+.secundario {
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-soft);
+}
+
+.secundario:hover {
+  background: var(--surface-soft);
+}
+
+.principal:focus-visible,
+.secundario:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}

@@ -268,6 +268,53 @@ export function lerCookie(cabecalho: string | null, nome: string): string | unde
   return undefined;
 }
 
+// ------------------------------------------------------- curso de inglês
+
+/**
+ * A área «Curso de Inglês» tem senha própria, no hash scrypt da variável SENHA_CURSO_INGLES (gerado por
+ * `npm run curso-ingles:senha`). Quem acerta recebe um cookie assinado, só para essa área: as aulas só saem do servidor
+ * com ele, e ele não vale para a área do professor nem para as provas.
+ */
+export const COOKIE_CURSO_INGLES = "portal_curso_ingles";
+const DURACAO_ACESSO_CURSO_MS = 12 * 60 * 60 * 1000;
+
+export const cursoInglesConfigurado = () => Boolean(process.env.SENHA_CURSO_INGLES?.trim());
+
+export function senhaDoCursoInglesConfere(senha: string): boolean {
+  const guardada = process.env.SENHA_CURSO_INGLES?.trim();
+  // Sem senha configurada ainda passa pelo scrypt, para a resposta levar o mesmo tempo.
+  const confere = senhaConfere(senha, guardada || HASH_FALSO);
+  return Boolean(guardada) && confere;
+}
+
+export function criarAcessoCursoIngles(): string {
+  const conteudo = Buffer.from(JSON.stringify({ t: "curso-ingles", expira: Date.now() + DURACAO_ACESSO_CURSO_MS })).toString("base64url");
+  return `${conteudo}.${assinar(conteudo)}`;
+}
+
+export function acessoCursoInglesValido(token: string | undefined): boolean {
+  if (!token) return false;
+  const [conteudo, assinatura] = token.split(".");
+  if (!conteudo || !assinatura) return false;
+  const esperada = Buffer.from(assinar(conteudo));
+  const recebida = Buffer.from(assinatura);
+  if (esperada.length !== recebida.length || !timingSafeEqual(esperada, recebida)) return false;
+  try {
+    const dado = JSON.parse(Buffer.from(conteudo, "base64url").toString()) as { t?: string; expira?: number };
+    return dado.t === "curso-ingles" && typeof dado.expira === "number" && dado.expira > Date.now();
+  } catch {
+    return false;
+  }
+}
+
+export function cookieCursoIngles(token: string, seguro: boolean): string {
+  return [`${COOKIE_CURSO_INGLES}=${token}`, "Path=/api", "HttpOnly", "SameSite=Strict", `Max-Age=${DURACAO_ACESSO_CURSO_MS / 1000}`, seguro ? "Secure" : ""].filter(Boolean).join("; ");
+}
+
+export function cookieCursoInglesApagado(seguro: boolean): string {
+  return [`${COOKIE_CURSO_INGLES}=`, "Path=/api", "HttpOnly", "SameSite=Strict", "Max-Age=0", seguro ? "Secure" : ""].filter(Boolean).join("; ");
+}
+
 // ------------------------------------------------------ limite de tentativas
 
 /**

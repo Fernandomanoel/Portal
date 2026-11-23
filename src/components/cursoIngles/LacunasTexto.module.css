@@ -1,0 +1,10 @@
+.texto {
+  display: grid;
+  gap: var(--space-4);
+  line-height: 2.1;
+  color: var(--ink);
+}
+
+.texto p {
+  margin: 0;
+}
