@@ -94,7 +94,9 @@ export const ATALHOS_INGLES: AtalhoIngles[] = [
   },
 ];
 
-export const PROVAS_INGLES: ProvaIngles[] = [];
+export const PROVAS_INGLES: ProvaIngles[] = [
+  { tipo: "quiz", rotulo: "Listening 1 — Iniciante (com áudio)", caminho: "Inglês/listening-iniciante-1", tamanho: "10 questões", grupo: "Iniciante" },
+];
 
 export function acharAtividadeIngles(slug: string): AtividadeIngles | undefined {
   return ATIVIDADES_INGLES.find((atividade) => atividade.slug === slug);

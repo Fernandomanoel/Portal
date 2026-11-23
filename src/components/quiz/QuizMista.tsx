@@ -1,3 +1,4 @@
+import { ControlesAudio } from "@/components/ingles/ControlesAudio";
 import type { ProvaMistaAluno } from "@/types/quiz";
 import estilos from "./Quiz.module.css";
 
@@ -19,6 +20,11 @@ export function QuizMista({ prova, escolhas, textos, aoResponder, aoEscrever }: 
               <span className={estilos.numero}>{indice + 1}.</span>
               <span>{pergunta.pergunta}</span>
             </label>
+            {pergunta.audio && (
+              <div className={estilos.audio}>
+                <ControlesAudio texto={pergunta.audio.texto} />
+              </div>
+            )}
             <textarea
               id={`resposta-${indice}`}
               className={pergunta.codigo ? `${estilos.resposta} ${estilos.respostaCodigo}` : estilos.resposta}
@@ -34,6 +40,11 @@ export function QuizMista({ prova, escolhas, textos, aoResponder, aoEscrever }: 
               <span className={estilos.numero}>{indice + 1}.</span>
               <span>{pergunta.pergunta}</span>
             </legend>
+            {pergunta.audio && (
+              <div className={estilos.audio}>
+                <ControlesAudio texto={pergunta.audio.texto} />
+              </div>
+            )}
             <div className={estilos.opcoes}>
               {pergunta.opcoes.map((opcao, opcaoIndice) => {
                 const marcada = escolhas[indice] === opcaoIndice;

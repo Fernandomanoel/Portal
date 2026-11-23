@@ -27,6 +27,7 @@ export const REGISTRO_PROVAS: Record<string, () => Promise<{ default: ProvaInter
   "Google Adwords/avaliacao-google-ads-marketing-busca": () => import("../src/data/provasInterativas/Google Adwords/avaliacao-google-ads-marketing-busca.prova.js"),
   "Google Adwords/simulacao-de-campanha": () => import("../src/data/provasInterativas/Google Adwords/simulacao-de-campanha.prova.js"),
   "HTML/avaliacao-pratica-html": () => import("../src/data/provasInterativas/HTML/avaliacao-pratica-html.prova.js"),
+  "Inglês/listening-iniciante-1": () => import("../src/data/provasInterativas/Inglês/listening-iniciante-1.prova.js"),
   "Inteligência Artificial/avaliacao-ia-engenharia-prompts-llms": () => import("../src/data/provasInterativas/Inteligência Artificial/avaliacao-ia-engenharia-prompts-llms.prova.js"),
   "Internet e Outlook/avaliacao-internet-e-outlook": () => import("../src/data/provasInterativas/Internet e Outlook/avaliacao-internet-e-outlook.prova.js"),
   "Internet, Redes Sociais e Aplicativos/avaliacao-cotidiano-digital": () => import("../src/data/provasInterativas/Internet, Redes Sociais e Aplicativos/avaliacao-cotidiano-digital.prova.js"),
