@@ -71,6 +71,7 @@ export function Navbar() {
             aria-label={tema === "escuro" ? "Usar tema claro" : "Usar tema escuro"}
           >
             <Icone nome={tema === "escuro" ? "sol" : "lua"} tamanho={18} />
+            <span>{tema === "escuro" ? "Claro" : "Escuro"}</span>
           </button>
 
           <NavLink

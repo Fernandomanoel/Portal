@@ -73,6 +73,20 @@ são, o que acessam (inclusive as abas Módulos, Pacotes e Histórico) e se est�
 Nome, usuário e senha continuam só na Vercel, e um professor com `"administrador": true` nunca é ajustado
 pela tela, para ninguém se trancar do lado de fora.
 
+### Áreas do professor (Informática e Inglês)
+
+Cada usuário tem uma ou duas **áreas**: Informática (padrão de quem já existia), Inglês, ou as duas. Quem é só de
+Inglês vê as abas Provas enviadas, FAGA e Módulos; quem é só de Informática não vê as de Inglês; quem tem as duas
+escolhe na barra. A área é marcada na tela Usuários (usuários criados pela tela e ajuste dos professores da variável);
+o administrador da variável alcança as duas. Quem cria não libera área que o próprio usuário não tem.
+A prova pertence à área pela pasta: `src/data/provasInterativas/Ingles/...` é de Inglês, o resto é de Informática.
+O envio guarda `area`, e a lista de envios só devolve as áreas do professor.
+
+**FAGA** (permissão `faga`, só área Inglês): ficha de acompanhamento do aluno, montada à mão (aulas, atividades,
+datas), gravada em `fagas/<id>.json` (fora da limpeza de 3 dias) e escopada por unidade. A impressão sai do navegador.
+**Módulos de Inglês** calculam, sobre a FAGA, o atraso por bloco (`aulasPorBloco`, padrão 6) e o prazo do livro
+(`mesesPorLivro`, padrão 12), com os valores editáveis por aluno.
+
 ### Listas compartilhadas entre unidades
 
 Cada lista tem uma **unidade dona** (ou a **rede**, criada por quem alcança todas as unidades) e pode ser
@@ -207,6 +221,8 @@ com `message` pronta para mostrar na tela.
 | `DELETE /envios/<id>` | professor | Apaga o envio e o arquivo. |
 | `GET /envios/<id>/arquivo` | professor | Baixa o arquivo, com o nome do aluno no nome. |
 | `GET\|POST /limpeza` | agendador ou professor | Apaga o que passou de 3 dias. |
+| `GET /fagas` · `POST /fagas` | professor (`faga`) | FAGAs da unidade · cria uma (a coordenação escolhe a unidade antes). |
+| `GET\|PUT\|DELETE /fagas/<id>` | professor (`faga`) | Lê · grava a FAGA inteira · apaga. FAGA de outra unidade responde 404. |
 | `GET /listas` · `POST /listas` | professor | Listas de acompanhamento: resumo de todas · cria uma (`{ duplicarDe? }` copia outra). |
 | `GET /listas/<id>` · `DELETE /listas/<id>` | professor | A lista inteira · apaga para todos. |
 | `PUT /listas/<id>` | professor | Grava a lista inteira com a `versao` que a tela abriu. Se outro professor gravou antes, responde 409 com `atual` (a versão dele) em vez de sobrescrever; a tela junta as duas quando mexeram em células diferentes. |

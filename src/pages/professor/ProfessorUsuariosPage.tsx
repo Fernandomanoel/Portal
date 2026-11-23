@@ -4,7 +4,7 @@ import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { Icone } from "@/components/Icone";
 import { ajustarFixo, apagarUsuario, atualizarUsuario, criarUsuario, listarUsuarios, voltarFixoAoPadrao, type ListaDeUsuarios } from "@/lib/apiUsuarios";
 import { ErroApi } from "@/lib/apiProvas";
-import { PERMISSOES, type PermissaoId, type UsuarioCadastrado, type UsuarioFixo } from "@/types/acesso";
+import { AREAS, PERMISSOES, type AreaId, type PermissaoId, type UsuarioCadastrado, type UsuarioFixo } from "@/types/acesso";
 import { TODAS_AS_UNIDADES } from "@/types/unidade";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorUsuariosPage.module.css";
@@ -21,10 +21,11 @@ interface Formulario {
   senha: string;
   unidades: string[];
   permissoes: PermissaoId[];
+  areas: AreaId[];
   ativo: boolean;
 }
 
-const vazio = (): Formulario => ({ usuario: "", nome: "", senha: "", unidades: [], permissoes: ["listas"], ativo: true });
+const vazio = (): Formulario => ({ usuario: "", nome: "", senha: "", unidades: [], permissoes: ["listas"], areas: ["informatica"], ativo: true });
 
 export function ProfessorUsuariosPage() {
   const { professor, sessaoVencida } = useProfessor();
@@ -118,6 +119,7 @@ export function ProfessorUsuariosPage() {
           todasAsUnidades={professor.todasAsUnidades}
           minhasUnidades={professor.coordenacao ? professor.unidades.map((u) => u.id) : [professor.unidade.id]}
           minhasPermissoes={professor.permissoes}
+          minhasAreas={professor.areas ?? ["informatica"]}
           aoSalvar={async () => {
             definirEditando(null);
             await carregar();
@@ -156,6 +158,9 @@ export function ProfessorUsuariosPage() {
                     <div className={estilos.acesso}>
                       <p className={estilos.rotulo}>Acessa</p>
                       <ul className={estilos.chips}>
+                        {(u.areas ?? ["informatica"]).map((a) => (
+                          <li key={a}>Área: {AREAS.find((x) => x.id === a)?.rotulo}</li>
+                        ))}
                         {u.permissoes.map((p) => (
                           <li key={p}>{rotuloPermissao(p)}</li>
                         ))}
@@ -219,6 +224,9 @@ export function ProfessorUsuariosPage() {
                     <div className={estilos.acesso}>
                       <p className={estilos.rotulo}>Acessa</p>
                       <ul className={estilos.chips}>
+                        {(f.areas ?? ["informatica"]).map((a) => (
+                          <li key={a}>Área: {AREAS.find((x) => x.id === a)?.rotulo}</li>
+                        ))}
                         {f.permissoes.map((p) => (
                           <li key={p}>{rotuloPermissao(p)}</li>
                         ))}
@@ -259,6 +267,7 @@ function FormularioUsuario({
   todasAsUnidades,
   minhasUnidades,
   minhasPermissoes,
+  minhasAreas,
   aoSalvar,
   aoCancelar,
   tratar,
@@ -270,11 +279,12 @@ function FormularioUsuario({
   todasAsUnidades: boolean;
   minhasUnidades: string[];
   minhasPermissoes: PermissaoId[];
+  minhasAreas: AreaId[];
   aoSalvar: () => Promise<void>;
   aoCancelar: () => void;
   tratar: (falha: unknown, padrao: string) => void;
 }) {
-  const [f, definirF] = useState<Formulario>(() => (fixo ? { usuario: fixo.usuario, nome: fixo.nome, senha: "", unidades: fixo.unidades, permissoes: fixo.permissoes, ativo: fixo.ativo } : existente ? { usuario: existente.usuario, nome: existente.nome, senha: "", unidades: existente.unidades, permissoes: existente.permissoes, ativo: existente.ativo } : vazio()));
+  const [f, definirF] = useState<Formulario>(() => (fixo ? { usuario: fixo.usuario, nome: fixo.nome, senha: "", unidades: fixo.unidades, permissoes: fixo.permissoes, areas: fixo.areas ?? ["informatica"], ativo: fixo.ativo } : existente ? { usuario: existente.usuario, nome: existente.nome, senha: "", unidades: existente.unidades, permissoes: existente.permissoes, areas: existente.areas ?? ["informatica"], ativo: existente.ativo } : vazio()));
   const [salvando, definirSalvando] = useState(false);
   const [mensagem, definirMensagem] = useState<string | null>(null);
   const novo = !existente && !fixo;
@@ -283,6 +293,7 @@ function FormularioUsuario({
   // Só se libera o que quem cria também tem: o servidor confere, aqui só se esconde o que seria recusado.
   const unidadesDisponiveis = dados.unidades.filter((u) => todasAsUnidades || minhasUnidades.includes(u.id));
   const permissoesDisponiveis = PERMISSOES.filter((p) => minhasPermissoes.includes(p.id));
+  const areasDisponiveis = AREAS.filter((a) => minhasAreas.includes(a.id));
 
   const alternar = <T,>(lista: T[], valor: T) => (lista.includes(valor) ? lista.filter((x) => x !== valor) : [...lista, valor]);
 
@@ -292,11 +303,11 @@ function FormularioUsuario({
     definirMensagem(null);
     try {
       if (fixo) {
-        await ajustarFixo(fixo.usuario, { unidades: f.unidades, permissoes: f.permissoes });
+        await ajustarFixo(fixo.usuario, { unidades: f.unidades, permissoes: f.permissoes, areas: f.areas });
       } else if (novo) {
-        await criarUsuario({ usuario: f.usuario.trim(), nome: f.nome, senha: f.senha, unidades: f.unidades, permissoes: f.permissoes });
+        await criarUsuario({ usuario: f.usuario.trim(), nome: f.nome, senha: f.senha, unidades: f.unidades, permissoes: f.permissoes, areas: f.areas });
       } else if (existente) {
-        await atualizarUsuario(existente.usuario, { nome: f.nome, unidades: f.unidades, permissoes: f.permissoes, ...(f.senha ? { senha: f.senha } : {}) });
+        await atualizarUsuario(existente.usuario, { nome: f.nome, unidades: f.unidades, permissoes: f.permissoes, areas: f.areas, ...(f.senha ? { senha: f.senha } : {}) });
       }
       await aoSalvar();
     } catch (falha) {
@@ -348,6 +359,26 @@ function FormularioUsuario({
             <input type="checkbox" checked={todas || f.unidades.includes(u.id)} disabled={todas} onChange={() => definirF({ ...f, unidades: alternar(f.unidades, u.id) })} />
             <span>
               <strong>{u.nome}</strong>
+            </span>
+          </label>
+        ))}
+      </fieldset>
+
+      <fieldset className={estilos.conjunto}>
+        <legend>Área do professor</legend>
+        {areasDisponiveis.map((a) => (
+          <label key={a.id} className={estilos.opcao}>
+            <input
+              type="checkbox"
+              checked={f.areas.includes(a.id)}
+              onChange={() => {
+                const areas = alternar(f.areas, a.id);
+                if (areas.length) definirF({ ...f, areas });
+              }}
+            />
+            <span>
+              <strong>{a.rotulo}</strong>
+              <small>{a.descricao}</small>
             </span>
           </label>
         ))}

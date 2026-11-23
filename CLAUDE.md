@@ -60,6 +60,13 @@ antigo (`Portal-Atividades`): prova/avaliação de curso vai em
 `provasManifest.ts` só quando for de fato controlada pelo instrutor;
 material de apoio do aluno vai em `Curso.materiais`.
 
+Áreas do professor (`AREAS` em `src/types/acesso.ts`): Informática e Inglês, escolhidas por usuário; permissões e abas
+seguem a área (`permissoesDe` em `servidor/rotas.ts`). Prova de Inglês = arquivo em `provasInterativas/Ingles/`
+(o servidor deriva a área do caminho) e a listagem fica em `PROVAS_INGLES`, com a mesma senha de unidade e a mesma
+trava das provas de ADM. A cor da área de Inglês (verde-água) vem de `body[data-area="ingles"]` em `tokens.css` via
+`useAreaVisual`: não pinte Inglês com cor fixa. A FAGA (`src/types/faga.ts`) é só modelo de preenchimento: nenhum
+conteúdo de livro vem pré-cadastrado; arte da impressão é própria do portal.
+
 ## Convenções de código
 
 - Nomes de variável, função, rota e conteúdo em **português** (`titulo`,

@@ -1,0 +1,233 @@
+/* Papel não tem tema escuro: as cores daqui são fixas de propósito. */
+.folha {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 9mm;
+  }
+
+  :global(#root) {
+    display: none !important;
+  }
+
+  :global(html),
+  :global(body) {
+    background: #fff !important;
+  }
+
+  .folha {
+    display: block;
+    color: #14202b;
+    background: #fff;
+    font-family: var(--font-ui);
+    font-size: 10pt;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .paginaNova {
+    break-before: page;
+  }
+}
+
+.cabecalho {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 6px;
+  border-bottom: 3px solid #087b7e;
+}
+
+.selo {
+  margin: 0;
+  color: #087b7e;
+  font-size: 9pt;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.titulo {
+  margin: 0;
+  font-size: 17pt;
+  line-height: 1.1;
+}
+
+.livro {
+  margin: 0;
+  color: #4a5a68;
+  font-size: 11pt;
+  font-weight: 700;
+}
+
+.campos {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 8px 14px;
+  margin: 8px 0 10px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.campoRotulo {
+  color: #4a5a68;
+  font-size: 7.5pt;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.campoValor {
+  min-height: 15px;
+  border-bottom: 1px solid #14202b;
+  font-weight: 600;
+}
+
+.faixa {
+  break-inside: avoid;
+  margin-bottom: 7px;
+  padding: 5px 8px 6px 10px;
+  border: 1px solid #b6c3cd;
+  border-left: 5px solid #087b7e;
+  border-radius: 4px;
+}
+
+.faixaTopo {
+  display: grid;
+  grid-template-columns: 1.6fr 0.7fr 0.7fr 1.2fr 1.2fr;
+  gap: 4px 12px;
+  align-items: end;
+}
+
+.faixaTitulo {
+  margin: 0;
+  font-size: 11pt;
+  color: #04555a;
+}
+
+.faixaTitulo small {
+  display: block;
+  color: #4a5a68;
+  font-size: 7.5pt;
+  font-weight: 600;
+}
+
+.trilha {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.passo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 20mm;
+  padding-bottom: 2px;
+  text-align: center;
+}
+
+.passo::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 0;
+  right: 0;
+  border-top: 2px solid #b6c3cd;
+}
+
+.passoRotulo {
+  font-size: 7.5pt;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.bolinha {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 15px;
+  height: 15px;
+  border: 2px solid #087b7e;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.passoFeito .bolinha {
+  background: #087b7e;
+}
+
+.passoFeito .bolinha::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 3.5px;
+  width: 3px;
+  height: 6px;
+  border: solid #fff;
+  border-width: 0 1.6px 1.6px 0;
+  transform: rotate(45deg);
+}
+
+.passoFeito::before {
+  border-top-color: #087b7e;
+}
+
+.pergunta {
+  margin-top: 16px;
+  break-inside: avoid;
+}
+
+.perguntaTitulo {
+  margin: 0 0 6px;
+  color: #04555a;
+  font-size: 12pt;
+  font-weight: 800;
+}
+
+.opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.opcoes li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11pt;
+}
+
+.caixaMarcar {
+  width: 15px;
+  height: 15px;
+  box-sizing: border-box;
+  border: 2px solid #087b7e;
+  border-radius: 50%;
+}
+
+.linhas {
+  display: grid;
+  gap: 22px;
+  margin-top: 14px;
+}
+
+.linhas span {
+  border-bottom: 1px solid #14202b;
+}

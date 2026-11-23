@@ -115,12 +115,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
+  gap: var(--space-2);
+  min-width: 36px;
   height: 36px;
-  border: 1px solid var(--line);
+  padding-inline: var(--space-3);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-sm);
   background: var(--surface);
-  color: var(--ink-soft);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
   transition: color 140ms var(--ease-out), border-color 140ms var(--ease-out);
 }
 

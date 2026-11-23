@@ -56,6 +56,8 @@ export type NomeIcone =
   | "mais"
   | "tabela"
   | "copiar"
+  | "imprimir"
+  | "seta-cima"
   | "negrito"
   | "italico"
   | "alinhar-esquerda"
@@ -351,6 +353,13 @@ const CAMINHOS: Record<NomeIcone, ReactElement> = {
       <path d="M15.5 8.5V6.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2" />
     </>
   ),
+  imprimir: (
+    <>
+      <path d="M7 9V4.5h10V9M7 17.5H5.5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H17" />
+      <rect x="7" y="14" width="10" height="6" rx="1" />
+    </>
+  ),
+  "seta-cima": <path d="M12 19.5v-15m-5 5 5-5 5 5" />,
   negrito: <path d="M7.5 5h5.5a3.5 3.5 0 0 1 0 7H7.5Zm0 7h6.5a3.5 3.5 0 0 1 0 7H7.5Z" />,
   italico: <path d="M10 5h7M7 19h7m0-14-4 14" />,
   "alinhar-esquerda": <path d="M4 6h16M4 10h10M4 14h16M4 18h10" />,

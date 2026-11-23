@@ -13,6 +13,7 @@ export const PERMISSOES = [
   { id: "acompanhamento", rotulo: "Acompanhamento de módulos", descricao: "Calcular se o aluno está atrasado nos módulos em relação às parcelas e às faltas." },
   { id: "historico", rotulo: "Histórico dos alunos", descricao: "Montar e formatar o texto de acompanhamento educacional de cada aluno." },
   { id: "pacotes", rotulo: "Analisador de pacotes", descricao: "Analisar a planilha de agendamentos (atrasado, em dia, adiantado)." },
+  { id: "faga", rotulo: "Acompanhamento FAGA e módulos (Inglês)", descricao: "Montar, preencher e imprimir a FAGA de cada aluno de Inglês e calcular o atraso dos blocos." },
   { id: "usuarios", rotulo: "Gerenciar usuários", descricao: "Criar usuários e definir o que cada um acessa." },
 ] as const;
 
@@ -21,7 +22,29 @@ export type PermissaoId = (typeof PERMISSOES)[number]["id"];
 export const IDS_PERMISSAO: PermissaoId[] = PERMISSOES.map((p) => p.id);
 
 /** Professores da variável PROFESSORES: tudo, menos gerenciar usuários (só o administrador e quem ele liberar). */
-export const PERMISSOES_PADRAO: PermissaoId[] = ["provas", "conteudos", "listas", "listas_editar", "acompanhamento", "pacotes", "historico"];
+export const PERMISSOES_PADRAO: PermissaoId[] = ["provas", "conteudos", "listas", "listas_editar", "acompanhamento", "pacotes", "historico", "faga"];
+
+/** Área do professor: cada usuário vê só as abas da(s) área(s) marcadas. */
+export const AREAS = [
+  { id: "informatica", rotulo: "Informática", descricao: "Provas, conteúdos, listas, módulos, histórico e pacotes de Informática." },
+  { id: "ingles", rotulo: "Inglês", descricao: "Provas de Inglês, FAGA e módulos de Inglês." },
+] as const;
+
+export type AreaId = (typeof AREAS)[number]["id"];
+
+export const IDS_AREA: AreaId[] = AREAS.map((a) => a.id);
+
+/** Quem não tem área gravada (cadastro antigo, professor da variável) é de Informática. */
+export const AREAS_PADRAO: AreaId[] = ["informatica"];
+
+export function normalizarAreas(lista: unknown): AreaId[] {
+  const ids = new Set((Array.isArray(lista) ? lista : []).filter((a): a is AreaId => IDS_AREA.includes(a as AreaId)));
+  const limpa = IDS_AREA.filter((a) => ids.has(a));
+  return limpa.length ? limpa : [...AREAS_PADRAO];
+}
+
+/** Permissões que só existem na área de Inglês. */
+export const PERMISSOES_DE_INGLES: PermissaoId[] = ["faga"];
 
 /** Editar lista pressupõe poder ver. */
 export function normalizarPermissoes(lista: unknown): PermissaoId[] {
@@ -36,6 +59,7 @@ export interface UsuarioCadastrado {
   nome: string;
   unidades: string[];
   permissoes: PermissaoId[];
+  areas: AreaId[];
   ativo: boolean;
   criadoEm: string;
   criadoPor: string;
@@ -55,6 +79,7 @@ export interface UsuarioFixo {
   /** Acesso em vigor: o do ajuste, ou o padrão da variável. */
   unidades: string[];
   permissoes: PermissaoId[];
+  areas: AreaId[];
   ativo: boolean;
   /** Tem ajuste feito pela tela. */
   ajustado: boolean;
@@ -67,6 +92,7 @@ export interface AjusteFixo {
   usuario: string;
   unidades: string[];
   permissoes: PermissaoId[];
+  areas?: AreaId[];
   ativo: boolean;
   alteradoEm: string;
   alteradoPor: string;
