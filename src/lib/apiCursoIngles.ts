@@ -6,6 +6,7 @@ export const entrarCursoIngles = (senha: string) => chamar<{ ok: boolean }>("cur
 
 export const sairCursoIngles = () => chamar<void>("curso-ingles/sair", { method: "POST" });
 
-export const listarAulasIngles = async () => (await chamar<{ dados: ResumoAulaIngles[] }>("curso-ingles/aulas")).dados;
+/** `comSenha` é falso enquanto o servidor não tem a variável SENHA_CURSO_INGLES: a área abre sem senha. */
+export const listarAulasIngles = () => chamar<{ dados: ResumoAulaIngles[]; comSenha: boolean }>("curso-ingles/aulas");
 
 export const obterAulaIngles = async (id: string) => (await chamar<{ aula: AulaIngles }>(`curso-ingles/aulas/${encodeURIComponent(id)}`)).aula;

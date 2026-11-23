@@ -11,14 +11,15 @@ import { rotas } from "@/lib/rotas";
 import type { ResumoAulaIngles } from "@/types/aulaIngles";
 import estilos from "./CursoInglesPage.module.css";
 
-type Fase = { nome: "carregando" } | { nome: "senha"; aviso?: string } | { nome: "lista"; aulas: ResumoAulaIngles[] } | { nome: "erro"; mensagem: string };
+type Fase = { nome: "carregando" } | { nome: "senha"; aviso?: string } | { nome: "lista"; aulas: ResumoAulaIngles[]; comSenha: boolean } | { nome: "erro"; mensagem: string };
 
 export function CursoInglesPage() {
   const [fase, definirFase] = useState<Fase>({ nome: "carregando" });
 
   const carregar = useCallback(async () => {
     try {
-      definirFase({ nome: "lista", aulas: await listarAulasIngles() });
+      const { dados, comSenha } = await listarAulasIngles();
+      definirFase({ nome: "lista", aulas: dados, comSenha });
     } catch (falha) {
       if (falha instanceof ErroApi && falha.status === 401) definirFase({ nome: "senha" });
       else definirFase({ nome: "erro", mensagem: falha instanceof ErroApi ? falha.message : "Não foi possível abrir o Curso de Inglês. Tente de novo." });
@@ -38,18 +39,20 @@ export function CursoInglesPage() {
     <>
       <CabecalhoPagina
         titulo="Curso de Inglês"
-        texto="Aulas interativas do curso, com explicação, prática e áudio. Esta área é separada das atividades de Inglês e só abre com a senha."
+        texto={`Aulas interativas do curso, com explicação, prática e áudio. Esta área é separada das atividades de Inglês${fase.comSenha ? " e só abre com a senha" : ""}.`}
         acoes={
-          <button
-            type="button"
-            className={estilos.sair}
-            onClick={() => {
-              void sairCursoIngles().finally(() => definirFase({ nome: "senha" }));
-            }}
-          >
-            <Icone nome="sair" tamanho={16} />
-            Sair do Curso de Inglês
-          </button>
+          fase.comSenha && (
+            <button
+              type="button"
+              className={estilos.sair}
+              onClick={() => {
+                void sairCursoIngles().finally(() => definirFase({ nome: "senha" }));
+              }}
+            >
+              <Icone nome="sair" tamanho={16} />
+              Sair do Curso de Inglês
+            </button>
+          )
         }
       />
       {fase.aulas.length === 0 ? (

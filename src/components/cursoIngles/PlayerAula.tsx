@@ -5,6 +5,7 @@ import { Icone } from "@/components/Icone";
 import { rotas } from "@/lib/rotas";
 import type { AulaIngles } from "@/types/aulaIngles";
 import { BlocoAula } from "./BlocoAula";
+import { LogoAula } from "./LogoAula";
 import { ExplicacaoPtContexto, NavegacaoAulaContexto, useNarracaoAula } from "./contextoAula";
 import { Rico } from "./Rico";
 import estilos from "./PlayerAula.module.css";
@@ -97,6 +98,7 @@ export function PlayerAula({ aula }: { aula: AulaIngles }) {
             <Icone nome="seta-esquerda" tamanho={16} />
             Voltar
           </Link>
+          {aula.logo && <LogoAula logo={aula.logo} />}
           <div className={estilos.titulos}>
             <span className={estilos.etiqueta}>{aula.rotuloTopo}</span>
             <h1 className={estilos.titulo}>{aula.titulo}</h1>

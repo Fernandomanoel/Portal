@@ -213,6 +213,8 @@ export interface AulaIngles {
   id: string;
   codigo: string;
   titulo: string;
+  /** Logotipo do cabeçalho; se a imagem não carregar, aparece `reserva` num selo. */
+  logo?: { src: string; alt: string; reserva: string };
   rotuloTopo: string;
   rotuloMenu: string;
   rotuloProgresso: string;

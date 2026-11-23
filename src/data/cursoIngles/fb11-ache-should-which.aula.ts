@@ -12,6 +12,11 @@ const aula: AulaIngles = {
   id: "fb11-ache-should-which",
   codigo: "FB11",
   titulo: "DEALING WITH EVERYDAY ACHES",
+  logo: {
+    src: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjoJWDab_PQdYMNPhSpjJ89nD2Dqi2MWla12i_JpR3rbom2qZJsbRo7h9IjyM2vQVW7tuggXGqwjGWV0U02tW7RQy5bPqyFg-cHVxTYxiFMmdfd9rlyzTwmbdYM-jqlkSxc_0b6YMcJhfv6qOwB6b9fcHWwl8mRiKGbv0F6zCJQrkkxL35unMGzg4_aAIQ/s1600/image.png",
+    alt: "Institutional Logo",
+    reserva: "ENGLISH STUDIO",
+  },
   rotuloTopo: "Interactive Lesson",
   rotuloMenu: "Course Outline",
   rotuloProgresso: "Lesson Progress",

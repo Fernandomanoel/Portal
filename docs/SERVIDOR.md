@@ -23,7 +23,7 @@ A troca entre Blob e disco é a interface `Armazenamento`
 | `UNIDADES` | sim | Lista JSON das unidades: `id`, `nome` e a senha da aba Provas em hash. Gere cada item com `npm run unidade:senha`. O `id` e o `nome` aparecem na lista de unidades da aba Provas; a senha não sai do servidor. |
 | `PROFESSORES` | sim | Lista JSON de professores com a senha em hash e a **unidade** (`id` de `UNIDADES`, ou `*` para a coordenação, que vê todas). Gere cada item com `npm run professor:senha`. Professor sem `unidade` (cadastrado antes das unidades) fica na `UNIDADE_PADRAO`; com uma unidade que não existe, não entra. |
 | `UNIDADE_PADRAO` | recomendada | `id` da unidade que herda os envios e as listas criados antes de existirem unidades. Sem ela, esses dados só a coordenação vê. |
-| `SENHA_CURSO_INGLES` | para usar o Curso de Inglês | Hash scrypt da senha da área «Curso de Inglês» (`/curso-ingles`). Gere com `npm run curso-ingles:senha -- 'a-senha'` e cole só o hash. Sem ela, a tela de senha avisa que a área não foi configurada. Trocar a variável troca a senha; os acessos já abertos valem até vencer (12 h). |
+| `SENHA_CURSO_INGLES` | para usar o Curso de Inglês | Hash scrypt da senha da área «Curso de Inglês» (`/curso-ingles`). Gere com `npm run curso-ingles:senha -- 'a-senha'` e cole só o hash. **Sem a variável a área abre sem senha** (decisão provisória); com ela, a tela de senha volta sozinha, sem mudar código. Trocar a variável troca a senha; os acessos já abertos valem até vencer (12 h). |
 | `SEGREDO_SESSAO` | sim | Pelo menos 32 caracteres aleatórios. Assina o cookie de sessão; trocar derruba todas as sessões. |
 | `BLOB_READ_WRITE_TOKEN` | na Vercel | Criada sozinha quando o Blob é ligado ao projeto. Se a loja for ligada com um prefixo próprio (ex. `provas_READ_WRITE_TOKEN`), o servidor acha essa variável sozinho — não precisa ser exatamente esse nome. |
 | `CRON_SECRET` | na Vercel | Autoriza a limpeza diária agendada em `vercel.json`. |
@@ -118,8 +118,9 @@ o arquivo com nomes e telefones dos alunos não é enviado nem guardado no servi
 
 Aulas interativas em `/curso-ingles`, separadas das atividades de `/ingles`. O conteúdo (texto, exercícios e
 respostas) **não vai no código do site**: mora em `src/data/cursoIngles/<id>.aula.ts`, é carregado só pelo servidor
-(registro gerado `servidor/aulas.gerado.ts`, por `scripts/gerar-registro-aulas.mjs` no `dev` e no `build`) e só sai com o
-cookie `portal_curso_ingles`, que a senha da variável `SENHA_CURSO_INGLES` libera (HttpOnly, 12 h, vale só para essa área).
+(registro gerado `servidor/aulas.gerado.ts`, por `scripts/gerar-registro-aulas.mjs` no `dev` e no `build`) e, **quando `SENHA_CURSO_INGLES` existe**, só sai com o
+cookie `portal_curso_ingles`, que essa senha libera (HttpOnly, 12 h, vale só para essa área). Sem a variável a área está
+aberta (provisório): qualquer pessoa com o endereço lê a aula.
 O limite de tentativas é o das outras senhas (10 a cada 10 minutos por IP). Como acrescentar uma aula: `src/data/cursoIngles/COMO-CRIAR-AULA.md`.
 Os áudios e as fotos da aula FB11 ficam em sites de terceiros (englishworksheets.net e shutterstock.com), como no original.
 
@@ -216,8 +217,8 @@ com `message` pronta para mostrar na tela.
 | `PATCH /envios/<id>` | professor | Lança a nota: `{ nota, comentario? }` (0 a 10, uma casa). |
 | `DELETE /envios/<id>` | professor | Apaga o envio e o arquivo. |
 | `GET /envios/<id>/arquivo` | professor | Baixa o arquivo, com o nome do aluno no nome. |
-| `POST /curso-ingles/entrar` · `POST /curso-ingles/sair` | público | Confere a senha do Curso de Inglês e dá o cookie da área · apaga o cookie. |
-| `GET /curso-ingles/aulas` · `GET /curso-ingles/aulas/<id>` | com o cookie da área | Lista das aulas (`{ dados }`) · a aula completa (`{ aula }`). Sem o cookie: 401. |
+| `POST /curso-ingles/entrar` · `POST /curso-ingles/sair` | público | Confere a senha do Curso de Inglês e dá o cookie da área (sem a variável, responde `ok` sem cookie) · apaga o cookie. |
+| `GET /curso-ingles/aulas` · `GET /curso-ingles/aulas/<id>` | cookie da área (se há senha) | Lista das aulas (`{ dados, comSenha }`) · a aula completa (`{ aula }`). Com senha configurada e sem o cookie: 401. |
 | `GET\|POST /limpeza` | agendador ou professor | Apaga o que passou de 3 dias. |
 | `GET /listas` · `POST /listas` | professor | Listas de acompanhamento: resumo de todas · cria uma (`{ duplicarDe? }` copia outra). |
 | `GET /listas/<id>` · `DELETE /listas/<id>` | professor | A lista inteira · apaga para todos. |
