@@ -5,7 +5,7 @@ import { entrarCursoIngles } from "@/lib/apiCursoIngles";
 import { ErroApi } from "@/lib/apiProvas";
 import estilos from "./TravaCursoIngles.module.css";
 
-/** Tela de senha do Curso de Inglês: só a senha, sem escolher unidade. */
+/** Tela de senha do Inglês: só a senha, sem escolher unidade. */
 export function TravaCursoIngles({ aoEntrar, aviso }: { aoEntrar: () => void; aviso?: string }) {
   const [senha, definirSenha] = useState("");
   const [erro, definirErro] = useState<string | null>(null);
@@ -31,7 +31,7 @@ export function TravaCursoIngles({ aoEntrar, aviso }: { aoEntrar: () => void; av
       <span className={estilos.selo}>
         <Icone nome="cadeado" tamanho={22} />
       </span>
-      <h1 className={estilos.titulo}>Curso de Inglês</h1>
+      <h1 className={estilos.titulo}>Inglês</h1>
       <p className={estilos.texto}>Área com senha. Digite a senha do curso para abrir as aulas.</p>
 
       {aviso && !erro && <p className={estilos.erro}>{aviso}</p>}

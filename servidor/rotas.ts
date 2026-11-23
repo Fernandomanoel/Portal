@@ -225,7 +225,7 @@ function permissoesDe(professor: Professor): PermissaoId[] {
   const soIngles = areas.includes("ingles");
   return todas.filter((p) => {
     if (PERMISSOES_DE_INGLES.includes(p)) return soIngles;
-    if (p === "provas" || p === "usuarios") return true;
+    if (p === "provas" || p === "usuarios" || p === "listas" || p === "listas_editar") return true;
     return soInformatica;
   });
 }

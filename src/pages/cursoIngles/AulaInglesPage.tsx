@@ -38,7 +38,7 @@ export function AulaInglesPage() {
       <>
         <EstadoVazio icone="alerta" titulo="Não foi possível abrir a aula" texto={estado.mensagem} />
         <p>
-          <Link to={rotas.cursoIngles()}>Voltar ao Curso de Inglês</Link>
+          <Link to={rotas.cursoIngles()}>Voltar ao Inglês</Link>
         </p>
       </>
     );

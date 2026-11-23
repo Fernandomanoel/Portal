@@ -27,7 +27,7 @@ export const PERMISSOES_PADRAO: PermissaoId[] = ["provas", "conteudos", "listas"
 /** Área do professor: cada usuário vê só as abas da(s) área(s) marcadas. */
 export const AREAS = [
   { id: "informatica", rotulo: "Informática", descricao: "Provas, conteúdos, listas, módulos, histórico e pacotes de Informática." },
-  { id: "ingles", rotulo: "Inglês", descricao: "Provas de Inglês, FAGA e módulos de Inglês." },
+  { id: "ingles", rotulo: "Inglês", descricao: "Provas de Inglês, FAGA, módulos de Inglês e listas." },
 ] as const;
 
 export type AreaId = (typeof AREAS)[number]["id"];

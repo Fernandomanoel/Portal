@@ -262,16 +262,60 @@
 
 .faixa {
   display: grid;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--line-strong);
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--surface);
 }
 
+.faixa > * {
+  padding-inline: var(--space-4);
+}
+
+.faixaCampos {
+  padding-block: var(--space-3);
+  background: var(--brand-tint);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.corpo {
+  --f-claro: var(--brand-tint-strong);
+  --f-escuro: var(--brand-deep);
+  --f-fundo: var(--surface);
+  --f-texto: var(--ink);
+  padding-block: var(--space-3) var(--space-2);
+  background: var(--surface-soft);
+  overflow-x: auto;
+}
+
+.dicaTrilha {
+  margin: var(--space-1) 0 0;
+  color: var(--ink-faint);
+  font-size: var(--text-xs);
+}
+
+.editar {
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.editar summary {
+  color: var(--brand-deep);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.editar[open] summary {
+  margin-bottom: var(--space-3);
+}
+
+.faixaAcoes {
+  padding-block: var(--space-3);
+}
+
 .faixaFeita {
-  border-left-color: var(--success);
+  border-color: var(--brand);
 }
 
 .faixaCampos {

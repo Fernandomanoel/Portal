@@ -16,7 +16,7 @@ export function IngresHubPage() {
   return (
     <>
       <CabecalhoPagina
-        titulo="Inglês"
+        titulo="Conversação"
         texto="Práticas organizadas por habilidade: vocabulário com imagens, frases, conversas com a Gabi, o inglês da vida real e textos para ouvir."
       />
 

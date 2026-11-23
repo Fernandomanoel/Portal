@@ -154,7 +154,7 @@ export function ProfessorLayout() {
                   Conteúdos
                 </NavLink>
               )}
-              {!emIngles && pode("listas") && (
+              {pode("listas") && (
                 <NavLink to={rotas.professorListas()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
                   <Icone nome="tabela" tamanho={16} />
                   Listas

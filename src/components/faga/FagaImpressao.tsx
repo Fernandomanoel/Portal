@@ -1,39 +1,67 @@
 import { createPortal } from "react-dom";
 
 import type { DadosFagaEnvio } from "@/lib/apiFagas";
+import { FagaTrilha } from "./FagaTrilha";
 import estilos from "./FagaImpressao.module.css";
 
-function dataBr(iso: string) {
+const dataBr = (iso: string) => {
   const [a, m, d] = iso.split("-");
-  return a && m && d ? `${d}/${m}/${a}` : "";
-}
+  return a && m && d ? `${d} / ${m} / ${a}` : "";
+};
 
-function Campo({ rotulo, valor, largo }: { rotulo: string; valor: string; largo?: boolean }) {
+function Faixa({ rotulo, valor, classe }: { rotulo: string; valor: string; classe?: string }) {
   return (
-    <div className={largo ? `${estilos.campo} ${estilos.campoLargo}` : estilos.campo}>
+    <span className={classe ? `${estilos.campo} ${classe}` : estilos.campo}>
       <span className={estilos.campoRotulo}>{rotulo}</span>
       <span className={estilos.campoValor}>{valor}</span>
-    </div>
+    </span>
   );
 }
 
-const OPCOES_APRENDIZADO = ["Ótimo", "Bom", "Precisa melhorar"];
+function Topo({ aluno, inicio, fim, horas }: { aluno: string; inicio: string; fim: string; horas: string }) {
+  return (
+    <header className={estilos.topo}>
+      <div className={estilos.topoLinha}>
+        <label className={estilos.topoCampo}>
+          <span>Name:</span>
+          <b className={estilos.caixa}>{aluno}</b>
+        </label>
+      </div>
+      <div className={estilos.topoLinha}>
+        <label className={estilos.topoCampo}>
+          <span>Stage started on:</span>
+          <b className={estilos.caixa}>{dataBr(inicio)}</b>
+        </label>
+        <label className={estilos.topoCampo}>
+          <span>Stage finished on:</span>
+          <b className={estilos.caixa}>{dataBr(fim)}</b>
+        </label>
+        <label className={estilos.topoCampo}>
+          <span>Time:</span>
+          <b className={estilos.caixa}>{horas}</b>
+        </label>
+      </div>
+    </header>
+  );
+}
 
 function Opcoes({ titulo, opcoes }: { titulo: string; opcoes: string[] }) {
   return (
     <div className={estilos.pergunta}>
       <p className={estilos.perguntaTitulo}>{titulo}</p>
       <ul className={estilos.opcoes}>
-        {opcoes.map((o) => (
-          <li key={o}>
-            <span className={estilos.caixaMarcar} aria-hidden="true" />
-            {o}
+        {opcoes.map((o, i) => (
+          <li key={`${o}-${i}`}>
+            <span className={estilos.marcar} aria-hidden="true" />
+            {o || <span className={estilos.linhaOpcao} />}
           </li>
         ))}
       </ul>
     </div>
   );
 }
+
+const NIVEL = ["Great", "Good", "Needs improvement"];
 
 /**
  * Folha de impressão da FAGA (A4 deitado). Fica fora da tela: o portal inteiro some no `@media print`
@@ -43,71 +71,47 @@ export function FagaImpressao({ faga }: { faga: DadosFagaEnvio }) {
   return createPortal(
     <div className={estilos.folha} aria-hidden="true">
       <section className={estilos.pagina}>
-        <header className={estilos.cabecalho}>
-          <div>
-            <p className={estilos.selo}>FAGA</p>
-            <h1 className={estilos.titulo}>Ficha de acompanhamento do aluno</h1>
-          </div>
-          <p className={estilos.livro}>{faga.livro}</p>
-        </header>
-
-        <div className={estilos.campos}>
-          <Campo rotulo="Aluno" valor={faga.aluno} largo />
-          <Campo rotulo="Início da etapa" valor={dataBr(faga.etapaInicio)} />
-          <Campo rotulo="Fim da etapa" valor={dataBr(faga.etapaFim)} />
-          <Campo rotulo="Carga horária" valor={faga.horas} />
-        </div>
+        <Topo aluno={faga.aluno} inicio={faga.etapaInicio} fim={faga.etapaFim} horas={faga.horas} />
+        {faga.livro && <p className={estilos.livro}>{faga.livro}</p>}
 
         {faga.faixas.map((faixa) => (
           <article key={faixa.id} className={estilos.faixa}>
-            <div className={estilos.faixaTopo}>
-              <h2 className={estilos.faixaTitulo}>
-                {faixa.titulo || "Aula"}
+            <div className={estilos.faixaCab}>
+              <strong className={estilos.faixaTitulo}>
+                {faixa.titulo || "Class"}
                 {faixa.bloco && <small>{faixa.bloco}</small>}
-              </h2>
-              <Campo rotulo="Início" valor={dataBr(faixa.inicio)} />
-              <Campo rotulo="Término" valor={dataBr(faixa.fim)} />
-              <Campo rotulo="Professor" valor={faixa.professor} largo />
-              <Campo rotulo="Aluno (visto)" valor="" largo />
+              </strong>
+              <Faixa rotulo="Beginning:" valor={dataBr(faixa.inicio) || "      /      /"} />
+              <Faixa rotulo="End:" valor={dataBr(faixa.fim) || "      /      /"} />
+              <Faixa rotulo="Student:" valor="" classe={estilos.campoLongo} />
+              <Faixa rotulo="Teacher:" valor={faixa.professor} classe={estilos.campoLongo} />
             </div>
-            <ol className={estilos.trilha}>
-              {faixa.atividades.map((a) => (
-                <li key={a.id} className={a.feita ? `${estilos.passo} ${estilos.passoFeito}` : estilos.passo}>
-                  <span className={estilos.bolinha} />
-                  <span className={estilos.passoRotulo}>{a.rotulo}</span>
-                </li>
-              ))}
-            </ol>
+            <div className={estilos.faixaCorpo}>
+              <FagaTrilha atividades={faixa.atividades} />
+            </div>
           </article>
         ))}
       </section>
 
       {faga.autoavaliacao && (
         <section className={`${estilos.pagina} ${estilos.paginaNova}`}>
-          <header className={estilos.cabecalho}>
-            <div>
-              <p className={estilos.selo}>Autoavaliação</p>
-              <h1 className={estilos.titulo}>{faga.aluno}</h1>
+          <Topo aluno={faga.aluno} inicio={faga.etapaInicio} fim={faga.etapaFim} horas={faga.horas} />
+          <div className={estilos.faixa}>
+            <div className={estilos.faixaCab}>
+              <strong className={estilos.faixaTitulo}>Self-evaluation</strong>
             </div>
-            <p className={estilos.livro}>{faga.livro}</p>
-          </header>
-          <Opcoes titulo="Do que vimos nas unidades anteriores, eu aprendi:" opcoes={["Tudo", "Mais de 75%", "Metade", "Menos da metade"]} />
-          <div className={estilos.pergunta}>
-            <p className={estilos.perguntaTitulo}>O que eu aprendi bem:</p>
-            <div className={estilos.linhas}>
-              <span />
-              <span />
-              <span />
-            </div>
-          </div>
-          <Opcoes titulo="Minha avaliação do meu aprendizado:" opcoes={OPCOES_APRENDIZADO} />
-          <Opcoes titulo="Minha avaliação do meu esforço:" opcoes={OPCOES_APRENDIZADO} />
-          <div className={estilos.pergunta}>
-            <p className={estilos.perguntaTitulo}>Observações do professor:</p>
-            <div className={estilos.linhas}>
-              <span />
-              <span />
-              <span />
+            <div className={`${estilos.faixaCorpo} ${estilos.autoCorpo}`}>
+              <Opcoes titulo="From the contents presented in the previous units, I have learned:" opcoes={["All of them", "More than 75%", "Half of them", "Less than half"]} />
+              <Opcoes titulo="Check what you have learned thoroughly" opcoes={["", "", ""]} />
+              <Opcoes titulo="My evaluation about my learning progress:" opcoes={NIVEL} />
+              <Opcoes titulo="My evaluation about my effort:" opcoes={NIVEL} />
+              <div className={estilos.pergunta}>
+                <p className={estilos.perguntaTitulo}>Teacher&apos;s notes:</p>
+                <div className={estilos.linhas}>
+                  <span />
+                  <span />
+                </div>
+              </div>
             </div>
           </div>
         </section>

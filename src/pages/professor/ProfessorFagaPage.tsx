@@ -4,6 +4,7 @@ import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { FagaImpressao } from "@/components/faga/FagaImpressao";
+import { FagaTrilha } from "@/components/faga/FagaTrilha";
 import { apagarFaga, criarFaga, dadosDaFaga, listarFagas, salvarFaga, type DadosFagaEnvio } from "@/lib/apiFagas";
 import { ErroApi } from "@/lib/apiProvas";
 import { normalizar } from "@/lib/busca";
@@ -309,27 +310,35 @@ function Editor({ aberta, semUnidade, tratar, aoVoltar }: { aberta: Aberta; semU
               </label>
             </div>
 
+            <div className={estilos.corpo}>
+              <FagaTrilha atividades={faixa.atividades} aoAlternar={(aid) => mudarFaixa(faixa.id, { atividades: faixa.atividades.map((x) => (x.id === aid ? { ...x, feita: !x.feita } : x)) })} />
+              <p className={estilos.dicaTrilha}>Clique na bolinha para marcar a atividade como concluída.</p>
+            </div>
+
+            <details className={estilos.editar}>
+              <summary>Adicionar ou remover atividades desta aula</summary>
             <ul className={estilos.atividades} aria-label={`Atividades de ${faixa.titulo || "aula"}`}>
-              {faixa.atividades.map((a) => (
-                <li key={a.id} className={a.feita ? `${estilos.atividade} ${estilos.atividadeFeita}` : estilos.atividade}>
-                  <button type="button" aria-pressed={a.feita} onClick={() => mudarFaixa(faixa.id, { atividades: faixa.atividades.map((x) => (x.id === a.id ? { ...x, feita: !x.feita } : x)) })}>
-                    <span className={estilos.bolinha} aria-hidden="true">
-                      {a.feita && <Icone nome="check" tamanho={12} />}
-                    </span>
-                    {a.rotulo}
-                  </button>
-                  <button type="button" className={estilos.tirar} aria-label={`Remover ${a.rotulo}`} onClick={() => mudarFaixa(faixa.id, { atividades: faixa.atividades.filter((x) => x.id !== a.id) })}>
-                    <Icone nome="x" tamanho={12} />
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <NovaAtividade
-              aoAdicionar={(rotulo) => {
-                if (faixa.atividades.length >= LIMITES_FAGA.atividades) return definirMensagem(`Cada aula aceita até ${LIMITES_FAGA.atividades} atividades.`);
-                mudarFaixa(faixa.id, { atividades: [...faixa.atividades, { id: novoId(), rotulo, feita: false }] });
-              }}
-            />
+                {faixa.atividades.map((a) => (
+                  <li key={a.id} className={a.feita ? `${estilos.atividade} ${estilos.atividadeFeita}` : estilos.atividade}>
+                    <button type="button" aria-pressed={a.feita} onClick={() => mudarFaixa(faixa.id, { atividades: faixa.atividades.map((x) => (x.id === a.id ? { ...x, feita: !x.feita } : x)) })}>
+                      <span className={estilos.bolinha} aria-hidden="true">
+                        {a.feita && <Icone nome="check" tamanho={12} />}
+                      </span>
+                      {a.rotulo}
+                    </button>
+                    <button type="button" className={estilos.tirar} aria-label={`Remover ${a.rotulo}`} onClick={() => mudarFaixa(faixa.id, { atividades: faixa.atividades.filter((x) => x.id !== a.id) })}>
+                      <Icone nome="x" tamanho={12} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <NovaAtividade
+                aoAdicionar={(rotulo) => {
+                  if (faixa.atividades.length >= LIMITES_FAGA.atividades) return definirMensagem(`Cada aula aceita até ${LIMITES_FAGA.atividades} atividades.`);
+                  mudarFaixa(faixa.id, { atividades: [...faixa.atividades, { id: novoId(), rotulo, feita: false }] });
+                }}
+              />
+            </details>
 
             <div className={estilos.faixaAcoes}>
               <button type="button" className={estilos.mini} onClick={() => mover(i, -1)} disabled={i === 0} aria-label="Subir aula">

@@ -22,7 +22,7 @@ export function CursoInglesPage() {
       definirFase({ nome: "lista", aulas: dados, comSenha });
     } catch (falha) {
       if (falha instanceof ErroApi && falha.status === 401) definirFase({ nome: "senha" });
-      else definirFase({ nome: "erro", mensagem: falha instanceof ErroApi ? falha.message : "Não foi possível abrir o Curso de Inglês. Tente de novo." });
+      else definirFase({ nome: "erro", mensagem: falha instanceof ErroApi ? falha.message : "Não foi possível abrir o Inglês. Tente de novo." });
     }
   }, []);
 
@@ -33,13 +33,13 @@ export function CursoInglesPage() {
 
   if (fase.nome === "carregando") return <p role="status">Conferindo o acesso…</p>;
   if (fase.nome === "senha") return <TravaCursoIngles aviso={fase.aviso} aoEntrar={() => void carregar()} />;
-  if (fase.nome === "erro") return <EstadoVazio icone="alerta" titulo="Curso de Inglês indisponível" texto={fase.mensagem} />;
+  if (fase.nome === "erro") return <EstadoVazio icone="alerta" titulo="Inglês indisponível" texto={fase.mensagem} />;
 
   return (
     <>
       <CabecalhoPagina
-        titulo="Curso de Inglês"
-        texto={`Aulas interativas do curso, com explicação, prática e áudio. Esta área é separada das atividades de Inglês${fase.comSenha ? " e só abre com a senha" : ""}.`}
+        titulo="Inglês"
+        texto={`Aulas interativas do curso, com explicação, prática e áudio. Esta área é separada da Conversação${fase.comSenha ? " e só abre com a senha" : ""}.`}
         acoes={
           fase.comSenha && (
             <button
@@ -50,7 +50,7 @@ export function CursoInglesPage() {
               }}
             >
               <Icone nome="sair" tamanho={16} />
-              Sair do Curso de Inglês
+              Sair do Inglês
             </button>
           )
         }
