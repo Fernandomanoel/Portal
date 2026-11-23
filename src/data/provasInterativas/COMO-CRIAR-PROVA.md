@@ -181,6 +181,29 @@ módulos, ordem, gabarito, mensagens e palavras-chave — só o suporte muda.
 Exemplos: `JavaScript/prova-javascript-testes-automatizados`,
 `Inteligência Artificial/avaliacao-ia-engenharia-prompts-llms`.
 
+### Áudio na pergunta — provas de inglês (listening)
+
+Em múltipla escolha e mista, qualquer pergunta aceita `audio: { texto }`: o
+texto que o professor escreve **aqui, na criação da prova**, lido em inglês pela
+voz do navegador ("Ouvir" e "Devagar"). Na aplicação, o aluno só ouve: o texto
+não aparece e não pode ser escrito nem mudado. Use a `mista`, não a
+`autocorrigida` — com 3 testes por questão a múltipla escolha entrega a resposta.
+
+```ts
+{
+  pergunta: "Quantos anos tem a irmã do Lucas?",
+  audio: { texto: "Teacher: How old are you, Lucas? Lucas: I am fifteen. Teacher: And your sister? Lucas: She is twelve." },
+  opcoes: ["10 anos", "12 anos", "15 anos"],
+  correta: 1,
+},
+```
+
+Cada áudio tem **no máximo 2 minutos** (`SEGUNDOS_MAX_AUDIO`, estimado a ~110
+palavras por minuto): texto mais longo faz `npm run dev`/`npm run build` parar
+com o nome da prova e da questão. Nos diálogos, o nome antes dos dois-pontos é
+lido e marca quem fala. Exemplo: `Inglês/listening-iniciante-1`, listada em
+`PROVAS_INGLES` (`src/data/ingles.ts`), que aparece em Inglês → Provas.
+
 ## Regras que valem para qualquer tipo
 
 ### Envio de arquivo — `envioArquivo`

@@ -1,6 +1,17 @@
+/**
+ * Áudio da pergunta (prova de inglês): o texto que o professor escreve ao
+ * criar a prova, lido em inglês pela voz do navegador. O aluno só ouve — o
+ * texto não aparece na tela e não muda na aplicação. No máximo
+ * `SEGUNDOS_MAX_AUDIO`, conferido ao gerar o registro de provas.
+ */
+export interface AudioPergunta {
+  texto: string;
+}
+
 export interface PerguntaMultiplaEscolha {
   tipo?: "multipla_escolha";
   pergunta: string;
+  audio?: AudioPergunta;
   opcoes: string[];
   /** Índice da opção correta. Fica no servidor: nunca chega ao navegador do aluno. */
   correta: number;
@@ -16,6 +27,7 @@ export interface PerguntaMultiplaEscolha {
 export interface PerguntaDissertativaAuto {
   tipo: "dissertativa";
   pergunta: string;
+  audio?: AudioPergunta;
   respostasAceitas: string[];
   /**
    * Pergunta de programação: o aluno escreve código num campo monoespaçado e o
@@ -190,6 +202,14 @@ export type EntradaCampo =
 export type CampoProvaAluno = Omit<CampoProva, "regra" | "mensagemCerta" | "mensagemErrada"> & { entrada: EntradaCampo };
 export type ItemProvaAluno = Omit<ItemProva, "campos" | "mensagemCerta" | "mensagemErrada"> & { campos: CampoProvaAluno[] };
 export type ProvaAutocorrigidaAluno = Omit<ProvaAutocorrigida, "itens"> & { itens: ItemProvaAluno[] };
+
+/** Duração máxima do áudio de uma questão (2 min, decisão do usuário). */
+export const SEGUNDOS_MAX_AUDIO = 120;
+
+/** Estimativa da voz do navegador em ritmo de iniciante: ~110 palavras por minuto, já com as pausas. */
+export function segundosDoAudio(texto: string): number {
+  return Math.ceil((texto.split(/\s+/).filter(Boolean).length / 110) * 60);
+}
 
 /** Quantas vezes o aluno pode testar cada questão da prova autocorrigida. */
 export const TENTATIVAS_POR_QUESTAO = 3;

@@ -34,12 +34,12 @@ export function semGabarito(prova: ProvaInterativa): ProvaParaAluno {
       ...prova,
       perguntas: prova.perguntas.map((pergunta) =>
         pergunta.tipo === "dissertativa"
-          ? { tipo: pergunta.tipo, pergunta: pergunta.pergunta, ...(pergunta.codigo ? { codigo: true as const } : {}) }
-          : { pergunta: pergunta.pergunta, opcoes: pergunta.opcoes },
+          ? { tipo: pergunta.tipo, pergunta: pergunta.pergunta, audio: pergunta.audio, ...(pergunta.codigo ? { codigo: true as const } : {}) }
+          : { pergunta: pergunta.pergunta, audio: pergunta.audio, opcoes: pergunta.opcoes },
       ),
     };
   }
-  return { ...prova, perguntas: prova.perguntas.map(({ pergunta, opcoes }) => ({ pergunta, opcoes })) };
+  return { ...prova, perguntas: prova.perguntas.map(({ pergunta, audio, opcoes }) => ({ pergunta, audio, opcoes })) };
 }
 
 export function tipoDe(prova: ProvaInterativa) {

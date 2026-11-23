@@ -95,6 +95,12 @@ legend.enunciado {
   padding: 0;
 }
 
+/* Áudio da pergunta (prova de inglês); o clear passa por baixo do legend flutuante. */
+.audio {
+  clear: both;
+  margin-bottom: var(--space-4);
+}
+
 .numero {
   color: var(--ink-faint);
   font-variant-numeric: tabular-nums;
