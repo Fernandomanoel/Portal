@@ -67,6 +67,15 @@ trava das provas de ADM. A cor da área de Inglês (verde-água) vem de `body[da
 `useAreaVisual`: não pinte Inglês com cor fixa. A FAGA (`src/types/faga.ts`) é só modelo de preenchimento: nenhum
 conteúdo de livro vem pré-cadastrado; arte da impressão é própria do portal.
 
+Curso de Inglês (`/curso-ingles`) é uma área **com senha própria**, separada de `/ingles` (trilhas da Gabi, públicas)
+e de Atividades. Cada aula é um `.aula.ts` em `src/data/cursoIngles/` (tipo `AulaIngles`, `src/types/aulaIngles.ts`;
+molde em `COMO-CRIAR-AULA.md` na pasta). **Nunca importe um `.aula.ts` em `src/`**: quem carrega é o servidor, pelo
+registro gerado (`servidor/aulas.gerado.ts`, `scripts/gerar-registro-aulas.mjs`), e entrega com o cookie da senha
+(`SENHA_CURSO_INGLES`, hash gerado por `npm run curso-ingles:senha`). **Por decisão provisória do usuário, sem essa variável
+a área abre sem senha**; criar a variável religa a senha sem mudar código. Import no front vaza a matéria e as respostas no
+bundle. Aula nova é arquivo de dados, não tela nova; textos e interações vindos de um HTML entram sem alterar o
+conteúdo, e os créditos do autor ficam em `creditos`.
+
 ## Convenções de código
 
 - Nomes de variável, função, rota e conteúdo em **português** (`titulo`,

@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/gerar-registro-provas.mjs && vite",
-    "build": "node scripts/gerar-registro-provas.mjs && tsc -b && vite build",
+    "dev": "node scripts/gerar-registro-provas.mjs && node scripts/gerar-registro-aulas.mjs && vite",
+    "build": "node scripts/gerar-registro-provas.mjs && node scripts/gerar-registro-aulas.mjs && tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
     "ilustracoes": "node scripts/ilustracoes/gerar.mjs",
@@ -13,6 +13,7 @@
     "servidor": "node dist-servidor/servidor.mjs",
     "professor:senha": "node scripts/senha-professor.mjs",
     "unidade:senha": "node scripts/senha-unidade.mjs",
+    "curso-ingles:senha": "node scripts/senha-curso-ingles.mjs",
     "prints:contabilidade": "python3 scripts/planilhas/prints_contabilidade.py \"$(node scripts/planilhas/exportar.mjs)\"",
     "planilhas": "python3 scripts/planilhas/gerar.py \"$(node scripts/planilhas/exportar.mjs)\""
   },

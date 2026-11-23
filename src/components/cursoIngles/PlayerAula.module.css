@@ -1,0 +1,380 @@
+.pagina {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  color: var(--ink-soft);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.voltar:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.voltar:focus-visible,
+.abrirMenu:focus-visible,
+.item:focus-visible,
+.fecharMenu:focus-visible,
+.anterior:focus-visible,
+.proximo:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.titulos {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.etiqueta {
+  display: block;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.progresso {
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+}
+
+@media (min-width: 768px) {
+  .progresso {
+    display: flex;
+  }
+}
+
+.progressoTexto {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--brand-deep);
+}
+
+.porcento {
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--brand-deep);
+  color: #fff;
+  font-weight: 800;
+}
+
+.barra {
+  width: 12rem;
+  height: 8px;
+  accent-color: var(--brand-deep);
+}
+
+.contagem {
+  display: none;
+}
+
+.abrirMenu {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--brand-deep);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+  .abrirMenu {
+    display: none;
+  }
+}
+
+.corpo {
+  display: grid;
+  gap: var(--space-5);
+}
+
+@media (min-width: 1024px) {
+  .corpo {
+    grid-template-columns: 16rem minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  border: 0;
+  background: rgba(10, 16, 40, 0.45);
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 41;
+  display: flex;
+  flex-direction: column;
+  width: min(17rem, 85vw);
+  border-right: 1px solid var(--line);
+  background: var(--surface-soft);
+  transform: translateX(-100%);
+  transition: transform 0.2s ease;
+}
+
+.menu[data-aberto="sim"] {
+  transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+  .menu {
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-4));
+    z-index: auto;
+    width: auto;
+    max-height: calc(100vh - var(--nav-height) - var(--space-6));
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    transform: none;
+  }
+}
+
+.menuTopo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.menuTitulo {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand-deep);
+}
+
+.fecharMenu {
+  padding: 6px;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+  .fecharMenu {
+    display: none;
+  }
+}
+
+.menuLista {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-3);
+  overflow-y: auto;
+}
+
+.grupo {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.grupoTitulo {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--ground-sunken);
+}
+
+.item[aria-current="step"] {
+  background: var(--brand-deep);
+  color: #fff;
+  box-shadow: var(--shadow-1);
+}
+
+.itemRotulo {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ponto {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #9be8b4;
+}
+
+.conteudo {
+  min-width: 0;
+}
+
+.passo:not([hidden]) {
+  animation: entrar 0.28s ease-out;
+}
+
+.passo[hidden] {
+  display: none;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sequencia {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.indicador {
+  display: none;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+
+@media (min-width: 640px) {
+  .indicador {
+    display: block;
+  }
+}
+
+.anterior,
+.proximo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-lg);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.anterior {
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.proximo {
+  border: 0;
+  background: var(--brand-deep);
+  color: #fff;
+}
+
+.proximo:hover:not(:disabled) {
+  background: var(--brand-deepest);
+}
+
+.anterior:disabled,
+.proximo:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.creditos {
+  display: grid;
+  gap: var(--space-1);
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  color: var(--ink-faint);
+}
+
+.creditos p {
+  margin: 0;
+}
+
+.creditos p:first-child {
+  color: var(--ink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .passo:not([hidden]) {
+    animation: none;
+  }
+
+  .menu {
+    transition: none;
+  }
+}

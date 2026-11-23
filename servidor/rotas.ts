@@ -12,11 +12,14 @@ import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, s
 import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
 import { caminhoConteudo, comentarioValido, slugValido, validarConteudo } from "./conteudos.js";
 import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
+import { acharAulaIngles, listarAulasIngles } from "./aulasIngles.js";
 import { conferirItem } from "../src/lib/correcaoProva.js";
 import { caminhoFaga, idFagaValido, lerFaga, listarFagas, sanearFaga } from "./fagas.js";
 import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
 import {
+  COOKIE_CURSO_INGLES,
   COOKIE_SESSAO,
+  acessoCursoInglesValido,
   acharUnidade,
   autenticar,
   avisarConfiguracao,
@@ -31,8 +34,13 @@ import {
   todasAsUnidades,
   unidadePadrao,
   cookieApagado,
+  cookieCursoIngles,
+  cookieCursoInglesApagado,
   cookieSessao,
+  criarAcessoCursoIngles,
   criarSessao,
+  cursoInglesConfigurado,
+  senhaDoCursoInglesConfere,
   lerCookie,
   lerSessaoBruta,
   limparTentativas,
@@ -777,6 +785,33 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     };
     await armazenamento.salvarJson(caminhoEnvio(id), atualizado);
     return json(recibo(atualizado));
+  }
+
+  // Curso de Inglês: área com senha própria. As aulas só saem do servidor com o cookie dado por /entrar.
+  if (partes[0] === "curso-ingles") {
+    const semCache = { "Cache-Control": "private, no-store" };
+    if (partes[1] === "entrar" && partes.length === 2 && metodo === "POST") {
+      const ip = ipDe(requisicao);
+      if (!tentativaPermitida(`curso-ingles:${ip}`)) return erro(429, "LIMITE_TENTATIVAS", "Muitas tentativas. Espere alguns minutos.");
+      // Sem SENHA_CURSO_INGLES a área está aberta (decisão provisória): não há o que conferir.
+      if (!cursoInglesConfigurado()) return json({ ok: true }, 200, semCache);
+      const corpo = await lerCorpoJson(requisicao);
+      if (!senhaDoCursoInglesConfere(String(corpo?.senha ?? ""))) return erro(401, "CREDENCIAIS_INVALIDAS", "Senha incorreta. Tente de novo.");
+      limparTentativas(`curso-ingles:${ip}`);
+      return json({ ok: true }, 200, { ...semCache, "Set-Cookie": cookieCursoIngles(criarAcessoCursoIngles(), seguro) });
+    }
+    if (partes[1] === "sair" && partes.length === 2 && metodo === "POST") {
+      return new Response(null, { status: 204, headers: { "Set-Cookie": cookieCursoInglesApagado(seguro) } });
+    }
+    if (partes[1] === "aulas" && metodo === "GET" && partes.length <= 3) {
+      // A senha só vale quando a variável SENHA_CURSO_INGLES existe; sem ela a área abre sem senha (provisório).
+      const comSenha = cursoInglesConfigurado();
+      if (comSenha && !acessoCursoInglesValido(lerCookie(requisicao.headers.get("cookie"), COOKIE_CURSO_INGLES))) return erro(401, "NAO_AUTENTICADO", "Digite a senha do Curso de Inglês.");
+      if (partes.length === 2) return json({ dados: await listarAulasIngles(), comSenha }, 200, semCache);
+      const aula = await acharAulaIngles(decodeURIComponent(partes[2]));
+      return aula ? json({ aula }, 200, semCache) : erro(404, "NAO_ENCONTRADO", "Aula não encontrada.");
+    }
+    return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
   }
 
   // Público: as unidades para escolher na aba Provas (só id e nome; a senha nunca sai do servidor).

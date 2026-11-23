@@ -1,0 +1,58 @@
+.lista {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.afirmacao {
+  flex: 1;
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.numero {
+  margin-right: 6px;
+  color: var(--brand-deep);
+}
+
+.opcoes {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--space-2);
+}
+
+.opcao {
+  cursor: pointer;
+}
+
+.opcao input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.opcao span {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.opcao input:checked + span {
+  border-color: var(--brand-deep);
+  background: var(--brand-deep);
+  color: #fff;
+}
+
+.opcao input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}

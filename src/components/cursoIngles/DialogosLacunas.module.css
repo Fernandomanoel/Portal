@@ -1,0 +1,52 @@
+.grade {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+@media (min-width: 768px) {
+  .grade {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .largo {
+    grid-column: span 2;
+  }
+}
+
+.cartao {
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+}
+
+.titulo {
+  display: inline-block;
+  margin-bottom: var(--space-3);
+  padding: 2px 10px;
+  border-radius: var(--radius);
+  background: var(--brand-deep);
+  color: #fff;
+  font-size: var(--text-xs);
+  font-weight: 800;
+}
+
+.falas {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.fala {
+  margin: 0;
+  line-height: 1.9;
+  color: var(--ink);
+}
+
+.falanteA {
+  color: var(--brand);
+}
+
+.falanteB {
+  color: var(--brand-deep);
+}

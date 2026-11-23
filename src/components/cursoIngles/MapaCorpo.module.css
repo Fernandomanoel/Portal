@@ -1,0 +1,372 @@
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.etiqueta {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.texto {
+  margin: var(--space-1) 0 0;
+  max-width: 56ch;
+  color: var(--ink-soft);
+}
+
+.contador {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+}
+
+.contadorRotulo {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.contadorNumero {
+  font-size: var(--text-base);
+  font-weight: 800;
+  color: var(--brand-deep);
+}
+
+.barra {
+  width: 5rem;
+  height: 10px;
+  accent-color: var(--success);
+}
+
+.colunas {
+  display: grid;
+  gap: var(--space-5);
+}
+
+@media (min-width: 900px) {
+  .colunas {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+
+.figura {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  user-select: none;
+}
+
+.fundo {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.silhueta {
+  fill: var(--ground-sunken);
+  stroke: var(--ink-faint);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.regiao {
+  fill: transparent;
+  stroke: transparent;
+  cursor: pointer;
+  transition: fill 0.25s ease, stroke 0.25s ease;
+}
+
+.regiao:hover,
+.regiao[data-ativa="sim"] {
+  fill: color-mix(in srgb, var(--danger) 32%, transparent);
+  stroke: var(--danger);
+  stroke-width: 2;
+  animation: brilho 1.8s infinite ease-in-out;
+}
+
+.ponto {
+  cursor: pointer;
+}
+
+.ponto:focus-visible {
+  outline: none;
+}
+
+.ponto:focus-visible .nucleo {
+  stroke: var(--focus);
+  stroke-width: 3;
+}
+
+.nucleo {
+  fill: var(--brand-deepest);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.ponto[data-ativo="sim"] .nucleo {
+  fill: var(--danger);
+  stroke-width: 2.5;
+}
+
+.pulso {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: pulso 2s infinite ease-in-out;
+}
+
+.pilulas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: var(--space-4);
+}
+
+.pilula {
+  padding: 6px var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pilula:hover {
+  border-color: var(--brand);
+}
+
+.pilula[aria-pressed="true"] {
+  border-color: var(--brand-deep);
+  background: var(--brand-deep);
+  color: #fff;
+}
+
+.pilula:focus-visible,
+.ouvir:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.detalhe {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+
+.selos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.selo {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--brand-tint);
+  color: var(--brand-deep);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.explorado {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--success-tint);
+  color: var(--success);
+  font-size: var(--text-xs);
+  font-weight: 800;
+}
+
+.termo {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.regiaoNome {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.caixa {
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-soft);
+}
+
+.descricao {
+  margin: 0 0 var(--space-3);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.exemplo {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+
+.exemploRotulo {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--brand-deep);
+}
+
+.exemploTexto {
+  margin: 0;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.pronuncia {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.audio {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .audio {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.ouvir {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--brand-deep);
+  color: #fff;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ouvir:hover:not(:disabled) {
+  background: var(--brand-deepest);
+}
+
+.ouvir:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lento {
+  border: 1px solid var(--line-strong);
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.lento:hover:not(:disabled) {
+  background: var(--brand-tint);
+}
+
+.ouvir[data-falando="sim"] {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+@keyframes pulso {
+  0%,
+  100% {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.35;
+  }
+}
+
+@keyframes brilho {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulso,
+  .regiao:hover,
+  .regiao[data-ativa="sim"] {
+    animation: none;
+  }
+}

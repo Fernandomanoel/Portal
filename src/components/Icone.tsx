@@ -70,10 +70,14 @@ export type NomeIcone =
   | "grafico-pizza"
   | "grafico-linha"
   | "pincel"
-  | "mais-opcoes";
+  | "mais-opcoes"
+  | "menu"
+  | "parar";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
+  menu: <path d="M4 7h16M4 12h16M4 17h16" />,
+  parar: <rect x="6.5" y="6.5" width="11" height="11" rx="1.5" />,
   busca: (
     <>
       <circle cx="11" cy="11" r="6.5" />

@@ -17,6 +17,8 @@ import { IngresAtividadePage } from "@/pages/IngresAtividadePage";
 import { IngresAtividadesPage } from "@/pages/IngresAtividadesPage";
 import { IngresHubPage } from "@/pages/IngresHubPage";
 import { IngresProvasPage } from "@/pages/IngresProvasPage";
+import { AulaInglesPage } from "@/pages/cursoIngles/AulaInglesPage";
+import { CursoInglesPage } from "@/pages/cursoIngles/CursoInglesPage";
 import { DigitacaoHubPage } from "@/pages/digitacao/DigitacaoHubPage";
 import { RankingGeralPage } from "@/pages/digitacao/RankingGeralPage";
 import { DigitacaoConfigPage } from "@/pages/digitacao/DigitacaoConfigPage";
@@ -87,6 +89,9 @@ const roteador = criarRoteador([
         ],
       },
       { path: "ingles/atividades/:slug", element: <IngresAtividadePage /> },
+
+      { path: "curso-ingles", element: <CursoInglesPage /> },
+      { path: "curso-ingles/:aula", element: <AulaInglesPage /> },
 
       { path: "digitacao", element: <DigitacaoHubPage /> },
       { path: "digitacao/ranking", element: <RankingGeralPage /> },

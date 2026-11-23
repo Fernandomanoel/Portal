@@ -1,0 +1,49 @@
+.lacuna {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0 var(--space-1);
+}
+
+.numero {
+  font-size: var(--text-xs);
+  color: var(--brand);
+}
+
+.campo {
+  width: 7rem;
+  padding: 2px var(--space-2);
+  border: 0;
+  border-bottom: 2px solid var(--ink-faint);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: var(--surface-soft);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-align: center;
+}
+
+.campo[data-largura="p"] {
+  width: 6rem;
+}
+
+.campo[data-largura="g"] {
+  width: 8rem;
+}
+
+.campo:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+  border-bottom-color: var(--brand);
+}
+
+.campo[data-estado="ok"] {
+  border-bottom-color: var(--success);
+  background: var(--success-tint);
+}
+
+.campo[data-estado="erro"] {
+  border-bottom-color: var(--danger);
+  background: var(--danger-tint);
+}
