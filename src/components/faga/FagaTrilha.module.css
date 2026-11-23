@@ -79,11 +79,12 @@ button.bolinha:focus-visible {
   bottom: 20px;
   transform-origin: left bottom;
   transform: rotate(-38deg);
-  white-space: nowrap;
+  width: 70px;
+  white-space: normal;
   color: var(--f-texto);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  line-height: 1;
+  line-height: 1.05;
 }
 
 .vazia {

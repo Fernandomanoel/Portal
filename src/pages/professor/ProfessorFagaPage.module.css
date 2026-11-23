@@ -215,6 +215,7 @@
   font-weight: 600;
 }
 
+.dados select,
 .dados input,
 .faixaCampos input,
 .nova input {
@@ -227,6 +228,7 @@
   font-weight: 400;
 }
 
+.dados select:focus,
 .dados input:focus,
 .faixaCampos input:focus,
 .nova input:focus {

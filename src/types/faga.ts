@@ -50,14 +50,29 @@ export interface Faga {
   config: ConfigModulosIngles;
   /** Imprimir também a folha de autoavaliação. */
   autoavaliacao: boolean;
+  /** Assuntos do livro para o aluno marcar na autoavaliação («Check what you have learned thoroughly»). */
+  topicos: string[];
   criadoEm: string;
   alteradoEm: string;
   criadoPor: string;
 }
 
-export const LIMITES_FAGA = { texto: 120, faixas: 80, atividades: 60, blocosMax: 60, aulasPorBlocoMax: 40, mesesMax: 60 } as const;
+export const LIMITES_FAGA = { topicos: 8, texto: 120, faixas: 80, atividades: 60, blocosMax: 60, aulasPorBlocoMax: 40, mesesMax: 60 } as const;
 
 /** Faixa/atividade concluída: todas as atividades marcadas (faixa sem atividade conta pela data de término). */
 export function faixaConcluida(faixa: FaixaFaga): boolean {
   return faixa.atividades.length ? faixa.atividades.every((a) => a.feita) : Boolean(faixa.fim);
 }
+
+/** Modelo de um livro, copiado das FAGAs em papel: aulas e atividades na ordem original. */
+export interface ModeloFagaLivro {
+  /** «FB25». */
+  livro: string;
+  /** Coleção do livro («Book 8»). */
+  colecao: string;
+  faixas: { titulo: string; atividades: string[] }[];
+  topicos: string[];
+}
+
+/** Bloco da aula: «Unit 73» para as aulas da unidade; Flashback e Musical Meeting formam o próprio bloco. */
+export const blocoDaAula = (titulo: string) => titulo.split(" - ")[0].trim();

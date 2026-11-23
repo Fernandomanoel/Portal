@@ -7,8 +7,9 @@ import { FagaImpressao } from "@/components/faga/FagaImpressao";
 import { FagaTrilha } from "@/components/faga/FagaTrilha";
 import { apagarFaga, criarFaga, dadosDaFaga, listarFagas, salvarFaga, type DadosFagaEnvio } from "@/lib/apiFagas";
 import { ErroApi } from "@/lib/apiProvas";
+import { MODELOS_FAGA } from "@/data/modelosFaga";
 import { normalizar } from "@/lib/busca";
-import { CONFIG_MODULOS_INGLES, faixaConcluida, LIMITES_FAGA, type Faga, type FaixaFaga } from "@/types/faga";
+import { blocoDaAula, CONFIG_MODULOS_INGLES, faixaConcluida, LIMITES_FAGA, type Faga, type FaixaFaga } from "@/types/faga";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorFagaPage.module.css";
 
@@ -23,6 +24,7 @@ const vazia = (): DadosFagaEnvio => ({
   faixas: [],
   config: { ...CONFIG_MODULOS_INGLES },
   autoavaliacao: true,
+  topicos: [],
 });
 
 const resumo = (f: Faga) => {
@@ -163,6 +165,21 @@ function Editor({ aberta, semUnidade, tratar, aoVoltar }: { aberta: Aberta; semU
     mudar({ faixas: base ? [...dados.faixas.slice(0, dados.faixas.indexOf(base) + 1), nova, ...dados.faixas.slice(dados.faixas.indexOf(base) + 1)] : [...dados.faixas, nova] });
   }
 
+  function aplicarModelo(livro: string) {
+    const modelo = MODELOS_FAGA.find((m) => m.livro === livro);
+    if (!modelo) return;
+    const faixas: FaixaFaga[] = modelo.faixas.map((f) => ({
+      id: novoId(),
+      titulo: f.titulo,
+      bloco: blocoDaAula(f.titulo),
+      inicio: "",
+      fim: "",
+      professor: "",
+      atividades: f.atividades.map((rotulo) => ({ id: novoId(), rotulo, feita: false })),
+    }));
+    mudar({ livro: modelo.livro, faixas, topicos: modelo.topicos, config: { ...dados.config, blocosDoLivro: new Set(faixas.map((f) => f.bloco)).size } });
+  }
+
   function mover(indice: number, delta: number) {
     const destino = indice + delta;
     if (destino < 0 || destino >= dados.faixas.length) return;
@@ -275,6 +292,23 @@ function Editor({ aberta, semUnidade, tratar, aoVoltar }: { aberta: Aberta; semU
           Carga horária
           <input value={dados.horas} onChange={(e) => mudar({ horas: e.target.value })} maxLength={40} placeholder="Ex.: 40 h" />
         </label>
+        {dados.faixas.length === 0 && (
+          <label className={estilos.largo}>
+            Começar de um livro (traz as aulas e atividades da FAGA em papel)
+            <select value="" onChange={(e) => aplicarModelo(e.target.value)}>
+              <option value="">Em branco: montar à mão</option>
+              {[...new Set(MODELOS_FAGA.map((m) => m.colecao))].map((colecao) => (
+                <optgroup key={colecao} label={colecao}>
+                  {MODELOS_FAGA.filter((m) => m.colecao === colecao).map((m) => (
+                    <option key={m.livro} value={m.livro}>
+                      {m.livro}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+        )}
         <label className={estilos.marcar}>
           <input type="checkbox" checked={dados.autoavaliacao} onChange={(e) => mudar({ autoavaliacao: e.target.checked })} />
           Imprimir também a folha de autoavaliação

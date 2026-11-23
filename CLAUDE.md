@@ -64,8 +64,9 @@ material de apoio do aluno vai em `Curso.materiais`.
 seguem a área (`permissoesDe` em `servidor/rotas.ts`). Prova de Inglês = arquivo em `provasInterativas/Ingles/`
 (o servidor deriva a área do caminho) e a listagem fica em `PROVAS_INGLES`, com a mesma senha de unidade e a mesma
 trava das provas de ADM. A cor da área de Inglês (verde-água) vem de `body[data-area="ingles"]` em `tokens.css` via
-`useAreaVisual`: não pinte Inglês com cor fixa. A FAGA (`src/types/faga.ts`) é só modelo de preenchimento: nenhum
-conteúdo de livro vem pré-cadastrado; arte da impressão é própria do portal.
+`useAreaVisual`: não pinte Inglês com cor fixa. A FAGA (`src/types/faga.ts`) é preenchida à mão pelo professor; os modelos de aula e atividades por livro (FB01 a FB32)
+são `src/data/modelosFaga.ts`, transcritos das FAGAs em PDF da pasta FAGAS do Drive do usuário (nomes das bolinhas como
+no original, só com erros de digitação corrigidos). A arte da impressão é própria do portal.
 
 Curso de Inglês (`/curso-ingles`) é uma área **com senha própria**, separada de `/ingles` (trilhas da Gabi, públicas)
 e de Atividades. Cada aula é um `.aula.ts` em `src/data/cursoIngles/` (tipo `AulaIngles`, `src/types/aulaIngles.ts`;

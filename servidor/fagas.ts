@@ -21,7 +21,7 @@ const inteiro = (v: unknown, min: number, max: number, padrao: number) => {
   return Number.isFinite(n) ? Math.min(max, Math.max(min, Math.round(n))) : padrao;
 };
 
-export type DadosFaga = Pick<Faga, "aluno" | "livro" | "etapaInicio" | "etapaFim" | "horas" | "faixas" | "config" | "autoavaliacao">;
+export type DadosFaga = Pick<Faga, "aluno" | "livro" | "etapaInicio" | "etapaFim" | "horas" | "faixas" | "config" | "autoavaliacao" | "topicos">;
 
 /** Confere o que veio da tela e devolve só campos conhecidos, ou a mensagem do que está errado. */
 export function sanearFaga(corpo: Record<string, unknown>): DadosFaga | string {
@@ -66,5 +66,6 @@ export function sanearFaga(corpo: Record<string, unknown>): DadosFaga | string {
       mesesPorLivro: inteiro(c.mesesPorLivro, 1, LIMITES_FAGA.mesesMax, CONFIG_MODULOS_INGLES.mesesPorLivro),
     },
     autoavaliacao: corpo.autoavaliacao === true,
+    topicos: (Array.isArray(corpo.topicos) ? corpo.topicos : []).slice(0, LIMITES_FAGA.topicos).map((t) => texto(t)).filter(Boolean),
   };
 }

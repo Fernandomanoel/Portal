@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 
 import type { DadosFagaEnvio } from "@/lib/apiFagas";
+import { blocoDaAula } from "@/types/faga";
 import { FagaTrilha } from "./FagaTrilha";
 import estilos from "./FagaImpressao.module.css";
 
@@ -79,7 +80,7 @@ export function FagaImpressao({ faga }: { faga: DadosFagaEnvio }) {
             <div className={estilos.faixaCab}>
               <strong className={estilos.faixaTitulo}>
                 {faixa.titulo || "Class"}
-                {faixa.bloco && <small>{faixa.bloco}</small>}
+                {faixa.bloco && faixa.bloco !== blocoDaAula(faixa.titulo) && <small>{faixa.bloco}</small>}
               </strong>
               <Faixa rotulo="Beginning:" valor={dataBr(faixa.inicio) || "      /      /"} />
               <Faixa rotulo="End:" valor={dataBr(faixa.fim) || "      /      /"} />
@@ -102,7 +103,7 @@ export function FagaImpressao({ faga }: { faga: DadosFagaEnvio }) {
             </div>
             <div className={`${estilos.faixaCorpo} ${estilos.autoCorpo}`}>
               <Opcoes titulo="From the contents presented in the previous units, I have learned:" opcoes={["All of them", "More than 75%", "Half of them", "Less than half"]} />
-              <Opcoes titulo="Check what you have learned thoroughly" opcoes={["", "", ""]} />
+              <Opcoes titulo="Check what you have learned thoroughly" opcoes={faga.topicos.length ? faga.topicos : ["", "", ""]} />
               <Opcoes titulo="My evaluation about my learning progress:" opcoes={NIVEL} />
               <Opcoes titulo="My evaluation about my effort:" opcoes={NIVEL} />
               <div className={estilos.pergunta}>

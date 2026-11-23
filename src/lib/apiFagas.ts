@@ -2,7 +2,7 @@ import type { Faga } from "@/types/faga";
 import { chamar, comJson } from "./apiProvas";
 import { comUnidade } from "./unidade";
 
-export type DadosFagaEnvio = Pick<Faga, "aluno" | "livro" | "etapaInicio" | "etapaFim" | "horas" | "faixas" | "config" | "autoavaliacao">;
+export type DadosFagaEnvio = Pick<Faga, "aluno" | "livro" | "etapaInicio" | "etapaFim" | "horas" | "faixas" | "config" | "autoavaliacao" | "topicos">;
 
 const caminho = (id: string) => `fagas/${encodeURIComponent(id)}`;
 
@@ -20,4 +20,5 @@ export const dadosDaFaga = (f: Faga): DadosFagaEnvio => ({
   faixas: f.faixas,
   config: f.config,
   autoavaliacao: f.autoavaliacao,
+  topicos: f.topicos ?? [],
 });
