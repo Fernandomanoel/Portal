@@ -8,7 +8,7 @@ import type { HistoricoConteudo, RevisaoConteudo } from "../src/types/conteudoPr
 import { LIMITES_CONTEUDO } from "../src/types/conteudoProfessor.js";
 import type { Compartilhamento, ListaAcompanhamento } from "../src/types/lista.js";
 import { AREAS_PADRAO, IDS_AREA, PERMISSOES_DE_INGLES, PERMISSOES_PADRAO, normalizarAreas, normalizarPermissoes, type AjusteFixo, type AreaId, type PermissaoId, type UsuarioFixo } from "../src/types/acesso.js";
-import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, semSenha, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
+import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, semSenha, senhaOculta, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
 import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
 import { caminhoConteudo, comentarioValido, slugValido, validarConteudo } from "./conteudos.js";
 import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
@@ -29,7 +29,12 @@ import {
   senhaDoCadastroConfere,
   autenticarUnidade,
   criarFicha,
+  cifrarSenha,
+  decifrarSenha,
   lerFicha,
+  lerFichaComArea,
+  senhaDasProvasInglesConfere,
+  provasInglesComSenhaUnica,
   lembretesDasUnidades,
   todasAsUnidades,
   unidadePadrao,
@@ -337,8 +342,9 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
   if (!chave) return erro(422, "VALIDATION_ERROR", "Envio sem chave.");
 
   // A senha da aba Provas identificou a unidade; sem a ficha não há para onde enviar a prova.
-  const unidade = lerFicha(dados.ficha);
-  if (!unidade) return erro(401, "UNIDADE_INVALIDA", "A sessão da unidade terminou. Volte à área de Provas e digite a senha da unidade de novo.");
+  const comArea = lerFichaComArea(dados.ficha);
+  if (!comArea) return erro(401, "UNIDADE_INVALIDA", "A sessão da unidade terminou. Volte à área de Provas e digite a senha da unidade de novo.");
+  const unidade = comArea.unidade;
 
   const agora = new Date();
   const id = `${dia(agora)}_${chave}`;
@@ -351,6 +357,9 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
   const provaId = typeof dados.provaId === "string" ? dados.provaId : "";
   const prova = await acharProva(provaId);
   if (!prova) return erro(404, "NAO_ENCONTRADO", "Essa prova não existe mais no portal.");
+
+  // A senha de Inglês só libera prova de Inglês, e a de Informática só a de Informática.
+  if (areaDaProva(provaId) !== comArea.area) return erro(401, "UNIDADE_INVALIDA", "Esta senha não libera provas dessa área. Volte à área de Provas e entre pela aba certa.");
 
   const nomeAluno = normalizarNome(dados.nomeAluno);
   if (!nomeAluno) return erro(422, "VALIDATION_ERROR", "Informe o nome completo do aluno (de 3 a 80 letras).");
@@ -522,7 +531,7 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
     if (typeof acesso === "string") return erro(422, "VALIDATION_ERROR", acesso);
     const negado = dentroDoMeuAlcance(acesso);
     if (negado) return erro(403, "SEM_PERMISSAO", negado);
-    const novo: UsuarioGuardado = { usuario, nome, senha: gerarHashSenha(senha), ...acesso, ativo: true, criadoEm: new Date().toISOString(), criadoPor: quem.nome };
+    const novo: UsuarioGuardado = { usuario, nome, senha: gerarHashSenha(senha), senhaCifrada: cifrarSenha(senha), ...acesso, ativo: true, criadoEm: new Date().toISOString(), criadoPor: quem.nome };
     await armazenamento.salvarJson(caminhoUsuario(usuario), novo);
     return json(semSenha(novo), 201);
   }
@@ -554,6 +563,20 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
     return json(ajuste);
   }
 
+  // Ver a senha de um usuário criado pela tela. Só quem gerencia usuários; a do «manoel» ninguém vê.
+  if (partes.length === 3 && partes[2] === "senha" && metodo === "GET") {
+    const nomeAlvo = (partes[1] ?? "").toLowerCase();
+    if (senhaOculta(nomeAlvo)) return erro(403, "SEM_PERMISSAO", "A senha desse usuário não pode ser vista.");
+    const guardado = usuarioValido(nomeAlvo) ? await lerUsuario(armazenamento, nomeAlvo) : null;
+    if (!guardado) return erro(404, "NAO_ENCONTRADO", "Usuário não encontrado.");
+    if (nomeAlvo !== quem.usuario.toLowerCase() && dentroDoMeuAlcance({ unidades: guardado.unidades, permissoes: guardado.permissoes, areas: normalizarAreas(guardado.areas) })) {
+      return erro(403, "SEM_PERMISSAO", "Este usuário tem mais acesso do que o seu: só quem tem o mesmo alcance, ou mais, pode ver a senha dele.");
+    }
+    const senha = guardado.senhaCifrada ? decifrarSenha(guardado.senhaCifrada) : null;
+    if (!senha) return erro(404, "NAO_ENCONTRADO", "A senha deste usuário não está guardada para visualização. Defina uma nova senha em Editar e ela passa a aparecer aqui.");
+    return json({ senha }, 200, { "Cache-Control": "no-store" });
+  }
+
   const alvo = (partes[1] ?? "").toLowerCase();
   if (partes.length !== 2 || !usuarioValido(alvo)) return erro(404, "NAO_ENCONTRADO", "Usuário não encontrado.");
   const guardado = await lerUsuario(armazenamento, alvo);
@@ -582,6 +605,7 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
       const senha = validarSenhaNova(corpo.senha);
       if (!senha) return erro(422, "VALIDATION_ERROR", "A senha precisa ter de 8 a 100 caracteres.");
       atualizado.senha = gerarHashSenha(senha);
+      atualizado.senhaCifrada = cifrarSenha(senha);
     }
     if (corpo.unidades !== undefined || corpo.permissoes !== undefined || corpo.areas !== undefined) {
       const acesso = validarAcesso({ unidades: corpo.unidades ?? guardado.unidades, permissoes: corpo.permissoes ?? guardado.permissoes, areas: corpo.areas ?? guardado.areas }, unidades);
@@ -835,6 +859,21 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     if (!unidade) return erro(401, "CREDENCIAIS_INVALIDAS", "Senha incorreta. Tente de novo.");
     limparTentativas(`unidade:${ip}`);
     return json({ unidade, ...criarFicha(unidade) });
+  }
+
+  // Público: provas de Inglês. Uma senha única (SENHA_PROVAS_INGLES) para todas as unidades; a unidade escolhida
+  // decide para onde a prova vai. Sem a variável, vale a senha de cada unidade.
+  if (partes[0] === "unidades" && partes[1] === "entrar-ingles" && metodo === "POST") {
+    const ip = ipDe(requisicao);
+    if (!tentativaPermitida(`unidade:${ip}`)) return erro(429, "LIMITE_TENTATIVAS", "Muitas tentativas. Espere alguns minutos.");
+    if (!todasAsUnidades().length) return erro(503, "ERRO_INTERNO", "Nenhuma unidade foi configurada no servidor (variável UNIDADES).");
+    const corpo = await lerCorpoJson(requisicao);
+    const escolhida = acharUnidade(String(corpo?.unidade ?? ""));
+    const senha = String(corpo?.senha ?? "");
+    const unidade = provasInglesComSenhaUnica() ? (senhaDasProvasInglesConfere(senha) ? escolhida : null) : autenticarUnidade(String(corpo?.unidade ?? ""), senha);
+    if (!unidade) return erro(401, "CREDENCIAIS_INVALIDAS", "Senha incorreta. Tente de novo.");
+    limparTentativas(`unidade:${ip}`);
+    return json({ unidade, ...criarFicha(unidade, "ingles") });
   }
 
   // Público: o professor libera, na máquina do aluno, a prova que travou.

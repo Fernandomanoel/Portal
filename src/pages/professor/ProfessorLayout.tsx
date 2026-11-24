@@ -2,7 +2,6 @@ import { Fragment, useCallback, useEffect, useState, type FormEvent } from "reac
 import { Navigate, NavLink, Outlet, useMatch, useNavigate, useOutletContext } from "react-router-dom";
 
 import { Icone } from "@/components/Icone";
-import { useAreaVisual } from "@/hooks/useAreaVisual";
 import { ErroApi, entrar, sair, sessaoAtual } from "@/lib/apiProvas";
 import { guardarAreaEscolhida, lerAreaEscolhida } from "@/lib/area";
 import { AREAS, type AreaId } from "@/types/acesso";
@@ -55,7 +54,6 @@ export function ProfessorLayout() {
   const [areaEscolhida, definirAreaEscolhida] = useState<AreaId | null>(() => lerAreaEscolhida());
   const areasDoUsuario: AreaId[] = estado.fase === "dentro" && estado.professor.areas?.length ? estado.professor.areas : ["informatica"];
   const area: AreaId = areaEscolhida && areasDoUsuario.includes(areaEscolhida) ? areaEscolhida : areasDoUsuario[0];
-  useAreaVisual(estado.fase === "dentro" ? area : null);
 
   useEffect(() => {
     let ativo = true;

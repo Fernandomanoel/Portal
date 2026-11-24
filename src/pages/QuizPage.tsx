@@ -17,7 +17,7 @@ type Estado =
 
 export function QuizPage() {
   const { prova: caminho, categoria } = useParams();
-  const volta = categoria === "ingles" ? rotas.inglesProvas() : rotas.provas();
+  const volta = rotas.provas();
   const provaId = (caminho ?? "").replace(/^\.?\//, "").replace(/\.prova\.ts$/, "");
   const [estado, definirEstado] = useState<Estado>({ fase: "carregando" });
 
@@ -42,7 +42,10 @@ export function QuizPage() {
   }, [provaId]);
 
   // Sem a senha da unidade não há para onde enviar a prova: volta para a área de Provas.
-  if (!lerFicha()) return <Navigate to={volta} replace />;
+  const ficha = lerFicha();
+  // A ficha de uma área não abre prova da outra: volta para a aba de provas.
+  const areaDaRota = categoria === "ingles" ? "ingles" : "informatica";
+  if (!ficha || (ficha.area ?? "informatica") !== areaDaRota) return <Navigate to={rotas.provas()} replace />;
 
   if (estado.fase === "carregando") {
     return <p aria-live="polite">Carregando a prova…</p>;

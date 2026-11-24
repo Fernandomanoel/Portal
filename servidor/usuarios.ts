@@ -10,7 +10,13 @@ import type { Armazenamento } from "./armazenamento.js";
  */
 export interface UsuarioGuardado extends UsuarioCadastrado {
   senha: string;
+  /** Senha cifrada para os administradores verem. Usuários criados antes não têm: só aparece depois de trocar a senha. */
+  senhaCifrada?: string;
 }
+
+/** Usuário cuja senha nenhum administrador vê, nem a do próprio cadastro. */
+export const SEM_VER_SENHA = ["manoel"];
+export const senhaOculta = (usuario: string) => SEM_VER_SENHA.includes(usuario.toLowerCase());
 
 export const caminhoUsuario = (usuario: string) => `usuarios/${usuario}.json`;
 
@@ -28,7 +34,7 @@ export const caminhoAjuste = (usuario: string) => `ajustes/${usuario.toLowerCase
 export const lerAjuste = (armazenamento: Armazenamento, usuario: string) =>
   usuarioValido(usuario.toLowerCase()) ? armazenamento.lerJson<AjusteFixo>(caminhoAjuste(usuario)) : Promise.resolve(null);
 
-export const semSenha = ({ senha: _senha, ...resto }: UsuarioGuardado): UsuarioCadastrado => resto;
+export const semSenha = ({ senha: _senha, senhaCifrada, ...resto }: UsuarioGuardado): UsuarioCadastrado => ({ ...resto, senhaVisivel: Boolean(senhaCifrada) && !senhaOculta(resto.usuario) });
 
 const texto = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 

@@ -13,8 +13,8 @@ export function Layout() {
   const escondido = travada || imersiva;
   const { pathname } = useLocation();
   const doIngles = /^\/(ingles|curso-ingles|provas\/quiz\/ingles)(\/|$)/.test(pathname);
-  // A área do professor escolhe a própria cor (ProfessorLayout).
-  useAreaVisual(doIngles ? "ingles" : null, pathname.startsWith("/professor"));
+  // O verde-água é só das telas do aluno: a área do professor fica no azul padrão.
+  useAreaVisual(doIngles ? "ingles" : null);
 
   return (
     <div className={estilos.pagina}>

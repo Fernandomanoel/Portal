@@ -1,4 +1,4 @@
-import { faixaConcluida, type Faga } from "@/types/faga";
+import { faixaConcluida, type ConfigModulosIngles, type Faga } from "@/types/faga";
 
 /**
  * Módulos de Inglês: compara o que a FAGA mostra com o que o livro pede.
@@ -61,10 +61,33 @@ export function blocosDaFaga(faga: Pick<Faga, "faixas">) {
 }
 
 export function calcularModulosIngles(faga: Faga, hoje: Date = new Date()): ResultadoModulosIngles {
-  const { blocosDoLivro, aulasPorBloco, mesesPorLivro } = faga.config;
-  const totalAulas = blocosDoLivro * aulasPorBloco;
   const inicio = faga.etapaInicio || faga.faixas.map((f) => f.inicio).filter(Boolean).sort()[0] || "";
-  const montados = blocosDaFaga(faga);
+  return calcularComBlocos(inicio, blocosDaFaga(faga), faga.config, hoje);
+}
+
+export interface EntradaCalculadoraIngles {
+  /** AAAA-MM-DD */
+  inicio: string;
+  /** Bloco em que o aluno está (1 a N) e quantas aulas já teve nele; os blocos anteriores contam como completos. */
+  blocoAtual: number;
+  aulasNoBloco: number;
+  config: ConfigModulosIngles;
+}
+
+/** A mesma conta, sem FAGA: o professor digita onde o aluno está. */
+export function calcularCalculadoraIngles(e: EntradaCalculadoraIngles, hoje: Date = new Date()): ResultadoModulosIngles {
+  const apb = e.config.aulasPorBloco;
+  const blocoAtual = Math.max(1, Math.round(e.blocoAtual) || 1);
+  const montados = Array.from({ length: blocoAtual }, (_, i) => ({
+    nome: `Bloco ${i + 1}`,
+    dadas: i < blocoAtual - 1 ? apb : Math.min(apb, Math.max(0, Math.round(e.aulasNoBloco) || 0)),
+  }));
+  return calcularComBlocos(e.inicio, montados, e.config, hoje);
+}
+
+function calcularComBlocos(inicio: string, montados: { nome: string; dadas: number }[], config: ConfigModulosIngles, hoje: Date): ResultadoModulosIngles {
+  const { blocosDoLivro, aulasPorBloco, mesesPorLivro } = config;
+  const totalAulas = blocosDoLivro * aulasPorBloco;
   const aulasDadas = montados.reduce((soma, b) => soma + b.dadas, 0);
   const ritmoPrevistoPorSemana = totalAulas / (mesesPorLivro * SEMANAS_POR_MES);
 

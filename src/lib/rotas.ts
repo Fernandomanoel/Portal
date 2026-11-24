@@ -10,7 +10,6 @@ export const rotas = {
   ingles: () => "/ingles",
   inglesAtividades: () => "/ingles/atividades",
   inglesAtividade: (slug: string) => `/ingles/atividades/${slug}`,
-  inglesProvas: () => "/ingles/provas",
   cursoIngles: () => "/curso-ingles",
   cursoInglesAula: (id: string) => `/curso-ingles/${encodeURIComponent(id)}`,
   digitacao: () => "/digitacao",

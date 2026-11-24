@@ -61,6 +61,8 @@ export interface UsuarioCadastrado {
   permissoes: PermissaoId[];
   areas: AreaId[];
   ativo: boolean;
+  /** A senha foi guardada cifrada e este usuário não está entre os que ninguém vê: dá para mostrar. */
+  senhaVisivel?: boolean;
   criadoEm: string;
   criadoPor: string;
   alteradoEm?: string;
@@ -99,4 +101,12 @@ export interface AjusteFixo {
 }
 
 export const LIMITES_USUARIO = { usuario: 30, nome: 80, senhaMinima: 8, senhaMaxima: 100 } as const;
+
+/** Senha forte: 12+ caracteres com maiúscula, minúscula, número e símbolo. A tela avisa, mas aceita qualquer senha de 8 a 100. */
+export function forcaDaSenha(senha: string): "fraca" | "media" | "forte" {
+  const tipos = [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9]/].filter((r) => r.test(senha)).length;
+  if (senha.length >= 12 && tipos >= 4) return "forte";
+  if (senha.length >= 8 && tipos >= 3) return "media";
+  return "fraca";
+}
 export const usuarioValido = (usuario: string) => /^[a-z0-9][a-z0-9._-]{2,29}$/.test(usuario);

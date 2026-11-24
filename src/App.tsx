@@ -16,7 +16,6 @@ import { HomePage } from "@/pages/HomePage";
 import { IngresAtividadePage } from "@/pages/IngresAtividadePage";
 import { IngresAtividadesPage } from "@/pages/IngresAtividadesPage";
 import { IngresHubPage } from "@/pages/IngresHubPage";
-import { IngresProvasPage } from "@/pages/IngresProvasPage";
 import { AulaInglesPage } from "@/pages/cursoIngles/AulaInglesPage";
 import { CursoInglesPage } from "@/pages/cursoIngles/CursoInglesPage";
 import { DigitacaoHubPage } from "@/pages/digitacao/DigitacaoHubPage";
@@ -85,7 +84,6 @@ const roteador = criarRoteador([
         children: [
           { index: true, element: <IngresAtividadesPage /> },
           { path: "atividades", element: <IngresAtividadesPage /> },
-          { path: "provas", element: <IngresProvasPage /> },
         ],
       },
       { path: "ingles/atividades/:slug", element: <IngresAtividadePage /> },

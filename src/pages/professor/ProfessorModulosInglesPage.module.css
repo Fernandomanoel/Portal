@@ -204,3 +204,52 @@
   background: var(--surface-soft);
   color: var(--ink-soft);
 }
+
+.calculadora {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.calculadora .subtitulo {
+  margin-top: 0;
+}
+
+.camposCalc {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-3) 0 var(--space-4);
+}
+
+.camposCalc label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.camposCalc input,
+.camposCalc select {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 400;
+}
+
+.camposCalc input:focus,
+.camposCalc select:focus {
+  outline: 2px solid var(--focus);
+  border-color: var(--brand);
+}
+
+.preencher {
+  grid-column: 1 / -1;
+}

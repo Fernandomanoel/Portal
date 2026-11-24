@@ -10,6 +10,8 @@ export interface Unidade {
 export interface FichaUnidade {
   unidade: Unidade;
   ficha: string;
+  /** Área que a senha liberou: a ficha de Inglês só abre provas de Inglês. Fichas antigas não trazem: Informática. */
+  area?: AreaId;
   /** ISO. Depois disso a senha é pedida de novo. */
   expiraEm: string;
 }

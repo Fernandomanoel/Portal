@@ -25,3 +25,4 @@ const caminhoFixo = (usuario: string) => `usuarios/fixos/${encodeURIComponent(us
 export const ajustarFixo = (usuario: string, mudanca: { unidades?: string[]; permissoes?: PermissaoId[]; areas?: AreaId[]; ativo?: boolean }) => chamar<AjusteFixo>(caminhoFixo(usuario), comJson("PATCH", mudanca));
 export const voltarFixoAoPadrao = (usuario: string) => chamar<void>(caminhoFixo(usuario), comJson("PATCH", { padrao: true }));
 export const apagarUsuario = (usuario: string) => chamar<void>(caminho(usuario), { method: "DELETE" });
+export const verSenhaUsuario = (usuario: string) => chamar<{ senha: string }>(`${caminho(usuario)}/senha`);

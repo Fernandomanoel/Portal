@@ -8,7 +8,7 @@ import estilos from "./ProvasLock.module.css";
 const TEXTO_PROVAS = "Escolha a sua unidade e digite a senha dela. As provas só abrem com a senha, e as respostas dos alunos vão para a unidade escolhida.";
 
 /** Pede a unidade e a senha dela. `titulo` e `texto` deixam outras áreas do instrutor reaproveitarem a mesma tela. */
-export function ProvasLock({ aoEntrar, titulo = "Área de provas", texto = TEXTO_PROVAS }: { aoEntrar: (ficha: FichaUnidade) => void; titulo?: string; texto?: string }) {
+export function ProvasLock({ aoEntrar, titulo = "Área de provas", texto = TEXTO_PROVAS, conferir = entrarNaUnidade }: { aoEntrar: (ficha: FichaUnidade) => void; titulo?: string; texto?: string; conferir?: (unidade: string, senha: string) => Promise<FichaUnidade> }) {
   const [unidades, definirUnidades] = useState<Unidade[] | null>(null);
   const [falhaLista, definirFalhaLista] = useState<string | null>(null);
   const [tentativa, definirTentativa] = useState(0);
@@ -45,7 +45,7 @@ export function ProvasLock({ aoEntrar, titulo = "Área de provas", texto = TEXTO
     definirEnviando(true);
     definirErro(null);
     try {
-      aoEntrar(await entrarNaUnidade(unidade, senha));
+      aoEntrar(await conferir(unidade, senha));
     } catch (falha) {
       definirErro(falha instanceof ErroApi ? falha.message : "Não foi possível conferir a senha. Tente de novo.");
       definirSenha("");
