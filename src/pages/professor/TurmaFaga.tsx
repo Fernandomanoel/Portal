@@ -6,9 +6,11 @@ import { MODELOS_FAGA } from "@/data/modelosFaga";
 import { apagarTurma, criarFaga, criarTurma, salvarTurma, transferirTurma } from "@/lib/apiFagas";
 import { ErroApi, listarUnidades } from "@/lib/apiProvas";
 import { modeloDoLivro, novoIdFaga } from "@/lib/modeloFaga";
-import { DIAS_DA_SEMANA, LIMITES_TURMA, type AlunoTurma, type Faga, type Turma } from "@/types/faga";
+import { CONFIG_POR_TIPO, DIAS_DA_SEMANA, LIMITES_TURMA, TIPOS_TURMA, type AlunoTurma, type Faga, type TipoTurma, type Turma } from "@/types/faga";
 import type { Unidade } from "@/types/unidade";
 import estilos from "./TurmaFaga.module.css";
+
+const numero = (texto: string) => Math.max(1, Math.round(Number(texto)) || 1);
 
 interface Props {
   /** `null` = turma nova. */
@@ -25,13 +27,15 @@ interface Props {
 export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVoltar }: Props) {
   const [id, definirId] = useState(turma?.id ?? null);
   const [nome, definirNome] = useState(turma?.nome ?? "");
-  const [livro, definirLivro] = useState(turma?.livro ?? "");
+  const [tipo, definirTipo] = useState<TipoTurma>(turma?.tipo ?? "regular");
+  const [meses, definirMeses] = useState(String(turma?.config?.mesesPorLivro ?? CONFIG_POR_TIPO[turma?.tipo ?? "regular"].mesesPorLivro));
+  const [aulasBloco, definirAulasBloco] = useState(String(turma?.config?.aulasPorBloco ?? CONFIG_POR_TIPO[turma?.tipo ?? "regular"].aulasPorBloco));
   const [dias, definirDias] = useState<number[]>(turma?.dias ?? []);
   const [horario, definirHorario] = useState(turma?.horario ?? "");
-  const [alunos, definirAlunos] = useState<AlunoTurma[]>(turma?.alunos ?? []);
+  const [alunos, definirAlunos] = useState<AlunoTurma[]>((turma?.alunos ?? []).map((a) => ({ ...a, livro: a.livro ?? "" })));
   const [novoAluno, definirNovoAluno] = useState("");
   const [varios, definirVarios] = useState("");
-  const [original, definirOriginal] = useState(() => JSON.stringify([turma?.nome ?? "", turma?.livro ?? "", turma?.dias ?? [], turma?.horario ?? "", turma?.alunos ?? []]));
+  const [original, definirOriginal] = useState(() => JSON.stringify([turma?.nome ?? "", turma?.tipo ?? "regular", String(turma?.config?.mesesPorLivro ?? CONFIG_POR_TIPO[turma?.tipo ?? "regular"].mesesPorLivro), String(turma?.config?.aulasPorBloco ?? CONFIG_POR_TIPO[turma?.tipo ?? "regular"].aulasPorBloco), turma?.dias ?? [], turma?.horario ?? "", (turma?.alunos ?? []).map((a) => ({ ...a, livro: a.livro ?? "" }))]));
   const [salvando, definirSalvando] = useState(false);
   const [gerando, definirGerando] = useState(false);
   const [mensagem, definirMensagem] = useState<string | null>(null);
@@ -40,7 +44,7 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
   const [destino, definirDestino] = useState("");
   const [fagasDaTurma, definirFagasDaTurma] = useState<Faga[]>(fagas.filter((f) => id && f.turmaId === id));
 
-  const atual = JSON.stringify([nome, livro, dias, horario, alunos]);
+  const atual = JSON.stringify([nome, tipo, meses, aulasBloco, dias, horario, alunos]);
   const sujo = atual !== original;
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
   const faltam = alunos.filter((a) => !fagasDaTurma.some((f) => f.alunoId === a.id));
 
   function adicionar(nomes: string[]) {
-    const novos = nomes.map((n) => n.replace(/\s+/g, " ").trim()).filter((n) => n.length >= 2).map((n) => ({ id: novoIdFaga(), nome: n.slice(0, LIMITES_TURMA.texto) }));
+    const novos = nomes.map((n) => n.replace(/\s+/g, " ").trim()).filter((n) => n.length >= 2).map((n) => ({ id: novoIdFaga(), nome: n.slice(0, LIMITES_TURMA.texto), livro: "" }));
     if (!novos.length) return;
     if (alunos.length + novos.length > LIMITES_TURMA.alunos) return definirMensagem(`A turma aceita até ${LIMITES_TURMA.alunos} alunos.`);
     definirAlunos([...alunos, ...novos]);
@@ -61,10 +65,13 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
     definirSalvando(true);
     definirMensagem(null);
     try {
-      const dados = { nome, livro, dias, horario, alunos };
+      const dados = { nome, tipo, config: { aulasPorBloco: numero(aulasBloco), mesesPorLivro: numero(meses) }, dias, horario, alunos };
       const salva = id ? await salvarTurma(id, dados) : await criarTurma(dados);
       definirId(salva.id);
-      definirOriginal(JSON.stringify([salva.nome, salva.livro, salva.dias, salva.horario, salva.alunos]));
+      // Guarda como a tela mostra: o servidor ajusta os números, e aqui eles voltam ajustados.
+      definirMeses(String(salva.config.mesesPorLivro));
+      definirAulasBloco(String(salva.config.aulasPorBloco));
+      definirOriginal(JSON.stringify([salva.nome, salva.tipo, String(salva.config.mesesPorLivro), String(salva.config.aulasPorBloco), salva.dias, salva.horario, salva.alunos]));
       definirMensagem("Turma salva.");
       return salva;
     } catch (falha) {
@@ -84,16 +91,17 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
       if (!salva) return;
       const novas: Faga[] = [];
       for (const aluno of alunos.filter((a) => !fagasDaTurma.some((f) => f.alunoId === a.id))) {
-        const modelo = modeloDoLivro(livro);
+        const modelo = modeloDoLivro(aluno.livro);
+        const blocos = modelo?.config.blocosDoLivro ?? 8;
         novas.push(
           await criarFaga({
             aluno: aluno.nome,
-            livro: modelo?.livro ?? livro,
+            livro: modelo?.livro ?? aluno.livro,
             etapaInicio: "",
             etapaFim: "",
             horas: "",
             faixas: modelo?.faixas ?? [],
-            config: modelo?.config ?? { blocosDoLivro: 8, aulasPorBloco: 6, mesesPorLivro: 12 },
+            config: { blocosDoLivro: blocos, aulasPorBloco: numero(aulasBloco), mesesPorLivro: numero(meses) },
             autoavaliacao: true,
             topicos: modelo?.topicos ?? [],
             turmaId: salva.id,
@@ -174,20 +182,34 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
           Nome da turma
           <input value={nome} onChange={(e) => definirNome(e.target.value)} maxLength={LIMITES_TURMA.texto} required placeholder="Ex.: Terça e quinta, 19h" />
         </label>
+        <fieldset className={`${estilos.largo} ${estilos.tipos}`}>
+          <legend>Tipo da turma</legend>
+          {TIPOS_TURMA.map((t) => (
+            <label key={t.id} className={tipo === t.id ? `${estilos.tipo} ${estilos.tipoMarcado}` : estilos.tipo}>
+              <input
+                type="radio"
+                name="tipo-turma"
+                checked={tipo === t.id}
+                onChange={() => {
+                  definirTipo(t.id);
+                  definirMeses(String(CONFIG_POR_TIPO[t.id].mesesPorLivro));
+                  definirAulasBloco(String(CONFIG_POR_TIPO[t.id].aulasPorBloco));
+                }}
+              />
+              <span>
+                <strong>{t.rotulo}</strong>
+                <small>{t.descricao}</small>
+              </span>
+            </label>
+          ))}
+        </fieldset>
         <label>
-          Livro
-          <select value={livro} onChange={(e) => definirLivro(e.target.value)}>
-            <option value="">Escolher…</option>
-            {[...new Set(MODELOS_FAGA.map((m) => m.colecao))].map((colecao) => (
-              <optgroup key={colecao} label={colecao}>
-                {MODELOS_FAGA.filter((m) => m.colecao === colecao).map((m) => (
-                  <option key={m.livro} value={m.livro}>
-                    {m.livro}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
+          Meses para terminar cada livro
+          <input type="number" inputMode="numeric" min={1} max={60} value={meses} onChange={(e) => definirMeses(e.target.value)} />
+        </label>
+        <label>
+          Aulas para ver cada bloco
+          <input type="number" inputMode="numeric" min={1} max={40} value={aulasBloco} onChange={(e) => definirAulasBloco(e.target.value)} />
         </label>
         <label>
           Horário
@@ -217,6 +239,20 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
           return (
             <li key={a.id} className={estilos.aluno}>
               <input value={a.nome} onChange={(e) => definirAlunos(alunos.map((x) => (x.id === a.id ? { ...x, nome: e.target.value } : x)))} maxLength={LIMITES_TURMA.texto} aria-label={`Nome do aluno ${a.nome}`} />
+              <select
+                value={a.livro}
+                onChange={(e) => definirAlunos(alunos.map((x) => (x.id === a.id ? { ...x, livro: e.target.value } : x)))}
+                aria-label={`Livro de ${a.nome}`}
+                disabled={Boolean(faga)}
+                title={faga ? "A FAGA já foi criada com este livro" : undefined}
+              >
+                <option value="">Livro…</option>
+                {MODELOS_FAGA.map((m) => (
+                  <option key={m.livro} value={m.livro}>
+                    {m.livro}
+                  </option>
+                ))}
+              </select>
               {faga ? (
                 <>
                   <span className={estilos.progresso}>{atividades.length ? `${Math.round((feitas / atividades.length) * 100)}%` : "sem aulas"}</span>
@@ -267,7 +303,7 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
         <button type="button" className={estilos.primario} onClick={() => void gerarFagas()} disabled={gerando || semUnidade || (!id && nome.trim().length < 2) || (faltam.length === 0 && !sujo)}>
           {gerando ? "Criando…" : `Criar a FAGA de cada aluno${faltam.length ? ` (${faltam.length})` : ""}`}
         </button>
-        <span className={estilos.dica}>{livro ? `As FAGAs saem com as aulas do livro ${livro}.` : "Sem livro escolhido, as FAGAs saem em branco."}</span>
+        <span className={estilos.dica}>Cada FAGA sai com as aulas do livro escolhido ao lado do aluno; sem livro, sai em branco.</span>
       </div>
 
       {id && (

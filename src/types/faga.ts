@@ -93,15 +93,32 @@ export const DIAS_DA_SEMANA = [
 export interface AlunoTurma {
   id: string;
   nome: string;
+  /** Livro do aluno («FB25»): a turma mistura livros, então cada aluno tem o seu. */
+  livro: string;
 }
+
+/** Regular segue o prazo normal do livro; Speed é a turma acelerada, com prazo e aulas próprios. */
+export type TipoTurma = "regular" | "speed";
+
+export const TIPOS_TURMA: { id: TipoTurma; rotulo: string; descricao: string }[] = [
+  { id: "regular", rotulo: "Regular", descricao: "Prazo normal: um livro por ano." },
+  { id: "speed", rotulo: "Speed", descricao: "Turma acelerada: o livro termina em menos tempo." },
+];
+
+/** Valores de cada tipo de turma; a professora pode mudar na turma. */
+export const CONFIG_POR_TIPO: Record<TipoTurma, { aulasPorBloco: number; mesesPorLivro: number }> = {
+  regular: { aulasPorBloco: CONFIG_MODULOS_INGLES.aulasPorBloco, mesesPorLivro: CONFIG_MODULOS_INGLES.mesesPorLivro },
+  speed: { aulasPorBloco: CONFIG_MODULOS_INGLES.aulasPorBloco, mesesPorLivro: 6 },
+};
 
 /** Turma de Inglês: a professora digita os alunos, os dias da semana e o horário; cada aluno tem a própria FAGA. */
 export interface Turma {
   id: string;
   unidade: string;
   nome: string;
-  /** Livro da turma («FB25»): vira o modelo das FAGAs dos alunos. */
-  livro: string;
+  tipo: TipoTurma;
+  /** Prazo e aulas por bloco das FAGAs dos alunos desta turma. */
+  config: { aulasPorBloco: number; mesesPorLivro: number };
   /** 0 = domingo … 6 = sábado. */
   dias: number[];
   horario: string;

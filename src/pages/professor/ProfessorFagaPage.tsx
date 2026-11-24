@@ -76,7 +76,7 @@ export function ProfessorFagaPage() {
   const avulsas = visiveis.filter((f) => !f.turmaId || !idsDeTurma.has(f.turmaId));
   const turmasVisiveis = useMemo(() => {
     const termo = normalizar(busca);
-    return turmas.filter((t) => !termo || normalizar(`${t.nome} ${t.livro} ${t.alunos.map((a) => a.nome).join(" ")}`).includes(termo));
+    return turmas.filter((t) => !termo || normalizar(`${t.nome} ${t.alunos.map((a) => `${a.nome} ${a.livro ?? ""}`).join(" ")}`).includes(termo));
   }, [turmas, busca]);
 
   function abrir(f: Faga | null) {
@@ -162,7 +162,7 @@ export function ProfessorFagaPage() {
                   <li key={t.id}>
                     <button type="button" className={estilos.cartao} onClick={() => definirTurmaAberta({ turma: t })}>
                       <strong>{t.nome}</strong>
-                      <span>{t.livro || "Livro não informado"} · {t.alunos.length} aluno(s)</span>
+                      <span>{t.alunos.length} aluno(s){t.tipo === "speed" ? " · Speed" : ""}</span>
                       <span>{descricaoDaTurma(t)}</span>
                       <span className={estilos.progresso} aria-hidden="true">
                         <span style={{ width: `${pct}%` }} />

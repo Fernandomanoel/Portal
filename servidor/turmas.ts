@@ -1,4 +1,4 @@
-import { LIMITES_TURMA, type AlunoTurma, type Turma } from "../src/types/faga.js";
+import { CONFIG_POR_TIPO, LIMITES_FAGA, LIMITES_TURMA, type AlunoTurma, type Turma } from "../src/types/faga.js";
 import type { Armazenamento } from "./armazenamento.js";
 
 /** Turmas moram em `turmas/<id>.json`, fora das pastas que a limpeza de 3 dias percorre. */
@@ -16,7 +16,7 @@ export async function listarTurmas(armazenamento: Armazenamento): Promise<Turma[
 const texto = (v: unknown, max: number) => (typeof v === "string" ? v.replace(/\s+/g, " ").trim().slice(0, max) : "");
 const idItem = (v: unknown) => (typeof v === "string" && /^[A-Za-z0-9_-]{1,40}$/.test(v) ? v : "");
 
-export type DadosTurma = Pick<Turma, "nome" | "livro" | "dias" | "horario" | "alunos">;
+export type DadosTurma = Pick<Turma, "nome" | "tipo" | "config" | "dias" | "horario" | "alunos">;
 
 export function sanearTurma(corpo: Record<string, unknown>): DadosTurma | string {
   const nome = texto(corpo.nome, LIMITES_TURMA.texto);
@@ -31,8 +31,15 @@ export function sanearTurma(corpo: Record<string, unknown>): DadosTurma | string
     if (!id || vistos.has(id)) return "Aluno com identificador inválido ou repetido.";
     if (nomeAluno.length < 2) return "Todo aluno precisa de um nome.";
     vistos.add(id);
-    alunos.push({ id, nome: nomeAluno });
+    alunos.push({ id, nome: nomeAluno, livro: texto(a.livro, 20) });
   }
   const dias = [...new Set((Array.isArray(corpo.dias) ? corpo.dias : []).map(Number).filter((d) => Number.isInteger(d) && d >= 0 && d <= 6))].sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7));
-  return { nome, livro: texto(corpo.livro, 20), dias, horario: texto(corpo.horario, 20), alunos };
+  const tipo = corpo.tipo === "speed" ? "speed" : "regular";
+  const c = (corpo.config ?? {}) as Record<string, unknown>;
+  const inteiro = (v: unknown, max: number, padrao: number) => (Number.isFinite(Number(v)) ? Math.min(max, Math.max(1, Math.round(Number(v)))) : padrao);
+  const config = {
+    aulasPorBloco: inteiro(c.aulasPorBloco, LIMITES_FAGA.aulasPorBlocoMax, CONFIG_POR_TIPO[tipo].aulasPorBloco),
+    mesesPorLivro: inteiro(c.mesesPorLivro, LIMITES_FAGA.mesesMax, CONFIG_POR_TIPO[tipo].mesesPorLivro),
+  };
+  return { nome, tipo, config, dias, horario: texto(corpo.horario, 20), alunos };
 }

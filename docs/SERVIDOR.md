@@ -99,8 +99,9 @@ datas), gravada em `fagas/<id>.json` (fora da limpeza de 3 dias) e escopada por 
   usuários vê com `GET /api/usuarios/<usuario>/senha`, exceto a do usuário `manoel`, que ninguém vê. Usuários criados antes
   só passam a mostrar a senha depois que ela for trocada em Editar. Professores da variável `PROFESSORES` têm só o hash.
 - **Listas** têm área (Informática ou Inglês): cada usuário só vê as da(s) sua(s) área(s).
-- **Turmas** (`turmas/<id>.json`): nome, livro, dias da semana, horário e alunos digitados à mão; cada aluno tem a própria FAGA
-  (`turmaId`/`alunoId`). `POST /api/turmas/<id>/transferir` leva a turma e as FAGAs para outra unidade;
+- **Turmas** (`turmas/<id>.json`): nome, tipo (Regular ou Speed), prazo e aulas por bloco, dias da semana, horário e alunos digitados
+  à mão. A turma mistura livros: cada aluno tem o seu livro e a própria FAGA (`turmaId`/`alunoId`). O Speed é a turma acelerada
+  (começa em 6 meses por livro, contra 12 da Regular; a professora altera na turma). `POST /api/turmas/<id>/transferir` leva a turma e as FAGAs para outra unidade;
   `POST /api/fagas/<id>/transferir` leva uma FAGA (ela sai da turma).
 
 ### Listas compartilhadas entre unidades

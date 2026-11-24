@@ -27,7 +27,7 @@ export const dadosDaFaga = (f: Faga): DadosFagaEnvio => ({
 
 // ------------------------------------------------------------------ turmas e transferência
 
-export type DadosTurmaEnvio = Pick<Turma, "nome" | "livro" | "dias" | "horario" | "alunos">;
+export type DadosTurmaEnvio = Pick<Turma, "nome" | "tipo" | "config" | "dias" | "horario" | "alunos">;
 
 const caminhoTurma = (id: string) => `turmas/${encodeURIComponent(id)}`;
 
