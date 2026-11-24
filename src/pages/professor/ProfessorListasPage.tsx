@@ -15,7 +15,7 @@ import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorListasPage.module.css";
 
 export function ProfessorListasPage() {
-  const { sessaoVencida, professor, unidadeAtual } = useProfessor();
+  const { sessaoVencida, professor, unidadeAtual, area } = useProfessor();
   const semUnidade = professor.coordenacao && !unidadeAtual;
   const podeEditar = professor.permissoes.includes("listas_editar");
   const [unidades, definirUnidades] = useState<Unidade[]>([]);
@@ -46,12 +46,12 @@ export function ProfessorListasPage() {
 
   const carregar = useCallback(async () => {
     try {
-      definirListas((await listarListas()).dados);
+      definirListas((await listarListas()).dados.filter((l) => (l.area ?? "informatica") === area));
       definirErro(null);
     } catch (falha) {
       tratar(falha, "Não foi possível carregar as listas.");
     }
-  }, [tratar]);
+  }, [tratar, area]);
 
   useEffect(() => {
     void carregar();
@@ -60,7 +60,7 @@ export function ProfessorListasPage() {
   async function nova(duplicarDe?: string, paraTodas = false) {
     definirCriando(true);
     try {
-      const lista = await criarLista(duplicarDe, paraTodas);
+      const lista = await criarLista(duplicarDe, paraTodas, area);
       navegar(rotas.professorLista(lista.id));
     } catch (falha) {
       tratar(falha, "Não foi possível criar a lista.");

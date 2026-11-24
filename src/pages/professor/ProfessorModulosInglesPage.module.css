@@ -139,6 +139,7 @@
 }
 
 .numeros {
+  margin-bottom: var(--space-4) !important;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: var(--space-3);

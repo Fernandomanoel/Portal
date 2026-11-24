@@ -63,8 +63,8 @@ material de apoio do aluno vai em `Curso.materiais`.
 Áreas do professor (`AREAS` em `src/types/acesso.ts`): Informática e Inglês, escolhidas por usuário; permissões e abas
 seguem a área (`permissoesDe` em `servidor/rotas.ts`). Prova de Inglês = arquivo em `provasInterativas/Ingles/`
 (o servidor deriva a área do caminho) e a listagem fica em `PROVAS_INGLES`, com a mesma senha de unidade e a mesma
-trava das provas de ADM. A cor da área de Inglês (verde-água) vem de `body[data-area="ingles"]` em `tokens.css` via
-`useAreaVisual`: não pinte Inglês com cor fixa. A FAGA (`src/types/faga.ts`) é preenchida à mão pelo professor; os modelos de aula e atividades por livro (FB01 a FB32)
+trava das provas de ADM. O verde-água de Inglês (`body[data-area="ingles"]` em `tokens.css`, via `useAreaVisual`) vale só nas telas do aluno; a área do
+professor fica no azul padrão. Provas de Inglês têm senha única (`SENHA_PROVAS_INGLES`) e ficam na aba Provas, não em Conversação. A FAGA (`src/types/faga.ts`) é preenchida à mão pelo professor; os modelos de aula e atividades por livro (FB01 a FB32)
 são `src/data/modelosFaga.ts`, transcritos das FAGAs em PDF da pasta FAGAS do Drive do usuário (nomes das bolinhas como
 no original, só com erros de digitação corrigidos). A arte da impressão é própria do portal.
 

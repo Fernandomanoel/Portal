@@ -15,6 +15,7 @@ import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } fr
 import { acharAulaIngles, listarAulasIngles } from "./aulasIngles.js";
 import { conferirItem } from "../src/lib/correcaoProva.js";
 import { caminhoFaga, idFagaValido, lerFaga, listarFagas, sanearFaga } from "./fagas.js";
+import { caminhoTurma, idTurmaValido, lerTurma, listarTurmas, sanearTurma } from "./turmas.js";
 import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
 import {
   COOKIE_CURSO_INGLES,
@@ -457,7 +458,11 @@ function vistaPelaUnidade(lista: { unidade?: string; compartilhamento?: Comparti
  * compartilhada. Edita quem tem «listas_editar» e é da dona, ou recebeu com edição liberada.
  * Administra (compartilhar, apagar) só quem é da dona, ou alcança todas.
  */
-function acessoLista(professor: Professor, lista: { unidade?: string; compartilhamento?: Compartilhamento }) {
+const areaDaLista = (lista: { area?: AreaId }): AreaId => lista.area ?? "informatica";
+
+function acessoLista(professor: Professor, lista: { unidade?: string; area?: AreaId; compartilhamento?: Compartilhamento }) {
+  // Lista de Inglês só aparece para quem é de Inglês, e a de Informática só para quem é de Informática.
+  if (!areasDe(professor).includes(areaDaLista(lista))) return { ver: false, editar: false, administrar: false };
   const e = escopo(professor);
   const daDona = noEscopo(professor, unidadeDe(lista));
   const comp = lista.compartilhamento;
@@ -969,6 +974,10 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
       if (ativa === null) return erro(422, "VALIDATION_ERROR", "Escolha a unidade do aluno no alto da página antes de criar a FAGA.");
       const dados = sanearFaga((await lerCorpoJson(requisicao)) ?? {});
       if (typeof dados === "string") return erro(422, "VALIDATION_ERROR", dados);
+      if (dados.turmaId) {
+        const turma = await lerTurma(armazenamento, dados.turmaId);
+        if (!turma || turma.unidade !== ativa) dados.turmaId = dados.alunoId = undefined;
+      }
       const agora = new Date().toISOString();
       const nova = { id: randomUUID(), unidade: ativa, ...dados, criadoEm: agora, alteradoEm: agora, criadoPor: professor.nome };
       await armazenamento.salvarJson(caminhoFaga(nova.id), nova);
@@ -976,21 +985,91 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     }
 
     const id = partes[1] ?? "";
-    if (partes.length !== 2 || !idFagaValido(id)) return erro(404, "NAO_ENCONTRADO", "FAGA não encontrada.");
+    if (!idFagaValido(id) || (partes.length !== 2 && !(partes.length === 3 && partes[2] === "transferir"))) return erro(404, "NAO_ENCONTRADO", "FAGA não encontrada.");
     const atual = await lerFaga(armazenamento, id);
     // FAGA de outra unidade responde como se não existisse.
     if (!atual || !noEscopo(professor, atual.unidade)) return erro(404, "NAO_ENCONTRADO", "FAGA não encontrada.");
 
+    // Passa a FAGA do aluno para outra unidade: sai da turma (a turma fica onde está) e some para quem só vê a unidade antiga.
+    if (partes.length === 3 && metodo === "POST") {
+      const destino = acharUnidade(String((await lerCorpoJson(requisicao))?.unidade ?? ""));
+      if (!destino) return erro(422, "VALIDATION_ERROR", "Escolha a unidade de destino.");
+      if (destino.id === atual.unidade) return erro(422, "VALIDATION_ERROR", "A FAGA já está nessa unidade.");
+      const movida = { ...atual, unidade: destino.id, turmaId: undefined, alunoId: undefined, alteradoEm: new Date().toISOString() };
+      await armazenamento.salvarJson(caminhoFaga(id), movida);
+      return json(movida);
+    }
+    if (partes.length !== 2) return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
     if (metodo === "GET") return json(atual);
     if (metodo === "PUT") {
       const dados = sanearFaga((await lerCorpoJson(requisicao)) ?? {});
       if (typeof dados === "string") return erro(422, "VALIDATION_ERROR", dados);
-      const salva = { ...atual, ...dados, alteradoEm: new Date().toISOString() };
+      // A FAGA fica na turma que já tinha: trocar de turma ou de aluno não é feito por aqui, e a unidade só muda por «transferir».
+      const salva = { ...atual, ...dados, turmaId: atual.turmaId, alunoId: atual.alunoId, unidade: atual.unidade, alteradoEm: new Date().toISOString() };
       await armazenamento.salvarJson(caminhoFaga(id), salva);
       return json(salva);
     }
     if (metodo === "DELETE") {
       await armazenamento.apagar([caminhoFaga(id)]);
+      return new Response(null, { status: 204 });
+    }
+  }
+
+  if (partes[0] === "turmas") {
+    const professor = await professorDa(requisicao, armazenamento);
+    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    if (!temPermissao(professor, "faga")) return semPermissao();
+
+    if (partes.length === 1 && metodo === "GET") {
+      const ativa = unidadeAtiva(professor, url);
+      if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
+      const todas = await listarTurmas(armazenamento);
+      return json({ dados: todas.filter((t) => (ativa === null ? noEscopo(professor, t.unidade) : t.unidade === ativa)) });
+    }
+
+    if (partes.length === 1 && metodo === "POST") {
+      const ativa = unidadeAtiva(professor, url);
+      if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
+      if (ativa === null) return erro(422, "VALIDATION_ERROR", "Escolha a unidade da turma no alto da página antes de criá-la.");
+      const dados = sanearTurma((await lerCorpoJson(requisicao)) ?? {});
+      if (typeof dados === "string") return erro(422, "VALIDATION_ERROR", dados);
+      const agora = new Date().toISOString();
+      const nova = { id: randomUUID(), unidade: ativa, ...dados, criadoEm: agora, alteradoEm: agora, criadoPor: professor.nome };
+      await armazenamento.salvarJson(caminhoTurma(nova.id), nova);
+      return json(nova, 201);
+    }
+
+    const id = partes[1] ?? "";
+    if (!idTurmaValido(id) || (partes.length !== 2 && !(partes.length === 3 && partes[2] === "transferir"))) return erro(404, "NAO_ENCONTRADO", "Turma não encontrada.");
+    const atual = await lerTurma(armazenamento, id);
+    if (!atual || !noEscopo(professor, atual.unidade)) return erro(404, "NAO_ENCONTRADO", "Turma não encontrada.");
+
+    // Passa a turma inteira, com as FAGAs dos alunos, para outra unidade.
+    if (partes.length === 3 && metodo === "POST") {
+      const destino = acharUnidade(String((await lerCorpoJson(requisicao))?.unidade ?? ""));
+      if (!destino) return erro(422, "VALIDATION_ERROR", "Escolha a unidade de destino.");
+      if (destino.id === atual.unidade) return erro(422, "VALIDATION_ERROR", "A turma já está nessa unidade.");
+      const agora = new Date().toISOString();
+      const movida = { ...atual, unidade: destino.id, alteradoEm: agora };
+      const fagas = (await listarFagas(armazenamento)).filter((f) => f.turmaId === id);
+      await armazenamento.salvarJson(caminhoTurma(id), movida);
+      await Promise.all(fagas.map((f) => armazenamento.salvarJson(caminhoFaga(f.id), { ...f, unidade: destino.id, alteradoEm: agora })));
+      return json({ turma: movida, fagas: fagas.length });
+    }
+    if (partes.length !== 2) return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
+    if (metodo === "GET") return json(atual);
+    if (metodo === "PUT") {
+      const dados = sanearTurma((await lerCorpoJson(requisicao)) ?? {});
+      if (typeof dados === "string") return erro(422, "VALIDATION_ERROR", dados);
+      const salva = { ...atual, ...dados, alteradoEm: new Date().toISOString() };
+      await armazenamento.salvarJson(caminhoTurma(id), salva);
+      return json(salva);
+    }
+    if (metodo === "DELETE") {
+      // As FAGAs dos alunos ficam: viram avulsas.
+      const fagas = (await listarFagas(armazenamento)).filter((f) => f.turmaId === id);
+      await Promise.all(fagas.map((f) => armazenamento.salvarJson(caminhoFaga(f.id), { ...f, turmaId: undefined, alunoId: undefined })));
+      await armazenamento.apagar([caminhoTurma(id)]);
       return new Response(null, { status: 204 });
     }
   }
@@ -1023,7 +1102,11 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
         origem = (await armazenamento.lerJson<ListaAcompanhamento>(caminhoLista(origemId))) ?? undefined;
         if (!origem || !acessoLista(professor, origem).ver) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
       }
-      const lista = novaLista(professor, paraTodas ? TODAS_AS_UNIDADES : ativa, origem);
+      const minhasAreas = areasDe(professor);
+      const areaPedida = corpo?.area === "ingles" || corpo?.area === "informatica" ? corpo.area : null;
+      const area: AreaId = origem ? areaDaLista(origem) : areaPedida ?? minhasAreas[0];
+      if (!minhasAreas.includes(area)) return erro(403, "SEM_PERMISSAO", "Seu usuário não é dessa área.");
+      const lista = novaLista(professor, paraTodas ? TODAS_AS_UNIDADES : ativa, origem, area);
       await armazenamento.salvarJson(caminhoLista(lista.id), lista);
       return json(comAcesso(professor, lista), 201);
     }

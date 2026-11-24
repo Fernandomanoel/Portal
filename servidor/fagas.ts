@@ -21,7 +21,7 @@ const inteiro = (v: unknown, min: number, max: number, padrao: number) => {
   return Number.isFinite(n) ? Math.min(max, Math.max(min, Math.round(n))) : padrao;
 };
 
-export type DadosFaga = Pick<Faga, "aluno" | "livro" | "etapaInicio" | "etapaFim" | "horas" | "faixas" | "config" | "autoavaliacao" | "topicos">;
+export type DadosFaga = Pick<Faga, "aluno" | "livro" | "etapaInicio" | "etapaFim" | "horas" | "faixas" | "config" | "autoavaliacao" | "topicos" | "turmaId" | "alunoId">;
 
 /** Confere o que veio da tela e devolve só campos conhecidos, ou a mensagem do que está errado. */
 export function sanearFaga(corpo: Record<string, unknown>): DadosFaga | string {
@@ -65,6 +65,8 @@ export function sanearFaga(corpo: Record<string, unknown>): DadosFaga | string {
       aulasPorBloco: inteiro(c.aulasPorBloco, 1, LIMITES_FAGA.aulasPorBlocoMax, CONFIG_MODULOS_INGLES.aulasPorBloco),
       mesesPorLivro: inteiro(c.mesesPorLivro, 1, LIMITES_FAGA.mesesMax, CONFIG_MODULOS_INGLES.mesesPorLivro),
     },
+    turmaId: /^[a-z0-9-]{6,50}$/.test(String(corpo.turmaId ?? "")) ? String(corpo.turmaId) : undefined,
+    alunoId: idItem(corpo.alunoId) || undefined,
     autoavaliacao: corpo.autoavaliacao === true,
     topicos: (Array.isArray(corpo.topicos) ? corpo.topicos : []).slice(0, LIMITES_FAGA.topicos).map((t) => texto(t)).filter(Boolean),
   };

@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import type { AreaId } from "../src/types/acesso.js";
 import type { Professor } from "../src/types/envio.js";
 import { sanear } from "../src/lib/gradeLista.js";
 import {
@@ -43,15 +44,15 @@ const idParte = (v: unknown): v is string => typeof v === "string" && /^[a-zA-Z0
 const texto = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : "");
 
 export function resumir(lista: ListaAcompanhamento): ResumoLista {
-  const { id, titulo, colunas, linhas, alteradaPor, alteradaEm, unidade, compartilhamento } = lista;
-  return { id, titulo, unidade, compartilhamento, colunas: colunas.length, linhas: linhas.filter((l) => l.titulo === undefined && Object.keys(l.valores).length > 0).length, alteradaPor, alteradaEm };
+  const { id, titulo, colunas, linhas, alteradaPor, alteradaEm, unidade, compartilhamento, area } = lista;
+  return { id, titulo, unidade, area, compartilhamento, colunas: colunas.length, linhas: linhas.filter((l) => l.titulo === undefined && Object.keys(l.valores).length > 0).length, alteradaPor, alteradaEm };
 }
 
-export function novaLista(professor: Professor, unidade: string | null, origem?: ListaAcompanhamento): ListaAcompanhamento {
+export function novaLista(professor: Professor, unidade: string | null, origem: ListaAcompanhamento | undefined, area: AreaId): ListaAcompanhamento {
   const agora = new Date().toISOString();
   // Lista da rede (unidade "*") nasce visível para todas; a de uma unidade nasce só dela, e a cópia não herda o compartilhamento.
   const compartilhamento: Compartilhamento | undefined = unidade === "*" ? { com: "todas", unidades: [], edicao: false } : undefined;
-  const autoria = { unidade: unidade ?? undefined, compartilhamento, versao: 1, criadaPor: professor.nome, criadaEm: agora, alteradaPor: professor.nome, alteradaEm: agora };
+  const autoria = { unidade: unidade ?? undefined, area, compartilhamento, versao: 1, criadaPor: professor.nome, criadaEm: agora, alteradaPor: professor.nome, alteradaEm: agora };
   if (origem) {
     return { ...origem, ...autoria, id: novoId("lst_", 12), titulo: `${origem.titulo} (cópia)`.slice(0, LIMITES_LISTA.titulo) };
   }

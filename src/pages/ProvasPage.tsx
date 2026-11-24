@@ -173,6 +173,7 @@ export function ProvasPage() {
               : undefined
           }
           conferir={area === "ingles" ? entrarNasProvasIngles : undefined}
+          rotuloSenha={area === "ingles" ? "Senha das provas de Inglês" : undefined}
           aoEntrar={(nova) => {
             guardarFicha(nova);
             definirFicha(nova);

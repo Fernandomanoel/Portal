@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
-import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { FagaImpressao } from "@/components/faga/FagaImpressao";
 import { FagaTrilha } from "@/components/faga/FagaTrilha";
-import { apagarFaga, criarFaga, dadosDaFaga, listarFagas, salvarFaga, type DadosFagaEnvio } from "@/lib/apiFagas";
-import { ErroApi } from "@/lib/apiProvas";
+import { apagarFaga, criarFaga, dadosDaFaga, listarFagas, listarTurmas, salvarFaga, transferirFaga, type DadosFagaEnvio } from "@/lib/apiFagas";
+import { ErroApi, listarUnidades } from "@/lib/apiProvas";
+import { descricaoDaTurma, modeloDoLivro } from "@/lib/modeloFaga";
 import { MODELOS_FAGA } from "@/data/modelosFaga";
 import { normalizar } from "@/lib/busca";
-import { blocoDaAula, CONFIG_MODULOS_INGLES, faixaConcluida, LIMITES_FAGA, type Faga, type FaixaFaga } from "@/types/faga";
+import { CONFIG_MODULOS_INGLES, faixaConcluida, LIMITES_FAGA, type Faga, type FaixaFaga, type Turma } from "@/types/faga";
+import type { Unidade } from "@/types/unidade";
+import { TurmaFaga } from "./TurmaFaga";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorFagaPage.module.css";
 
@@ -38,7 +40,9 @@ export function ProfessorFagaPage() {
   const { sessaoVencida, unidadeAtual } = useProfessor();
   const [fagas, definirFagas] = useState<Faga[] | null>(null);
   const [erro, definirErro] = useState<string | null>(null);
+  const [turmas, definirTurmas] = useState<Turma[]>([]);
   const [aberta, definirAberta] = useState<Aberta | null>(null);
+  const [turmaAberta, definirTurmaAberta] = useState<{ turma: Turma | null } | null>(null);
   const [busca, definirBusca] = useState("");
 
   const tratar = useCallback(
@@ -51,7 +55,9 @@ export function ProfessorFagaPage() {
 
   const carregar = useCallback(async () => {
     try {
-      definirFagas((await listarFagas()).dados);
+      const [f, t] = await Promise.all([listarFagas(), listarTurmas()]);
+      definirFagas(f.dados);
+      definirTurmas(t.dados);
       definirErro(null);
     } catch (falha) {
       tratar(falha, "Não foi possível carregar as FAGAs.");
@@ -66,10 +72,36 @@ export function ProfessorFagaPage() {
     const termo = normalizar(busca);
     return (fagas ?? []).filter((f) => !termo || normalizar(`${f.aluno} ${f.livro}`).includes(termo));
   }, [fagas, busca]);
+  const idsDeTurma = useMemo(() => new Set(turmas.map((t) => t.id)), [turmas]);
+  const avulsas = visiveis.filter((f) => !f.turmaId || !idsDeTurma.has(f.turmaId));
+  const turmasVisiveis = useMemo(() => {
+    const termo = normalizar(busca);
+    return turmas.filter((t) => !termo || normalizar(`${t.nome} ${t.livro} ${t.alunos.map((a) => a.nome).join(" ")}`).includes(termo));
+  }, [turmas, busca]);
 
   function abrir(f: Faga | null) {
     const dados = f ? dadosDaFaga(f) : vazia();
     definirAberta({ id: f?.id ?? null, dados, original: JSON.stringify(dados) });
+  }
+
+  if (turmaAberta) {
+    return (
+      <TurmaFaga
+        key={turmaAberta.turma?.id ?? "nova"}
+        turma={turmaAberta.turma}
+        fagas={fagas ?? []}
+        semUnidade={turmaAberta.turma === null && unidadeAtual === null}
+        tratar={tratar}
+        aoAbrirFaga={(f) => {
+          definirTurmaAberta(null);
+          abrir(f);
+        }}
+        aoVoltar={() => {
+          definirTurmaAberta(null);
+          void carregar();
+        }}
+      />
+    );
   }
 
   if (aberta) {
@@ -77,6 +109,8 @@ export function ProfessorFagaPage() {
       <Editor
         key={aberta.id ?? "nova"}
         aberta={aberta}
+        turma={turmas.find((t) => t.id === fagas?.find((f) => f.id === aberta.id)?.turmaId) ?? null}
+        unidadeDaFaga={fagas?.find((f) => f.id === aberta.id)?.unidade ?? null}
         semUnidade={aberta.id === null && unidadeAtual === null}
         tratar={tratar}
         aoVoltar={() => {
@@ -97,9 +131,13 @@ export function ProfessorFagaPage() {
         </p>
       )}
       <div className={estilos.barra}>
-        <button type="button" className={estilos.primario} onClick={() => abrir(null)}>
+        <button type="button" className={estilos.primario} onClick={() => definirTurmaAberta({ turma: null })}>
           <Icone nome="mais" tamanho={16} />
-          Nova FAGA
+          Nova turma
+        </button>
+        <button type="button" className={estilos.secundario} onClick={() => abrir(null)}>
+          <Icone nome="mais" tamanho={16} />
+          Nova FAGA avulsa
         </button>
         <label className={estilos.busca}>
           <Icone nome="busca" tamanho={16} />
@@ -109,11 +147,42 @@ export function ProfessorFagaPage() {
 
       {fagas === null ? (
         <p aria-live="polite">Carregando…</p>
-      ) : visiveis.length === 0 ? (
-        <EstadoVazio icone="lapis" titulo={fagas.length ? "Nenhuma FAGA encontrada" : "Nenhuma FAGA ainda"} texto={fagas.length ? "Tente outro nome." : "Crie a primeira com o botão «Nova FAGA». Cada aluno tem a sua."} />
       ) : (
-        <ul className={estilos.lista}>
-          {visiveis.map((f) => {
+        <>
+          <h2 className={estilos.subtitulo}>Turmas ({turmasVisiveis.length})</h2>
+          {turmasVisiveis.length === 0 ? (
+            <p className={estilos.dica}>{turmas.length ? "Nenhuma turma com esse nome." : "Nenhuma turma ainda. Crie uma com «Nova turma»: dias, horário e os alunos que você digitar."}</p>
+          ) : (
+            <ul className={estilos.lista}>
+              {turmasVisiveis.map((t) => {
+                const daTurma = fagas.filter((f) => f.turmaId === t.id);
+                const atividades = daTurma.flatMap((f) => f.faixas.flatMap((x) => x.atividades));
+                const pct = atividades.length ? Math.round((atividades.filter((a) => a.feita).length / atividades.length) * 100) : 0;
+                return (
+                  <li key={t.id}>
+                    <button type="button" className={estilos.cartao} onClick={() => definirTurmaAberta({ turma: t })}>
+                      <strong>{t.nome}</strong>
+                      <span>{t.livro || "Livro não informado"} · {t.alunos.length} aluno(s)</span>
+                      <span>{descricaoDaTurma(t)}</span>
+                      <span className={estilos.progresso} aria-hidden="true">
+                        <span style={{ width: `${pct}%` }} />
+                      </span>
+                      <small>
+                        {daTurma.length} de {t.alunos.length} com FAGA · {pct}% concluído
+                      </small>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+
+          <h2 className={estilos.subtitulo}>Alunos sem turma ({avulsas.length})</h2>
+          {avulsas.length === 0 ? (
+            <p className={estilos.dica}>{fagas.length ? "Todos os alunos estão em turmas." : "Nenhuma FAGA avulsa. Use «Nova FAGA avulsa» para um aluno que não tem turma."}</p>
+          ) : (
+            <ul className={estilos.lista}>
+          {avulsas.map((f) => {
             const { feitas, total } = resumo(f);
             const pct = total ? Math.round((feitas / total) * 100) : 0;
             return (
@@ -131,13 +200,15 @@ export function ProfessorFagaPage() {
               </li>
             );
           })}
-        </ul>
+            </ul>
+          )}
+        </>
       )}
     </>
   );
 }
 
-function Editor({ aberta, semUnidade, tratar, aoVoltar }: { aberta: Aberta; semUnidade: boolean; tratar: (f: unknown, p: string) => void; aoVoltar: () => void }) {
+function Editor({ aberta, turma, unidadeDaFaga, semUnidade, tratar, aoVoltar }: { aberta: Aberta; turma: Turma | null; unidadeDaFaga: string | null; semUnidade: boolean; tratar: (f: unknown, p: string) => void; aoVoltar: () => void }) {
   const [id, definirId] = useState(aberta.id);
   const [dados, definirDados] = useState<DadosFagaEnvio>(aberta.dados);
   const [original, definirOriginal] = useState(aberta.original);
@@ -145,7 +216,13 @@ function Editor({ aberta, semUnidade, tratar, aoVoltar }: { aberta: Aberta; semU
   const [mensagem, definirMensagem] = useState<string | null>(null);
   const [apagando, definirApagando] = useState(false);
   const [faixaApagando, definirFaixaApagando] = useState<string | null>(null);
+  const [unidades, definirUnidades] = useState<Unidade[]>([]);
+  const [destino, definirDestino] = useState("");
   const sujo = JSON.stringify(dados) !== original;
+
+  useEffect(() => {
+    if (id) listarUnidades().then(definirUnidades).catch(() => definirUnidades([]));
+  }, [id]);
 
   useEffect(() => {
     if (!sujo) return;
@@ -166,18 +243,21 @@ function Editor({ aberta, semUnidade, tratar, aoVoltar }: { aberta: Aberta; semU
   }
 
   function aplicarModelo(livro: string) {
-    const modelo = MODELOS_FAGA.find((m) => m.livro === livro);
-    if (!modelo) return;
-    const faixas: FaixaFaga[] = modelo.faixas.map((f) => ({
-      id: novoId(),
-      titulo: f.titulo,
-      bloco: blocoDaAula(f.titulo),
-      inicio: "",
-      fim: "",
-      professor: "",
-      atividades: f.atividades.map((rotulo) => ({ id: novoId(), rotulo, feita: false })),
-    }));
-    mudar({ livro: modelo.livro, faixas, topicos: modelo.topicos, config: { ...dados.config, blocosDoLivro: new Set(faixas.map((f) => f.bloco)).size } });
+    const modelo = modeloDoLivro(livro);
+    if (modelo) mudar({ livro: modelo.livro, faixas: modelo.faixas, topicos: modelo.topicos, config: modelo.config });
+  }
+
+  async function transferir() {
+    if (!id || !destino) return;
+    const alvo = unidades.find((u) => u.id === destino)?.nome ?? destino;
+    if (!window.confirm(`Transferir a FAGA de ${dados.aluno} para ${alvo}? Ela deixa de aparecer nesta unidade${turma ? " e sai da turma" : ""}.`)) return;
+    try {
+      await transferirFaga(id, destino);
+      aoVoltar();
+    } catch (falha) {
+      tratar(falha, "Não foi possível transferir a FAGA.");
+      definirMensagem(falha instanceof ErroApi ? falha.message : "Não foi possível transferir a FAGA.");
+    }
   }
 
   function mover(indice: number, delta: number) {
@@ -225,7 +305,7 @@ function Editor({ aberta, semUnidade, tratar, aoVoltar }: { aberta: Aberta; semU
 
   return (
     <form onSubmit={salvar}>
-      <CabecalhoPagina titulo={id ? "FAGA do aluno" : "Nova FAGA"} texto="Preencha os dados, monte as aulas e marque o que o aluno concluiu. Salve antes de sair." />
+      <CabecalhoPagina titulo={id ? "FAGA do aluno" : "Nova FAGA"} texto={turma ? `Turma: ${turma.nome} (${descricaoDaTurma(turma)}). Marque o que o aluno concluiu e salve antes de sair.` : "Preencha os dados, monte as aulas e marque o que o aluno concluiu. Salve antes de sair."} />
 
       {semUnidade && (
         <p className={estilos.erro} role="alert">
@@ -410,6 +490,29 @@ function Editor({ aberta, semUnidade, tratar, aoVoltar }: { aberta: Aberta; semU
         <Icone nome="mais" tamanho={16} />
         Adicionar aula
       </button>
+
+      {id && (
+        <fieldset className={estilos.transferir}>
+          <legend>Mudar de unidade</legend>
+          <label>
+            Transferir a FAGA de {dados.aluno || "este aluno"} para
+            <select value={destino} onChange={(e) => definirDestino(e.target.value)}>
+              <option value="">Escolher unidade…</option>
+              {unidades
+                .filter((u) => u.id !== unidadeDaFaga)
+                .map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.nome}
+                  </option>
+                ))}
+            </select>
+          </label>
+          <button type="button" className={estilos.secundario} onClick={() => void transferir()} disabled={!destino || sujo}>
+            Transferir FAGA
+          </button>
+          {sujo && <small>Salve a FAGA antes de transferir.</small>}
+        </fieldset>
+      )}
 
       <FagaImpressao faga={dados} />
     </form>
