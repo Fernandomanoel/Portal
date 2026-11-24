@@ -1,0 +1,64 @@
+.legenda {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--brand-deepest);
+  color: #fff;
+  list-style: none;
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+@media (min-width: 640px) {
+  .legenda {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.termo {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.numero {
+  font-weight: 800;
+  color: #9be8b4;
+}
+
+.lista {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.enunciado {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.selecao {
+  width: 5rem;
+  flex-shrink: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--brand-deep);
+  font: inherit;
+  font-weight: 800;
+}
+
+.selecao:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.texto {
+  font-weight: 500;
+  color: var(--ink);
+}

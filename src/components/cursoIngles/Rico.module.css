@@ -1,0 +1,90 @@
+.pos {
+  color: var(--brand-deep);
+}
+
+.neg {
+  color: var(--danger);
+}
+
+.wh {
+  color: var(--brand);
+}
+
+.sim {
+  color: var(--tag-sim, var(--success));
+}
+
+.alerta {
+  color: var(--tag-alerta, var(--warning));
+}
+
+.dest {
+  color: var(--tag-dest, var(--brand));
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.sublinhado {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.chip {
+  display: inline-block;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--brand-tint-strong);
+  color: var(--brand-deep);
+  font-weight: 700;
+}
+
+.dica {
+  position: relative;
+  display: inline-block;
+  border-bottom: 2px dashed var(--brand);
+  color: var(--brand-deep);
+  font-weight: 700;
+  cursor: help;
+  padding: 0 2px;
+}
+
+.dica:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.balao {
+  position: absolute;
+  left: 50%;
+  bottom: 130%;
+  z-index: 5;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-50%) translateY(4px);
+  padding: 5px var(--space-3);
+  border-radius: var(--radius);
+  background: var(--brand-deepest);
+  color: #fff;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dica:hover .balao,
+.dica:focus .balao {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.link:hover {
+  color: var(--brand-deep);
+}

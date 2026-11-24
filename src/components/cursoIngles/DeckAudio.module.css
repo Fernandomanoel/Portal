@@ -1,0 +1,125 @@
+.deck {
+  margin-bottom: var(--space-5);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--brand-deepest), var(--brand-deep));
+  color: #fff;
+  box-shadow: var(--shadow-2);
+}
+
+.linha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+  .linha {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.faixa {
+  flex: 1;
+}
+
+.rotulo {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #a9d4ff;
+}
+
+.audio {
+  width: 100%;
+  height: 2.5rem;
+  border-radius: var(--radius-lg);
+}
+
+.botoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.tocar,
+.parar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-lg);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tocar {
+  background: #9be8b4;
+  color: #10321b;
+}
+
+.tocar:hover:not(:disabled) {
+  background: #b4f0c8;
+}
+
+.tocar:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.parar {
+  background: var(--danger);
+  color: #fff;
+}
+
+.tocar:focus-visible,
+.parar:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: #ffd27a;
+}
+
+.ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9be8b4;
+  animation: ping 1.2s infinite;
+}
+
+@keyframes ping {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ponto {
+    animation: none;
+  }
+}

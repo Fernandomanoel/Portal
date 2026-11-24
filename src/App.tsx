@@ -16,7 +16,8 @@ import { HomePage } from "@/pages/HomePage";
 import { IngresAtividadePage } from "@/pages/IngresAtividadePage";
 import { IngresAtividadesPage } from "@/pages/IngresAtividadesPage";
 import { IngresHubPage } from "@/pages/IngresHubPage";
-import { IngresProvasPage } from "@/pages/IngresProvasPage";
+import { AulaInglesPage } from "@/pages/cursoIngles/AulaInglesPage";
+import { CursoInglesPage } from "@/pages/cursoIngles/CursoInglesPage";
 import { DigitacaoHubPage } from "@/pages/digitacao/DigitacaoHubPage";
 import { RankingGeralPage } from "@/pages/digitacao/RankingGeralPage";
 import { DigitacaoConfigPage } from "@/pages/digitacao/DigitacaoConfigPage";
@@ -31,6 +32,8 @@ import { TextosClassicosPage } from "@/pages/digitacao/textosClassicos/TextosCla
 import { GuiadoJogoPage } from "@/pages/guiado/GuiadoJogoPage";
 import { GuiadoTutorialPage } from "@/pages/guiado/GuiadoTutorialPage";
 import { GuiadoVitrinePage } from "@/pages/guiado/GuiadoVitrinePage";
+import { ProfessorFagaPage } from "@/pages/professor/ProfessorFagaPage";
+import { ProfessorModulosInglesPage } from "@/pages/professor/ProfessorModulosInglesPage";
 import { ProfessorAcompanhamentoPage } from "@/pages/professor/ProfessorAcompanhamentoPage";
 import { ProfessorHistoricoPage } from "@/pages/professor/ProfessorHistoricoPage";
 import { ProfessorConteudoPage } from "@/pages/professor/ProfessorConteudoPage";
@@ -81,10 +84,12 @@ const roteador = criarRoteador([
         children: [
           { index: true, element: <IngresAtividadesPage /> },
           { path: "atividades", element: <IngresAtividadesPage /> },
-          { path: "provas", element: <IngresProvasPage /> },
         ],
       },
       { path: "ingles/atividades/:slug", element: <IngresAtividadePage /> },
+
+      { path: "curso-ingles", element: <CursoInglesPage /> },
+      { path: "curso-ingles/:aula", element: <AulaInglesPage /> },
 
       { path: "digitacao", element: <DigitacaoHubPage /> },
       { path: "digitacao/ranking", element: <RankingGeralPage /> },
@@ -116,6 +121,8 @@ const roteador = criarRoteador([
           { path: "listas", element: <ProfessorListasPage /> },
           { path: "listas/:id", element: <ProfessorListaPage /> },
           { path: "acompanhamento", element: <ProfessorAcompanhamentoPage /> },
+          { path: "faga", element: <ProfessorFagaPage /> },
+          { path: "modulos-ingles", element: <ProfessorModulosInglesPage /> },
           { path: "historico", element: <ProfessorHistoricoPage /> },
           { path: "pacotes", element: <ProfessorPacotesPage /> },
           { path: "usuarios", element: <ProfessorUsuariosPage /> },

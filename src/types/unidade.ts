@@ -1,4 +1,4 @@
-import type { PermissaoId } from "./acesso";
+import type { AreaId, PermissaoId } from "./acesso";
 
 /** Unidade (escola/filial): quem usa o portal se identifica por ela com a senha da aba Provas. */
 export interface Unidade {
@@ -10,6 +10,8 @@ export interface Unidade {
 export interface FichaUnidade {
   unidade: Unidade;
   ficha: string;
+  /** Área que a senha liberou: a ficha de Inglês só abre provas de Inglês. Fichas antigas não trazem: Informática. */
+  area?: AreaId;
   /** ISO. Depois disso a senha é pedida de novo. */
   expiraEm: string;
 }
@@ -29,6 +31,8 @@ export interface SessaoProfessor {
   todasAsUnidades: boolean;
   /** O que este usuário pode usar na área do professor. */
   permissoes: PermissaoId[];
+  /** Áreas que este usuário abre (Informática, Inglês ou as duas). */
+  areas: AreaId[];
 }
 
 export const TODAS_AS_UNIDADES = "*";

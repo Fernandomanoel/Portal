@@ -1,0 +1,27 @@
+.logo {
+  display: block;
+  height: 2.25rem;
+  width: auto;
+  object-fit: contain;
+  border-radius: var(--radius);
+}
+
+.reserva {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: var(--brand-deepest);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.ponto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #7ee2a0;
+}

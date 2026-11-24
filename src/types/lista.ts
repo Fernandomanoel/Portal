@@ -1,3 +1,5 @@
+import type { AreaId } from "./acesso";
+
 /**
  * Listas de acompanhamento da área do professor: uma planilha simples que os
  * professores montam e preenchem juntos. Ficam guardadas até alguém apagar —
@@ -128,6 +130,8 @@ export interface ListaAcompanhamento {
   id: string;
   /** Unidade dona da lista; `*` = lista da rede, criada por quem enxerga todas. Listas antigas não têm: valem como a unidade padrão. */
   unidade?: string;
+  /** Área da lista (Informática ou Inglês). Listas antigas não têm: Informática. */
+  area?: AreaId;
   compartilhamento?: Compartilhamento;
   acesso?: AcessoLista;
   titulo: string;
@@ -147,6 +151,7 @@ export interface ListaAcompanhamento {
 export interface ResumoLista {
   id: string;
   unidade?: string;
+  area?: AreaId;
   compartilhamento?: Compartilhamento;
   /** Calculado pelo servidor para quem pediu a lista. */
   acesso?: AcessoLista;

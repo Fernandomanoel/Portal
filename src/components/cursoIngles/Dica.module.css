@@ -1,0 +1,8 @@
+.dica {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent);
+  border-radius: var(--radius);
+  background: var(--warning-tint);
+  font-size: var(--text-sm);
+  color: var(--ink);
+}

@@ -96,7 +96,7 @@ export function HomePage() {
               <Icone nome="ingles" tamanho={22} />
             </span>
             <h2 className={estilos.nome}>
-              <Link to={rotas.ingles()}>Inglês</Link>
+              <Link to={rotas.ingles()}>Conversação</Link>
             </h2>
           </div>
           <p className={estilos.descricao}>

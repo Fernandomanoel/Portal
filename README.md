@@ -25,6 +25,7 @@ O portal sobe em `http://localhost:5173`.
 | `npm run build` | Checagem de tipos e build de produção em `dist/` |
 | `npm run build:servidor` | Servidor físico em `dist-servidor/servidor.mjs` |
 | `npm run servidor` | Sobe o servidor físico (site + `/api`) |
+| `npm run curso-ingles:senha` | Gera o hash da senha da área «Curso de Inglês» para `SENHA_CURSO_INGLES` |
 | `npm run unidade:senha` | Gera a senha da aba Provas de uma unidade para `UNIDADES` |
 | `npm run professor:senha` | Gera o login de um professor (e a unidade dele) para `PROFESSORES`; com `--admin` ele pode criar usuários pela tela |
 | `npm run preview` | Serve o build de produção |

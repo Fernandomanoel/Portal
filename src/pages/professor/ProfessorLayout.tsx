@@ -1,8 +1,10 @@
 import { Fragment, useCallback, useEffect, useState, type FormEvent } from "react";
-import { Navigate, NavLink, Outlet, useMatch, useOutletContext } from "react-router-dom";
+import { Navigate, NavLink, Outlet, useMatch, useNavigate, useOutletContext } from "react-router-dom";
 
 import { Icone } from "@/components/Icone";
 import { ErroApi, entrar, sair, sessaoAtual } from "@/lib/apiProvas";
+import { guardarAreaEscolhida, lerAreaEscolhida } from "@/lib/area";
+import { AREAS, type AreaId } from "@/types/acesso";
 import { rotas } from "@/lib/rotas";
 import { definirUnidadeAtiva, unidadeAtiva } from "@/lib/unidade";
 import type { SessaoProfessor } from "@/types/unidade";
@@ -14,6 +16,8 @@ export interface ContextoProfessor {
   professor: SessaoProfessor;
   /** Coordenação: unidade que está sendo olhada (`null` = todas). Professor de unidade: a própria. */
   unidadeAtual: string | null;
+  /** Área aberta agora (quem tem as duas escolhe na barra). */
+  area: AreaId;
   /** Chamada quando a API responde 401 no meio do uso: a sessão de 12 h venceu. */
   sessaoVencida: () => void;
 }
@@ -45,7 +49,11 @@ export function ProfessorLayout() {
   const [escolhida, definirEscolhida] = useState<string | null>(() => unidadeAtiva());
   // O editor de listas é tela cheia, com o próprio «Voltar às listas»: a barra da área do professor sai.
   const noEditor = useMatch("/professor/listas/:id") !== null;
+  const navigate = useNavigate();
   const naRaiz = useMatch({ path: "/professor", end: true }) !== null;
+  const [areaEscolhida, definirAreaEscolhida] = useState<AreaId | null>(() => lerAreaEscolhida());
+  const areasDoUsuario: AreaId[] = estado.fase === "dentro" && estado.professor.areas?.length ? estado.professor.areas : ["informatica"];
+  const area: AreaId = areaEscolhida && areasDoUsuario.includes(areaEscolhida) ? areaEscolhida : areasDoUsuario[0];
 
   useEffect(() => {
     let ativo = true;
@@ -72,6 +80,7 @@ export function ProfessorLayout() {
   const { professor } = estado;
   const permissoes = professor.permissoes ?? [];
   const pode = (id: string) => (permissoes as string[]).includes(id);
+  const emIngles = area === "ingles";
   // A página inicial é a das provas: quem não tem essa permissão vai para a primeira área que pode usar.
   if (naRaiz && !pode("provas")) {
     const destino = pode("conteudos") ? rotas.professorConteudos() : pode("listas") ? rotas.professorListas() : pode("usuarios") ? rotas.professorUsuarios() : null;
@@ -111,6 +120,25 @@ export function ProfessorLayout() {
                 <span className={estilos.unidade}>{professor.unidade.nome}</span>
               )}
             </p>
+            {areasDoUsuario.length > 1 && (
+              <div className={estilos.areas} role="group" aria-label="Área do professor">
+                {AREAS.filter((a) => areasDoUsuario.includes(a.id)).map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    aria-pressed={area === a.id}
+                    className={area === a.id ? `${estilos.areaBotao} ${estilos.areaBotaoAtivo}` : estilos.areaBotao}
+                    onClick={() => {
+                      guardarAreaEscolhida(a.id);
+                      definirAreaEscolhida(a.id);
+                      navigate(rotas.professor());
+                    }}
+                  >
+                    {a.rotulo}
+                  </button>
+                ))}
+              </div>
+            )}
             <nav className={estilos.abas} aria-label="Área do professor">
               {pode("provas") && (
                 <NavLink to={rotas.professor()} end className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
@@ -118,7 +146,7 @@ export function ProfessorLayout() {
                   Provas enviadas
                 </NavLink>
               )}
-              {pode("conteudos") && (
+              {!emIngles && pode("conteudos") && (
                 <NavLink to={rotas.professorConteudos()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
                   <Icone nome="livro" tamanho={16} />
                   Conteúdos
@@ -130,23 +158,35 @@ export function ProfessorLayout() {
                   Listas
                 </NavLink>
               )}
-              {pode("acompanhamento") && (
+              {!emIngles && pode("acompanhamento") && (
                 <NavLink to={rotas.professorAcompanhamento()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
                   <Icone nome="alvo" tamanho={16} />
                   Módulos
                 </NavLink>
               )}
-              {pode("historico") && (
+              {!emIngles && pode("historico") && (
                 <NavLink to={rotas.professorHistorico()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
                   <Icone nome="lapis" tamanho={16} />
                   Histórico
                 </NavLink>
               )}
-              {pode("pacotes") && (
+              {!emIngles && pode("pacotes") && (
               <NavLink to={rotas.professorPacotes()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
                 <Icone nome="relogio" tamanho={16} />
                 Pacotes
               </NavLink>
+              )}
+              {emIngles && pode("faga") && (
+                <NavLink to={rotas.professorFaga()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="tabela" tamanho={16} />
+                  FAGA
+                </NavLink>
+              )}
+              {emIngles && pode("faga") && (
+                <NavLink to={rotas.professorModulosIngles()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
+                  <Icone nome="alvo" tamanho={16} />
+                  Módulos
+                </NavLink>
               )}
               {pode("usuarios") && (
                 <NavLink to={rotas.professorUsuarios()} className={({ isActive }) => (isActive ? `${estilos.aba} ${estilos.abaAtiva}` : estilos.aba)}>
@@ -170,8 +210,8 @@ export function ProfessorLayout() {
         </>
       )}
       {/* Trocar de unidade remonta a página: tudo é buscado de novo, já filtrado. */}
-      <Fragment key={unidadeAtual ?? "todas"}>
-        <Outlet context={{ professor, unidadeAtual, sessaoVencida } satisfies ContextoProfessor} />
+      <Fragment key={`${unidadeAtual ?? "todas"}-${area}`}>
+        <Outlet context={{ professor, unidadeAtual, area, sessaoVencida } satisfies ContextoProfessor} />
       </Fragment>
     </>
   );

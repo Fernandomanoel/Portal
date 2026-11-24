@@ -5,6 +5,7 @@ import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { EstadoVazio } from "@/components/EstadoVazio";
 import { Icone } from "@/components/Icone";
 import { ErroApi, listarEnvios } from "@/lib/apiProvas";
+import { areaDaProva } from "@/lib/area";
 import { normalizar } from "@/lib/busca";
 import { rotas } from "@/lib/rotas";
 import { DIAS_GUARDADOS, type Envio } from "@/types/envio";
@@ -24,7 +25,7 @@ const FILTROS: { id: Filtro; rotulo: string }[] = [
 const ATUALIZAR_A_CADA_MS = 30_000;
 
 export function ProfessorEnviosPage() {
-  const { sessaoVencida, professor, unidadeAtual } = useProfessor();
+  const { sessaoVencida, professor, unidadeAtual, area } = useProfessor();
   const nomeUnidade = (id?: string) => professor.unidades.find((u) => u.id === id)?.nome;
   const [envios, definirEnvios] = useState<Envio[] | null>(null);
   const [erro, definirErro] = useState<string | null>(null);
@@ -37,7 +38,7 @@ export function ProfessorEnviosPage() {
     definirAtualizando(true);
     try {
       const { dados } = await listarEnvios();
-      definirEnvios(dados);
+      definirEnvios(dados.filter((e) => (e.area ?? areaDaProva(e.provaId)) === area));
       definirErro(null);
     } catch (falha) {
       if (falha instanceof ErroApi && falha.status === 401) sessaoVencida();
@@ -45,7 +46,7 @@ export function ProfessorEnviosPage() {
     } finally {
       definirAtualizando(false);
     }
-  }, [sessaoVencida]);
+  }, [sessaoVencida, area]);
 
   useEffect(() => {
     void carregar();

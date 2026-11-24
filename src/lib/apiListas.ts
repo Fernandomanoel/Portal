@@ -1,3 +1,4 @@
+import type { AreaId } from "@/types/acesso";
 import type { ListaAcompanhamento, ResumoLista } from "@/types/lista";
 import { chamar, comJson } from "./apiProvas";
 import { comUnidade } from "./unidade";
@@ -5,7 +6,8 @@ import { comUnidade } from "./unidade";
 const caminho = (id: string) => `listas/${encodeURIComponent(id)}`;
 
 export const listarListas = () => chamar<{ dados: ResumoLista[] }>(comUnidade("listas"));
-export const criarLista = (duplicarDe?: string, paraTodas = false) => chamar<ListaAcompanhamento>(comUnidade("listas"), comJson("POST", { ...(duplicarDe ? { duplicarDe } : {}), ...(paraTodas ? { paraTodas: true } : {}) }));
+export const criarLista = (duplicarDe?: string, paraTodas = false, area?: AreaId) =>
+  chamar<ListaAcompanhamento>(comUnidade("listas"), comJson("POST", { ...(duplicarDe ? { duplicarDe } : {}), ...(paraTodas ? { paraTodas: true } : {}), ...(area ? { area } : {}) }));
 export const obterLista = (id: string) => chamar<ListaAcompanhamento>(caminho(id));
 export const apagarLista = (id: string) => chamar<void>(caminho(id), { method: "DELETE" });
 

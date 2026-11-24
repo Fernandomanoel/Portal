@@ -149,3 +149,35 @@
     white-space: nowrap;
   }
 }
+
+.abasArea {
+  display: inline-flex;
+  gap: 2px;
+  margin-bottom: var(--space-5);
+  padding: 3px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.abaArea {
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.abaAreaAtiva {
+  background: var(--brand);
+  color: var(--ink-on-brand);
+}
+
+.abaArea:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

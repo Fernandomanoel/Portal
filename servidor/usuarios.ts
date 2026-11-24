@@ -1,5 +1,5 @@
 import type { AjusteFixo, UsuarioCadastrado } from "../src/types/acesso.js";
-import { LIMITES_USUARIO, normalizarPermissoes, usuarioValido } from "../src/types/acesso.js";
+import { LIMITES_USUARIO, normalizarAreas, normalizarPermissoes, usuarioValido } from "../src/types/acesso.js";
 import { TODAS_AS_UNIDADES } from "../src/types/unidade.js";
 import type { Armazenamento } from "./armazenamento.js";
 
@@ -10,7 +10,13 @@ import type { Armazenamento } from "./armazenamento.js";
  */
 export interface UsuarioGuardado extends UsuarioCadastrado {
   senha: string;
+  /** Senha cifrada para os administradores verem. Usuários criados antes não têm: só aparece depois de trocar a senha. */
+  senhaCifrada?: string;
 }
+
+/** Usuário cuja senha nenhum administrador vê, nem a do próprio cadastro. */
+export const SEM_VER_SENHA = ["manoel"];
+export const senhaOculta = (usuario: string) => SEM_VER_SENHA.includes(usuario.toLowerCase());
 
 export const caminhoUsuario = (usuario: string) => `usuarios/${usuario}.json`;
 
@@ -28,7 +34,7 @@ export const caminhoAjuste = (usuario: string) => `ajustes/${usuario.toLowerCase
 export const lerAjuste = (armazenamento: Armazenamento, usuario: string) =>
   usuarioValido(usuario.toLowerCase()) ? armazenamento.lerJson<AjusteFixo>(caminhoAjuste(usuario)) : Promise.resolve(null);
 
-export const semSenha = ({ senha: _senha, ...resto }: UsuarioGuardado): UsuarioCadastrado => resto;
+export const semSenha = ({ senha: _senha, senhaCifrada, ...resto }: UsuarioGuardado): UsuarioCadastrado => ({ ...resto, senhaVisivel: Boolean(senhaCifrada) && !senhaOculta(resto.usuario) });
 
 const texto = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
 
@@ -36,7 +42,7 @@ const texto = (v: unknown, max: number) => (typeof v === "string" ? v.trim().sli
  * Confere unidades e permissões vindas da tela. `unidadesValidas`: ids que existem.
  * Devolve a lista limpa (`["*"]` quando marcou todas) ou a mensagem do que está errado.
  */
-export function validarAcesso(corpo: Record<string, unknown>, unidadesValidas: string[]): { unidades: string[]; permissoes: ReturnType<typeof normalizarPermissoes> } | string {
+export function validarAcesso(corpo: Record<string, unknown>, unidadesValidas: string[]): { unidades: string[]; permissoes: ReturnType<typeof normalizarPermissoes>; areas: ReturnType<typeof normalizarAreas> } | string {
   const brutas = Array.isArray(corpo.unidades) ? corpo.unidades.filter((u): u is string => typeof u === "string") : [];
   const todas = brutas.includes(TODAS_AS_UNIDADES);
   const unidades = todas ? [TODAS_AS_UNIDADES] : [...new Set(brutas)];
@@ -44,7 +50,7 @@ export function validarAcesso(corpo: Record<string, unknown>, unidadesValidas: s
   if (!todas && unidades.some((u) => !unidadesValidas.includes(u))) return "Unidade desconhecida.";
   const permissoes = normalizarPermissoes(corpo.permissoes);
   if (!permissoes.length) return "Marque ao menos uma permissão.";
-  return { unidades, permissoes };
+  return { unidades, permissoes, areas: normalizarAreas(corpo.areas) };
 }
 
 export function validarNome(corpo: Record<string, unknown>): string | null {

@@ -74,6 +74,8 @@ export const listarUnidades = async () => (await chamar<{ dados: Unidade[] }>("u
 
 /** A unidade escolhida e a senha dela: devolve a ficha que o envio da prova carrega. */
 export const entrarNaUnidade = (unidade: string, senha: string) => chamar<FichaUnidade>("unidades/entrar", comJson("POST", { unidade, senha }));
+/** Provas de Inglês: a senha única de Inglês e a unidade para onde a prova vai. */
+export const entrarNasProvasIngles = (unidade: string, senha: string) => chamar<FichaUnidade>("unidades/entrar-ingles", comJson("POST", { unidade, senha }));
 
 /** Só existe enquanto a nota está pendente (`correcao.aRevisar > 0`): fecha a
  *  nota provisória ali mesmo, sem esperar o professor revisar. */

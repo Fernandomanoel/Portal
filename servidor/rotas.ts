@@ -7,15 +7,20 @@ import type { Armazenamento } from "./armazenamento.js";
 import type { HistoricoConteudo, RevisaoConteudo } from "../src/types/conteudoProfessor.js";
 import { LIMITES_CONTEUDO } from "../src/types/conteudoProfessor.js";
 import type { Compartilhamento, ListaAcompanhamento } from "../src/types/lista.js";
-import { PERMISSOES_PADRAO, normalizarPermissoes, type AjusteFixo, type PermissaoId, type UsuarioFixo } from "../src/types/acesso.js";
-import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, semSenha, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
+import { AREAS_PADRAO, IDS_AREA, PERMISSOES_DE_INGLES, PERMISSOES_PADRAO, normalizarAreas, normalizarPermissoes, type AjusteFixo, type AreaId, type PermissaoId, type UsuarioFixo } from "../src/types/acesso.js";
+import { caminhoAjuste, caminhoUsuario, lerAjuste, lerUsuario, listarUsuarios, semSenha, senhaOculta, usuarioValido, validarAcesso, validarNome, validarSenhaNova, type UsuarioGuardado } from "./usuarios.js";
 import { TODAS_AS_UNIDADES, type SessaoProfessor } from "../src/types/unidade.js";
 import { caminhoConteudo, comentarioValido, slugValido, validarConteudo } from "./conteudos.js";
 import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } from "./listas.js";
+import { acharAulaIngles, listarAulasIngles } from "./aulasIngles.js";
 import { conferirItem } from "../src/lib/correcaoProva.js";
+import { caminhoFaga, idFagaValido, lerFaga, listarFagas, sanearFaga } from "./fagas.js";
+import { caminhoTurma, idTurmaValido, lerTurma, listarTurmas, sanearTurma } from "./turmas.js";
 import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
 import {
+  COOKIE_CURSO_INGLES,
   COOKIE_SESSAO,
+  acessoCursoInglesValido,
   acharUnidade,
   autenticar,
   avisarConfiguracao,
@@ -25,13 +30,23 @@ import {
   senhaDoCadastroConfere,
   autenticarUnidade,
   criarFicha,
+  cifrarSenha,
+  decifrarSenha,
   lerFicha,
+  lerFichaComArea,
+  senhaDasProvasInglesConfere,
+  provasInglesComSenhaUnica,
   lembretesDasUnidades,
   todasAsUnidades,
   unidadePadrao,
   cookieApagado,
+  cookieCursoIngles,
+  cookieCursoInglesApagado,
   cookieSessao,
+  criarAcessoCursoIngles,
   criarSessao,
+  cursoInglesConfigurado,
+  senhaDoCursoInglesConfere,
   lerCookie,
   lerSessaoBruta,
   limparTentativas,
@@ -164,7 +179,7 @@ function comAjuste(professor: Professor, ajuste: AjusteFixo | null): Professor |
   const existentes = todasAsUnidades().map((u) => u.id);
   const unidades = ajuste.unidades.includes(TODAS_AS_UNIDADES) ? [TODAS_AS_UNIDADES] : ajuste.unidades.filter((u) => existentes.includes(u));
   if (!unidades.length) return null;
-  return { ...professor, unidade: unidades[0], unidades, permissoes: normalizarPermissoes(ajuste.permissoes) };
+  return { ...professor, unidade: unidades[0], unidades, permissoes: normalizarPermissoes(ajuste.permissoes), areas: normalizarAreas(ajuste.areas) };
 }
 
 function professorCadastrado(usuario: UsuarioGuardado | null): Professor | null {
@@ -179,6 +194,7 @@ function professorCadastrado(usuario: UsuarioGuardado | null): Professor | null 
     unidade: unidades[0],
     unidades,
     permissoes: normalizarPermissoes(usuario.permissoes),
+    areas: normalizarAreas(usuario.areas),
     origem: "cadastro",
   };
 }
@@ -208,8 +224,24 @@ async function autenticarProfessor(usuario: string, senha: string, armazenamento
 /** Permissões em vigor: as do cadastro, ou as padrão (professor da variável) mais gerenciar usuários se for administrador. */
 function permissoesDe(professor: Professor): PermissaoId[] {
   const base = professor.permissoes ?? PERMISSOES_PADRAO;
-  return normalizarPermissoes(professor.administrador ? [...base, "usuarios"] : base);
+  const todas = normalizarPermissoes(professor.administrador ? [...base, "usuarios"] : base);
+  // Cada área só traz as suas abas: quem não é de Inglês não usa a FAGA, e quem é só de Inglês não usa as de Informática.
+  const areas = areasDe(professor);
+  const soInformatica = areas.includes("informatica");
+  const soIngles = areas.includes("ingles");
+  return todas.filter((p) => {
+    if (PERMISSOES_DE_INGLES.includes(p)) return soIngles;
+    if (p === "provas" || p === "usuarios" || p === "listas" || p === "listas_editar") return true;
+    return soInformatica;
+  });
 }
+/** Áreas em vigor. O administrador da variável alcança as duas. */
+function areasDe(professor: Professor): AreaId[] {
+  return professor.administrador ? [...IDS_AREA] : normalizarAreas(professor.areas ?? AREAS_PADRAO);
+}
+const areaDaProva = (provaId: string): AreaId => (provaId.startsWith("Ingles/") ? "ingles" : "informatica");
+const areaDoEnvio = (envio: { area?: AreaId; provaId: string }): AreaId => envio.area ?? areaDaProva(envio.provaId);
+const podeVerEnvio = (professor: Professor, envio: Envio) => podeVer(professor, envio) && areasDe(professor).includes(areaDoEnvio(envio));
 const temPermissao = (professor: Professor, id: PermissaoId) => permissoesDe(professor).includes(id);
 const semPermissao = () => erro(403, "SEM_PERMISSAO", "Seu usuário não tem acesso a esta área. Fale com quem administra o portal.");
 
@@ -265,6 +297,7 @@ function sessaoDe(professor: Professor): SessaoProfessor {
     senhasProvas: escolhe ? Object.fromEntries(Object.entries(lembretes).filter(([id]) => doEscopo.some((u) => u.id === id))) : unico in lembretes ? { [unico]: lembretes[unico] } : {},
     todasAsUnidades: e === null,
     permissoes,
+    areas: areasDe(professor),
   };
 }
 
@@ -310,8 +343,9 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
   if (!chave) return erro(422, "VALIDATION_ERROR", "Envio sem chave.");
 
   // A senha da aba Provas identificou a unidade; sem a ficha não há para onde enviar a prova.
-  const unidade = lerFicha(dados.ficha);
-  if (!unidade) return erro(401, "UNIDADE_INVALIDA", "A sessão da unidade terminou. Volte à área de Provas e digite a senha da unidade de novo.");
+  const comArea = lerFichaComArea(dados.ficha);
+  if (!comArea) return erro(401, "UNIDADE_INVALIDA", "A sessão da unidade terminou. Volte à área de Provas e digite a senha da unidade de novo.");
+  const unidade = comArea.unidade;
 
   const agora = new Date();
   const id = `${dia(agora)}_${chave}`;
@@ -324,6 +358,9 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
   const provaId = typeof dados.provaId === "string" ? dados.provaId : "";
   const prova = await acharProva(provaId);
   if (!prova) return erro(404, "NAO_ENCONTRADO", "Essa prova não existe mais no portal.");
+
+  // A senha de Inglês só libera prova de Inglês, e a de Informática só a de Informática.
+  if (areaDaProva(provaId) !== comArea.area) return erro(401, "UNIDADE_INVALIDA", "Esta senha não libera provas dessa área. Volte à área de Provas e entre pela aba certa.");
 
   const nomeAluno = normalizarNome(dados.nomeAluno);
   if (!nomeAluno) return erro(422, "VALIDATION_ERROR", "Informe o nome completo do aluno (de 3 a 80 letras).");
@@ -377,6 +414,7 @@ async function enviar(requisicao: Request, armazenamento: Armazenamento) {
     tipoProva: tipoDe(prova),
     nomeAluno,
     unidade: unidade.id,
+    area: areaDaProva(provaId),
     iniciadaEm,
     enviadaEm: agora.toISOString(),
     respostas: validacao.respostas,
@@ -420,7 +458,11 @@ function vistaPelaUnidade(lista: { unidade?: string; compartilhamento?: Comparti
  * compartilhada. Edita quem tem «listas_editar» e é da dona, ou recebeu com edição liberada.
  * Administra (compartilhar, apagar) só quem é da dona, ou alcança todas.
  */
-function acessoLista(professor: Professor, lista: { unidade?: string; compartilhamento?: Compartilhamento }) {
+const areaDaLista = (lista: { area?: AreaId }): AreaId => lista.area ?? "informatica";
+
+function acessoLista(professor: Professor, lista: { unidade?: string; area?: AreaId; compartilhamento?: Compartilhamento }) {
+  // Lista de Inglês só aparece para quem é de Inglês, e a de Informática só para quem é de Informática.
+  if (!areasDe(professor).includes(areaDaLista(lista))) return { ver: false, editar: false, administrar: false };
   const e = escopo(professor);
   const daDona = noEscopo(professor, unidadeDe(lista));
   const comp = lista.compartilhamento;
@@ -447,7 +489,9 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
   const minhasPermissoes = permissoesDe(quem);
 
   /** Quem cria não dá o que não tem: nem unidade fora do seu alcance, nem permissão que não possui. */
-  const dentroDoMeuAlcance = (acesso: { unidades: string[]; permissoes: PermissaoId[] }) => {
+  const minhasAreas = areasDe(quem);
+  const dentroDoMeuAlcance = (acesso: { unidades: string[]; permissoes: PermissaoId[]; areas?: AreaId[] }) => {
+    if (acesso.areas?.some((a) => !minhasAreas.includes(a))) return "Você não pode liberar uma área que o seu próprio usuário não tem.";
     if (meuEscopo !== null && (acesso.unidades.includes(TODAS_AS_UNIDADES) || acesso.unidades.some((u) => !meuEscopo.includes(u)))) {
       return "Você não pode liberar unidades que o seu próprio usuário não alcança.";
     }
@@ -467,6 +511,7 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
           administrador,
           unidades: ajuste?.unidades ?? [p.unidade],
           permissoes: normalizarPermissoes(ajuste?.permissoes ?? (administrador ? [...PERMISSOES_PADRAO, "usuarios"] : PERMISSOES_PADRAO)),
+          areas: administrador ? [...IDS_AREA] : normalizarAreas(ajuste?.areas),
           ativo: ajuste?.ativo ?? true,
           ajustado: ajuste !== null,
           ajustavel: !administrador && usuarioValido(p.usuario.toLowerCase()),
@@ -491,7 +536,7 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
     if (typeof acesso === "string") return erro(422, "VALIDATION_ERROR", acesso);
     const negado = dentroDoMeuAlcance(acesso);
     if (negado) return erro(403, "SEM_PERMISSAO", negado);
-    const novo: UsuarioGuardado = { usuario, nome, senha: gerarHashSenha(senha), ...acesso, ativo: true, criadoEm: new Date().toISOString(), criadoPor: quem.nome };
+    const novo: UsuarioGuardado = { usuario, nome, senha: gerarHashSenha(senha), senhaCifrada: cifrarSenha(senha), ...acesso, ativo: true, criadoEm: new Date().toISOString(), criadoPor: quem.nome };
     await armazenamento.salvarJson(caminhoUsuario(usuario), novo);
     return json(semSenha(novo), 201);
   }
@@ -505,7 +550,7 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
     if (!usuarioValido(nomeAlvo)) return erro(422, "VALIDATION_ERROR", "Este usuário tem um nome fora do padrão e só muda pela Vercel.");
     if (nomeAlvo === quem.usuario.toLowerCase()) return erro(422, "VALIDATION_ERROR", "Você não pode ajustar o próprio usuário.");
     const atual = await lerAjuste(armazenamento, nomeAlvo);
-    const emVigor = { unidades: atual?.unidades ?? [fixo.unidade], permissoes: normalizarPermissoes(atual?.permissoes ?? PERMISSOES_PADRAO) };
+    const emVigor = { unidades: atual?.unidades ?? [fixo.unidade], permissoes: normalizarPermissoes(atual?.permissoes ?? PERMISSOES_PADRAO), areas: normalizarAreas(atual?.areas) };
     if (dentroDoMeuAlcance(emVigor)) return erro(403, "SEM_PERMISSAO", "Este usuário tem mais acesso do que o seu: só quem tem o mesmo alcance, ou mais, pode alterá-lo.");
 
     const corpo = (await lerCorpoJson(requisicao)) ?? {};
@@ -513,7 +558,7 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
       await armazenamento.apagar([caminhoAjuste(nomeAlvo)]);
       return new Response(null, { status: 204 });
     }
-    const acesso = validarAcesso({ unidades: corpo.unidades ?? emVigor.unidades, permissoes: corpo.permissoes ?? emVigor.permissoes }, unidades);
+    const acesso = validarAcesso({ unidades: corpo.unidades ?? emVigor.unidades, permissoes: corpo.permissoes ?? emVigor.permissoes, areas: corpo.areas ?? emVigor.areas }, unidades);
     if (typeof acesso === "string") return erro(422, "VALIDATION_ERROR", acesso);
     const negado = dentroDoMeuAlcance(acesso);
     if (negado) return erro(403, "SEM_PERMISSAO", negado);
@@ -523,13 +568,27 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
     return json(ajuste);
   }
 
+  // Ver a senha de um usuário criado pela tela. Só quem gerencia usuários; a do «manoel» ninguém vê.
+  if (partes.length === 3 && partes[2] === "senha" && metodo === "GET") {
+    const nomeAlvo = (partes[1] ?? "").toLowerCase();
+    if (senhaOculta(nomeAlvo)) return erro(403, "SEM_PERMISSAO", "A senha desse usuário não pode ser vista.");
+    const guardado = usuarioValido(nomeAlvo) ? await lerUsuario(armazenamento, nomeAlvo) : null;
+    if (!guardado) return erro(404, "NAO_ENCONTRADO", "Usuário não encontrado.");
+    if (nomeAlvo !== quem.usuario.toLowerCase() && dentroDoMeuAlcance({ unidades: guardado.unidades, permissoes: guardado.permissoes, areas: normalizarAreas(guardado.areas) })) {
+      return erro(403, "SEM_PERMISSAO", "Este usuário tem mais acesso do que o seu: só quem tem o mesmo alcance, ou mais, pode ver a senha dele.");
+    }
+    const senha = guardado.senhaCifrada ? decifrarSenha(guardado.senhaCifrada) : null;
+    if (!senha) return erro(404, "NAO_ENCONTRADO", "A senha deste usuário não está guardada para visualização. Defina uma nova senha em Editar e ela passa a aparecer aqui.");
+    return json({ senha }, 200, { "Cache-Control": "no-store" });
+  }
+
   const alvo = (partes[1] ?? "").toLowerCase();
   if (partes.length !== 2 || !usuarioValido(alvo)) return erro(404, "NAO_ENCONTRADO", "Usuário não encontrado.");
   const guardado = await lerUsuario(armazenamento, alvo);
   if (!guardado) return erro(404, "NAO_ENCONTRADO", "Usuário não encontrado.");
   const euMesmo = alvo === quem.usuario.toLowerCase();
   // Quem tem menos alcance não mexe em quem tem mais (trocar a senha dele seria entrar no lugar dele).
-  if (!euMesmo && dentroDoMeuAlcance({ unidades: guardado.unidades, permissoes: guardado.permissoes })) {
+  if (!euMesmo && dentroDoMeuAlcance({ unidades: guardado.unidades, permissoes: guardado.permissoes, areas: normalizarAreas(guardado.areas) })) {
     return erro(403, "SEM_PERMISSAO", "Este usuário tem mais acesso do que o seu: só quem tem o mesmo alcance, ou mais, pode alterá-lo.");
   }
 
@@ -551,15 +610,17 @@ async function rotearUsuarios(requisicao: Request, partes: string[], quem: Profe
       const senha = validarSenhaNova(corpo.senha);
       if (!senha) return erro(422, "VALIDATION_ERROR", "A senha precisa ter de 8 a 100 caracteres.");
       atualizado.senha = gerarHashSenha(senha);
+      atualizado.senhaCifrada = cifrarSenha(senha);
     }
-    if (corpo.unidades !== undefined || corpo.permissoes !== undefined) {
-      const acesso = validarAcesso({ unidades: corpo.unidades ?? guardado.unidades, permissoes: corpo.permissoes ?? guardado.permissoes }, unidades);
+    if (corpo.unidades !== undefined || corpo.permissoes !== undefined || corpo.areas !== undefined) {
+      const acesso = validarAcesso({ unidades: corpo.unidades ?? guardado.unidades, permissoes: corpo.permissoes ?? guardado.permissoes, areas: corpo.areas ?? guardado.areas }, unidades);
       if (typeof acesso === "string") return erro(422, "VALIDATION_ERROR", acesso);
       const negado = dentroDoMeuAlcance(acesso);
       if (negado) return erro(403, "SEM_PERMISSAO", negado);
       if (euMesmo && !acesso.permissoes.includes("usuarios")) return erro(422, "VALIDATION_ERROR", "Você não pode tirar de si mesmo a permissão de gerenciar usuários.");
       atualizado.unidades = acesso.unidades;
       atualizado.permissoes = acesso.permissoes;
+      atualizado.areas = acesso.areas;
     }
     if (corpo.ativo !== undefined) {
       if (typeof corpo.ativo !== "boolean") return erro(422, "VALIDATION_ERROR", "Valor inválido para «ativo».");
@@ -607,6 +668,7 @@ async function listarEnvios(url: URL, professor: Professor, armazenamento: Armaz
     .trim();
 
   const filtrados = envios
+    .filter((envio) => areasDe(professor).includes(areaDoEnvio(envio)))
     .filter((envio) => (ativa === null ? noEscopo(professor, unidadeDe(envio)) : unidadeDe(envio) === ativa))
     .map((envio) => ({ ...envio, unidade: unidadeDe(envio) ?? undefined }))
     .filter((envio) => !provaId || envio.provaId === provaId)
@@ -754,6 +816,33 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     return json(recibo(atualizado));
   }
 
+  // Curso de Inglês: área com senha própria. As aulas só saem do servidor com o cookie dado por /entrar.
+  if (partes[0] === "curso-ingles") {
+    const semCache = { "Cache-Control": "private, no-store" };
+    if (partes[1] === "entrar" && partes.length === 2 && metodo === "POST") {
+      const ip = ipDe(requisicao);
+      if (!tentativaPermitida(`curso-ingles:${ip}`)) return erro(429, "LIMITE_TENTATIVAS", "Muitas tentativas. Espere alguns minutos.");
+      // Sem SENHA_CURSO_INGLES a área está aberta (decisão provisória): não há o que conferir.
+      if (!cursoInglesConfigurado()) return json({ ok: true }, 200, semCache);
+      const corpo = await lerCorpoJson(requisicao);
+      if (!senhaDoCursoInglesConfere(String(corpo?.senha ?? ""))) return erro(401, "CREDENCIAIS_INVALIDAS", "Senha incorreta. Tente de novo.");
+      limparTentativas(`curso-ingles:${ip}`);
+      return json({ ok: true }, 200, { ...semCache, "Set-Cookie": cookieCursoIngles(criarAcessoCursoIngles(), seguro) });
+    }
+    if (partes[1] === "sair" && partes.length === 2 && metodo === "POST") {
+      return new Response(null, { status: 204, headers: { "Set-Cookie": cookieCursoInglesApagado(seguro) } });
+    }
+    if (partes[1] === "aulas" && metodo === "GET" && partes.length <= 3) {
+      // A senha só vale quando a variável SENHA_CURSO_INGLES existe; sem ela a área abre sem senha (provisório).
+      const comSenha = cursoInglesConfigurado();
+      if (comSenha && !acessoCursoInglesValido(lerCookie(requisicao.headers.get("cookie"), COOKIE_CURSO_INGLES))) return erro(401, "NAO_AUTENTICADO", "Digite a senha do Curso de Inglês.");
+      if (partes.length === 2) return json({ dados: await listarAulasIngles(), comSenha }, 200, semCache);
+      const aula = await acharAulaIngles(decodeURIComponent(partes[2]));
+      return aula ? json({ aula }, 200, semCache) : erro(404, "NAO_ENCONTRADO", "Aula não encontrada.");
+    }
+    return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
+  }
+
   // Público: as unidades para escolher na aba Provas (só id e nome; a senha nunca sai do servidor).
   if (partes[0] === "unidades" && partes.length === 1 && metodo === "GET") {
     const dados = todasAsUnidades().sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
@@ -775,6 +864,21 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     if (!unidade) return erro(401, "CREDENCIAIS_INVALIDAS", "Senha incorreta. Tente de novo.");
     limparTentativas(`unidade:${ip}`);
     return json({ unidade, ...criarFicha(unidade) });
+  }
+
+  // Público: provas de Inglês. Uma senha única (SENHA_PROVAS_INGLES) para todas as unidades; a unidade escolhida
+  // decide para onde a prova vai. Sem a variável, vale a senha de cada unidade.
+  if (partes[0] === "unidades" && partes[1] === "entrar-ingles" && metodo === "POST") {
+    const ip = ipDe(requisicao);
+    if (!tentativaPermitida(`unidade:${ip}`)) return erro(429, "LIMITE_TENTATIVAS", "Muitas tentativas. Espere alguns minutos.");
+    if (!todasAsUnidades().length) return erro(503, "ERRO_INTERNO", "Nenhuma unidade foi configurada no servidor (variável UNIDADES).");
+    const corpo = await lerCorpoJson(requisicao);
+    const escolhida = acharUnidade(String(corpo?.unidade ?? ""));
+    const senha = String(corpo?.senha ?? "");
+    const unidade = provasInglesComSenhaUnica() ? (senhaDasProvasInglesConfere(senha) ? escolhida : null) : autenticarUnidade(String(corpo?.unidade ?? ""), senha);
+    if (!unidade) return erro(401, "CREDENCIAIS_INVALIDAS", "Senha incorreta. Tente de novo.");
+    limparTentativas(`unidade:${ip}`);
+    return json({ unidade, ...criarFicha(unidade, "ingles") });
   }
 
   // Público: o professor libera, na máquina do aluno, a prova que travou.
@@ -839,7 +943,7 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
 
     // Envio de outra unidade responde como se não existisse.
     const doEnvio = await armazenamento.lerJson<Envio>(caminhoEnvio(id));
-    if (doEnvio && !podeVer(professor, doEnvio)) return erro(404, "NAO_ENCONTRADO", "Envio não encontrado.");
+    if (doEnvio && !podeVerEnvio(professor, doEnvio)) return erro(404, "NAO_ENCONTRADO", "Envio não encontrado.");
 
     if (partes.length === 2 && metodo === "GET") {
       const envio = doEnvio;
@@ -850,6 +954,124 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
     if (partes.length === 2 && metodo === "PATCH") return lancarNota(requisicao, id, professor, armazenamento);
     if (partes.length === 2 && metodo === "DELETE") return apagarEnvio(id, armazenamento);
     if (partes.length === 3 && partes[2] === "arquivo" && metodo === "GET") return baixarArquivo(id, armazenamento);
+  }
+
+  if (partes[0] === "fagas") {
+    const professor = await professorDa(requisicao, armazenamento);
+    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    if (!temPermissao(professor, "faga")) return semPermissao();
+
+    if (partes.length === 1 && metodo === "GET") {
+      const ativa = unidadeAtiva(professor, url);
+      if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
+      const todas = await listarFagas(armazenamento);
+      return json({ dados: todas.filter((f) => (ativa === null ? noEscopo(professor, f.unidade) : f.unidade === ativa)) });
+    }
+
+    if (partes.length === 1 && metodo === "POST") {
+      const ativa = unidadeAtiva(professor, url);
+      if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
+      if (ativa === null) return erro(422, "VALIDATION_ERROR", "Escolha a unidade do aluno no alto da página antes de criar a FAGA.");
+      const dados = sanearFaga((await lerCorpoJson(requisicao)) ?? {});
+      if (typeof dados === "string") return erro(422, "VALIDATION_ERROR", dados);
+      if (dados.turmaId) {
+        const turma = await lerTurma(armazenamento, dados.turmaId);
+        if (!turma || turma.unidade !== ativa) dados.turmaId = dados.alunoId = undefined;
+      }
+      const agora = new Date().toISOString();
+      const nova = { id: randomUUID(), unidade: ativa, ...dados, criadoEm: agora, alteradoEm: agora, criadoPor: professor.nome };
+      await armazenamento.salvarJson(caminhoFaga(nova.id), nova);
+      return json(nova, 201);
+    }
+
+    const id = partes[1] ?? "";
+    if (!idFagaValido(id) || (partes.length !== 2 && !(partes.length === 3 && partes[2] === "transferir"))) return erro(404, "NAO_ENCONTRADO", "FAGA não encontrada.");
+    const atual = await lerFaga(armazenamento, id);
+    // FAGA de outra unidade responde como se não existisse.
+    if (!atual || !noEscopo(professor, atual.unidade)) return erro(404, "NAO_ENCONTRADO", "FAGA não encontrada.");
+
+    // Passa a FAGA do aluno para outra unidade: sai da turma (a turma fica onde está) e some para quem só vê a unidade antiga.
+    if (partes.length === 3 && metodo === "POST") {
+      const destino = acharUnidade(String((await lerCorpoJson(requisicao))?.unidade ?? ""));
+      if (!destino) return erro(422, "VALIDATION_ERROR", "Escolha a unidade de destino.");
+      if (destino.id === atual.unidade) return erro(422, "VALIDATION_ERROR", "A FAGA já está nessa unidade.");
+      const movida = { ...atual, unidade: destino.id, turmaId: undefined, alunoId: undefined, alteradoEm: new Date().toISOString() };
+      await armazenamento.salvarJson(caminhoFaga(id), movida);
+      return json(movida);
+    }
+    if (partes.length !== 2) return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
+    if (metodo === "GET") return json(atual);
+    if (metodo === "PUT") {
+      const dados = sanearFaga((await lerCorpoJson(requisicao)) ?? {});
+      if (typeof dados === "string") return erro(422, "VALIDATION_ERROR", dados);
+      // A FAGA fica na turma que já tinha: trocar de turma ou de aluno não é feito por aqui, e a unidade só muda por «transferir».
+      const salva = { ...atual, ...dados, turmaId: atual.turmaId, alunoId: atual.alunoId, unidade: atual.unidade, alteradoEm: new Date().toISOString() };
+      await armazenamento.salvarJson(caminhoFaga(id), salva);
+      return json(salva);
+    }
+    if (metodo === "DELETE") {
+      await armazenamento.apagar([caminhoFaga(id)]);
+      return new Response(null, { status: 204 });
+    }
+  }
+
+  if (partes[0] === "turmas") {
+    const professor = await professorDa(requisicao, armazenamento);
+    if (!professor) return erro(401, "NAO_AUTENTICADO", "Entre com seu usuário e senha.");
+    if (!temPermissao(professor, "faga")) return semPermissao();
+
+    if (partes.length === 1 && metodo === "GET") {
+      const ativa = unidadeAtiva(professor, url);
+      if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
+      const todas = await listarTurmas(armazenamento);
+      return json({ dados: todas.filter((t) => (ativa === null ? noEscopo(professor, t.unidade) : t.unidade === ativa)) });
+    }
+
+    if (partes.length === 1 && metodo === "POST") {
+      const ativa = unidadeAtiva(professor, url);
+      if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
+      if (ativa === null) return erro(422, "VALIDATION_ERROR", "Escolha a unidade da turma no alto da página antes de criá-la.");
+      const dados = sanearTurma((await lerCorpoJson(requisicao)) ?? {});
+      if (typeof dados === "string") return erro(422, "VALIDATION_ERROR", dados);
+      const agora = new Date().toISOString();
+      const nova = { id: randomUUID(), unidade: ativa, ...dados, criadoEm: agora, alteradoEm: agora, criadoPor: professor.nome };
+      await armazenamento.salvarJson(caminhoTurma(nova.id), nova);
+      return json(nova, 201);
+    }
+
+    const id = partes[1] ?? "";
+    if (!idTurmaValido(id) || (partes.length !== 2 && !(partes.length === 3 && partes[2] === "transferir"))) return erro(404, "NAO_ENCONTRADO", "Turma não encontrada.");
+    const atual = await lerTurma(armazenamento, id);
+    if (!atual || !noEscopo(professor, atual.unidade)) return erro(404, "NAO_ENCONTRADO", "Turma não encontrada.");
+
+    // Passa a turma inteira, com as FAGAs dos alunos, para outra unidade.
+    if (partes.length === 3 && metodo === "POST") {
+      const destino = acharUnidade(String((await lerCorpoJson(requisicao))?.unidade ?? ""));
+      if (!destino) return erro(422, "VALIDATION_ERROR", "Escolha a unidade de destino.");
+      if (destino.id === atual.unidade) return erro(422, "VALIDATION_ERROR", "A turma já está nessa unidade.");
+      const agora = new Date().toISOString();
+      const movida = { ...atual, unidade: destino.id, alteradoEm: agora };
+      const fagas = (await listarFagas(armazenamento)).filter((f) => f.turmaId === id);
+      await armazenamento.salvarJson(caminhoTurma(id), movida);
+      await Promise.all(fagas.map((f) => armazenamento.salvarJson(caminhoFaga(f.id), { ...f, unidade: destino.id, alteradoEm: agora })));
+      return json({ turma: movida, fagas: fagas.length });
+    }
+    if (partes.length !== 2) return erro(404, "NAO_ENCONTRADO", "Rota não encontrada.");
+    if (metodo === "GET") return json(atual);
+    if (metodo === "PUT") {
+      const dados = sanearTurma((await lerCorpoJson(requisicao)) ?? {});
+      if (typeof dados === "string") return erro(422, "VALIDATION_ERROR", dados);
+      const salva = { ...atual, ...dados, alteradoEm: new Date().toISOString() };
+      await armazenamento.salvarJson(caminhoTurma(id), salva);
+      return json(salva);
+    }
+    if (metodo === "DELETE") {
+      // As FAGAs dos alunos ficam: viram avulsas.
+      const fagas = (await listarFagas(armazenamento)).filter((f) => f.turmaId === id);
+      await Promise.all(fagas.map((f) => armazenamento.salvarJson(caminhoFaga(f.id), { ...f, turmaId: undefined, alunoId: undefined })));
+      await armazenamento.apagar([caminhoTurma(id)]);
+      return new Response(null, { status: 204 });
+    }
   }
 
   if (partes[0] === "listas") {
@@ -880,7 +1102,11 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
         origem = (await armazenamento.lerJson<ListaAcompanhamento>(caminhoLista(origemId))) ?? undefined;
         if (!origem || !acessoLista(professor, origem).ver) return erro(404, "NAO_ENCONTRADO", "Lista não encontrada.");
       }
-      const lista = novaLista(professor, paraTodas ? TODAS_AS_UNIDADES : ativa, origem);
+      const minhasAreas = areasDe(professor);
+      const areaPedida = corpo?.area === "ingles" || corpo?.area === "informatica" ? corpo.area : null;
+      const area: AreaId = origem ? areaDaLista(origem) : areaPedida ?? minhasAreas[0];
+      if (!minhasAreas.includes(area)) return erro(403, "SEM_PERMISSAO", "Seu usuário não é dessa área.");
+      const lista = novaLista(professor, paraTodas ? TODAS_AS_UNIDADES : ativa, origem, area);
       await armazenamento.salvarJson(caminhoLista(lista.id), lista);
       return json(comAcesso(professor, lista), 201);
     }

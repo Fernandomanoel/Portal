@@ -293,3 +293,31 @@
 .grade[hidden] {
   display: none;
 }
+
+.senhaVista {
+  display: inline-block;
+  margin-right: var(--space-2);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-xs);
+  background: var(--brand-tint);
+  color: var(--brand-deepest);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  word-break: break-all;
+}
+
+.forca {
+  font-weight: 700;
+}
+
+.forca_fraca {
+  color: var(--danger);
+}
+
+.forca_media {
+  color: var(--warning);
+}
+
+.forca_forte {
+  color: var(--success);
+}

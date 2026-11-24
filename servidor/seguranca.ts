@@ -1,7 +1,7 @@
-import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 
 import type { Professor } from "../src/types/envio.js";
-import type { PermissaoId } from "../src/types/acesso.js";
+import type { AreaId, PermissaoId } from "../src/types/acesso.js";
 import { TODAS_AS_UNIDADES, type Unidade } from "../src/types/unidade.js";
 
 /**
@@ -185,6 +185,31 @@ function assinar(conteudo: string) {
   return createHmac("sha256", segredo()).update(conteudo).digest("base64url");
 }
 
+/**
+ * Senha de usuário criado pela tela, cifrada (AES-256-GCM) para os administradores poderem vê-la. A chave sai do
+ * SEGREDO_SESSAO: trocar esse segredo torna as senhas guardadas ilegíveis (o login continua valendo, pelo hash).
+ */
+const chaveDasSenhas = () => createHmac("sha256", segredo()).update("senhas-dos-usuarios-v1").digest();
+
+export function cifrarSenha(senha: string): string {
+  const iv = randomBytes(12);
+  const cifra = createCipheriv("aes-256-gcm", chaveDasSenhas(), iv);
+  const dados = Buffer.concat([cifra.update(senha, "utf8"), cifra.final()]);
+  return `v1:${iv.toString("hex")}:${cifra.getAuthTag().toString("hex")}:${dados.toString("hex")}`;
+}
+
+export function decifrarSenha(valor: string): string | null {
+  const [versao, iv, tag, dados] = valor.split(":");
+  if (versao !== "v1" || !iv || !tag || !dados) return null;
+  try {
+    const decifra = createDecipheriv("aes-256-gcm", chaveDasSenhas(), Buffer.from(iv, "hex"));
+    decifra.setAuthTag(Buffer.from(tag, "hex"));
+    return Buffer.concat([decifra.update(Buffer.from(dados, "hex")), decifra.final()]).toString("utf8");
+  } catch {
+    return null;
+  }
+}
+
 export function criarSessao(professor: Professor): string {
   // A sessão só guarda quem é e de onde veio o cadastro; unidades e permissões são lidas de novo a cada requisição.
   const conteudo = Buffer.from(JSON.stringify({ usuario: professor.usuario, o: professor.origem === "cadastro" ? "c" : "v", expira: Date.now() + DURACAO_SESSAO_MS })).toString("base64url");
@@ -220,10 +245,22 @@ export type { PermissaoId };
 // A ficha da unidade é o que o aluno carrega depois de digitar a senha da aba Provas.
 const DURACAO_FICHA_MS = 12 * 60 * 60 * 1000;
 
-export function criarFicha(unidade: Unidade): { ficha: string; expiraEm: string } {
+export function criarFicha(unidade: Unidade, area: AreaId = "informatica"): { ficha: string; expiraEm: string; area: AreaId } {
   const expira = Date.now() + DURACAO_FICHA_MS;
-  const conteudo = Buffer.from(JSON.stringify({ u: unidade.id, expira, t: "ficha" })).toString("base64url");
-  return { ficha: `${conteudo}.${assinar(conteudo)}`, expiraEm: new Date(expira).toISOString() };
+  const conteudo = Buffer.from(JSON.stringify({ u: unidade.id, expira, t: "ficha", a: area })).toString("base64url");
+  return { ficha: `${conteudo}.${assinar(conteudo)}`, expiraEm: new Date(expira).toISOString(), area };
+}
+
+/** A ficha de antes das áreas não leva `a`: vale como Informática. */
+export function lerFichaComArea(token: unknown): { unidade: Unidade; area: AreaId } | null {
+  const unidade = lerFicha(token);
+  if (!unidade || typeof token !== "string") return null;
+  try {
+    const dado = JSON.parse(Buffer.from(token.split(".")[0], "base64url").toString()) as { a?: string };
+    return { unidade, area: dado.a === "ingles" ? "ingles" : "informatica" };
+  } catch {
+    return null;
+  }
 }
 
 export function lerFicha(token: unknown): Unidade | null {
@@ -266,6 +303,62 @@ export function lerCookie(cabecalho: string | null, nome: string): string | unde
     if (chave === nome) return valor.join("=");
   }
   return undefined;
+}
+
+// ------------------------------------------------------- curso de inglês
+
+/**
+ * A área «Curso de Inglês» tem senha própria, no hash scrypt da variável SENHA_CURSO_INGLES (gerado por
+ * `npm run curso-ingles:senha`). Quem acerta recebe um cookie assinado, só para essa área: as aulas só saem do servidor
+ * com ele, e ele não vale para a área do professor nem para as provas.
+ */
+export const COOKIE_CURSO_INGLES = "portal_curso_ingles";
+const DURACAO_ACESSO_CURSO_MS = 12 * 60 * 60 * 1000;
+
+/** Senha única das provas de Inglês (hash scrypt em SENHA_PROVAS_INGLES). Sem a variável, vale a senha de cada unidade. */
+export const provasInglesComSenhaUnica = () => Boolean(process.env.SENHA_PROVAS_INGLES?.trim());
+
+export function senhaDasProvasInglesConfere(senha: string): boolean {
+  const guardada = process.env.SENHA_PROVAS_INGLES?.trim();
+  const confere = senhaConfere(senha, guardada || HASH_FALSO);
+  return Boolean(guardada) && confere;
+}
+
+export const cursoInglesConfigurado = () => Boolean(process.env.SENHA_CURSO_INGLES?.trim());
+
+export function senhaDoCursoInglesConfere(senha: string): boolean {
+  const guardada = process.env.SENHA_CURSO_INGLES?.trim();
+  // Sem senha configurada ainda passa pelo scrypt, para a resposta levar o mesmo tempo.
+  const confere = senhaConfere(senha, guardada || HASH_FALSO);
+  return Boolean(guardada) && confere;
+}
+
+export function criarAcessoCursoIngles(): string {
+  const conteudo = Buffer.from(JSON.stringify({ t: "curso-ingles", expira: Date.now() + DURACAO_ACESSO_CURSO_MS })).toString("base64url");
+  return `${conteudo}.${assinar(conteudo)}`;
+}
+
+export function acessoCursoInglesValido(token: string | undefined): boolean {
+  if (!token) return false;
+  const [conteudo, assinatura] = token.split(".");
+  if (!conteudo || !assinatura) return false;
+  const esperada = Buffer.from(assinar(conteudo));
+  const recebida = Buffer.from(assinatura);
+  if (esperada.length !== recebida.length || !timingSafeEqual(esperada, recebida)) return false;
+  try {
+    const dado = JSON.parse(Buffer.from(conteudo, "base64url").toString()) as { t?: string; expira?: number };
+    return dado.t === "curso-ingles" && typeof dado.expira === "number" && dado.expira > Date.now();
+  } catch {
+    return false;
+  }
+}
+
+export function cookieCursoIngles(token: string, seguro: boolean): string {
+  return [`${COOKIE_CURSO_INGLES}=${token}`, "Path=/api", "HttpOnly", "SameSite=Strict", `Max-Age=${DURACAO_ACESSO_CURSO_MS / 1000}`, seguro ? "Secure" : ""].filter(Boolean).join("; ");
+}
+
+export function cookieCursoInglesApagado(seguro: boolean): string {
+  return [`${COOKIE_CURSO_INGLES}=`, "Path=/api", "HttpOnly", "SameSite=Strict", "Max-Age=0", seguro ? "Secure" : ""].filter(Boolean).join("; ");
 }
 
 // ------------------------------------------------------ limite de tentativas

@@ -273,3 +273,35 @@
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
+
+/* ---------- Troca de área (só para quem tem Informática e Inglês) ---------- */
+
+.areas {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.areaBotao {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.areaBotaoAtivo {
+  background: var(--brand);
+  color: var(--ink-on-brand);
+}
+
+.areaBotao:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}

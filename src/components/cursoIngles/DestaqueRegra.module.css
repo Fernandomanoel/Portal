@@ -1,0 +1,112 @@
+.painel {
+  padding: var(--space-5);
+  border: 2px solid color-mix(in srgb, var(--brand) 30%, transparent);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--surface-soft), var(--surface));
+  box-shadow: var(--shadow-1);
+}
+
+.painel[data-salto="1"] {
+  animation: destaque 1.6s ease-out 2;
+}
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.etiqueta {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--warning-tint);
+  color: var(--warning);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.texto {
+  margin: 0 0 var(--space-5);
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.grupos {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .grupos {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.grupo {
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.grupoTitulo {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+
+.itens {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+@keyframes destaque {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 60%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--brand) 25%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .painel[data-salto="1"] {
+    animation: none;
+    outline: 3px solid var(--brand);
+  }
+}

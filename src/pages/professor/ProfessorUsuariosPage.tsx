@@ -2,17 +2,28 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { Icone } from "@/components/Icone";
-import { ajustarFixo, apagarUsuario, atualizarUsuario, criarUsuario, listarUsuarios, voltarFixoAoPadrao, type ListaDeUsuarios } from "@/lib/apiUsuarios";
+import { ajustarFixo, apagarUsuario, atualizarUsuario, criarUsuario, listarUsuarios, verSenhaUsuario, voltarFixoAoPadrao, type ListaDeUsuarios } from "@/lib/apiUsuarios";
 import { ErroApi } from "@/lib/apiProvas";
-import { PERMISSOES, type PermissaoId, type UsuarioCadastrado, type UsuarioFixo } from "@/types/acesso";
+import { AREAS, forcaDaSenha, PERMISSOES, type AreaId, type PermissaoId, type UsuarioCadastrado, type UsuarioFixo } from "@/types/acesso";
 import { TODAS_AS_UNIDADES } from "@/types/unidade";
 import { useProfessor } from "./ProfessorLayout";
 import estilos from "./ProfessorUsuariosPage.module.css";
 
-const ALFABETO = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const MINUSCULAS = "abcdefghjkmnpqrstuvwxyz";
+const MAIUSCULAS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+const NUMEROS = "23456789";
+const SIMBOLOS = "!@#$%&*?+-=_";
+
+/** Senha forte de 16 caracteres: garante ao menos uma minúscula, uma maiúscula, um número e um símbolo, e embaralha. */
 function senhaAleatoria() {
-  const bytes = crypto.getRandomValues(new Uint32Array(12));
-  return Array.from(bytes, (n) => ALFABETO[n % ALFABETO.length]).join("");
+  const sorteia = (conjunto: string) => conjunto[crypto.getRandomValues(new Uint32Array(1))[0] % conjunto.length];
+  const todos = MINUSCULAS + MAIUSCULAS + NUMEROS + SIMBOLOS;
+  const letras = [sorteia(MINUSCULAS), sorteia(MAIUSCULAS), sorteia(NUMEROS), sorteia(SIMBOLOS), ...Array.from({ length: 12 }, () => sorteia(todos))];
+  for (let i = letras.length - 1; i > 0; i--) {
+    const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+    [letras[i], letras[j]] = [letras[j], letras[i]];
+  }
+  return letras.join("");
 }
 
 interface Formulario {
@@ -21,10 +32,11 @@ interface Formulario {
   senha: string;
   unidades: string[];
   permissoes: PermissaoId[];
+  areas: AreaId[];
   ativo: boolean;
 }
 
-const vazio = (): Formulario => ({ usuario: "", nome: "", senha: "", unidades: [], permissoes: ["listas"], ativo: true });
+const vazio = (): Formulario => ({ usuario: "", nome: "", senha: "", unidades: [], permissoes: ["listas"], areas: ["informatica"], ativo: true });
 
 export function ProfessorUsuariosPage() {
   const { professor, sessaoVencida } = useProfessor();
@@ -32,6 +44,8 @@ export function ProfessorUsuariosPage() {
   const [erro, definirErro] = useState<string | null>(null);
   const [editando, definirEditando] = useState<{ modo: "novo" } | { modo: "editar"; usuario: string } | { modo: "fixo"; usuario: string } | null>(null);
   const [apagando, definirApagando] = useState<string | null>(null);
+  // Senhas que o administrador pediu para ver: ficam só na memória da página e somem ao recarregar.
+  const [senhasAbertas, definirSenhasAbertas] = useState<Record<string, string>>({});
 
   const tratar = useCallback(
     (falha: unknown, padrao: string) => {
@@ -56,6 +70,19 @@ export function ProfessorUsuariosPage() {
 
   const nomeUnidade = (id: string) => (id === TODAS_AS_UNIDADES ? "Todas as unidades" : (dados?.unidades.find((u) => u.id === id)?.nome ?? id));
   const rotuloPermissao = (id: PermissaoId) => PERMISSOES.find((p) => p.id === id)?.rotulo ?? id;
+
+  async function alternarSenha(usuario: string) {
+    if (senhasAbertas[usuario]) {
+      definirSenhasAbertas(({ [usuario]: _fechada, ...resto }) => resto);
+      return;
+    }
+    try {
+      const { senha } = await verSenhaUsuario(usuario);
+      definirSenhasAbertas((atual) => ({ ...atual, [usuario]: senha }));
+    } catch (falha) {
+      tratar(falha, "Não foi possível mostrar a senha.");
+    }
+  }
 
   async function alternarAtivo(u: UsuarioCadastrado) {
     try {
@@ -118,6 +145,7 @@ export function ProfessorUsuariosPage() {
           todasAsUnidades={professor.todasAsUnidades}
           minhasUnidades={professor.coordenacao ? professor.unidades.map((u) => u.id) : [professor.unidade.id]}
           minhasPermissoes={professor.permissoes}
+          minhasAreas={professor.areas ?? ["informatica"]}
           aoSalvar={async () => {
             definirEditando(null);
             await carregar();
@@ -145,6 +173,15 @@ export function ProfessorUsuariosPage() {
                       </p>
                       <p className={estilos.usuario}>{u.usuario}</p>
                     </div>
+                    {senhasAbertas[u.usuario] && (
+                      <div className={estilos.acesso}>
+                        <p className={estilos.rotulo}>Senha</p>
+                        <code className={estilos.senhaVista}>{senhasAbertas[u.usuario]}</code>
+                        <button type="button" className={estilos.acao} onClick={() => void navigator.clipboard?.writeText(senhasAbertas[u.usuario])}>
+                          Copiar
+                        </button>
+                      </div>
+                    )}
                     <div className={estilos.acesso}>
                       <p className={estilos.rotulo}>Unidades</p>
                       <ul className={estilos.chips}>
@@ -156,6 +193,9 @@ export function ProfessorUsuariosPage() {
                     <div className={estilos.acesso}>
                       <p className={estilos.rotulo}>Acessa</p>
                       <ul className={estilos.chips}>
+                        {(u.areas ?? ["informatica"]).map((a) => (
+                          <li key={a}>Área: {AREAS.find((x) => x.id === a)?.rotulo}</li>
+                        ))}
                         {u.permissoes.map((p) => (
                           <li key={p}>{rotuloPermissao(p)}</li>
                         ))}
@@ -176,6 +216,11 @@ export function ProfessorUsuariosPage() {
                         <button type="button" className={estilos.acao} onClick={() => definirEditando({ modo: "editar", usuario: u.usuario })} disabled={editando !== null}>
                           Editar
                         </button>
+                        {u.senhaVisivel && (
+                          <button type="button" className={estilos.acao} onClick={() => void alternarSenha(u.usuario)}>
+                            {senhasAbertas[u.usuario] ? "Esconder senha" : "Ver senha"}
+                          </button>
+                        )}
                         <button type="button" className={estilos.acao} onClick={() => void alternarAtivo(u)} disabled={u.usuario === professor.usuario}>
                           {u.ativo ? "Desativar" : "Ativar"}
                         </button>
@@ -219,6 +264,9 @@ export function ProfessorUsuariosPage() {
                     <div className={estilos.acesso}>
                       <p className={estilos.rotulo}>Acessa</p>
                       <ul className={estilos.chips}>
+                        {(f.areas ?? ["informatica"]).map((a) => (
+                          <li key={a}>Área: {AREAS.find((x) => x.id === a)?.rotulo}</li>
+                        ))}
                         {f.permissoes.map((p) => (
                           <li key={p}>{rotuloPermissao(p)}</li>
                         ))}
@@ -259,6 +307,7 @@ function FormularioUsuario({
   todasAsUnidades,
   minhasUnidades,
   minhasPermissoes,
+  minhasAreas,
   aoSalvar,
   aoCancelar,
   tratar,
@@ -270,12 +319,14 @@ function FormularioUsuario({
   todasAsUnidades: boolean;
   minhasUnidades: string[];
   minhasPermissoes: PermissaoId[];
+  minhasAreas: AreaId[];
   aoSalvar: () => Promise<void>;
   aoCancelar: () => void;
   tratar: (falha: unknown, padrao: string) => void;
 }) {
-  const [f, definirF] = useState<Formulario>(() => (fixo ? { usuario: fixo.usuario, nome: fixo.nome, senha: "", unidades: fixo.unidades, permissoes: fixo.permissoes, ativo: fixo.ativo } : existente ? { usuario: existente.usuario, nome: existente.nome, senha: "", unidades: existente.unidades, permissoes: existente.permissoes, ativo: existente.ativo } : vazio()));
+  const [f, definirF] = useState<Formulario>(() => (fixo ? { usuario: fixo.usuario, nome: fixo.nome, senha: "", unidades: fixo.unidades, permissoes: fixo.permissoes, areas: fixo.areas ?? ["informatica"], ativo: fixo.ativo } : existente ? { usuario: existente.usuario, nome: existente.nome, senha: "", unidades: existente.unidades, permissoes: existente.permissoes, areas: existente.areas ?? ["informatica"], ativo: existente.ativo } : vazio()));
   const [salvando, definirSalvando] = useState(false);
+  const [verSenha, definirVerSenha] = useState(false);
   const [mensagem, definirMensagem] = useState<string | null>(null);
   const novo = !existente && !fixo;
   const todas = f.unidades.includes(TODAS_AS_UNIDADES);
@@ -283,6 +334,7 @@ function FormularioUsuario({
   // Só se libera o que quem cria também tem: o servidor confere, aqui só se esconde o que seria recusado.
   const unidadesDisponiveis = dados.unidades.filter((u) => todasAsUnidades || minhasUnidades.includes(u.id));
   const permissoesDisponiveis = PERMISSOES.filter((p) => minhasPermissoes.includes(p.id));
+  const areasDisponiveis = AREAS.filter((a) => minhasAreas.includes(a.id));
 
   const alternar = <T,>(lista: T[], valor: T) => (lista.includes(valor) ? lista.filter((x) => x !== valor) : [...lista, valor]);
 
@@ -292,11 +344,11 @@ function FormularioUsuario({
     definirMensagem(null);
     try {
       if (fixo) {
-        await ajustarFixo(fixo.usuario, { unidades: f.unidades, permissoes: f.permissoes });
+        await ajustarFixo(fixo.usuario, { unidades: f.unidades, permissoes: f.permissoes, areas: f.areas });
       } else if (novo) {
-        await criarUsuario({ usuario: f.usuario.trim(), nome: f.nome, senha: f.senha, unidades: f.unidades, permissoes: f.permissoes });
+        await criarUsuario({ usuario: f.usuario.trim(), nome: f.nome, senha: f.senha, unidades: f.unidades, permissoes: f.permissoes, areas: f.areas });
       } else if (existente) {
-        await atualizarUsuario(existente.usuario, { nome: f.nome, unidades: f.unidades, permissoes: f.permissoes, ...(f.senha ? { senha: f.senha } : {}) });
+        await atualizarUsuario(existente.usuario, { nome: f.nome, unidades: f.unidades, permissoes: f.permissoes, areas: f.areas, ...(f.senha ? { senha: f.senha } : {}) });
       }
       await aoSalvar();
     } catch (falha) {
@@ -323,12 +375,16 @@ function FormularioUsuario({
         <label className={estilos.campo}>
           <span>{novo ? "Senha" : "Nova senha (deixe vazio para manter)"}</span>
           <span className={estilos.linhaSenha}>
-            <input value={f.senha} onChange={(e) => definirF({ ...f, senha: e.target.value })} minLength={8} maxLength={100} required={novo} disabled={!!fixo} autoComplete="off" />
-            <button type="button" className={estilos.acao} onClick={() => definirF({ ...f, senha: senhaAleatoria() })}>
-              Gerar
+            <input type={verSenha ? "text" : "password"} value={f.senha} onChange={(e) => definirF({ ...f, senha: e.target.value })} minLength={8} maxLength={100} required={novo} disabled={!!fixo} autoComplete="new-password" spellCheck={false} />
+            <button type="button" className={estilos.acao} onClick={() => definirVerSenha(!verSenha)} aria-pressed={verSenha}>
+              {verSenha ? "Esconder" : "Mostrar"}
+            </button>
+            <button type="button" className={estilos.acao} onClick={() => { definirF({ ...f, senha: senhaAleatoria() }); definirVerSenha(true); }}>
+              Gerar forte
             </button>
           </span>
-          <small>De 8 a 100 caracteres. Anote e passe à pessoa: depois de salva, ela não aparece mais.</small>
+          {f.senha && <small className={`${estilos.forca} ${estilos[`forca_${forcaDaSenha(f.senha)}`]}`}>Senha {forcaDaSenha(f.senha)}.</small>}
+          <small>De 8 a 100 caracteres; pode usar letras, números e símbolos (! @ # $ % & * ? + - = _). Forte: 12 ou mais, com maiúscula, minúscula, número e símbolo. Os administradores conseguem ver a senha depois, em Ver senha.</small>
         </label>
       </div>
 
@@ -348,6 +404,26 @@ function FormularioUsuario({
             <input type="checkbox" checked={todas || f.unidades.includes(u.id)} disabled={todas} onChange={() => definirF({ ...f, unidades: alternar(f.unidades, u.id) })} />
             <span>
               <strong>{u.nome}</strong>
+            </span>
+          </label>
+        ))}
+      </fieldset>
+
+      <fieldset className={estilos.conjunto}>
+        <legend>Área do professor</legend>
+        {areasDisponiveis.map((a) => (
+          <label key={a.id} className={estilos.opcao}>
+            <input
+              type="checkbox"
+              checked={f.areas.includes(a.id)}
+              onChange={() => {
+                const areas = alternar(f.areas, a.id);
+                if (areas.length) definirF({ ...f, areas });
+              }}
+            />
+            <span>
+              <strong>{a.rotulo}</strong>
+              <small>{a.descricao}</small>
             </span>
           </label>
         ))}

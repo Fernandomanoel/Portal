@@ -1,0 +1,14 @@
+.aviso {
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  border-left: 4px solid var(--danger);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  background: var(--danger-tint);
+}
+
+.texto {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--ink);
+}

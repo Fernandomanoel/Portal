@@ -60,6 +60,23 @@ antigo (`Portal-Atividades`): prova/avaliação de curso vai em
 `provasManifest.ts` só quando for de fato controlada pelo instrutor;
 material de apoio do aluno vai em `Curso.materiais`.
 
+Áreas do professor (`AREAS` em `src/types/acesso.ts`): Informática e Inglês, escolhidas por usuário; permissões e abas
+seguem a área (`permissoesDe` em `servidor/rotas.ts`). Prova de Inglês = arquivo em `provasInterativas/Ingles/`
+(o servidor deriva a área do caminho) e a listagem fica em `PROVAS_INGLES`, com a mesma senha de unidade e a mesma
+trava das provas de ADM. O verde-água de Inglês (`body[data-area="ingles"]` em `tokens.css`, via `useAreaVisual`) vale só nas telas do aluno; a área do
+professor fica no azul padrão. Provas de Inglês têm senha única (`SENHA_PROVAS_INGLES`) e ficam na aba Provas, não em Conversação. A FAGA (`src/types/faga.ts`) é preenchida à mão pelo professor; os modelos de aula e atividades por livro (FB01 a FB32)
+são `src/data/modelosFaga.ts`, transcritos das FAGAs em PDF da pasta FAGAS do Drive do usuário (nomes das bolinhas como
+no original, só com erros de digitação corrigidos). A arte da impressão é própria do portal.
+
+Curso de Inglês (`/curso-ingles`) é uma área **com senha própria**, separada de `/ingles` (trilhas da Gabi, públicas)
+e de Atividades. Cada aula é um `.aula.ts` em `src/data/cursoIngles/` (tipo `AulaIngles`, `src/types/aulaIngles.ts`;
+molde em `COMO-CRIAR-AULA.md` na pasta). **Nunca importe um `.aula.ts` em `src/`**: quem carrega é o servidor, pelo
+registro gerado (`servidor/aulas.gerado.ts`, `scripts/gerar-registro-aulas.mjs`), e entrega com o cookie da senha
+(`SENHA_CURSO_INGLES`, hash gerado por `npm run curso-ingles:senha`). **Por decisão provisória do usuário, sem essa variável
+a área abre sem senha**; criar a variável religa a senha sem mudar código. Import no front vaza a matéria e as respostas no
+bundle. Aula nova é arquivo de dados, não tela nova; textos e interações vindos de um HTML entram sem alterar o
+conteúdo, e os créditos do autor ficam em `creditos`.
+
 ## Convenções de código
 
 - Nomes de variável, função, rota e conteúdo em **português** (`titulo`,

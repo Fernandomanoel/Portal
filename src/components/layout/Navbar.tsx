@@ -9,7 +9,8 @@ import estilos from "./Navbar.module.css";
 
 const SECOES = [
   { para: rotas.atividades(), rotulo: "Atividades" },
-  { para: rotas.ingles(), rotulo: "Inglês" },
+  { para: rotas.ingles(), rotulo: "Conversação" },
+  { para: rotas.cursoIngles(), rotulo: "Inglês" },
   { para: rotas.digitacao(), rotulo: "Digitação" },
   { para: rotas.guiado(), rotulo: "Passo a Passo" },
   { para: rotas.provas(), rotulo: "Provas" },
@@ -71,6 +72,7 @@ export function Navbar() {
             aria-label={tema === "escuro" ? "Usar tema claro" : "Usar tema escuro"}
           >
             <Icone nome={tema === "escuro" ? "sol" : "lua"} tamanho={18} />
+            <span>{tema === "escuro" ? "Claro" : "Escuro"}</span>
           </button>
 
           <NavLink

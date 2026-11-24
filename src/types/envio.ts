@@ -1,4 +1,4 @@
-import type { PermissaoId } from "./acesso.js";
+import type { AreaId, PermissaoId } from "./acesso.js";
 
 /**
  * Formatos trocados entre a prova, a área do professor e o servidor
@@ -31,6 +31,8 @@ export interface Envio {
   nomeAluno: string;
   /** Unidade que liberou a prova (senha da aba Provas). Envios antigos não têm: valem como a unidade padrão. */
   unidade?: string;
+  /** Área da prova (a pasta `Ingles/` é de Inglês). Envios antigos não têm: valem como Informática. */
+  area?: AreaId;
   iniciadaEm: string;
   enviadaEm: string;
   /** Múltipla escolha: índice escolhido por questão. Descritiva: o texto.
@@ -70,6 +72,8 @@ export interface Professor {
   unidades?: string[];
   /** Sem isso valem as permissões padrão. */
   permissoes?: PermissaoId[];
+  /** Sem isso o usuário é de Informática. */
+  areas?: AreaId[];
   /** Professor da variável PROFESSORES com `"administrador": true`: pode gerenciar usuários. */
   administrador?: boolean;
   origem?: "variavel" | "cadastro";
