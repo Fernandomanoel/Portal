@@ -36,6 +36,8 @@ componente ou rota nova, verifique se não é só um item faltando em
 (`curso.ts`, `prova.ts`, `quiz.ts`) — estendê-los é uma decisão maior que
 merece confirmação do usuário, porque tudo que já existe depende deles.
 
+Digitação com vídeo (`/digitacao/clipe`): cada clipe é um objeto em `src/data/clipesDigitacao.ts`, com o vídeo e a capa em `public/digitacao/clipes/`. Letra e vídeo só entram fornecidos pelo usuário.
+
 Materiais de curso (`Material` em `src/types/curso.ts`) só têm tipo
 `pdf | doc | planilha | slides | video | imagem | link` — guia completo em
 `src/data/COMO-FORNECER-MATERIAL.md`. Arquivo local (todo tipo exceto

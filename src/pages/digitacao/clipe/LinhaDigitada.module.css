@@ -1,0 +1,53 @@
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.55em;
+  margin: 0;
+  font-size: clamp(1.4rem, 3.4vw, 2.1rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.palavra {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.feita {
+  color: var(--brand);
+}
+
+.falta {
+  color: var(--ink-faint);
+}
+
+.atual {
+  border-radius: 3px;
+  background: var(--surface-soft);
+  color: var(--ink);
+  box-shadow: 0 2px 0 var(--brand);
+}
+
+.erro {
+  background: var(--danger-tint);
+  box-shadow: 0 2px 0 var(--danger);
+  animation: tremer 0.2s linear;
+}
+
+@keyframes tremer {
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .erro {
+    animation: none;
+  }
+}

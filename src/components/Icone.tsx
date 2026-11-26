@@ -72,12 +72,18 @@ export type NomeIcone =
   | "pincel"
   | "mais-opcoes"
   | "menu"
-  | "parar";
+  | "parar"
+  | "play"
+  | "pausa"
+  | "tela-cheia";
 
 /** Traçados em grade de 24, traço 1.6, pontas arredondadas. Um só sistema. */
 const CAMINHOS: Record<NomeIcone, ReactElement> = {
   menu: <path d="M4 7h16M4 12h16M4 17h16" />,
   parar: <rect x="6.5" y="6.5" width="11" height="11" rx="1.5" />,
+  play: <path d="M8 5.5v13l10.5-6.5Z" />,
+  pausa: <path d="M8.5 5.5v13M15.5 5.5v13" />,
+  "tela-cheia": <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />,
   busca: (
     <>
       <circle cx="11" cy="11" r="6.5" />

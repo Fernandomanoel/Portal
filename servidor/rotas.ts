@@ -15,7 +15,7 @@ import { caminhoLista, idListaValido, listarListas, novaLista, validarLista } fr
 import { acharAulaIngles, listarAulasIngles } from "./aulasIngles.js";
 import { conferirItem } from "../src/lib/correcaoProva.js";
 import { caminhoFaga, idFagaValido, lerFaga, listarFagas, sanearFaga } from "./fagas.js";
-import { caminhoTurma, idTurmaValido, lerTurma, listarTurmas, sanearTurma } from "./turmas.js";
+import { caminhoTurma, corpoDeFagaDoAluno, idTurmaValido, lerTurma, listarTurmas, sanearTurma, type DadosTurma } from "./turmas.js";
 import { acharProva, corrigir, semGabarito, tipoDe, valoresDoItem, validarRespostas } from "./provas.js";
 import {
   COOKIE_CURSO_INGLES,
@@ -1037,6 +1037,43 @@ async function rotear(requisicao: Request, armazenamento: Armazenamento): Promis
       const nova = { id: randomUUID(), unidade: ativa, ...dados, criadoEm: agora, alteradoEm: agora, criadoPor: professor.nome };
       await armazenamento.salvarJson(caminhoTurma(nova.id), nova);
       return json(nova, 201);
+    }
+
+    // Importação da planilha da escola: cria várias turmas de uma vez (e, se pedido, a FAGA em branco de cada aluno).
+    if (partes.length === 2 && partes[1] === "importar" && metodo === "POST") {
+      const ativa = unidadeAtiva(professor, url);
+      if (ativa === "invalida") return erro(422, "VALIDATION_ERROR", "Unidade desconhecida.");
+      if (ativa === null) return erro(422, "VALIDATION_ERROR", "Escolha a unidade no alto da página antes de importar.");
+      const corpo = (await lerCorpoJson(requisicao)) ?? {};
+      const brutas = Array.isArray(corpo.turmas) ? corpo.turmas : [];
+      if (!brutas.length || brutas.length > 40) return erro(422, "VALIDATION_ERROR", "Envie de 1 a 40 turmas por importação.");
+      const lote: DadosTurma[] = [];
+      for (const bruta of brutas) {
+        const dados = sanearTurma((bruta ?? {}) as Record<string, unknown>);
+        if (typeof dados === "string") return erro(422, "VALIDATION_ERROR", dados);
+        lote.push(dados);
+      }
+      if (lote.reduce((soma, t) => soma + t.alunos.length, 0) > 400) return erro(422, "VALIDATION_ERROR", "A importação aceita até 400 alunos.");
+      const criarFagas = corpo.criarFagas === true;
+      const agora = new Date().toISOString();
+      let nTurmas = 0;
+      let nFagas = 0;
+      for (const dados of lote) {
+        const turma = { id: randomUUID(), unidade: ativa, ...dados, criadoEm: agora, alteradoEm: agora, criadoPor: professor.nome };
+        const fagas = [];
+        if (criarFagas) {
+          for (const aluno of turma.alunos) {
+            const corpoFaga = sanearFaga(corpoDeFagaDoAluno(turma, aluno));
+            if (typeof corpoFaga === "string") return erro(422, "VALIDATION_ERROR", corpoFaga);
+            fagas.push({ id: randomUUID(), unidade: ativa, ...corpoFaga, criadoEm: agora, alteradoEm: agora, criadoPor: professor.nome });
+          }
+        }
+        await armazenamento.salvarJson(caminhoTurma(turma.id), turma);
+        for (let i = 0; i < fagas.length; i += 10) await Promise.all(fagas.slice(i, i + 10).map((f) => armazenamento.salvarJson(caminhoFaga(f.id), f)));
+        nTurmas += 1;
+        nFagas += fagas.length;
+      }
+      return json({ turmas: nTurmas, fagas: nFagas }, 201);
     }
 
     const id = partes[1] ?? "";

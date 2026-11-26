@@ -1,6 +1,6 @@
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
+import { ID_RANKING_CLIPE } from "@/data/clipesDigitacao";
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
-import { ENSAIOS } from "@/pages/digitacao/letrasIngles/dados";
 import estilos from "./RankingGeralPage.module.css";
 
 const JOGOS_FIXOS = [
@@ -8,6 +8,7 @@ const JOGOS_FIXOS = [
   { id: "digitacao-cavaleiros-zodiaco", titulo: "Batalha das 12 Casas" },
   { id: "digitacao-sonic", titulo: "Sonic Digital Pro" },
   { id: "digitacao-baloes", titulo: "Balões de Letras" },
+  { id: ID_RANKING_CLIPE, titulo: "Digite o Clipe" },
   { id: "digitacao-constelacao", titulo: "Constelação" },
   { id: "digitacao-pulo", titulo: "Pulo das Palavras" },
   { id: "digitacao-nave", titulo: "Esquadrão Hiper" },
@@ -34,17 +35,6 @@ export function RankingGeralPage() {
           </section>
         ))}
 
-        <section className={estilos.secao}>
-          <h2 className={estilos.tituloSecao}>Inglês em Letras de Música</h2>
-          {ENSAIOS.map((ensaio, indice) => (
-            <div key={ensaio.tema} className={estilos.bloco}>
-              <h3 className={estilos.tituloJogo}>
-                Ensaio {indice + 1} — {ensaio.tema}
-              </h3>
-              <PainelRanking jogoId={`digitacao-letras-ingles-${indice}`} />
-            </div>
-          ))}
-        </section>
       </div>
     </>
   );

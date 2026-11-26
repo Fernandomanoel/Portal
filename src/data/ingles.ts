@@ -87,10 +87,10 @@ export const TRILHAS_INGLES: Trilha[] = [
 /** Atividades de inglês que moram em outra seção e aparecem na trilha "Jogos" como atalho. */
 export const ATALHOS_INGLES: AtalhoIngles[] = [
   {
-    titulo: "Inglês em Letras de Música",
-    descricao: "Treino de digitação com 8 letras de música em inglês, com precisão, velocidade e combo.",
+    titulo: "Digite o Clipe",
+    descricao: "Assista ao clipe em inglês e digite a letra verso por verso, com a tradução embaixo.",
     cor: "#be123c",
-    para: rotas.digitacaoLetrasIngles(),
+    para: rotas.digitacaoClipe(),
   },
 ];
 

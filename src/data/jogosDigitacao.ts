@@ -39,12 +39,12 @@ export const JOGOS: JogoDigitacao[] = [
     acento: "#c9971f",
   },
   {
-    para: rotas.digitacaoLetrasIngles(),
-    icone: "musica",
-    sigla: "IM",
-    titulo: "Inglês em Letras de Música",
-    texto: "Digite a letra em inglês enquanto ela toca.",
-    etiqueta: "8 ensaios",
+    para: rotas.digitacaoClipe(),
+    icone: "video",
+    sigla: "DC",
+    titulo: "Digite o Clipe",
+    texto: "Assista ao clipe e digite a letra verso por verso, com a tradução embaixo.",
+    etiqueta: "Com vídeo",
     acento: "#7c3aed",
   },
   {

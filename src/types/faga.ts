@@ -95,6 +95,12 @@ export interface AlunoTurma {
   nome: string;
   /** Livro do aluno («FB25»): a turma mistura livros, então cada aluno tem o seu. */
   livro: string;
+  /** Nível em que o aluno está, como vem da planilha da escola («Annual Book 4», «Speed II Multimídia»). */
+  nivel?: string;
+  proximoNivel?: string;
+  /** Início e fim previsto do nível (AAAA-MM-DD ou vazio): viram as datas da etapa na FAGA. */
+  inicio?: string;
+  fim?: string;
 }
 
 /** Regular segue o prazo normal do livro; Speed é a turma acelerada, com prazo e aulas próprios. */
