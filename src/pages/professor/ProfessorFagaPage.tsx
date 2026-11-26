@@ -46,6 +46,7 @@ export function ProfessorFagaPage() {
   const [turmaAberta, definirTurmaAberta] = useState<{ turma: Turma | null } | null>(null);
   const [busca, definirBusca] = useState("");
   const rolagem = useRef(0);
+  const origemTurma = useRef<string | null>(null);
   const [importando, definirImportando] = useState(false);
   const [aviso, definirAviso] = useState<string | null>(null);
 
@@ -63,9 +64,11 @@ export function ProfessorFagaPage() {
       definirFagas(f.dados);
       definirTurmas(t.dados);
       definirErro(null);
+      return t.dados;
     } catch (falha) {
       tratar(falha, "Não foi possível carregar as FAGAs.");
     }
+    return null;
   }, [tratar]);
 
   useEffect(() => {
@@ -122,6 +125,7 @@ export function ProfessorFagaPage() {
         semUnidade={turmaAberta.turma === null && unidadeAtual === null}
         tratar={tratar}
         aoAbrirFaga={(f) => {
+          origemTurma.current = turmaAberta.turma?.id ?? null;
           definirTurmaAberta(null);
           abrir(f);
         }}
@@ -144,7 +148,12 @@ export function ProfessorFagaPage() {
         tratar={tratar}
         aoVoltar={() => {
           definirAberta(null);
-          void carregar();
+          const origem = origemTurma.current;
+          origemTurma.current = null;
+          void carregar().then((lista) => {
+            const turma = origem ? lista?.find((t) => t.id === origem) : undefined;
+            if (turma) definirTurmaAberta({ turma });
+          });
         }}
       />
     );
@@ -225,7 +234,7 @@ export function ProfessorFagaPage() {
             const pct = total ? Math.round((feitas / total) * 100) : 0;
             return (
               <li key={f.id}>
-                <button type="button" className={estilos.cartao} onClick={() => { guardarRolagem(); abrir(f); }}>
+                <button type="button" className={estilos.cartao} onClick={() => { origemTurma.current = null; guardarRolagem(); abrir(f); }}>
                   <strong>{f.aluno}</strong>
                   <span>{f.livro || "Livro não informado"}</span>
                   <span className={estilos.progresso} aria-hidden="true">
