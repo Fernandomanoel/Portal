@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
-/** Mesmos controles do player do YouTube, para um vídeo escolhido no computador (`url` vazia = não faz nada). */
-export function useVideoArquivo(alvoRef: RefObject<HTMLDivElement | null>, url: string | undefined) {
+/** Player do vídeo do clipe dentro de `alvoRef`: controles e tempo. */
+export function useVideoArquivo(alvoRef: RefObject<HTMLDivElement | null>, url: string, capa?: string) {
   const video = useRef<HTMLVideoElement | null>(null);
   const [pronto, definirPronto] = useState(false);
   const [tocando, definirTocando] = useState(false);
@@ -13,6 +13,7 @@ export function useVideoArquivo(alvoRef: RefObject<HTMLDivElement | null>, url: 
     if (!alvo || !url) return;
     const el = document.createElement("video");
     el.src = url;
+    if (capa) el.poster = capa;
     el.playsInline = true;
     el.preload = "auto";
     el.addEventListener("loadedmetadata", () => {
@@ -23,7 +24,7 @@ export function useVideoArquivo(alvoRef: RefObject<HTMLDivElement | null>, url: 
     el.addEventListener("pause", () => definirTocando(false));
     el.addEventListener("ended", () => definirTocando(false));
     el.addEventListener("timeupdate", () => definirTempo({ atual: el.currentTime, total: el.duration || 0 }));
-    el.addEventListener("error", () => definirFalha("Este navegador não conseguiu abrir o vídeo. Tente um arquivo MP4."));
+    el.addEventListener("error", () => definirFalha("Não foi possível abrir o vídeo. Recarregue a página."));
     alvo.appendChild(el);
     video.current = el;
     return () => {
@@ -35,7 +36,7 @@ export function useVideoArquivo(alvoRef: RefObject<HTMLDivElement | null>, url: 
       definirTocando(false);
       alvo.replaceChildren();
     };
-  }, [alvoRef, url]);
+  }, [alvoRef, url, capa]);
 
   const alternar = useCallback(() => {
     const el = video.current;

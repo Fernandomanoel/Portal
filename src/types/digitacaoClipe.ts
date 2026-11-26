@@ -8,9 +8,10 @@ export interface LinhaClipe {
 export interface Clipe {
   id: string;
   titulo: string;
-  /** Código de 11 caracteres do vídeo no YouTube. */
-  youtubeId?: string;
-  /** Vídeo escolhido no computador (endereço temporário do navegador): vale só até fechar a página, não é guardado. */
-  arquivoUrl?: string;
+  artista: string;
+  /** Caminho do vídeo em `public/digitacao/clipes/`. */
+  video: string;
+  /** Imagem de capa (quadro do vídeo). */
+  capa: string;
   linhas: LinhaClipe[];
 }

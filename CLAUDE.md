@@ -36,7 +36,7 @@ componente ou rota nova, verifique se não é só um item faltando em
 (`curso.ts`, `prova.ts`, `quiz.ts`) — estendê-los é uma decisão maior que
 merece confirmação do usuário, porque tudo que já existe depende deles.
 
-Digitação com vídeo (`/digitacao/clipe`): o catálogo fixo é `src/data/clipesDigitacao.ts` (vazio de propósito: letra de música só entra com a fonte do texto e do vídeo); o aluno e o professor montam clipes na própria tela, guardados só no navegador.
+Digitação com vídeo (`/digitacao/clipe`): cada clipe é um objeto em `src/data/clipesDigitacao.ts`, com o vídeo e a capa em `public/digitacao/clipes/`. Letra e vídeo só entram fornecidos pelo usuário.
 
 Materiais de curso (`Material` em `src/types/curso.ts`) só têm tipo
 `pdf | doc | planilha | slides | video | imagem | link` — guia completo em
