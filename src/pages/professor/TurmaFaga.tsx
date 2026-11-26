@@ -169,7 +169,7 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
         </p>
       )}
 
-      <div className={estilos.barra}>
+      <div className={`${estilos.barra} ${estilos.fixa}`}>
         <button type="button" className={estilos.secundario} onClick={voltar}>
           <Icone nome="seta-esquerda" tamanho={16} />
           Voltar
@@ -184,6 +184,20 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
         )}
       </div>
 
+      <details className={estilos.painel} open={!id}>
+        <summary>
+          <span className={estilos.resumoTurma}>
+            <strong>{nome || "Nova turma"}</strong>
+            <small>
+              {tipo === "speed" ? "Speed" : "Regular"} · {dias.length ? DIAS_DA_SEMANA.filter((d) => dias.includes(d.id)).map((d) => d.curto).join(", ") : "sem dias"}
+              {horario ? ` · ${horario}` : ""} · {meses} meses por livro
+            </small>
+          </span>
+          <span className={estilos.editar}>
+            <Icone nome="lapis" tamanho={14} />
+            Editar dados
+          </span>
+        </summary>
       <fieldset className={estilos.dados}>
         <legend>Dados da turma</legend>
         <label className={estilos.largo}>
@@ -236,6 +250,7 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
           <small>{dias.length} aula(s) por semana</small>
         </div>
       </fieldset>
+      </details>
 
       <h2 className={estilos.subtitulo}>Alunos ({alunos.length})</h2>
       {alunos.length === 0 && <p className={estilos.dica}>Nenhum aluno ainda. Digite o nome e tecle Enter, ou cole vários nomes (um por linha).</p>}

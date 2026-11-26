@@ -93,7 +93,7 @@ export function ImportarFaga({ turmasExistentes, semUnidade, tratar, aoConcluir,
       )}
 
       <div className={estilos.barra}>
-        <button type="button" className={estilos.secundario} onClick={aoVoltar}>
+        <button type="button" className={estilos.secundario} onClick={() => { if (!resultado || window.confirm("Sair sem importar? A conferência será perdida.")) aoVoltar(); }}>
           <Icone nome="seta-esquerda" tamanho={16} />
           Voltar
         </button>

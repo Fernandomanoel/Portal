@@ -328,3 +328,90 @@
 .aluno .detalhes input {
   flex: none;
 }
+
+.fixa {
+  position: sticky;
+  top: var(--nav-height);
+  z-index: 5;
+  margin-inline: calc(var(--space-3) * -1);
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--line);
+  background: var(--ground);
+}
+
+.painel {
+  margin: 0 0 var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.painel > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  list-style: none;
+}
+
+.painel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.painel > summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.resumoTurma {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.resumoTurma small {
+  color: var(--ink-soft);
+}
+
+.editar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.painel[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.painel .dados {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.alunos {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.aluno {
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.detalhes {
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--line);
+}

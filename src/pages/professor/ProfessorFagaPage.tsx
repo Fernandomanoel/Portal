@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { Icone } from "@/components/Icone";
@@ -45,6 +45,7 @@ export function ProfessorFagaPage() {
   const [aberta, definirAberta] = useState<Aberta | null>(null);
   const [turmaAberta, definirTurmaAberta] = useState<{ turma: Turma | null } | null>(null);
   const [busca, definirBusca] = useState("");
+  const rolagem = useRef(0);
   const [importando, definirImportando] = useState(false);
   const [aviso, definirAviso] = useState<string | null>(null);
 
@@ -86,6 +87,15 @@ export function ProfessorFagaPage() {
     const dados = f ? dadosDaFaga(f) : vazia();
     definirAberta({ id: f?.id ?? null, dados, original: JSON.stringify(dados) });
   }
+
+  const naLista = !importando && !turmaAberta && !aberta && fagas !== null;
+  useLayoutEffect(() => {
+    if (naLista) window.scrollTo(0, rolagem.current);
+    else window.scrollTo(0, 0);
+  }, [naLista]);
+  const guardarRolagem = () => {
+    rolagem.current = window.scrollY;
+  };
 
   if (importando) {
     return (
@@ -159,7 +169,7 @@ export function ProfessorFagaPage() {
           <Icone nome="mais" tamanho={16} />
           Nova turma
         </button>
-        <button type="button" className={estilos.secundario} onClick={() => { definirAviso(null); definirImportando(true); }}>
+        <button type="button" className={estilos.secundario} onClick={() => { guardarRolagem(); definirAviso(null); definirImportando(true); }}>
           <Icone nome="planilha" tamanho={16} />
           Importar da planilha
         </button>
@@ -188,7 +198,7 @@ export function ProfessorFagaPage() {
                 const pct = atividades.length ? Math.round((atividades.filter((a) => a.feita).length / atividades.length) * 100) : 0;
                 return (
                   <li key={t.id}>
-                    <button type="button" className={estilos.cartao} onClick={() => definirTurmaAberta({ turma: t })}>
+                    <button type="button" className={estilos.cartao} onClick={() => { guardarRolagem(); definirTurmaAberta({ turma: t }); }}>
                       <strong>{t.nome}</strong>
                       <span>{t.alunos.length} aluno(s){t.tipo === "speed" ? " · Speed" : ""}</span>
                       <span>{descricaoDaTurma(t)}</span>
@@ -215,7 +225,7 @@ export function ProfessorFagaPage() {
             const pct = total ? Math.round((feitas / total) * 100) : 0;
             return (
               <li key={f.id}>
-                <button type="button" className={estilos.cartao} onClick={() => abrir(f)}>
+                <button type="button" className={estilos.cartao} onClick={() => { guardarRolagem(); abrir(f); }}>
                   <strong>{f.aluno}</strong>
                   <span>{f.livro || "Livro não informado"}</span>
                   <span className={estilos.progresso} aria-hidden="true">
