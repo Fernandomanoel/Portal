@@ -52,7 +52,7 @@ function carregarApi(): Promise<ApiYoutube> {
 }
 
 /** Player do YouTube dentro de `alvoRef`; devolve os controles e o tempo. */
-export function useYoutube(alvoRef: RefObject<HTMLDivElement | null>, videoId: string) {
+export function useYoutube(alvoRef: RefObject<HTMLDivElement | null>, videoId: string | undefined) {
   const jogador = useRef<JogadorYoutube | null>(null);
   const [pronto, definirPronto] = useState(false);
   const [tocando, definirTocando] = useState(false);
@@ -62,7 +62,7 @@ export function useYoutube(alvoRef: RefObject<HTMLDivElement | null>, videoId: s
   useEffect(() => {
     let cancelado = false;
     const alvo = alvoRef.current;
-    if (!alvo) return;
+    if (!alvo || !videoId) return;
     const filho = document.createElement("div");
     alvo.appendChild(filho);
     carregarApi()

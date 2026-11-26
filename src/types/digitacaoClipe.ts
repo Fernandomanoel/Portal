@@ -9,6 +9,8 @@ export interface Clipe {
   id: string;
   titulo: string;
   /** Código de 11 caracteres do vídeo no YouTube. */
-  youtubeId: string;
+  youtubeId?: string;
+  /** Vídeo escolhido no computador (endereço temporário do navegador): vale só até fechar a página, não é guardado. */
+  arquivoUrl?: string;
   linhas: LinhaClipe[];
 }

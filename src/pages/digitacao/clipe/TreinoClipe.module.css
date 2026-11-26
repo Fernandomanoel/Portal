@@ -21,7 +21,8 @@
 }
 
 .player,
-.player iframe {
+.player iframe,
+.player video {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -193,4 +194,9 @@
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+}
+
+.player video {
+  object-fit: contain;
+  background: #000;
 }

@@ -24,7 +24,7 @@ function ListaClipes({ titulo, clipes, aoEscolher, aoApagar }: { titulo: string;
         {clipes.map((c) => (
           <li key={c.id} className={estilos.item}>
             <button type="button" className={estilos.escolher} onClick={() => aoEscolher(c)}>
-              <img src={`https://i.ytimg.com/vi/${c.youtubeId}/mqdefault.jpg`} alt="" loading="lazy" />
+              {c.youtubeId && <img src={`https://i.ytimg.com/vi/${c.youtubeId}/mqdefault.jpg`} alt="" loading="lazy" />}
               <span>
                 <strong>{c.titulo}</strong>
                 <small>{c.linhas.length} verso(s)</small>
@@ -46,16 +46,18 @@ export function EscolhaClipe({ fixos, montados, aoEscolher, aoMontar, aoApagar }
   const [titulo, definirTitulo] = useState("");
   const [link, definirLink] = useState("");
   const [letra, definirLetra] = useState("");
+  const [arquivo, definirArquivo] = useState<File | null>(null);
   const [erro, definirErro] = useState<string | null>(null);
 
   function montar(evento: FormEvent) {
     evento.preventDefault();
     const youtubeId = idDoYoutube(link);
     const linhas = lerLetra(letra);
-    if (!youtubeId) return definirErro("Não reconheci o link do YouTube. Cole o endereço do vídeo, como https://www.youtube.com/watch?v=…");
+    if (!arquivo && !youtubeId) return definirErro("Cole o link do YouTube (como https://www.youtube.com/watch?v=…) ou escolha um vídeo do computador.");
     if (linhas.length < 2) return definirErro("Cole a letra com pelo menos dois versos, um por linha.");
     definirErro(null);
-    aoMontar({ id: novoId(), titulo: titulo.trim().slice(0, LIMITES_CLIPE.titulo) || "Meu clipe", youtubeId, linhas });
+    const base = { id: novoId(), titulo: titulo.trim().slice(0, LIMITES_CLIPE.titulo) || "Meu clipe", linhas };
+    aoMontar(arquivo ? { ...base, arquivoUrl: URL.createObjectURL(arquivo) } : { ...base, youtubeId });
   }
 
   return (
@@ -73,6 +75,10 @@ export function EscolhaClipe({ fixos, montados, aoEscolher, aoMontar, aoApagar }
         <label>
           Link do vídeo no YouTube
           <input value={link} onChange={(e) => definirLink(e.target.value)} placeholder="https://www.youtube.com/watch?v=…" inputMode="url" />
+        </label>
+        <label>
+          Ou um vídeo do computador (fica só nesta página, não é enviado)
+          <input type="file" accept="video/*" onChange={(e) => definirArquivo(e.target.files?.[0] ?? null)} />
         </label>
         <label>
           Letra, um verso por linha

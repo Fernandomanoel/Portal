@@ -4,6 +4,7 @@ import { Icone } from "@/components/Icone";
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
 import { ID_RANKING_CLIPE } from "@/data/clipesDigitacao";
 import { calcularPPM, calcularPrecisao, formatarTempo, normalizarLetra } from "@/lib/clipeDigitacao";
+import { useVideoArquivo } from "@/lib/videoArquivo";
 import { useYoutube } from "@/lib/youtube";
 import type { Clipe } from "@/types/digitacaoClipe";
 import { LinhaDigitada } from "./LinhaDigitada";
@@ -22,7 +23,9 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
   const alvoRef = useRef<HTMLDivElement>(null);
   const palcoRef = useRef<HTMLDivElement>(null);
   const campoRef = useRef<HTMLInputElement>(null);
-  const video = useYoutube(alvoRef, clipe.youtubeId);
+  const doYoutube = useYoutube(alvoRef, clipe.arquivoUrl ? undefined : clipe.youtubeId);
+  const doArquivo = useVideoArquivo(alvoRef, clipe.arquivoUrl);
+  const video = clipe.arquivoUrl ? doArquivo : doYoutube;
 
   const linha = clipe.linhas[indice];
   const terminou = fim !== null;

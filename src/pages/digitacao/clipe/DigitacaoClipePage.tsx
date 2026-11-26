@@ -30,7 +30,7 @@ export function DigitacaoClipePage() {
         montados={montados}
         aoEscolher={definirAberto}
         aoMontar={(clipe) => {
-          atualizar([clipe, ...montados]);
+          if (clipe.youtubeId) atualizar([clipe, ...montados]);
           definirAberto(clipe);
         }}
         aoApagar={(id) => atualizar(montados.filter((c) => c.id !== id))}
