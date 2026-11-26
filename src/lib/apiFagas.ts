@@ -37,3 +37,7 @@ export const salvarTurma = (id: string, dados: DadosTurmaEnvio) => chamar<Turma>
 export const apagarTurma = (id: string) => chamar<void>(caminhoTurma(id), { method: "DELETE" });
 export const transferirTurma = (id: string, unidade: string) => chamar<{ turma: Turma; fagas: number }>(`${caminhoTurma(id)}/transferir`, comJson("POST", { unidade }));
 export const transferirFaga = (id: string, unidade: string) => chamar<Faga>(`${caminho(id)}/transferir`, comJson("POST", { unidade }));
+
+export type TurmaParaImportar = DadosTurmaEnvio;
+export const importarTurmas = (turmas: TurmaParaImportar[], criarFagas: boolean) =>
+  chamar<{ turmas: number; fagas: number }>(comUnidade("turmas/importar"), comJson("POST", { turmas, criarFagas }));

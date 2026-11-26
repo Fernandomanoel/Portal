@@ -1,0 +1,148 @@
+.titulo {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xl);
+}
+
+.texto,
+.dica {
+  max-width: 62ch;
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+
+.primario,
+.secundario {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primario {
+  border: 0;
+  background: var(--brand-deep);
+  color: var(--ink-on-brand);
+}
+
+.secundario {
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.primario:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primario:focus-visible,
+.secundario:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.erro {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-3) 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--danger-tint);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.resumo {
+  font-weight: 600;
+}
+
+.avisos {
+  margin: var(--space-3) 0;
+  font-size: var(--text-sm);
+}
+
+.avisos summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.turmas,
+.alunos {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.turmas {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+
+.turma {
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.cabecalho input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+}
+
+.cabecalho small,
+.alunos small {
+  color: var(--ink-soft);
+}
+
+.alunos li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--text-sm);
+}
+
+.alunos label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  font-size: var(--text-sm);
+}

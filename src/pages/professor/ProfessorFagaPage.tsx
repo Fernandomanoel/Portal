@@ -4,6 +4,7 @@ import { CabecalhoPagina } from "@/components/CabecalhoPagina";
 import { Icone } from "@/components/Icone";
 import { FagaImpressao } from "@/components/faga/FagaImpressao";
 import { FagaTrilha } from "@/components/faga/FagaTrilha";
+import { ImportarFaga } from "@/components/faga/ImportarFaga";
 import { apagarFaga, criarFaga, dadosDaFaga, listarFagas, listarTurmas, salvarFaga, transferirFaga, type DadosFagaEnvio } from "@/lib/apiFagas";
 import { ErroApi, listarUnidades } from "@/lib/apiProvas";
 import { descricaoDaTurma, modeloDoLivro } from "@/lib/modeloFaga";
@@ -44,6 +45,8 @@ export function ProfessorFagaPage() {
   const [aberta, definirAberta] = useState<Aberta | null>(null);
   const [turmaAberta, definirTurmaAberta] = useState<{ turma: Turma | null } | null>(null);
   const [busca, definirBusca] = useState("");
+  const [importando, definirImportando] = useState(false);
+  const [aviso, definirAviso] = useState<string | null>(null);
 
   const tratar = useCallback(
     (falha: unknown, padrao: string) => {
@@ -82,6 +85,22 @@ export function ProfessorFagaPage() {
   function abrir(f: Faga | null) {
     const dados = f ? dadosDaFaga(f) : vazia();
     definirAberta({ id: f?.id ?? null, dados, original: JSON.stringify(dados) });
+  }
+
+  if (importando) {
+    return (
+      <ImportarFaga
+        turmasExistentes={turmas}
+        semUnidade={unidadeAtual === null}
+        tratar={tratar}
+        aoVoltar={() => definirImportando(false)}
+        aoConcluir={(mensagem) => {
+          definirImportando(false);
+          definirAviso(mensagem);
+          void carregar();
+        }}
+      />
+    );
   }
 
   if (turmaAberta) {
@@ -130,10 +149,19 @@ export function ProfessorFagaPage() {
           {erro}
         </p>
       )}
+      {aviso && (
+        <p className={estilos.dica} role="status">
+          {aviso}
+        </p>
+      )}
       <div className={estilos.barra}>
         <button type="button" className={estilos.primario} onClick={() => definirTurmaAberta({ turma: null })}>
           <Icone nome="mais" tamanho={16} />
           Nova turma
+        </button>
+        <button type="button" className={estilos.secundario} onClick={() => { definirAviso(null); definirImportando(true); }}>
+          <Icone nome="planilha" tamanho={16} />
+          Importar da planilha
         </button>
         <button type="button" className={estilos.secundario} onClick={() => abrir(null)}>
           <Icone nome="mais" tamanho={16} />

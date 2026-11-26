@@ -251,6 +251,7 @@ com `message` pronta para mostrar na tela.
 | `GET /curso-ingles/aulas` · `GET /curso-ingles/aulas/<id>` | cookie da área (se há senha) | Lista das aulas (`{ dados, comSenha }`) · a aula completa (`{ aula }`). Com senha configurada e sem o cookie: 401. |
 | `GET\|POST /limpeza` | agendador ou professor | Apaga o que passou de 3 dias. |
 | `GET /fagas` · `POST /fagas` | professor (`faga`) | FAGAs da unidade · cria uma (a coordenação escolhe a unidade antes). |
+| `POST /turmas/importar` | professor (`faga`) | Importação da planilha da escola: `{turmas, criarFagas}` (até 40 turmas, 400 alunos); cria as turmas e, se pedido, a FAGA em branco de cada aluno. A planilha é lida no navegador; só o resultado conferido chega aqui. |
 | `GET\|POST\|PUT\|DELETE /turmas…` | professor (`faga`) | Turmas da unidade: lista, cria, lê, grava, apaga e `POST /turmas/<id>/transferir {unidade}`. |
 | `GET\|PUT\|DELETE /fagas/<id>` · `POST /fagas/<id>/transferir` | professor (`faga`) | Lê · grava a FAGA inteira · apaga. FAGA de outra unidade responde 404. |
 | `GET /listas` · `POST /listas` | professor | Listas de acompanhamento: resumo de todas · cria uma (`{ duplicarDe? }` copia outra). |

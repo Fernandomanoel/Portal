@@ -10,6 +10,12 @@ import { CONFIG_POR_TIPO, DIAS_DA_SEMANA, LIMITES_TURMA, TIPOS_TURMA, type Aluno
 import type { Unidade } from "@/types/unidade";
 import estilos from "./TurmaFaga.module.css";
 
+/** «Annual Book 4» -> «Book 4», a coleção de FB09–FB16; vazio se o nível não diz o livro. */
+const colecaoDoNivel = (nivel?: string) => {
+  const m = (nivel ?? "").match(/book\s*(\d)/i);
+  return m ? `Book ${m[1]}` : "";
+};
+
 const numero = (texto: string) => Math.max(1, Math.round(Number(texto)) || 1);
 
 interface Props {
@@ -60,6 +66,8 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
     definirAlunos([...alunos, ...novos]);
   }
 
+  const mudarAluno = (alunoId: string, campos: Partial<AlunoTurma>) => definirAlunos(alunos.map((x) => (x.id === alunoId ? { ...x, ...campos } : x)));
+
   async function salvar(evento?: FormEvent) {
     evento?.preventDefault();
     definirSalvando(true);
@@ -96,9 +104,9 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
         novas.push(
           await criarFaga({
             aluno: aluno.nome,
-            livro: modelo?.livro ?? aluno.livro,
-            etapaInicio: "",
-            etapaFim: "",
+            livro: modelo?.livro ?? (aluno.livro || aluno.nivel || ""),
+            etapaInicio: aluno.inicio ?? "",
+            etapaFim: aluno.fim ?? "",
             horas: "",
             faixas: modelo?.faixas ?? [],
             config: { blocosDoLivro: blocos, aulasPorBloco: numero(aulasBloco), mesesPorLivro: numero(meses) },
@@ -241,7 +249,7 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
               <input value={a.nome} onChange={(e) => definirAlunos(alunos.map((x) => (x.id === a.id ? { ...x, nome: e.target.value } : x)))} maxLength={LIMITES_TURMA.texto} aria-label={`Nome do aluno ${a.nome}`} />
               <select
                 value={a.livro}
-                onChange={(e) => definirAlunos(alunos.map((x) => (x.id === a.id ? { ...x, livro: e.target.value } : x)))}
+                onChange={(e) => mudarAluno(a.id, { livro: e.target.value })}
                 aria-label={`Livro de ${a.nome}`}
                 disabled={Boolean(faga)}
                 title={faga ? "A FAGA já foi criada com este livro" : undefined}
@@ -249,7 +257,7 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
                 <option value="">Livro…</option>
                 {MODELOS_FAGA.map((m) => (
                   <option key={m.livro} value={m.livro}>
-                    {m.livro}
+                    {m.livro}{colecaoDoNivel(a.nivel) === m.colecao ? " · sugerido" : ""}
                   </option>
                 ))}
               </select>
@@ -266,6 +274,20 @@ export function TurmaFaga({ turma, fagas, semUnidade, tratar, aoAbrirFaga, aoVol
               <button type="button" className={estilos.mini} onClick={() => definirAlunos(alunos.filter((x) => x.id !== a.id))} aria-label={`Remover ${a.nome} da turma`}>
                 <Icone nome="x" tamanho={12} />
               </button>
+              <div className={estilos.detalhes}>
+                <label>
+                  Nível na planilha
+                  <input value={a.nivel ?? ""} onChange={(e) => mudarAluno(a.id, { nivel: e.target.value })} maxLength={60} placeholder="Ex.: Annual Book 4" />
+                </label>
+                <label>
+                  Início
+                  <input type="date" value={a.inicio ?? ""} onChange={(e) => mudarAluno(a.id, { inicio: e.target.value })} disabled={Boolean(faga)} title={faga ? "Edite as datas na própria FAGA" : undefined} />
+                </label>
+                <label>
+                  Fim previsto
+                  <input type="date" value={a.fim ?? ""} onChange={(e) => mudarAluno(a.id, { fim: e.target.value })} disabled={Boolean(faga)} title={faga ? "Edite as datas na própria FAGA" : undefined} />
+                </label>
+              </div>
             </li>
           );
         })}
