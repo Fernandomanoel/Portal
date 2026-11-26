@@ -200,3 +200,119 @@
   object-fit: contain;
   background: #000;
 }
+
+.controles button.ligado {
+  border-color: var(--brand);
+  background: var(--surface-soft);
+  color: var(--brand-deep);
+}
+
+.mix {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: var(--text-sm);
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.volume input {
+  width: 140px;
+  accent-color: var(--brand);
+}
+
+.opcao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.opcao input {
+  accent-color: var(--brand);
+}
+
+.grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.grupo legend {
+  float: left;
+  margin-right: var(--space-2);
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chip:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.chipMarcado {
+  border-color: var(--brand);
+  background: var(--surface-soft);
+  color: var(--brand-deep);
+  font-weight: 600;
+}
+
+.esperando {
+  justify-self: center;
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  color: var(--brand-deep);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* Tela cheia: o vídeo encolhe para caber, e a letra e o campo continuam à vista. */
+.palco:fullscreen {
+  grid-template-rows: minmax(0, 1fr) auto auto auto auto;
+  max-width: none;
+  height: 100vh;
+  padding: var(--space-4) var(--space-5);
+  overflow: auto;
+  background: var(--ground);
+}
+
+.palco:fullscreen .video {
+  aspect-ratio: auto;
+  min-height: 0;
+}
+
+.palco:fullscreen .verso {
+  padding-top: var(--space-3);
+}

@@ -4,7 +4,7 @@ import { Icone } from "@/components/Icone";
 import { PainelRanking } from "@/components/digitacao/PainelRanking";
 import { ID_RANKING_CLIPE } from "@/data/clipesDigitacao";
 import { calcularPPM, calcularPrecisao, formatarTempo, normalizarLetra } from "@/lib/clipeDigitacao";
-import { useVideoArquivo } from "@/lib/videoArquivo";
+import { useVideoArquivo, type ModoVoz } from "@/lib/videoArquivo";
 import type { Clipe } from "@/types/digitacaoClipe";
 import { LinhaDigitada } from "./LinhaDigitada";
 import estilos from "./TreinoClipe.module.css";
@@ -18,6 +18,12 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
   const [fim, definirFim] = useState<number | null>(null);
   const [agora, definirAgora] = useState(() => Date.now());
   const [erroAtivo, definirErroAtivo] = useState(false);
+  const [sincronizar, definirSincronizar] = useState(true);
+  const [esperando, definirEsperando] = useState(false);
+  const [mixAberta, definirMixAberta] = useState(false);
+  const [cheia, definirCheia] = useState(false);
+  /** Verso em que o aluno mandou o vídeo seguir mesmo atrasado: nele o clipe não para de novo. */
+  const liberado = useRef(-1);
 
   const alvoRef = useRef<HTMLDivElement>(null);
   const palcoRef = useRef<HTMLDivElement>(null);
@@ -32,6 +38,32 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
     const intervalo = window.setInterval(() => definirAgora(Date.now()), 500);
     return () => window.clearInterval(intervalo);
   }, [inicio, terminou]);
+
+  // Sincronia: passou do fim do verso e o aluno ainda não terminou, o clipe para e espera.
+  useEffect(() => {
+    if (!video.tocando || !sincronizar || terminou || linha?.fim === undefined || liberado.current === indice) return;
+    const limite = linha.fim + 0.2;
+    let quadro = 0;
+    const vigiar = () => {
+      if (video.tempoAgora() >= limite) {
+        video.pausar();
+        definirEsperando(true);
+        return;
+      }
+      quadro = requestAnimationFrame(vigiar);
+    };
+    quadro = requestAnimationFrame(vigiar);
+    return () => cancelAnimationFrame(quadro);
+  }, [video, sincronizar, terminou, linha, indice]);
+
+  useEffect(() => {
+    const aoMudar = () => {
+      definirCheia(document.fullscreenElement === palcoRef.current);
+      campoRef.current?.focus();
+    };
+    document.addEventListener("fullscreenchange", aoMudar);
+    return () => document.removeEventListener("fullscreenchange", aoMudar);
+  }, []);
 
   useEffect(() => {
     if (!erroAtivo) return;
@@ -48,6 +80,8 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
       const alvo = Math.min(Math.max(novo, 0), clipe.linhas.length - 1);
       definirIndice(alvo);
       definirDigitado("");
+      definirEsperando(false);
+      liberado.current = -1;
       const segundos = clipe.linhas[alvo].inicio;
       if (segundos !== undefined) video.irPara(segundos);
     },
@@ -61,6 +95,8 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
     definirErros(0);
     definirInicio(null);
     definirFim(null);
+    definirEsperando(false);
+    liberado.current = -1;
     video.irPara(clipe.linhas[0].inicio ?? 0);
     video.tocar();
   }
@@ -91,7 +127,21 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
     } else {
       definirIndice(indice + 1);
       definirDigitado("");
+      if (esperando) {
+        definirEsperando(false);
+        video.tocar();
+      }
     }
+  }
+
+  function alternarVideo() {
+    if (!video.tocando && esperando) {
+      // Tocar à mão enquanto o clipe espera: segue sem parar de novo neste verso.
+      liberado.current = indice;
+      definirEsperando(false);
+    }
+    video.alternar();
+    campoRef.current?.focus();
   }
 
   const fimOuAgora = fim ?? agora;
@@ -133,7 +183,7 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
             <button type="button" onClick={() => irParaLinha(indice - 1)} disabled={indice === 0 || terminou} aria-label="Verso anterior">
               <Icone nome="seta-esquerda" tamanho={18} />
             </button>
-            <button type="button" onClick={video.alternar} disabled={!video.pronto} aria-label={video.tocando ? "Pausar o vídeo" : "Tocar o vídeo"}>
+            <button type="button" onClick={alternarVideo} disabled={!video.pronto} aria-label={video.tocando ? "Pausar o vídeo" : "Tocar o vídeo"}>
               <Icone nome={video.tocando ? "pausa" : "play"} tamanho={18} />
             </button>
             <button type="button" onClick={recomecar} aria-label="Recomeçar do primeiro verso">
@@ -142,7 +192,10 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
             <button type="button" onClick={() => irParaLinha(indice + 1)} disabled={indice >= clipe.linhas.length - 1 || terminou} aria-label="Próximo verso">
               <Icone nome="seta-direita" tamanho={18} />
             </button>
-            <button type="button" onClick={telaCheia} aria-label="Tela cheia">
+            <button type="button" onClick={() => definirMixAberta(!mixAberta)} aria-label="Mixagem" aria-expanded={mixAberta} className={mixAberta ? estilos.ligado : undefined}>
+              <Icone nome="som" tamanho={18} />
+            </button>
+            <button type="button" onClick={telaCheia} aria-label={cheia ? "Sair da tela cheia" : "Tela cheia"}>
               <Icone nome="tela-cheia" tamanho={18} />
             </button>
           </div>
@@ -154,8 +207,64 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
           <span style={{ width: `${progresso}%` }} />
         </div>
 
+        {mixAberta && (
+          <div className={estilos.mix} role="group" aria-label="Mixagem">
+            <label className={estilos.volume}>
+              Volume
+              <input type="range" min={0} max={1} step={0.05} value={video.mixagem.volume} onChange={(e) => video.mudarMixagem({ volume: Number(e.target.value) })} />
+            </label>
+            <label className={estilos.opcao}>
+              <input type="checkbox" checked={video.mixagem.mudo} onChange={(e) => video.mudarMixagem({ mudo: e.target.checked })} />
+              Sem som
+            </label>
+            <fieldset className={estilos.grupo}>
+              <legend>Voz</legend>
+              {(
+                [
+                  ["original", "Original"],
+                  ["karaoke", "Karaokê (voz baixa)"],
+                  ["voz", "Voz em destaque"],
+                ] as [ModoVoz, string][]
+              ).map(([id, rotulo]) => (
+                <label key={id} className={video.mixagem.modo === id ? `${estilos.chip} ${estilos.chipMarcado}` : estilos.chip}>
+                  <input type="radio" name="modo-voz" checked={video.mixagem.modo === id} onChange={() => video.mudarMixagem({ modo: id })} />
+                  {rotulo}
+                </label>
+              ))}
+            </fieldset>
+            <fieldset className={estilos.grupo}>
+              <legend>Velocidade</legend>
+              {[0.75, 0.9, 1].map((v) => (
+                <label key={v} className={video.mixagem.velocidade === v ? `${estilos.chip} ${estilos.chipMarcado}` : estilos.chip}>
+                  <input type="radio" name="velocidade" checked={video.mixagem.velocidade === v} onChange={() => video.mudarMixagem({ velocidade: v })} />
+                  {v === 1 ? "Normal" : `${v}x`}
+                </label>
+              ))}
+            </fieldset>
+            <label className={estilos.opcao}>
+              <input
+                type="checkbox"
+                checked={sincronizar}
+                onChange={(e) => {
+                  definirSincronizar(e.target.checked);
+                  if (!e.target.checked && esperando) {
+                    definirEsperando(false);
+                    video.tocar();
+                  }
+                }}
+              />
+              Parar o clipe quando eu atrasar
+            </label>
+          </div>
+        )}
+
         {!terminou && linha ? (
           <div className={estilos.verso}>
+            {esperando && (
+              <p className={estilos.esperando} role="status">
+                O clipe está esperando você terminar este verso.
+              </p>
+            )}
             <LinhaDigitada texto={linha.texto} digitado={digitado} erro={erroAtivo} />
             {linha.traducao && <p className={estilos.traducao}>{linha.traducao}</p>}
             <input

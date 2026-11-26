@@ -1,8 +1,9 @@
-/** Um verso para digitar. `inicio` (segundos no vídeo) e `traducao` são opcionais. */
+/** Um verso para digitar. `inicio` e `fim` (segundos no vídeo) sincronizam o clipe; `traducao` é opcional. */
 export interface LinhaClipe {
   texto: string;
   traducao?: string;
   inicio?: number;
+  fim?: number;
 }
 
 export interface Clipe {
