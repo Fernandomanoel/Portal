@@ -5,7 +5,7 @@ import { Icone } from "@/components/Icone";
 import { ProvasLock } from "@/components/provas/ProvasLock";
 import { JOGOS_COM_PROGRESSO, limparProgresso, limparTodoProgresso, temProgresso } from "@/lib/progressoDigitacao";
 import { EVENTO_RANKING, totalDeRegistros, zerarRanking, zerarTodosOsRankings } from "@/lib/rankingDigitacao";
-import { ENSAIOS } from "@/pages/digitacao/letrasIngles/dados";
+import { ID_RANKING_CLIPE } from "@/data/clipesDigitacao";
 import estilos from "./DigitacaoConfigPage.module.css";
 
 const JOGOS_DO_RANKING = [
@@ -16,7 +16,7 @@ const JOGOS_DO_RANKING = [
   { id: "digitacao-constelacao", titulo: "Constelação" },
   { id: "digitacao-pulo", titulo: "Pulo das Palavras" },
   { id: "digitacao-nave", titulo: "Esquadrão Hiper" },
-  ...ENSAIOS.map((ensaio, i) => ({ id: `digitacao-letras-ingles-${i}`, titulo: `Inglês em Letras de Música · ${ensaio.tema}` })),
+  { id: ID_RANKING_CLIPE, titulo: "Digite o Clipe" },
 ];
 
 type Pedido = { tipo: "ranking"; id: string; titulo: string } | { tipo: "progresso"; chave: string; titulo: string } | { tipo: "tudo" } | null;

@@ -22,7 +22,7 @@ import { DigitacaoHubPage } from "@/pages/digitacao/DigitacaoHubPage";
 import { RankingGeralPage } from "@/pages/digitacao/RankingGeralPage";
 import { DigitacaoConfigPage } from "@/pages/digitacao/DigitacaoConfigPage";
 import { CavaleirosZodiacoPage } from "@/pages/digitacao/cavaleirosZodiaco/CavaleirosZodiacoPage";
-import { LetrasInglesPage } from "@/pages/digitacao/letrasIngles/LetrasInglesPage";
+import { DigitacaoClipePage } from "@/pages/digitacao/clipe/DigitacaoClipePage";
 import { SonicPage } from "@/pages/digitacao/sonic/SonicPage";
 import { BaloesPage } from "@/pages/digitacao/baloes/BaloesPage";
 import { ConstelacaoPage } from "@/pages/digitacao/constelacao/ConstelacaoPage";
@@ -96,7 +96,7 @@ const roteador = criarRoteador([
       { path: "digitacao/configuracao", element: <DigitacaoConfigPage /> },
       { path: "digitacao/textos-classicos", element: <TextosClassicosPage /> },
       { path: "digitacao/cavaleiros-zodiaco", element: <CavaleirosZodiacoPage /> },
-      { path: "digitacao/letras-ingles", element: <LetrasInglesPage /> },
+      { path: "digitacao/clipe", element: <DigitacaoClipePage /> },
       { path: "digitacao/sonic", element: <SonicPage /> },
       { path: "digitacao/baloes", element: <BaloesPage /> },
       { path: "digitacao/constelacao", element: <ConstelacaoPage /> },
