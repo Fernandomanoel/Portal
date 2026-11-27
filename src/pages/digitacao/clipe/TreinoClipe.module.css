@@ -316,3 +316,7 @@
 .palco:fullscreen .verso {
   padding-top: var(--space-3);
 }
+
+.palco:fullscreen .sair {
+  display: none;
+}

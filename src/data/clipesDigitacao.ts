@@ -254,7 +254,7 @@ export const CLIPES_DIGITACAO: Clipe[] = [
     capa: `${BASE}/moriro-da-re.jpg`,
     linhas: [
       { texto: "Hey", inicio: 5.9, fim: 6.8 },
-      { texto: "It's Måneskin, yeah", inicio: 6.92, fim: 9.42 },
+      { texto: "It's Maneskin, yeah", inicio: 6.92, fim: 9.42 },
       { texto: "E allora prendi la mia mano, bella señorita", inicio: 9.7, fim: 12.74 },
       { texto: "Disegniamo sopra il mondo con una matita", inicio: 12.74, fim: 15.2 },
       { texto: "Resteremo appesi al treno solo con le dita", inicio: 15.44, fim: 18.08 },
