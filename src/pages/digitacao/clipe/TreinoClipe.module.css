@@ -3,6 +3,7 @@
   gap: var(--space-4);
   /* Só nesta página: puxa o conteúdo para cima, para sobrar altura para o vídeo. */
   margin-top: calc(var(--space-5) * -1);
+  position: relative;
 }
 
 .palco {
@@ -322,4 +323,17 @@
 
 .palco:fullscreen .verso {
   padding-top: var(--space-3);
+}
+
+/* No canto superior esquerdo, no espaço livre ao lado do vídeo (não ocupa altura). Em janela estreita volta para o fluxo normal. */
+.pagina > .sair {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+@media (max-width: 1100px) {
+  .pagina > .sair {
+    position: static;
+  }
 }

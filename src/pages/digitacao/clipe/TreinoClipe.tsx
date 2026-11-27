@@ -156,6 +156,11 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
 
   return (
     <div className={estilos.pagina}>
+      <button type="button" className={estilos.sair} onClick={aoSair}>
+        <Icone nome="seta-esquerda" tamanho={16} />
+        Escolher outro clipe
+      </button>
+
       <div className={estilos.palco} ref={palcoRef}>
         <div className={estilos.video}>
           <div ref={alvoRef} className={estilos.player} />
@@ -303,10 +308,6 @@ export function TreinoClipe({ clipe, aoSair }: { clipe: Clipe; aoSair: () => voi
         )}
       </div>
 
-      <button type="button" className={estilos.sair} onClick={aoSair}>
-        <Icone nome="seta-esquerda" tamanho={16} />
-        Escolher outro clipe
-      </button>
     </div>
   );
 }
