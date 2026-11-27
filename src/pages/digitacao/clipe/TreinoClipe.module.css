@@ -15,10 +15,6 @@
 .video {
   position: relative;
   aspect-ratio: 16 / 9;
-  /* A altura do vídeo acompanha a janela: o que sobra (números, controles, verso e campo) cabe sem zoom. */
-  width: min(100%, calc((100dvh - 400px) * 16 / 9));
-  min-width: min(100%, 320px);
-  margin-inline: auto;
   overflow: hidden;
   border-radius: var(--radius);
   background: #000;
@@ -135,12 +131,6 @@
   display: grid;
   gap: var(--space-3);
   padding: var(--space-5) var(--space-3) var(--space-3);
-}
-
-@media (max-height: 800px) {
-  .verso {
-    padding-top: var(--space-2);
-  }
 }
 
 .traducao {
@@ -319,7 +309,6 @@
 }
 
 .palco:fullscreen .video {
-  width: 100%;
   aspect-ratio: auto;
   min-height: 0;
 }
